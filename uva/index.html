@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Network Security: UVA specific material, spring 2024</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../markdown.css" />
+  <script>
+  function openTab(evt, tabName) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+
+  function insertCopyLink(text) {
+    document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
+  }
+  </script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="network-security-uva-specific-material-spring-2024">Network Security: UVA specific material, spring 2024</h1>
+<p><a href="../readme.html">Go up to the main NWS readme</a> (<a href="../readme.md">md</a>)</p>
+<p>Much of the rest of this repository is meant to be generic to anybody who has a class such as this one. This page contains details specific to the specific version of the course at the University of Virginia.</p>
+<hr />
+<h2 id="links">Links</h2>
+<p>There are a number of links and other parts of this course that are <strong>NOT</strong> included in this repository. They are:</p>
+<ul>
+<li>Any concerns you have should be handled via a support request; the link is on the <a href="https://canvas.its.virginia.edu/courses/1234567890">Canvas landing page</a></li>
+<li>Assignment submission is through the Gradescope tool in Canvas</li>
+<li>The <a href="https://piazza.com/class/...">Piazza forum for this course</a>; Canvas can log you in directly – the Canvas tool link is <a href="https://canvas.its.virginia.edu/courses/1234567890/external_tools/21">here</a></li>
+<li>The link for the VirtualBox image will be available on the <a href="https://canvas.its.virginia.edu/courses/1234567890">Canvas landing page</a>. For how to install it, see <a href="https://uva-cs.github.io/pdr/tutorials/01-intro-unix/virtual-box.html">here</a>.</li>
+<li>Apparently anonymous feedback is not currently available in Canvas</li>
+</ul>
+<!-- no longer available in canvas:
+
+- ~~[Email list archive](...): not a canvas tool~~
+- ~~[Anonymous feedback](...): not a canvas tool~~
+
+-->
+<p>The parts of this course that are in this repo are:</p>
+<ul>
+<li><a href="syllabus.html">Course syllabus</a> (<a href="syllabus.md">md</a>)</li>
+<li><a href="daily-announcements.html#/">Daily announcements</a></li>
+<li><a href="hw-policies.html">Homework policies page</a> (<a href="hw-policies.md">md</a>)</li>
+<li><a href="grades.html">Final course grade determination</a> (<a href="grades.md">md</a>)</li>
+</ul>
+<h2 id="readings">Readings</h2>
+<!-- All scholarly articles (such as from the ACM digital library) can be obtained from free from any UVA wireless network.  Some of them you will *NOT* be able to get it for free from your home Internet provider such as Comcast (unless you live in a UVA dorm, of course) without using a UVA VPN.  -->
+<p>All readings are due by the start of lecture that day. You should expect there to be in-class quizzes on each reading.</p>
+<ul>
+<li>…</li>
+</ul>
+<h2 id="homeworks">Homeworks</h2>
+<p>Reading assignments are due by the start of the lecture that day, and all other homeworks are due by the end of the day of the due date given – this means by 11:59:59 pm. The late policies are discussed in the <a href="hw-policies.html">homework policies page</a> (<a href="hw-policies.md">md</a>). Submission is through the Gradescope Canvas tool – all submissions should open up 2 days (i.e., 48 hours) prior to the due date/time. The larger (“P”) homeworks are due on Tuesdays by the end of the day; the smaller homeworks will have varying due days.</p>
+<h4 id="larger-programming-homeworks">Larger Programming Homeworks</h4>
+<p>All of the programming homeworks are due by the end of the day (11:59:59 pm). To avoid having the due dates having to be listed in too many places, the homeworks and their due dates are not shown here. The homeworks themselves can be seen on the <a href="../hws/index.html">Homeworks page</a> (<a href="../hws/index.md">md</a>) – but please don’t start on one until it’s announced in class that it is ready! You can see the due dates in the <a href="daily-announcements.html#/">daily announcements</a> and the <a href="https://canvas.its.virginia.edu/courses/1234567890">Canvas landing page</a>.</p>
+<h4 id="smaller-homeworks">Smaller Homeworks</h4>
+<p>Readings are due by the start of lecture on that day; all other homeworks are due by the end of the day (11:59:59 pm).</p>
+<ul>
+<li>…</li>
+</ul>
+<h2 id="course-calendar">Course calendar</h2>
+<p>…</p>
+</body>
+</html>
