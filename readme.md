@@ -23,6 +23,8 @@ Students who complete the course will:
 
 ### License
 
-Source code: all of the source code created for this repository is released under a [GPL 3.0](https://www.gnu.org/licenses/gpl-3.0.en.html) license.  Some Solidity contract source code is included from [OpenZeppelin contracts github repo](https://github.com/OpenZeppelin/openzeppelin-contracts), which retains its original (MIT) license.
+Source code: all of the source code created for this repository is released under a [GPL 3.0](https://www.gnu.org/licenses/gpl-3.0.en.html) license.
 
-Non source code: All non-source material is released under a [Creative Commons license](https://creativecommons.org/licenses/by-sa/4.0/) (CC BY-SA).  Note that there are some external images that are included in some of the slides, but are not hosted in this repository; their licenses are determined by their respective owners.
+Non source code: All non-source material is released under a [Creative Commons BY-SA license](https://creativecommons.org/licenses/by-sa/4.0/) (CC BY-SA).  Note that there are some external images that are included in some of the slides, but are not hosted in this repository; their licenses are determined by their respective owners.
+
+Slides: many of the slide sets are links to [this site](https://www.handsonsecurity.net/resources.html).  They are not part of this repo, and are not released under a CC BY-SA license.
