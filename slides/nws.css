@@ -1,6 +1,8 @@
-/* This file is part of both the http://github.com/aaronbloomfield/ccc and
-   http://github.com/aaronbloomfield/ics repositories, and has the same
-   license as the rest of those repos (CC BY-SA)
+/* This file is part the following repositories:
+   - http://github.com/aaronbloomfield/ccc 
+   - http://github.com/aaronbloomfield/ics 
+   - http://github.com/aaronbloomfield/nws 
+   It has the same license as the rest of those repos (CC BY-SA)
  */
 
 /* Fixing some slide formatting to my tastes */
@@ -199,6 +201,10 @@ p.blankline { height:1em; }
     margin-top: 12px;
 }
 
+.no-border img, img.no-border {
+  padding:0;
+}
+
 .right-float-img-200 img {
     float:right;
     max-width:200px;
@@ -242,8 +248,15 @@ p.blankline { height:1em; }
     margin-left:20px !important;
 }
 
-.right-float-img-600 img {
+.right-float-img-600 img, img.right-float-img-600 {
     float:right;
+    max-width:600px;
+    max-height:300px;
+    margin-left:20px !important;
+}
+
+.left-float-img-600 img, img.left-float-img-600 {
+    float:left;
     max-width:600px;
     max-height:300px;
     margin-left:20px !important;
@@ -556,3 +569,49 @@ div.twitter-tweet {
 .nopad img {
   padding: 0 !important;
 }
+
+span.hotpink { color:hotpink; }
+
+/* these next few rules are for tables copied from wikipedia; wikipedia uses a CC BY-SA license */
+div.wikitablediv {
+  font-family:sans-serif;
+  line-height:1.57142;
+  direction:ltr;
+  --font-size-medium: 0.875rem;
+  --line-height-medium: 1.5714285;
+  margin-left:20px;
+  text-align: center;
+  font-size:20px;
+}
+.wikitable {
+  background-color: #f8f9fa;
+  color: #202122;
+  margin: 1em 0;
+  border: 1px solid #a2a9b1;
+  border-collapse: collapse;
+}
+.wikitable>tr>th, .wikitable>tr>td, .wikitable>*>tr>th, .wikitable>*>tr>td {
+  border: 1px solid #a2a9b1;
+  padding: 0.2em 0.4em
+}
+.wikitable>tr>th, .wikitable>*>tr>th {
+  background-color: #eaecf0;
+  text-align: center
+}
+.wikitable>*>tr>th {
+  font-weight:normal;
+  text-decoration-line:none !important;
+  padding-top:0;
+  padding-bottom:0;
+}
+.wikitable>caption {
+  font-weight: bold;
+  color:#fff;
+}
+
+/* wide pre */
+.wide-pre pre {
+  margin-left:-100px;
+  width:120%;
+}
+

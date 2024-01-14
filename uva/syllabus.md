@@ -60,9 +60,14 @@ And now for the really long-winded version...
 
 **Course Description:** This course is meant as a general introduction to network security.  You are assumed to have seen some of this when yo took CS 3710.
 
-The course objectives are:
+The course objectives are that a student completing this course will:
 
-- ...
+- Understand network models, both OSI and TCP/IP
+- Understand how to analyze network traffic and how to scan for malware therein 
+- Understand the details of common network attacks, as well as their defenses (ARP, DOSes, etc.)
+- Understand the common network services that help to secure a network (DNSSEC, VPNs, PGP, firewalls, etc.)
+- Understand the role and use of cryptography in network security (AES, RSA, DHE, TLS, etc.)
+- Be able to secure a network from outside attacks
 
 **Availability:** It is important to me to be available to my students, and to address their concerns. If you cannot meet with me during office hours, e-mail (or, ideally, submit a support request) and I will try to find the time to meet. That being said, like everybody else I am quite busy, so it may take a day or more to find a time to meet. And if you have any comments on the course - what is working, what is not working, what can be done better, etc. - I am very interested in hearing about them. There is an anonymous feedback tool through Canvas, or you can send me an e-mail (please do NOT email the TAs directly). I tend to get bogged down by e-mail as the semester progresses, so seeing me "in person" (during office hours or right after class) is often a good way to get a more immediate response.
 

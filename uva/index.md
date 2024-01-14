@@ -56,7 +56,7 @@ All of the programming homeworks are due by the end of the day (11:59:59 pm). To
 
 Readings are due by the start of lecture on that day; all other homeworks are due by the end of the day (11:59:59 pm).
 
-- ...
+
 
 Course calendar
 ---------------
@@ -69,7 +69,7 @@ Course calendar
 | 4 | Feb 5 | M,W,F | ARP spoofer / detector | [IP Layer and Attacks](https://www.handsonsecurity.net/files/slides/N03_IP_ICMP.pptx) | |
 | 5 | Feb 12 | M,W,F | | [Packet Sniffing & Spoofing](https://www.handsonsecurity.net/files/slides/N04_Sniffing_Spoofing.pptx) | |
 | 6 | Feb 19 | M,W,F | | Encryption, [TLS](https://www.handsonsecurity.net/files/slides/C05_TLS.pptx) | |
-| 7 | Feb 26 | M,W,F | | [Firewall]() Network]() | |
+| 7 | Feb 26 | M,W,F | | [Firewall](https://www.handsonsecurity.net/files/slides/N07_Firewalls.pptx) | |
 | 8 | Mar 4 | | | Spring break (no classes) | |
 | 9 | Mar 11 | M,W,F | | [Virtual Private Network](https://www.handsonsecurity.net/files/slides/N08_VPN.pptx) | |
 | 10 | Mar 18 | M,W,F | | [Tunneling and Firewall Evasion](https://www.handsonsecurity.net/files/slides/N09_Tunneling.pptx) | |

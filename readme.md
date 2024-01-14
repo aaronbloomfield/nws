@@ -18,7 +18,12 @@ The parts of this repository are:
 
 Students who complete the course will:
 
-- ...
+- Understand network models, both OSI and TCP/IP
+- Understand how to analyze network traffic and how to scan for malware therein 
+- Understand the details of common network attacks, as well as their defenses (ARP, DOSes, etc.)
+- Understand the common network services that help to secure a network (DNSSEC, VPNs, PGP, firewalls, etc.)
+- Understand the role and use of cryptography in network security (AES, RSA, DHE, TLS, etc.)
+- Be able to secure a network from outside attacks
 
 
 ### License
