@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>NWS: Docker Reference</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../markdown.css" />
+  <script>
+  function openTab(evt, tabName) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+
+  function insertCopyLink(text) {
+    document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
+  }
+  </script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="nws-docker-reference">NWS: Docker Reference</h1>
+<h2 id="basic-docker-commands">Basic docker commands</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Command</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>docker-compose build</code></td>
+<td>Build the containers</td>
+</tr>
+<tr class="even">
+<td><code>docker-compose up</code></td>
+<td>Run the containers</td>
+</tr>
+<tr class="odd">
+<td><code>docker-compose down</code></td>
+<td>Stop the containers</td>
+</tr>
+<tr class="even">
+<td><code>docker pull &lt;image&gt;</code></td>
+<td>Download or update the specified image</td>
+</tr>
+<tr class="odd">
+<td><code>docker images</code></td>
+<td>See information on the docker images on your host</td>
+</tr>
+<tr class="even">
+<td><code>docker ps -a</code></td>
+<td>See what containers are running</td>
+</tr>
+<tr class="odd">
+<td><code>docker network ls</code></td>
+<td>See the networks configured</td>
+</tr>
+<tr class="even">
+<td><code>docker kill &lt;cid&gt;</code></td>
+<td>Kill (stop) a container</td>
+</tr>
+<tr class="odd">
+<td><code>docker rm &lt;cid&gt;</code></td>
+<td>Remove the (stopped) container</td>
+</tr>
+<tr class="even">
+<td><code>docker rmi &lt;id&gt;</code></td>
+<td>Remove a docker image</td>
+</tr>
+<tr class="odd">
+<td><code>docker system prune</code></td>
+<td>Remove all killed containers and outdated images</td>
+</tr>
+<tr class="even">
+<td><code>docker exec -it hostname /bin/bash</code></td>
+<td>Start a bash shell in container <code>hostname</code></td>
+</tr>
+<tr class="odd">
+<td><code>docker login</code></td>
+<td>Login to a another docker server, if needed</td>
+</tr>
+<tr class="even">
+<td><code>docker login server:5000</code></td>
+<td>Login to a another docker server, if needed</td>
+</tr>
+<tr class="odd">
+<td><code>docker cp &lt;filename&gt; &lt;cid&gt;:/path/to/&lt;filename&gt;</code></td>
+<td>Copy file into running container</td>
+</tr>
+<tr class="even">
+<td><code>docker cp &lt;cid&gt;:/path/to/&lt;filename&gt; .</code></td>
+<td>Copy file from a running container into the current directory</td>
+</tr>
+</tbody>
+</table>
+<h2 id="running-a-gui-from-a-docker-container">Running a GUI from a docker container</h2>
+<h3 id="mac-os-x">Mac OS X</h3>
+<p>Note: this has only been tested on an ARM Mac (M1/M2), and not on an Intel x64 Mac. Reference: <a href="https://cntnr.io/running-guis-with-docker-on-mac-os-x-a14df6a76efc">this article</a>.</p>
+<h4 id="one-time-installation">One-time installation</h4>
+<ul>
+<li>If not installed, install Docker
+<ul>
+<li>Download and install the Mac version (appropriate for your architecture) of Docker from <a href="https://www.docker.com/get-started/">docker.com/download</a></li>
+<li>Test Docker’s install via <code>docker run hello-world</code> – you should see an informative message</li>
+</ul></li>
+<li>Install <a href="https://brew.sh">homebrew</a>, if not already installed</li>
+<li>Install socat via <code>brew install socat</code></li>
+<li>Install <a href="https://www.xquartz.org">xquartz</a> via <code>brew install xquartz</code>
+<ul>
+<li>The first time xquartz launches, go do XQuartz -&gt; Settings -&gt; Security, and make sure “Allow connections from network clients” is checked</li>
+</ul></li>
+</ul>
+<h4 id="running-the-gui">Running the GUI</h4>
+<ul>
+<li>Make sure the docker engine is running – you should see a docker icon in the top bar (it looks like a container ship).</li>
+<li>Launch socat:
+<ul>
+<li><code>socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\"</code></li>
+<li>You can put it in the background by appending <code>&amp;</code> to it</li>
+</ul></li>
+<li>Run xquartz: <code>open -a Xquartz</code>
+<ul>
+<li>You have to log out and log back in to use Xquartz</li>
+</ul></li>
+<li>Make sure the value of the DISPLAY variable in docker-compose.yml is set to your IP (plus <code>:0</code>)
+<ul>
+<li>This is your IP on your local network: enter <code>ifconfig en0</code> to find out what it is</li>
+<li>Be sure to put the <code>:0</code> at the end of the IP address</li>
+<li>Example: <code>DISPLAY=192.168.14.45:0</code> (with a <code>-</code> before it in the docker-compose.yml file)</li>
+<li>You should change this, via find-and-replace, throughout the entire docker-compose.yml file</li>
+<li>If you made a change to the docker-compose.yml file, restart the containers</li>
+</ul></li>
+<li>Connect to a docker container (any one), and run the gui program</li>
+</ul>
+<h4 id="troubleshooting">Troubleshooting</h4>
+<ul>
+<li>Quick check: did you log out and then log in after installing xquartz?</li>
+<li>Does the Mac firewall allow socat (or socat1) to receive incoming network connections? This is configured in System Settings -&gt; Network -&gt; Firewall -&gt; Options. You should see ‘socat’ (or, more likely, ‘socat1’) with a green ‘allow incomming connections’ next to it.</li>
+<li>If you can run the <code>socat</code> command, and <code>open -a Xquartz</code> pulls up an xterm window:
+<ul>
+<li>When connected in the docker container via <code>docker exec</code>, run <code>export DISPLAY=1.2.3.4:0</code> where 1.2.3.4 is the IP of your machine (on your LAN), then try running the GUI program again</li>
+</ul></li>
+<li>If you can run the <code>socat</code> command, but <code>open -a Xquartz</code> does NOT open up a window, you will need to do a full reset and restart (but not a reinstall) of the three commands used:
+<ul>
+<li>Shut down socat: <code>killall -9 socat</code> and/or <code>killall -9 socat1</code> (this may cause the xquartz window to suddenly appear)</li>
+<li>Shut down xquartz via Command-Q</li>
+<li>Make sure there are no processes listening to port 6000: <code>lsof -i :6000</code>; if there are, kill them (<code>kill -9 &lt;PID&gt;</code>, where <code>&lt;PID&gt;</code> is the process value in the second column)</li>
+<li>Shut down the docker containers: <code>docker-compose down</code></li>
+<li>Restart the Docker Engine – click on the icon in the title bar, and select “restart” (there is a dialog box that asks you to confirm this, and sometimes that dialog box is hidden)</li>
+<li>Do the next three steps in this exact order:
+<ul>
+<li>Start up the docker containers: <code>docker-compose up</code></li>
+<li>Start up socat: <code>socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\"</code></li>
+<li>Start up xquartz: <code>open -a Xquartz</code></li>
+</ul></li>
+<li>Connect to a docker container: <code>docker exec -it nws-outer1 /bin/bash</code></li>
+<li>Check the DISPLAY variable: <code>echo $DISPLAY</code>
+<ul>
+<li>It should be <code>&lt;IP&gt;:0</code>; if not, set it: <code>export DISPLAY=111.222.333.444:0</code>; change as necessary, and be sure to put the <code>:0</code> at the end</li>
+</ul></li>
+<li>Run a GUI command: <code>xeyes</code></li>
+</ul></li>
+</ul>
+<h4 id="shutting-down">Shutting down</h4>
+<ul>
+<li>From the XQuartz menu, click on “Quit X11”</li>
+<li>Terminate socat: <code>killall -9 socat</code></li>
+</ul>
+<h3 id="linux">Linux</h3>
+<p>This was tested on Ubuntu 22.04. Reference: <a href="">this article</a>, but not really <a href="https://www.howtogeek.com/devops/how-to-run-gui-applications-in-a-docker-container/">this article</a>.</p>
+<h4 id="one-time-installation-1">One-time installation</h4>
+<ul>
+<li>If not installed, install Docker
+<ul>
+<li>Download and install the Linux version of Docker from <a href="https://www.docker.com/get-started/">docker.com/download</a></li>
+<li>Test Docker’s install via <code>docker run hello-world</code> – you should see an informative message</li>
+</ul></li>
+<li>Ensure <code>xhost</code> is already installed (it probably is) – run <code>which xhost</code> to check</li>
+</ul>
+<h4 id="running-the-gui-1">Running the GUI</h4>
+<ul>
+<li>Run <code>xhost +local:docker</code> on your host</li>
+<li>Make sure the value of the DISPLAY variable in docker-compose.yml is just <code>:0</code>
+<ul>
+<li>Example: <code>DISPLAY=:0</code>, with the <code>-</code> preceeding it</li>
+<li>You should change this, via find-and-replace, throughout the entire docker-compose.yml file</li>
+<li>If you made a change to the docker-compose.yml file, restart the containers</li>
+</ul></li>
+<li>Connect to a docker container (any one), and run the gui program</li>
+</ul>
+<h4 id="shutting-down-1">Shutting down</h4>
+<ul>
+<li>You can remove the xhost permission (via <code>xhost -local:docker</code>), but it does not seem to be a security issue if you leave it as-is</li>
+</ul>
+<h3 id="windows">Windows</h3>
+<p>Reference: none. Tested on Windows 10 Pro. Because of how WSL works, it is assumed that this will work on any recent version of Windows.</p>
+<h4 id="one-time-installation-2">One-time installation</h4>
+<ul>
+<li>If not installed, install WSL (Windows Subsystem for Linux).
+<ul>
+<li>You can select version 2 to install via <code>wsl --set-default-version 2</code></li>
+<li>The command to install it is <code>wsl --install -d Ubuntu</code></li>
+<li>If it hangs at 0% installation, try adding the <code>--web-download</code> flag: <code>wsl --install -d Ubuntu --web-download</code></li>
+<li>When tested, an error 0x80004002 occurred; the solution is <a href="https://www.bing.com/search?pglt=43&amp;q=wsl+error+0x80004002">here</a></li>
+<li>You launch WSL by running <code>wsl</code> in the search box</li>
+</ul></li>
+<li>If not installed, install Docker
+<ul>
+<li>Download the <em>Windows</em> version from <a href="https://www.docker.com/get-started/">docker.com/download</a>
+<ul>
+<li>Don’t try to install this through WSL!</li>
+</ul></li>
+<li>During the installation, be sure to select the ‘enable WSL shortcut’ check box</li>
+<li>Test Docker’s install via <code>docker run hello-world</code> – you should see an informative message</li>
+</ul></li>
+<li>In WSL, install the <code>xhost</code> program: <code>sudo apt install x11-server-utils</code></li>
+</ul>
+<h4 id="running-the-gui-2">Running the GUI</h4>
+<ul>
+<li>Start the Docker engine – it’s the “Docker Desktop” entry in Programs
+<ul>
+<li>WSL can’t use docker unless this is running</li>
+</ul></li>
+<li>Launch WSL; all further commands in this part are in WSL</li>
+<li>From this point, the directions are the same as the “Running the GUI” directions in Linux, since WSL provides a Linux shell</li>
+<li>Download and install the Linux version of Docker from <a href="https://www.docker.com/get-started/">docker.com/download</a>
+<ul>
+<li>Run <code>xhost +local:docker</code> on your host</li>
+<li>Make sure the value of the DISPLAY variable in docker-compose.yml is just <code>:0</code>
+<ul>
+<li>Example: <code>DISPLAY=:0</code>, with the <code>-</code> preceeding it</li>
+<li>You should change this, via find-and-replace, throughout the entire docker-compose.yml file</li>
+<li>If you made a change to the docker-compose.yml file, restart the containers</li>
+</ul></li>
+<li>Connect to a docker container (any one), and run the gui program, such as <code>xeyes</code>.</li>
+</ul></li>
+</ul>
+<h4 id="shutting-down-2">Shutting down</h4>
+<ul>
+<li>Shut down the Docker Engine program</li>
+<li>In WSL, you can remove the xhost permission (via <code>xhost -local:docker</code>), but it does not seem to be a security issue if you leave it as-is</li>
+<li>Exit WSL if desired</li>
+</ul>
+</body>
+</html>

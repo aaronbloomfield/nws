@@ -1,0 +1,185 @@
+version: "3"
+
+services:
+  inner:
+    image: nws
+    privileged: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - MODE=sleep
+      - NETWORK=inner
+      - DISPLAY=MYDISP
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - DISPLAY:/mnt:ro
+    networks:
+      innernet:
+        ipv4_address: 192.168.200.3
+    container_name: nws-inner
+    hostname: inner
+    cap_add:
+      - NET_ADMIN
+  other:
+    image: nws
+    privileged: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - MODE=sleep
+      - NETWORK=other
+      - DISPLAY=MYDISP
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - DISPLAY:/mnt:ro
+    networks:
+      othernet:
+        ipv4_address: 192.168.150.2
+    container_name: nws-other
+    hostname: other
+    cap_add:
+      - NET_ADMIN
+  metasploit:
+    image: metasploit2
+    privileged: true
+    build:
+      context: .
+      dockerfile: Dockerfile.metasploit2
+    environment:
+      - MODE=metasploit
+      - NETWORK=both
+      - OUTERS=3
+      - DISPLAY=MYDISP
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - DISPLAY:/mnt:ro
+    networks:
+      outernet:
+        ipv4_address: 192.168.100.3
+      innernet:
+        ipv4_address: 192.168.200.2
+    container_name: nws-metasploit
+    hostname: metasploit
+    cap_add:
+      - NET_ADMIN
+  gateway:
+    image: nws
+    privileged: true
+    environment:
+      - MODE=firewall
+      - NETWORK=both
+      - DISPLAY=MYDISP
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - DISPLAY:/mnt:ro
+    networks:
+      outernet:
+        ipv4_address: 192.168.100.2
+      innernet:
+        ipv4_address: 192.168.200.1
+      othernet:
+        ipv4_address: 192.168.150.1
+    container_name: nws-gateway
+    hostname: gateway
+    cap_add:
+      - NET_ADMIN
+  outer1:
+    image: nws
+    privileged: true
+    environment:
+      - MODE=sleep
+      - NETWORK=outer
+      - DISPLAY=MYDISP
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - DISPLAY:/mnt:ro
+    networks:
+      outernet:
+        ipv4_address: 192.168.100.101
+      othernet:
+        ipv4_address: 192.168.150.3
+    container_name: nws-outer1
+    hostname: outer1
+    cap_add:
+      - NET_ADMIN
+  outer2:
+    image: nws
+    privileged: true
+    environment:
+      - MODE=sleep
+      - NETWORK=outer
+      - DISPLAY=MYDISP
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - DISPLAY:/mnt:ro
+    networks:
+      outernet:
+        ipv4_address: 192.168.100.102
+    container_name: nws-outer2
+    hostname: outer2
+    cap_add:
+      - NET_ADMIN
+  outer3:
+    image: nws
+    privileged: true
+    environment:
+      - MODE=sleep
+      - NETWORK=outer
+      - DISPLAY=MYDISP
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - DISPLAY:/mnt:ro
+    networks:
+      outernet:
+        ipv4_address: 192.168.100.103
+    container_name: nws-outer3
+    hostname: outer3
+    cap_add:
+      - NET_ADMIN
+  firewall:
+    image: nws
+    privileged: true
+    ports:
+      - "2222:22"
+    environment:
+      - MODE=firewall
+      - NETWORK=outer
+      - DISPLAY=MYDISP
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - DISPLAY:/mnt:ro
+    networks:
+      internet:
+      outernet:
+        ipv4_address: 192.168.100.1
+    container_name: nws-firewall
+    hostname: firewall
+    cap_add:
+      - NET_ADMIN
+
+networks:
+  innernet:
+    driver: macvlan
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.200.0/24
+          gateway: 192.168.200.254
+  outernet:
+    driver: macvlan
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.100.0/24
+          gateway: 192.168.100.254
+  othernet:
+    driver: macvlan
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.150.0/24
+          gateway: 192.168.150.254
+  internet:
+    driver: bridge

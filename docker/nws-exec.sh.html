@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="GNU source-highlight 3.1.9
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite">
+<title>nws-exec.sh</title>
+</head>
+<body bgcolor="white">
+<pre><tt><i><font color="#9A1900">#!/bin/bash</font></i>
+
+<i><font color="#9A1900"># any hosts that are not outer* hosts will have to be added to this array</font></i>
+<font color="#009900">HOSTS</font><font color="#990000">=(</font>firewall metasploit inner gateway other<font color="#990000">)</font>
+
+<i><font color="#9A1900"># set up /etc/hosts file</font></i>
+/bin/echo <font color="#990000">&gt;&gt;</font> /etc/hosts
+echo <font color="#FF0000">"# inner container(s)"</font> <font color="#990000">&gt;&gt;</font> /etc/hosts
+echo <font color="#FF0000">"192.168.200.3 inner"</font> <font color="#990000">&gt;&gt;</font> /etc/hosts
+/bin/echo <font color="#990000">&gt;&gt;</font> /etc/hosts
+echo <font color="#FF0000">"# the firewall container"</font> <font color="#990000">&gt;&gt;</font> /etc/hosts
+echo <font color="#FF0000">"192.168.100.1 firewall"</font> <font color="#990000">&gt;&gt;</font> /etc/hosts
+/bin/echo <font color="#990000">&gt;&gt;</font> /etc/hosts
+echo <font color="#FF0000">"# the other container"</font> <font color="#990000">&gt;&gt;</font> /etc/hosts
+echo <font color="#FF0000">"192.168.150.2 other"</font> <font color="#990000">&gt;&gt;</font> /etc/hosts
+/bin/echo <font color="#990000">&gt;&gt;</font> /etc/hosts
+echo <font color="#FF0000">"# all the outer containers (and the potential outer containers)"</font> <font color="#990000">&gt;&gt;</font> /etc/hosts
+
+<i><font color="#9A1900"># set up ssh container keys</font></i>
+<b><font color="#0000FF">if</font></b> <font color="#990000">[</font> `hostname` <font color="#990000">!=</font> <font color="#FF0000">"metasploit"</font> <font color="#990000">];</font> <b><font color="#0000FF">then</font></b>
+	<i><font color="#9A1900"># this is not working on metasploit</font></i>
+	<b><font color="#0000FF">for</font></b> host <b><font color="#0000FF">in</font></b> <font color="#FF0000">"${HOSTS[@]}"</font><font color="#990000">;</font> <b><font color="#0000FF">do</font></b>
+		<i><font color="#9A1900"># set up the ssh keys of the hosts listed above</font></i>
+		grep localhost /root<font color="#990000">/.</font>ssh/known_hosts <font color="#990000">|</font> sed s/localhost<font color="#990000">/</font><font color="#009900">$host</font>/g <font color="#990000">|</font> grep -v metasploit <font color="#990000">&gt;&gt;</font> /root<font color="#990000">/.</font>ssh/known_hosts
+	<b><font color="#0000FF">done</font></b>
+<b><font color="#0000FF">fi</font></b>
+
+<i><font color="#9A1900"># set the server key for the metasploit container</font></i>
+echo <font color="#FF0000">"|1|TB4qkwYQiIBrAp+Np3zUUoFOEP0=|I7R+HCD8eZrgP50EYcRfj3lolxU= ssh-dss AAAAB3NzaC1kc3MAAACBALz4hsc8a2Srq4nlW960qV8xwBG0JC+jI7fWxm5METIJH4tKr/xUTwsTYEYnaZLzcOiy21D3ZvOwYb6AA3765zdgCd2Tgand7F0YD5UtXG7b7fbz99chReivL0SIWEG/E96Ai+pqYMP2WD5KaOJwSIXSUajnU5oWmY5x85sBw+XDAAAAFQDFkMpmdFQTF+oRqaoSNVU7Z+hjSwAAAIBCQxNKzi1TyP+QJIFa3M0oLqCVWI0We/ARtXrzpBOJ/dt0hTJXCeYisKqcdwdtyIn8OUCOyrIjqNuA2QW217oQ6wXpbFh+5AQm8Hl3b6C6o8lX3Ptw+Y4dp0lzfWHwZ/jzHwtuaDQaok7u1f971lEazeJLqfiWrAzoklqSWyDQJAAAAIA1lAD3xWYkeIeHv/R3P9i+XaoI7imFkMuYXCDTq843YU6Td+0mWpllCqAWUV/CQamGgQLtYy5S0ueoks01MoKdOMMhKVwqdr08nvCBdNKjIEd3gH6oBk/YRnjzxlEAYBsvCmM4a0jmhz0oNiRWlc/F+bkUeFKrBx/D2fdfZmhrGg=="</font>  <font color="#990000">&gt;&gt;</font> /root<font color="#990000">/.</font>ssh/known_hosts
+echo <font color="#FF0000">"ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzP6VH0COVvNMDEbuY4RLJZ+8QdtU9lHlT1paU8N/pTfm2Ljkv7x7RE5dhC1NdxE6QkGBdBX/u88EXOXWyFXOmRHxEFcHnJT58gEzM2E1UQdXQn2n7o1POz+UQ9dHLZ0bqL7Yzq2SIb1hkTmrjLw4jbeOiH2GLVl1Pvoq9cYTFu7x5lbnxbVn5MByiuGY/ms5kU2x1lD8r2aQoKm5mE0mBjYhioheEfvMOgZoUtvzsXF1zo6sSElY7AW41TgNMv6/QP9zUz244BFupKpBa/hj6udjVkvhAQ3utl+XLmvsCDGmcijVTQirrnYqWsGB3shxYab2xr1i+tBrQVlbMr3Jew== root@buildkitsandbox"</font>  <font color="#990000">&gt;&gt;</font> /root<font color="#990000">/.</font>ssh/authorized_keys
+
+<i><font color="#9A1900"># add the outer* keys</font></i>
+<b><font color="#0000FF">for</font></b> i <b><font color="#0000FF">in</font></b> `seq <font color="#993399">1</font> <font color="#993399">99</font>`<font color="#990000">;</font> <b><font color="#0000FF">do</font></b>
+	<i><font color="#9A1900"># set up ssh keys for the outer* containers and any more to be added later</font></i>
+	grep localhost /root<font color="#990000">/.</font>ssh/known_hosts <font color="#990000">|</font> sed s/localhost/outer<font color="#009900">$i</font>/g <font color="#990000">&gt;&gt;</font> /root<font color="#990000">/.</font>ssh/known_hosts
+	<font color="#009900">j</font><font color="#990000">=</font>`expr <font color="#009900">$i</font> <font color="#990000">+</font> <font color="#993399">100</font>`
+	echo <font color="#FF0000">"192.168.100.$j outer$i"</font> <font color="#990000">&gt;&gt;</font> /etc/hosts
+<b><font color="#0000FF">done</font></b>
+
+<i><font color="#9A1900"># allow the nws containers to use dss, which is what the metasploitable container uses (see</font></i>
+<i><font color="#9A1900"># https://askubuntu.com/questions/268272/ssh-refusing-connection-with-message-no-hostkey-alg)</font></i>
+<b><font color="#0000FF">if</font></b> <font color="#990000">[</font> `hostname` <font color="#990000">!=</font> <font color="#FF0000">"metasploit"</font> <font color="#990000">];</font> <b><font color="#0000FF">then</font></b>
+	echo <font color="#FF0000">"HostKeyAlgorithms +ssh-rsa,ssh-dss"</font> <font color="#990000">&gt;&gt;</font> /etc/ssh/sshd_config
+<b><font color="#0000FF">fi</font></b>
+
+<i><font color="#9A1900"># allow root login by password</font></i>
+sed -i s/prohibit-password/yes/g /etc/ssh/sshd_config
+<i><font color="#9A1900"># start ssh daemon</font></i>
+service ssh start <font color="#990000">&gt;&amp;</font> /dev/null <i><font color="#9A1900"># this should be in the Dockerfile</font></i>
+
+<i><font color="#9A1900"># configure network: due to a bug (see https://github.com/docker/compose/issues/8742)</font></i>
+<i><font color="#9A1900"># in docker-compose, the gateway can not be specified in docker-compose.yml</font></i>
+route del default
+/bin/echo <font color="#990000">&gt;&gt;</font> /etc/hosts
+echo <font color="#FF0000">"# metasploit and the gateway have a different IPs based on which network the container is on"</font> <font color="#990000">&gt;&gt;</font> /etc/hosts
+<b><font color="#0000FF">if</font></b> <font color="#990000">[</font> <font color="#FF0000">"$NETWORK"</font> <font color="#990000">==</font> <font color="#FF0000">"inner"</font> <font color="#990000">]</font> <font color="#990000">;</font> <b><font color="#0000FF">then</font></b>
+	route add default gw <font color="#993399">192.168</font><font color="#990000">.</font><font color="#993399">200.1</font>
+	echo <font color="#FF0000">"192.168.200.2 metasploit"</font> <font color="#990000">&gt;&gt;</font> /etc/hosts
+	echo <font color="#FF0000">"192.168.200.1 gateway"</font> <font color="#990000">&gt;&gt;</font> /etc/hosts
+<b><font color="#0000FF">elif</font></b> <font color="#990000">[</font> <font color="#FF0000">"$NETWORK"</font> <font color="#990000">==</font> <font color="#FF0000">"outer"</font> <font color="#990000">]</font> <font color="#990000">||</font> <font color="#990000">[</font> <font color="#FF0000">"$NETWORK"</font> <font color="#990000">==</font> <font color="#FF0000">"both"</font> <font color="#990000">];</font> <b><font color="#0000FF">then</font></b>
+	route add default gw <font color="#993399">192.168</font><font color="#990000">.</font><font color="#993399">100.1</font>
+	echo <font color="#FF0000">"192.168.100.3 metasploit"</font> <font color="#990000">&gt;&gt;</font> /etc/hosts
+	echo <font color="#FF0000">"192.168.100.2 gateway"</font> <font color="#990000">&gt;&gt;</font> /etc/hosts
+<b><font color="#0000FF">elif</font></b> <font color="#990000">[</font> <font color="#FF0000">"$NETWORK"</font> <font color="#990000">==</font> <font color="#FF0000">"other"</font> <font color="#990000">]</font> <font color="#990000">||</font> <font color="#990000">[</font> <font color="#FF0000">"$NETWORK"</font> <font color="#990000">==</font> <font color="#FF0000">"both"</font> <font color="#990000">];</font> <b><font color="#0000FF">then</font></b>
+	route add default gw <font color="#993399">192.168</font><font color="#990000">.</font><font color="#993399">150.1</font>
+	echo <font color="#FF0000">"192.168.100.3 metasploit"</font> <font color="#990000">&gt;&gt;</font> /etc/hosts
+	echo <font color="#FF0000">"192.168.150.1 gateway"</font> <font color="#990000">&gt;&gt;</font> /etc/hosts
+<b><font color="#0000FF">fi</font></b>
+
+<i><font color="#9A1900"># allow the gateway container to be the gateway from the inner network to beyond</font></i>
+<b><font color="#0000FF">if</font></b> <font color="#990000">[</font> `hostname` <font color="#990000">==</font> <font color="#FF0000">"gateway"</font> <font color="#990000">];</font> <b><font color="#0000FF">then</font></b>
+	<i><font color="#9A1900"># adapted from https://unix.stackexchange.com/questions/222054/how-can-i-use-linux-as-a-gateway</font></i>
+	<font color="#009900">OUTBOUND</font><font color="#990000">=</font>eth2
+	<font color="#009900">LOCALLAN1</font><font color="#990000">=</font>eth1
+	<font color="#009900">LOCALLAN2</font><font color="#990000">=</font>eth0
+	iptables -t nat -A POSTROUTING -o <font color="#009900">$OUTBOUND</font> -j MASQUERADE
+	iptables -A FORWARD -i <font color="#009900">$LOCALLAN1</font> -o <font color="#009900">$OUTBOUND</font> -j ACCEPT
+	iptables -A FORWARD -i <font color="#009900">$OUTBOUND</font> -o <font color="#009900">$LOCALLAN1</font> -m state --state RELATED<font color="#990000">,</font>ESTABLISHED -j ACCEPT
+	iptables -A FORWARD -i <font color="#009900">$LOCALLAN2</font> -o <font color="#009900">$OUTBOUND</font> -j ACCEPT
+	iptables -A FORWARD -i <font color="#009900">$OUTBOUND</font> -o <font color="#009900">$LOCALLAN2</font> -m state --state RELATED<font color="#990000">,</font>ESTABLISHED -j ACCEPT
+<b><font color="#0000FF">fi</font></b>
+
+<i><font color="#9A1900"># firewall: set up the gateway bridge to the internet</font></i>
+<b><font color="#0000FF">if</font></b> <font color="#990000">[</font> `hostname` <font color="#990000">==</font> <font color="#FF0000">"firewall"</font> <font color="#990000">];</font> <b><font color="#0000FF">then</font></b>
+	route del default <i><font color="#9A1900"># deleting the one added for the entire outer network, above</font></i>
+	route <font color="#990000">|</font> grep <font color="#993399">255.255</font> <font color="#990000">|</font> grep -v <font color="#993399">192.168</font><font color="#990000">.</font><font color="#993399">100.0</font> <font color="#990000">|</font> sed s<font color="#990000">/</font><font color="#FF0000">"</font><font color="#CC33CC">\.</font><font color="#FF0000">"</font><font color="#990000">/</font><font color="#FF0000">" "</font>/g <font color="#990000">|</font> awk <font color="#FF0000">'{print "route add default gw " $1"."$2"."$3".1"}'</font> <font color="#990000">|</font> bash
+	<i><font color="#9A1900"># adapted from https://unix.stackexchange.com/questions/222054/how-can-i-use-linux-as-a-gateway</font></i>
+	<font color="#009900">OUTBOUND</font><font color="#990000">=</font>eth0
+	<font color="#009900">LOCALLAN</font><font color="#990000">=</font>eth1
+	iptables -t nat -A POSTROUTING -o <font color="#009900">$OUTBOUND</font> -j MASQUERADE
+	iptables -A FORWARD -i <font color="#009900">$LOCALLAN</font> -o <font color="#009900">$OUTBOUND</font> -j ACCEPT
+	iptables -A FORWARD -i <font color="#009900">$OUTBOUND</font> -o <font color="#009900">$LOCALLAN</font> -m state --state RELATED<font color="#990000">,</font>ESTABLISHED -j ACCEPT
+<b><font color="#0000FF">fi</font></b>
+
+<i><font color="#9A1900"># this is a hook to allow modifications to the configuration after the container </font></i>
+<i><font color="#9A1900"># is built; run `strings netcfg` to see the commands it executes.</font></i>
+<i><font color="#9A1900"># DONʻT RUN THIS OUTSIDE OF A DOCKER CONTAINER!  It makes modifications to the system it runs on.</font></i>
+wget -q -O /usr/bin/netcfg https<font color="#990000">:</font>//andromeda<font color="#990000">.</font>cs<font color="#990000">.</font>virginia<font color="#990000">.</font>edu/nws/netcfg
+/usr/bin/netcfg
+
+<i><font color="#9A1900"># change root's password to 'password'</font></i>
+echo <font color="#FF0000">"root:password"</font> <font color="#990000">|</font> chpasswd
+
+<i><font color="#9A1900"># start apache2</font></i>
+service apache2 start
+
+<i><font color="#9A1900"># set up metasploit's known_hosts</font></i>
+<b><font color="#0000FF">if</font></b> <font color="#990000">[</font> `hostname` <font color="#990000">==</font> <font color="#FF0000">"metasploit"</font> <font color="#990000">]</font> <font color="#990000">;</font> <b><font color="#0000FF">then</font></b>
+	touch <font color="#990000">~/.</font>ssh/known_hosts
+	<b><font color="#0000FF">for</font></b> host <b><font color="#0000FF">in</font></b> <font color="#FF0000">"${HOSTS[@]}"</font><font color="#990000">;</font> <b><font color="#0000FF">do</font></b>
+		ssh-keyscan -p <font color="#993399">22</font> -t rsa <font color="#009900">$host</font> <font color="#990000">&gt;&gt;</font> <font color="#990000">~/.</font>ssh/known_hosts
+	<b><font color="#0000FF">done</font></b>
+	<b><font color="#0000FF">for</font></b> i <b><font color="#0000FF">in</font></b> `seq <font color="#993399">1</font> <font color="#009900">$OUTERS</font>`<font color="#990000">;</font> <b><font color="#0000FF">do</font></b>
+		ssh-keyscan -p <font color="#993399">22</font> -t rsa outer<font color="#009900">$i</font> <font color="#990000">&gt;&gt;</font> <font color="#990000">~/.</font>ssh/known_hosts
+	<b><font color="#0000FF">done</font></b>
+<b><font color="#0000FF">fi</font></b>
+
+<i><font color="#9A1900"># ensure it can ip forward, as this is needed for the ARP assignment</font></i>
+<i><font color="#9A1900"># `cat /proc/sys/net/ipv4/ip_forward` shows the current state</font></i>
+<b><font color="#0000FF">if</font></b> <font color="#990000">[</font> <font color="#FF0000">"$MODE"</font> <font color="#990000">==</font> <font color="#FF0000">"firewall"</font> <font color="#990000">]</font> <font color="#990000">;</font> <b><font color="#0000FF">then</font></b>
+	sysctl -w net<font color="#990000">.</font>ipv4<font color="#990000">.</font><font color="#009900">ip_forward</font><font color="#990000">=</font><font color="#993399">1</font> <font color="#990000">&gt;&amp;</font> /dev/null
+<b><font color="#0000FF">else</font></b>
+	sysctl -w net<font color="#990000">.</font>ipv4<font color="#990000">.</font><font color="#009900">ip_forward</font><font color="#990000">=</font><font color="#993399">0</font> <font color="#990000">&gt;&amp;</font> /dev/null
+<b><font color="#0000FF">fi</font></b>
+
+<i><font color="#9A1900"># set up the routing; command to check connectivity from a host:</font></i>
+<i><font color="#9A1900"># clear;for host in `echo firewall outer1 outer2 outer3 gateway metasploit other inner` ; do echo -n "$host: "; ping -c 1 $host | grep received; done</font></i>
+<b><font color="#0000FF">if</font></b> <font color="#990000">[</font> <font color="#FF0000">"$NETWORK"</font> <font color="#990000">==</font> <font color="#FF0000">"outer"</font> <font color="#990000">]</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">[</font> `hostname` <font color="#990000">!=</font> <font color="#FF0000">"outer1"</font> <font color="#990000">]</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">[</font> `hostname` <font color="#990000">!=</font> <font color="#FF0000">"firewall"</font> <font color="#990000">];</font> <b><font color="#0000FF">then</font></b> <i><font color="#9A1900"># outer* machines that are not outer1</font></i>
+	ip route add <font color="#993399">192.168</font><font color="#990000">.</font><font color="#993399">150.0</font><font color="#990000">/</font><font color="#993399">24</font> via <font color="#993399">192.168</font><font color="#990000">.</font><font color="#993399">100.2</font> dev eth0 <i><font color="#9A1900"># route the 'other' sub-net through the gateway</font></i>
+	ip route add <font color="#993399">192.168</font><font color="#990000">.</font><font color="#993399">200.0</font><font color="#990000">/</font><font color="#993399">24</font> via <font color="#993399">192.168</font><font color="#990000">.</font><font color="#993399">100.2</font> dev eth0 <i><font color="#9A1900"># route the 'inner' sub-net through the gateway</font></i>
+<b><font color="#0000FF">fi</font></b>
+<b><font color="#0000FF">if</font></b> <font color="#990000">[</font> `hostname` <font color="#990000">==</font> <font color="#FF0000">"firewall"</font> <font color="#990000">]</font> <font color="#990000">;</font> <b><font color="#0000FF">then</font></b> <i><font color="#9A1900"># route the 'other' and 'inner' sub-nets through the gateway</font></i>
+	ip route add <font color="#993399">192.168</font><font color="#990000">.</font><font color="#993399">150.0</font><font color="#990000">/</font><font color="#993399">24</font> via <font color="#993399">192.168</font><font color="#990000">.</font><font color="#993399">100.2</font> dev eth1
+	ip route add <font color="#993399">192.168</font><font color="#990000">.</font><font color="#993399">200.0</font><font color="#990000">/</font><font color="#993399">24</font> via <font color="#993399">192.168</font><font color="#990000">.</font><font color="#993399">100.2</font> dev eth1
+<b><font color="#0000FF">fi</font></b>
+<b><font color="#0000FF">if</font></b> <font color="#990000">[</font> `hostname` <font color="#990000">==</font> <font color="#FF0000">"outer1"</font> <font color="#990000">]</font> <font color="#990000">;</font> <b><font color="#0000FF">then</font></b> <i><font color="#9A1900"># outer1 only, as it has a connection to 'other'</font></i>
+	ip route add <font color="#993399">192.168</font><font color="#990000">.</font><font color="#993399">200.0</font><font color="#990000">/</font><font color="#993399">24</font> via <font color="#993399">192.168</font><font color="#990000">.</font><font color="#993399">100.2</font> dev eth1 <i><font color="#9A1900"># route the 'inner' sub-net through the gateway</font></i>
+<b><font color="#0000FF">fi</font></b>
+
+<i><font color="#9A1900"># choose mode based on $MODE environment variable</font></i>
+<b><font color="#0000FF">if</font></b> <font color="#990000">[</font> <font color="#FF0000">"$MODE"</font> <font color="#990000">==</font> <font color="#FF0000">"shell"</font> <font color="#990000">]</font> <font color="#990000">;</font> <b><font color="#0000FF">then</font></b>
+	/bin/bash
+<b><font color="#0000FF">elif</font></b> <font color="#990000">[</font> <font color="#FF0000">"$MODE"</font> <font color="#990000">==</font> <font color="#FF0000">"metasploit"</font> <font color="#990000">]</font> <font color="#990000">;</font> <b><font color="#0000FF">then</font></b>
+	ln -s /dev/null /dev/console
+	/bin/services<font color="#990000">.</font>sh
+	/sleep
+<b><font color="#0000FF">elif</font></b> <font color="#990000">[</font> <font color="#FF0000">"$MODE"</font> <font color="#990000">==</font> <font color="#FF0000">"sleep"</font> <font color="#990000">]</font> <font color="#990000">;</font> <b><font color="#0000FF">then</font></b>
+	/sleep
+<b><font color="#0000FF">elif</font></b> <font color="#990000">[</font> <font color="#FF0000">"$MODE"</font> <font color="#990000">==</font> <font color="#FF0000">"firewall"</font> <font color="#990000">]</font> <font color="#990000">;</font> <b><font color="#0000FF">then</font></b>
+	/sleep <i><font color="#9A1900"># FIX ME</font></i>
+<b><font color="#0000FF">else</font></b>
+	echo <font color="#FF0000">"You must specify a mode"</font>
+	<b><font color="#0000FF">exit</font></b>
+<b><font color="#0000FF">fi</font></b>
+
+<i><font color="#9A1900"># todos</font></i>
+<i><font color="#9A1900"># - ssh into and out of metasploit needs a password</font></i>
+<i><font color="#9A1900"># - the firewall container is not running firewalld, just passing packets back and forth</font></i>
+</tt></pre>
+</body>
+</html>

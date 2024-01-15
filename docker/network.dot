@@ -1,0 +1,102 @@
+graph network {
+    graph [fontname = "Helvetica"];
+    node [fontname = "Helvetica",shape=rect];
+    edge [fontname = "Helvetica"];
+
+    outer_network [shape=box,label="outernet network: 192.168.100.x",shape=oval];
+    inner_network [shape=box,label="innernet network: 192.168.200.x",shape=oval];
+    other_network [shape=box,label="othernet network: 192.168.150.x",shape=oval];
+
+    internet [label=< <b>Internet</b> >,shape=plaintext,fontsize=20];
+    firewall [label=< &lt;bridge IP&gt; (eth0)<br/><b>firewall</b><br/>192.168.100.1 (eth1) >];
+    outer1 [label=< 192.168.100.101 (eth1)<br/><b>outer1</b><br/>192.168.150.3 (eth0) >];
+    outer2 [label=< 192.168.100.102 (eth0)<br/><b>outer2</b><br/> >];
+    outer3 [label=< 192.168.100.103 (eth0)<br/><b>outer3</b><br/> >];
+    gateway [label=< 192.168.100.2 (eth2)<br/><b>gateway</b><br/>192.168.200.1 (eth0)<br/>192.168.150.1 (eth1) >];
+    metasploit [label=< 192.168.100.3 (eth1)<br/><b>metasploit</b><br/>192.168.200.2 (eth0) >];
+    inner [label=< 192.168.200.3 (eth0)<br/><b>inner</b><br/> >];
+    other [label=< 192.168.150.2 (eth0)<br/><b>other</b><br/> >];
+
+    internet -- firewall;
+    firewall -- outer_network;
+    outer_network -- outer1;
+    outer_network -- outer2;
+    outer_network -- outer3;
+    outer_network -- metasploit;
+    metasploit -- inner_network;
+    outer_network -- gateway;
+    gateway -- inner_network;
+    inner_network -- inner;
+    other_network -- gateway;
+    other_network -- other;
+    outer1 -- other_network;
+
+    {rank=same other_network inner_network}
+    {rank=same outer1 outer2 outer3 gateway metasploit}
+
+}
+
+graph network_compact {
+    graph [fontname = "Helvetica"];
+    node [fontname = "Helvetica",shape=rect];
+    edge [fontname = "Helvetica"];
+
+    outer_network [shape=box,label="outernet network: 192.168.100.x",shape=oval];
+    inner_network [shape=box,label="innernet network: 192.168.200.x",shape=oval];
+    other_network [shape=box,label="othernet network: 192.168.150.x",shape=oval];
+
+    internet [label=< <b>Internet</b> >,shape=plaintext,fontsize=20];
+    firewall [label=< &lt;bridge IP&gt; (eth0)<br/><b>firewall</b><br/>192.168.100.1 (eth1) >];
+    outer1 [label=< 192.168.100.101 (eth0)<br/><b>outer1</b><br/>  >];
+    outer2 [label=< 192.168.100.102 (eth0)<br/><b>outer2</b><br/>  >];
+    outer3 [label=< 192.168.100.103 (eth0)<br/><b>outer3</b><br/>  >];
+    gateway [label=< 192.168.100.2 (eth2)<br/><b>gateway</b><br/>192.168.200.1 (eth0)<br/>192.168.150.1 (eth1) >];
+    metasploit [label=< 192.168.100.3 (eth1)<br/><b>metasploit</b><br/>192.168.200.2 (eth0) >];
+    inner [label=< 192.168.200.3 (eth0)<br/><b>inner</b><br/>  >];
+    other [label=< 192.168.150.2 (eth0)<br/><b>other</b><br/>  >];
+
+    internet -- firewall;
+    firewall -- outer_network;
+    outer_network -- outer1;
+    outer_network -- outer2;
+    outer_network -- outer3;
+    outer_network -- metasploit;
+    metasploit -- inner_network;
+    outer_network -- gateway;
+    gateway -- inner_network;
+    inner_network -- inner;
+    other_network -- gateway;
+    other_network -- other;
+    outer1 -- other_network;
+
+    {rank=same firewall internet}
+    {rank=same outer1 outer2 outer3 gateway metasploit}
+    {rank=same other other_network inner inner_network}
+
+}
+
+digraph network_for_routing {
+    graph [fontname = "Helvetica"];
+    node [fontname = "Helvetica",shape=rect];
+    edge [fontname = "Helvetica"];
+    rankdir="TB";
+
+    firewall [label=< &lt;bridge IP&gt; (eth0)<br/><b>firewall</b><br/>192.168.100.1 (eth1) >];
+    outer_network [shape=box,label="outernet network: 192.168.100.x",shape=oval];
+    outer1 [label=< 192.168.100.101 (eth1)<br/><b>outer1</b><br/>192.168.150.3 (eth0) >];
+    gateway [label=< 192.168.100.2 (eth2)<br/><b>gateway</b><br/>192.168.200.1 (eth0)<br/>192.168.150.1 (eth1) >];
+    other_network [shape=box,label="othernet network: 192.168.150.x",shape=oval];
+    other [label=< 192.168.150.2 (eth0)<br/><b>other</b><br/> >];
+
+    firewall -> outer_network [dir=back];
+    outer_network -> outer1 [color=red,dir=back,fontcolor=red,label=" *"];
+    gateway -> outer_network;
+    other_network -> gateway;
+    other_network -> other [dir=back];
+    outer1 -> other_network [color=red,dir=back,fontcolor=red,label="*"];
+
+    {rank=same outer1 gateway}
+    {rank=min firewall}
+    {rank=max other}
+
+}

@@ -1,0 +1,26 @@
+FROM tleemcjr/metasploitable2
+LABEL maintainer="Aaron Bloomfield aaron@virginia.edu"
+ENV DEBIAN_FRONTEND noninteractive
+
+# the version of apt-get in this container (ubuntu 8.04) doesn't recognize the
+# DEBIAN_FRONTEND variable above, and thus still prompts to replace package
+# config files, so a dist-upgrade will fail while waiting for input during a
+# build
+# apt-get update -y -q -q && \
+# apt-get dist-upgrade -y -q -q && \
+	
+
+RUN apt-get update -y -q -q && \
+	apt-get install -y -q -q \
+		emacs nano vim `# editors` \
+		&& \
+	echo "#include <unistd.h>" > /sleep.c && \
+	echo "int main() { while (1) sleep(10); return 0; }" >> /sleep.c && \
+	gcc -o /sleep /sleep.c && \
+	ssh-keygen -f /root/.ssh/id_rsa -N "" && \
+	cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys && \
+	sed -i s/"#PermitRootLogin"/PermitRootLogin/g /etc/ssh/sshd_config 
+
+COPY nws-exec.sh /nws-exec.sh
+RUN chmod 755 /nws-exec.sh
+CMD '/nws-exec.sh'
