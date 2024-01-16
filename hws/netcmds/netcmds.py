@@ -1,7 +1,7 @@
-# Submission information for the Linux Tutorial HW
-# https://aaronbloomfield.github.io/nws/linux/
+# Submission information for the Network Commands Introduction HW
+# https://aaronbloomfield.github.io/nws/netcmds/
 
-# The filename of this file must be 'linux.py', else the submission
+# The filename of this file must be 'netcmds.py', else the submission
 # verification routines will not work properly.
 
 # You are welcome to have additional variables or fields in this file; you
@@ -18,21 +18,15 @@ name = "Jane Doe"
 # assignment.
 other = {
 
-	# If you already knew Linux commands, then you would likely have skipped
-	# these tutorials.  Did you already know enough Linux to skip them?
-	# Answer True if so, False if you went through the tutorials.  The answer
-	# to this will not change your grade at all.
-	'went_through_tutorials': None,
+	# On a scale of 1-5, how well do you feel you knew these network
+	# commands *before* going through this tutorial?  1 is not at all, 2 a
+	# bit, but not much, 3 is neutral, 4 is well, 5 is quite well.
+	'knew_netcfg_cmds_before': None,
 
-	# On a scale of 1-5, how well do you feel you knew Linux commands *before*
-	# going through this tutorial?  1 is not at all, 2 a bit, but not much, 3
-	# is neutral, 4 is well, 5 is quite well.
-	'knew_linux_cmds_before': None,
-
-	# On a scale of 1-5, how well do you feel you know Linux commands *after*
-	# going through this tutorial?  1 is not at all, 2 a bit, but not much, 3
-	# is neutral, 4 is well, 5 is quite well.
-	'knew_linux_cmds_after': None,
+	# On a scale of 1-5, how well do you feel you new these network
+	# commands *after* going through this tutorial?  1 is not at all, 2 a
+	# bit, but not much, 3 is neutral, 4 is well, 5 is quite well.
+	'knew_netcfg_cmds_after': None,
 
 }
 
@@ -40,7 +34,7 @@ other = {
 # These are various sanity checks, and are meant to help you ensure that you
 # submitted everything that you are supposed to submit.  Other than
 # submitting the necessary files to Gradescope (which checks for those
-# files), all other submission requirements are listed herein.  These values
+# files), all other submission requirements are listed herein.  These values 
 # need to be changed to True (instead of False).
 sanity_checks = {
 

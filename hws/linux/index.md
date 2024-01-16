@@ -13,7 +13,7 @@ The idea is that this assignment can be used as a reference for when you are usi
 
 You will be submitting an edited version of the [linux.py](linux.py.html) ([src](linux.py)) file.
 
-This assignment has very little in terms of the deliverable -- in fact, you could easily skip to the 'Submission' section, make up answers, and get full credit on this assignment.  **HOWEVER,** this assignment is going to be necessary to complete before doing *any other* assignment in this course, as pretty  much *all* the assignments will be using this docker setup.
+This assignment has very little in terms of the deliverable -- in fact, you could easily skip to the 'Submission' section, make up answers, and get full credit on this assignment.  **HOWEVER,** this assignment is going to be necessary to complete before doing *any other* assignment in this course.  The material gone over in this tutorial are also fair game for pop quizzes and exams.
 
 
 ### Changelog
