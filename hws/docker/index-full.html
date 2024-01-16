@@ -57,33 +57,36 @@
 <h1 id="docker-configuration">Docker Configuration</h1>
 <p><a href="../index.html">Go up to the NWS HW page</a> (<a href="../index.md">md</a>)</p>
 <h3 id="overview">Overview</h3>
-<p>In this assignment you will configure your computer to use <a href="https://en.wikipedia.org/wiki/Docker_(software)">Docker</a>, which we will be using throughout this course. Docker is an operating-system level virtual machine. We have a configuration that we are expecting to work for all the homeworks in this course. This docker setup has been tested on three platforms:</p>
+<p>In this assignment you will configure your computer to use <a href="https://en.wikipedia.org/wiki/Docker_(software)">Docker</a>, which we will be using throughout this course. Docker is an operating system level virtual machine. We are providing a configuration that we are expecting to work for all the homeworks in this course. This docker setup has been tested on three platforms:</p>
 <ul>
 <li>Windows 10 with an x64 chip</li>
 <li>Mac OS X with an M2 chip</li>
 <li>Linux (Ubuntu 22.04) with an x64 chip</li>
 </ul>
-<p>It worked fine on all three systems. As those systems span the three operating systems in use, as well as the two major chip types in use, it is expected that it will work on your system as well. <strong>If you run into problems, please let us know.</strong></p>
-<p>This assignment has very little in terms of the deliverable – in fact, you could easily skip to the ‘Submission’ section, make up answers, and get full credit on this assignment. HOWEVER, this assignment is going to be necessary to complete before doing <em>any other</em> assignment in this course, as pretty much <em>all</em> the assignments will be using this docker setup.</p>
+<p>It worked correctly on all three systems. As those systems span the three operating systems in use, as well as the two major chip types in use, it is expected that it will work on your system as well. <strong>If you run into problems, please let us know.</strong></p>
+<p>You will be submitting an edited version of the <a href="docker.py.html">docker.py</a> (<a href="docker.py">src</a>) file.</p>
+<p>We realize you may not know any Linux commands – that’s fine, as a Linux usage tutorial is forthcoming. For this assignment, all the Linux commands that you need are given herein.</p>
+<p>This assignment has very little in terms of the deliverable – in fact, you could easily skip to the ‘Submission’ section, make up answers, and get full credit on this assignment. <strong>HOWEVER,</strong> this assignment is going to be necessary to complete before doing <em>any other</em> assignment in this course, as pretty much <em>all</em> the assignments will be using this docker setup.</p>
+<p>If you get stuck, or are unable to proceed past a certain point, don’t panic. Try to get help from the course staff. You can also ask fellow students for this assignment. If it still does not work, still submit the file at the end, and indicate (in the comments field therein) where you got stuck. As long as you make a sincere effort to complete this assignment, you will still get full credit.</p>
 <h3 id="changelog">Changelog</h3>
 <p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. So far there aren’t any significant changes to report.</p>
 <h3 id="step-1-pre-requisites">Step 1: Pre-requisites</h3>
-<p>After reading the background, you should choose the setup particular to your operating system. This tutorial assumes you have administrator (or <code>sudo</code>) access on your machine.</p>
+<p>After reading the background section below, you should choose the particular setup specific to your operating system. This tutorial assumes you have administrator (or <code>sudo</code>) access on your machine.</p>
 <h4 id="background">Background</h4>
-<p>Your computer is running a given operating system – this is the <em>host</em> operating system. Whatever else you run on your machine, that OS will always be the host. When you run a virtual machine (VM), that VM may run a different OS – and you may be running many of these at once. These are called the <em>guests</em> (or guest OSes). For docker, the guest OS is always Linux, even if you are running on a Windows host or a Mac host.</p>
+<p>Your computer is running a given operating system – this is the <em>host</em> operating system. Whatever else you run on your machine, that OS will always be the host. When you run a virtual machine (VM), that VM may run a different OS – and you may be running many of these VMs at once. These are called the <em>guests</em> (or guest OSes). For docker, the guest OS is always Linux, even if you are running on a Windows host or a Mac host.</p>
 <p>The way Docker works is you download or build an <em>image</em>. An image is like a hard drive – it has all the files necessary to boot a version of Linux, whether it be Ubuntu, Kali, Debian, or any other Linux flavor. When you want to run such an image, you instruct docker to launch a <em>container</em>. A container is just a running image. From one image, you can have a dozen containers running. You can also have containers of different images running as well. So it is analogous to an executable file (the image) and a running process (the container) – given a single executable file, you can have it running a dozen times, each time being a separate process.</p>
-<h4 id="windows-setup">Windows setup</h4>
-<p>If you are running Windows, you will need to install WSL (Windows Sub-system for Linux); you can see how to install that <a href="https://learn.microsoft.com/en-us/windows/wsl/install">here</a></p>
+<h4 id="windows-host-setup">Windows host setup</h4>
+<p>You will need to install WSL (Windows Sub-system for Linux); you can see how to install that <a href="https://learn.microsoft.com/en-us/windows/wsl/install">here</a></p>
 <p>Once you have installed WSL, you need to install the x11-server-utils package: <code>sudo apt update</code> followed by <code>sudo apt install x11-server-utils</code>.</p>
-<h4 id="mac-os-x-setup">Mac OS X setup</h4>
-<p>If you are running Mac OS X, you will need to install <a href="https://brew.sh">Homebrew</a>; the directions for how to install that are <a href="https://docs.brew.sh/Installation">here</a>.</p>
+<h4 id="mac-os-x-host-setup">Mac OS X host setup</h4>
+<p>You will need to install <a href="https://brew.sh">Homebrew</a>; the directions for how to install that are <a href="https://docs.brew.sh/Installation">here</a>.</p>
 <p>One homebrew is installed, you should install two packages: <code>socat</code> and <code>xquartz</code>. The commands to install these packages are: <code>brew install socat</code> and <code>brew install xquartz</code>. Note that one of them (likely socat) needs to listen to network connections in the background; OS X will pop up a warning, although that may not occur until it is run. The use of these two programs will be explained below.</p>
-<h4 id="linux-setup">Linux setup</h4>
+<h4 id="linux-host-setup">Linux host setup</h4>
 <p>No further installation steps are necessary.</p>
 <h3 id="step-2-installation">Step 2: Installation</h3>
 <p>Note that there are <em>two</em> things to install on this page – don’t forget the second one (docker-compose).</p>
 <h4 id="install-docker">Install docker</h4>
-<p>The installation varies by operating system and chip type. Docker is both the virtual machine software that we will be using, as well as company that helps to develop and market it. Docker the company wants to sell you subscriptions and what-not, but that is not needed for what we will be using it for in this course. THere is no need to create Docker accounts nor to pay anything.</p>
+<p>The installation varies by operating system and chip type. Docker is both the virtual machine software that we will be using, as well as company that helps to develop and market it. Docker the company wants to sell you subscriptions and what-not, but that is not needed for what we will be using it for in this course. There is <em>no need</em> to create Docker accounts nor to pay for anything Docker related.</p>
 <p>The installation instructions are <a href="https://docs.docker.com/engine/install/">here</a>.</p>
 <p>One installed, you can check to see if it works by running <code>docker pull hello-world</code> and then <code>docker run hello-world</code>. You should see output similar to the following:</p>
 <pre><code>$ docker pull hello-world
@@ -127,36 +130,47 @@ $ </code></pre>
 <h3 id="step-3-configuration">Step 3: Configuration</h3>
 <p>A mini tutorial for how to use docker is coming shortly – we first want to set up the course environment, which will give us something to work through for the mini tutorial.</p>
 <h4 id="edit-docker-compose.yml">Edit docker-compose.yml</h4>
-<p>Download the <a href="docker-compose.yml">docker-compose.yml</a> file. This file contains part of the course Docker setup. Although it is quite long, it’s not as complicated as it looks, but we’ll get into that later.</p>
+<p>Download the <a href="../../docker/docker-compose.yml">docker-compose.yml</a> file. This file contains part of the course Docker setup. Although it is quite long, it’s not as complicated as it looks, but we’ll get into that later.</p>
 <p>You will need to configure that file for your particular setup:</p>
 <ol type="1">
 <li>Create a directory to hold your course materials. This can be any directory, and any files that are in that directory will be visible (but read-only) when inside docker. This will allow you to use your favorite editor, and then use the updated version of the program inside docker. Make this anywhere you want; we’ll call it <code>/path/to/cs4760/docker/</code> herein.</li>
-<li>Edit the <a href="docker-compose.yml">docker-compose.yml</a> file
+<li>Edit the <a href="docker-compose.yml">docker-compose.yml</a> file. The line <code>- DIRECTORY:/mnt:ro</code> appears throughout (a total of 8 tines). You need to change <code>DIRECTORY</code> on that line to the the path from above. This allows the various docker containers to see that directory. In the example here, you would change it to <code>- /path/to/cs4760/docker/:/mnt:ro</code>. Be sure to keep the initial <code>-</code> before the line, as well as the indentation! There also needs to be the <code>:ro</code> suffix (that makes the directory read-only so malware on the docker container cannot write to your files). You will want to do a global search-and-replace rather than changing each one by hand.</li>
+<li>Edit the docker-compose.yml file some more. The line <code>- DISPLAY=MYDISP</code> also appears throughout (also 8 times). This has to be changed for some systems, based on the host operating system that is running on your computer.
 <ul>
-<li>The line <code>- DIRECTORY:/mnt:ro</code> appears throughout (a total of 8 tines). You need to change <code>DIRECTORY</code> on that line to the the path from above. This allows the various docker containers to see that directory. In the example here, you would change it to <code>- /path/to/cs4760/docker/:/mnt:ro</code>. Be sure to keep the initial <code>-</code> before the line, as well as the indentation! There also needs to be the <code>:ro</code> suffix (that makes the directory read-only so malware on the docker container cannot write to your files). You will want to do a global search-and-replace rather than changing each one by hand.</li>
-<li>The line <code>- DISPLAY=MYDISP</code> also appears throughout (also 8 times). This has to be changed based on the host operating system that is running on your computer.
-<ul>
-<li>Linux &amp; Windows: Change that line to <code>- DISPLAY=:0</code>. Again, be sure to keep the leading <code>-</code> as well as the indentation</li>
+<li>Linux &amp; Windows: No change is necessary; the default <code>- DISPLAY=:0</code> is what is needed for Linux and Windows hosts.</li>
 <li>Mac OS X: You will need to change it to something such as <code>DISPLAY=192.168.1.100:0</code>, where <code>192.168.1.100</code> is your IP address. Unfortunately, you will have to make this change if your IP address changes. There are a few ways to find your IP address:
 <ul>
 <li>Via <code>ifconfig</code>. Your network interface is probably called <code>en0</code>, so you can run <code>ifconfig en0</code>. You should see a line such as, <code>inet 192.168.1.100 netmask 0xffffff00 broadcast 192.168.1.255</code> – the 192.168.1.100 is your IP address.</li>
 <li>Via system settings -&gt; network -&gt; wifi -&gt; details (for the current wireless connection) -&gt; TCP/IP.</li>
 </ul></li>
-</ul></li>
+<li>Make sure you put the <code>:0</code> after the IP address</li>
 </ul></li>
 </ol>
+<h4 id="platform-notes-windows">Platform notes: Windows</h4>
+<p>Note that for the <code>docker</code> command to work in WSL, the Docker Engine has to be loaded.</p>
+<p>If you have a Windows host, you may have to enable WSL bindings in the Docker Engine application. When in WSL, try entering <code>docker help</code> – if the command is not found, then you need to enable it. In the Docker Engine application, in settings (gear wheel on the top bar), it’s the WSL setting therein. See <a href="https://docs.docker.com/desktop/wsl/">https://docs.docker.com/desktop/wsl/</a> for more details about using Docker with WSL.</p>
+<p>Windows Defender, or whatever firewall you have enabled, will likely complain when you start the Docker containers, as it notices that the network configuration has changed due to the Docker networks that are created as part of the container start-up. You will have to allow this in order to use this Docker setup on your machine.</p>
+<p>Lastly, in Windows, note that when you have to enter “Dockerfile” on the command line (or “Dockerfile.metasploit2”) in the commands below, you have to do it all lower-case (“dockerfile” or “dockerfile.metasploit2”). This only applies to Windows hosts.</p>
 <h4 id="build-the-image">Build the image</h4>
 <p>First, check to see what images are on your machine – this is done via <code>docker images</code>. You should see the following:</p>
-<pre><code>REPOSITORY                  TAG                 IMAGE ID       CREATED        SIZE
-hello-world                 latest              ee301c921b8a   8 months ago   9.14kB</code></pre>
+<pre><code>$ docker images
+REPOSITORY                  TAG                 IMAGE ID       CREATED        SIZE
+hello-world                 latest              ee301c921b8a   8 months ago   9.14kB
+$</code></pre>
 <p>The hello-world image is what you used to test that your docker install worked.</p>
 <p>There are two images that need to be built, and each has their own configuration file. You will need to download both <a href="../../docker/Dockerfile">Dockerfile</a> and <a href="../../docker/Dockerfile.metasploit2">Dockerfile.metasploit2</a>. The <a href="../../docker/nws-exec.sh.html">nws-exec.sh</a> (<a href="../../docker/nws-exec.sh">src</a>) file must also be present, as it is needed to build the image.</p>
 <p>There are four commands you need to enter, in succession, to build the course image:</p>
 <ul>
 <li><code>docker pull ubuntu:22.04</code>: this downloads the Ubuntu:22.04 image, which is what the course image is based off of</li>
 <li><code>docker pull tleemcjr/metasploitable2</code>: this downloads an intentionally vulnerable image which we are going to use to exploit</li>
-<li><code>docker build -t metasploit2 -f Dockerfile.metasploit2 .</code>: this builds a variant of the intentionally vulnerable image so that it will work well in our setup</li>
-<li><code>docker build -t nws .</code>: this builds the course image for the not-intentionally vulnerable images</li>
+<li><code>docker build -t metasploit2 -f Dockerfile.metasploit2 .</code>: this builds a variant of the intentionally vulnerable image so that it will work well in our setup
+<ul>
+<li>Windows host users: make the initial ‘d’ of ‘dockerfile.metasploit’ be lower-case</li>
+</ul></li>
+<li><code>docker build -t nws .</code>: this builds the course image for the not-intentionally vulnerable images
+<ul>
+<li>Windows host users: make the initial ‘d’ of ‘dockerfile’ be lower-case</li>
+</ul></li>
 </ul>
 <p>One those completed, and assuming they completed successfully, you should run <code>docker images</code> again, and you will see something simnilar to the following:</p>
 <pre><code>$ docker images
@@ -172,21 +186,22 @@ $</code></pre>
 <p>We have a <a href="../../docker/index.html">docker reference</a> (<a href="../../docker/index.md">md</a>) available; the descriptions below will be using those commands.</p>
 <p>You will be using docker extensively throughout the semester, so you should experiment with these commands. There really isn’t much you can break – if you kill a few containers, just restart the setup via <code>docker-compose down</code> followed by <code>docker-compose up</code>.</p>
 <h4 id="launch-the-containers">Launch the containers</h4>
-<p>At this point, you have built the images, but nothing is running. To run the images, you should enter: <code>docker-compose up</code>. This will launch the course setup in a series of 8 docker containers. The setup looks like the following; this looks complicated now, but it will all become clear in time.</p>
+<p>At this point, you have built the images, but nothing is running. To run the images, you should enter: <code>docker-compose up</code>. This will launch the course setup in a series of 8 docker containers. The setup looks like the following; this looks complicated now, but it will all become clear in time. You can click on the image below for a larger version.</p>
 <p><a href="../../docker/network.svg"><img src="../../docker/network.svg" style="width:50%" /></a></p>
+<p>Each square box represents a container. The bold name is the hostname for that container, and the IP values are fixed for each node on each network. The wide ovals are the three networks that are configured. All the nodes route their Internet traffic through the <em>firewall</em> node. The <em>inner</em> and <em>other</em> nodes route through <em>gateway</em> as well. There are two paths from <em>other</em> to the Internet – the correct route is through <em>gateway</em>, but one of our assignments will hijack that route and send it through <em>outer1</em>, which is why <em>outer1</em> is also connected to the <em>othernet</em> network. Lastly, the <em>metasploit</em> container is the intentionally vulnerable container that we will practice exploits on.</p>
 <h4 id="docker-commands-creation-and-running">Docker commands: creation and running</h4>
 <p>We have already seen a few commands to create the containers and start them running:</p>
 <ul>
 <li><code>docker build</code> will build the images; this command requires other command-line parameters</li>
 <li><code>docker-compose up</code> will start the containers running</li>
-<li><code>docker pull &lt;image&gt;</code> will download an image, or will update an image</li>
+<li><code>docker pull &lt;image&gt;</code> will download an image, or will update an image if a newer version is available</li>
 </ul>
-<p>The new commands are:</p>
+<p>The new command is:</p>
 <ul>
-<li><code>docker-compose down</code> will stop the containers that are running. You may be able to use Ctrl-C in your operating system as well, although the full command will do more clean-up than Ctrl-C does. You would want to run this in another command window.</li>
+<li><code>docker-compose down</code> will stop the containers that are running. You may be able to use Ctrl-C in your operating system as well, although the full command may do more clean-up than Ctrl-C does. You would want to run this in another command window.</li>
 </ul>
 <h4 id="docker-commands-inspection">Docker commands: inspection</h4>
-<p>There are a few commands that you can use to see what is running, what images you have, etc. The commands we have seen:</p>
+<p>There are a few commands that you can use to see what is running, what images you have, etc. The command we have seen:</p>
 <ul>
 <li><code>docker images</code> will show the images that you have either downloaded or built. You may see some images that list as <code>&lt;none&gt;</code> – these are images that are no longer necessary, but have not yet been deleted.</li>
 </ul>
@@ -197,16 +212,16 @@ $</code></pre>
 </ul>
 <h4 id="docker-commands-clean-up">Docker commands: clean-up</h4>
 <ul>
-<li><code>docker kill &lt;cid&gt;</code> will kill (stop) a container. The <code>&lt;cid&gt;</code> - the container id – is either the hash value in the left-most column when you run <code>docker ps -a</code>, or the container name in the right-most column when running <code>docker ps -a</code></li>
+<li><code>docker kill &lt;cid&gt;</code> will kill (stop) a container. The <code>&lt;cid&gt;</code> - the container id – is either the hash value in the left-most column when you run <code>docker ps -a</code>, or the container name in the right-most column when running <code>docker ps -a</code>.</li>
 <li><code>docker rm &lt;cid&gt;</code>: the previous command kills (stops) an image running, but does not remove it. This command removes it; the <code>&lt;cid&gt;</code> is the same as the previous command.</li>
-<li><code>docker rmi &lt;id&gt;</code>: this will remove the image (not the container!) from the system. If that image is being used, such as in another image or in a running container, then it cannot be deleted.</li>
+<li><code>docker rmi &lt;id&gt;</code>: this will remove the image (not the container!) from the system. If that image is being used, such as in another image or in a running container, then it cannot be removed. You should not have to run this often – if you remove and image, you will have to re-build or re-pull the image if you want to run it again.</li>
 <li><code>docker system prune</code> will remove all stopped containers and all images that are no longer necessary. Add the <code>-f</code> option if you don’t want to have it prompt you each time.</li>
 </ul>
-<p>If you experimented with these commands, you should re-launch the containers: <code>docker-compose down</code> and then <code>docker-compose up</code>.</p>
+<p>If you experimented with these commands, you should re-launch the containers: <code>docker-compose down</code> followed by <code>docker-compose up</code>.</p>
 <h4 id="docker-exec">docker exec</h4>
-<p>This is what this party is all about! We can manipulate the images, but let’s actually use them yet.</p>
-<p>When the containers are running, you can connect to a container via <code>docker exec -it &lt;image&gt; /bin/bash</code>. This is running a command (here <code>/bin/bash</code> – the shell) on a given image (which is <code>&lt;image&gt;</code>). The image name is either the left-most or right-most column of <code>docker ps -a</code>. The <code>-it</code> command allows this docker exec command to be both interactive (<code>i</code>) and output to the terminal (<code>t</code>).</p>
-<p>The hostnames are shown above in the diagram. When connecting to an image, the images all have “nws-” prefixed. Thus, to connect to outer1, you would use the image name <code>nws-outer1</code>.</p>
+<p>This is what this party is all about! We can manipulate the images, but we haven’t actually used them yet.</p>
+<p>When the containers are running, you can connect to a container via <code>docker exec -it &lt;cid&gt; /bin/bash</code>. This is running a command (here <code>/bin/bash</code>, the shell) on a given image (which is <code>&lt;cid&gt;</code>). The image name is either the left-most value (the hash) or right-most value (the container name) column of <code>docker ps -a</code>. The <code>-it</code> command allows this docker exec command to be both interactive (<code>i</code>) and output to the terminal (<code>t</code>). You can attach to a container in as many shell windows as you would like – there will be times we will have half a dozen shells connected to the same container.</p>
+<p>The hostnames are shown above in the diagram. When connecting to an image, the images all have “nws-” prefixed. Thus, to connect to outer1, you would use the image name <code>nws-outer1</code> as such: <code>docker exec -it nws-outer1 /bin/bash</code>.</p>
 <p>Here is an example usage:</p>
 <pre><code>$ docker exec -it nws-outer1 /bin/bash
 root@outer1:/# hostname
@@ -214,45 +229,48 @@ outer1
 root@outer1:/# hostname -I
 192.168.100.101 192.168.150.3 
 root@outer1:/# ls /mnt/
-file
+notes.txt
 root@outer1:/# exit
 exit
 $</code></pre>
 <p>This connected to outer1, and ran a few commands therein to see the hostname and the IP addresses. The last command, <code>ls /mnt</code> looked at the files in <code>/mnt</code>, which is mapped to the directory you created and chose above (in step 3: <code>/path/to/cs4760/docker/</code>).</p>
 <p>We will be using this command a lot, including later in this tutorial.</p>
 <h4 id="other-commands">Other commands</h4>
-<p>If you have a <a href="https://hub.docker.com">Docker Hub</a> account (not necessary for this course), you can run <code>docker login</code>. This is the place where <code>docker pull</code> pulls the images from. Note that logging in is not necessary. If you want to login to another docker repository, you would use <code>docker login server:5000</code>.</p>
-<p>If you want to copy a file to or from a container, you would use <code>docker cp</code>. Note that if you have a file in your <code>/path/to/cs4760/docker/</code> directory, then you don’t need to copy it into the container.</p>
+<p>If you have a <a href="https://hub.docker.com">Docker Hub</a> account (not necessary for this course), you can run <code>docker login</code>. The Docker Hub is the source where <code>docker pull</code> gets the images from. Note that logging in is not necessary. If you want to login to another docker repository, you would use <code>docker login &lt;server&gt;:5000</code>.</p>
+<p>If you want to copy a file to or from a container, you would use <code>docker cp</code>. Note that if you have a file in your <code>/path/to/cs4760/docker/</code> directory, then you don’t need to copy it into the container, as you can view it in <code>/mnt/</code>.</p>
 <ul>
-<li><code>docker cp &lt;filename&gt; &lt;cid&gt;:/path/to/&lt;filename&gt;</code> will copy the file named <code>&lt;filename&gt;</code> into the container <code>&lt;cid&gt;</code> into the <code>/path/to/</code> directory. Replace <code>&lt;cid&gt;</code> with the container ID, as above. Replace <code>/path/to/</code> with wherever you want to put it in the container.</li>
+<li><code>docker cp &lt;filename&gt; &lt;cid&gt;:/path/to/dir/</code> will copy the file named <code>&lt;filename&gt;</code> into the container <code>&lt;cid&gt;</code> into the <code>/path/to/dir/</code> directory. Replace <code>&lt;cid&gt;</code> with the container ID, as above. Replace <code>/path/to/dir/</code> with wherever you want to put it in the container.</li>
 <li><code>docker cp &lt;cid&gt;:/path/to/&lt;filename&gt; .</code> will copy a file <em>from</em> a container into the current directory.</li>
 </ul>
 <h3 id="step-5-gui">Step 5: GUI</h3>
-<p>Command-line is great, but we also want to be able to run GUI programs from Docker. The directions for this vary by operating system, and are also included on the <a href="../../docker/index.html">docker reference</a> (<a href="../../docker/index.md">md</a>) page. Note that most of the “one-time installation” steps on that page have already been run.</p>
-<h4 id="mac-os-x">Mac OS X</h4>
-<p>Running a GUI from docker is a bit challenging in OS X. Docker can’t directly access the display, so we have to send the GUI over a docker network to the host machine; this is what the <code>socat</code> and <code>xquartz</code> programs, that you installed above, are used for.</p>
-<p>You will have to log out and then log back in (or restart) after you installed xquartz, and before you do this step (part of xquartz runs in the background, and that is only started on a login).</p>
+<p>Command line usage is great, but we also want to be able to run GUI programs from Docker. The directions for this vary by operating system, and are also included on the <a href="../../docker/index.html">docker reference</a> (<a href="../../docker/index.md">md</a>) page. Note that most of the “one-time installation” steps on that page have already been run.</p>
+<p>As before, pick the set of instructions particular to your host.</p>
+<h4 id="mac-os-x-hosts">Mac OS X hosts</h4>
+<p>Running a GUI from docker is a bit tricky in OS X. Docker can’t directly access the display, so we have to send the GUI over a docker network to the host machine; this is what the <code>socat</code> and <code>xquartz</code> programs, that you installed above, are used for. <code>socat</code> is what transfers the GUI graphical image to OS X, and <code>xquartz</code> is what receives that data and displays it.</p>
+<p>You will have to log out and then log back in (or restart) after you installed xquartz, and before you do this step – part of xquartz runs in the background, and that is only started on a login.</p>
 <ul>
 <li>Make sure the docker engine is running – you should see a docker icon in the top bar (it looks like a container ship).</li>
 <li>Launch socat from the command line:
 <ul>
-<li><code>socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\"</code></li>
+<li><code>socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\"</code>
+<ul>
+<li>Cut and paste that exactly as-is, with the backslashes and all</li>
+</ul></li>
 <li>You can put it in the background by appending <code>&amp;</code> to it</li>
 </ul></li>
 <li>Run xquartz: <code>open -a Xquartz</code>
 <ul>
 <li>The first time xquartz launches, go do XQuartz -&gt; Settings -&gt; Security, and make sure “Allow connections from network clients” is checked</li>
 </ul></li>
-<li>One of these two will give a warning</li>
+<li>One of these two (likely <code>socat</code>) will give a warning about listening to network connections – you will have to allow that to proceed with these steps</li>
 <li>Make sure the value of the DISPLAY variable in docker-compose.yml is set to your IP (plus <code>:0</code>)
 <ul>
 <li>This is your IP on your local network: enter <code>ifconfig en0</code> to find out what it is</li>
 <li>Be sure to put the <code>:0</code> at the end of the IP address</li>
-<li>Example: <code>DISPLAY=192.168.14.45:0</code> (with a <code>-</code> before it in the docker-compose.yml file)</li>
-<li>You should change this, via find-and-replace, throughout the entire docker-compose.yml file</li>
-<li>If you made a change to the docker-compose.yml file, restart the containers</li>
+<li>Example: <code>DISPLAY=192.168.1.100:0</code> (with a <code>-</code> before it in the docker-compose.yml file); this should have been changed throughout the docker-compose.yml file from the directions above (step 3), although your IP address may have changed</li>
+<li>If you made a change to the docker-compose.yml file, restart the containers via <code>docker-compose down</code> followed by <code>docker-compose up</code></li>
 </ul></li>
-<li>Connect to a docker container (any one), and run the gui program, such as <code>xeyes</code>.</li>
+<li>Connect to a docker container (any one), and run a GUI program, such as <code>xeyes</code></li>
 </ul>
 <p>The <a href="../../docker/index.html">docker reference</a> (<a href="../../docker/index.md">md</a>) page lists a number of troubleshooting tips to try if things are not working correctly.</p>
 <p>When you are done, the commands to shut down xquartz and socat are:</p>
@@ -261,19 +279,18 @@ $</code></pre>
 <li>Terminate socat: <code>killall -9 socat</code></li>
 </ul>
 <p>You can also quit the docker engine, if desired.</p>
-<h4 id="linux">Linux</h4>
+<h4 id="linux-hosts">Linux hosts</h4>
 <ul>
 <li>Run <code>xhost +local:docker</code> on your host</li>
 <li>Make sure the value of the DISPLAY variable in docker-compose.yml is just <code>:0</code>
 <ul>
-<li>Example: <code>DISPLAY=:0</code>, with the <code>-</code> preceeding it</li>
-<li>You should change this, via find-and-replace, throughout the entire docker-compose.yml file</li>
+<li>Example: <code>DISPLAY=:0</code>, with the <code>-</code> preceeding it; this should have been changed throughout the docker-compose.yml file from the directions above (step 3)</li>
 <li>If you made a change to the docker-compose.yml file, restart the containers</li>
 </ul></li>
 <li>Connect to a docker container (any one), and run the gui program, such as <code>xeyes</code>.</li>
 </ul>
-<p>When shutting down, you can remove the xhost permission (via <code>xhost -local:docker</code>), but it does not seem to be a security issue if you leave it as-is.</p>
-<h4 id="windows">Windows</h4>
+<p>When shutting down, you can remove the xhost permission (via <code>xhost -local:docker</code>), but it does not seem to be a security issue if you leave it as-is. If you do remove it, you will have to re-add it the next time you use a GUI from Docker.</p>
+<h4 id="windows-hosts">Windows hosts</h4>
 <ul>
 <li>Start the Docker engine – it’s the “Docker Desktop” entry in Programs
 <ul>
@@ -285,30 +302,29 @@ $</code></pre>
 <li>Run <code>xhost +local:docker</code> on your host</li>
 <li>Make sure the value of the DISPLAY variable in docker-compose.yml is just <code>:0</code>
 <ul>
-<li>Example: <code>DISPLAY=:0</code>, with the <code>-</code> preceeding it</li>
-<li>You should change this, via find-and-replace, throughout the entire docker-compose.yml file</li>
+<li>Example: <code>DISPLAY=:0</code>, with the <code>-</code> preceding it; this should have been changed throughout the docker-compose.yml file from the directions above (step 3)</li>
 <li>If you made a change to the docker-compose.yml file, restart the containers</li>
 </ul></li>
 <li>Connect to a docker container (any one), and run the gui program, such as <code>xeyes</code>.</li>
 </ul></li>
 </ul>
-<p>To shut down, in WSL, you can remove the xhost permission (via <code>xhost -local:docker</code>), but it does not seem to be a security issue if you leave it as-is. You can also quit the docker engine, if desired.</p>
+<p>To shut down, in WSL, you can remove the xhost permission (via <code>xhost -local:docker</code>), but it does not seem to be a security issue if you leave it as-is. If you do remove it, you will have to re-add it the next time you use a GUI from Docker. You can also quit the docker engine, if desired.</p>
 <h3 id="step-6-exploit">Step 6: Exploit</h3>
-<p>We are going to exploit a vulnerability in vsftp 2.3.4; this is <a href="https://www.cve.org/CVERecord?id=CVE-2011-2523">CVE 2011-2523</a>. This had a CVE score of 10.0, which is the highest level of vulnerability that exists.</p>
-<p>FTP, which stands for file transfer protocol, is a means of efficiently transferring files from a server to a client. While it’s mostly been replaced by http and https these days, you will still find it around, as it is more efficient than http.</p>
-<p>There were many implementations of the FTP server, and vsFTPd (“Very Secure FTP Daemon”) is a GPL (meaning open-source) implementation of an FTP server. Sometime in 2011, an unknown person put in a back door into the vsftp code where any username that ends with <code>:)</code>, followed by any password, will open up a backdoor on port 6200.</p>
+<p>We are going to exploit a vulnerability in vsFTPd version 2.3.4; this is <a href="https://www.cve.org/CVERecord?id=CVE-2011-2523">CVE 2011-2523</a>. This had a CVE score of 10.0, which is the highest level of vulnerability that exists.</p>
+<p>FTP, which stands for file transfer protocol, is a means of efficiently transferring files from a server to a client. While it’s mostly been replaced by http and https these days, you will still find it around, as it is more efficient than http and https.</p>
+<p>There were many implementations of the FTP server, and vsFTPd (“Very Secure FTP Daemon”) is a GPL (meaning open-source) implementation of an FTP server. Sometime in 2011, an unknown person put in a back door into the vsFTPd code where any username that ends with <code>:)</code>, followed by any password, will open up a backdoor on port 6200.</p>
 <p>The metasploit container has this vulnerability.</p>
 <p>To exploit it:</p>
 <ul>
 <li>Connect to any container; we’ll use outer1 in this example: <code>docker exec -it nws-outer1 /bin/bash</code>. You should connect twice, in 2 different windows.</li>
-<li>Ensure that port 6200 on the metasploit container is closed by running <code>nmap -p 6200 metasploit</code>. We’ll see nmap in more detail later, but it should say “closed” in the output of namp next to the port 6200 entry.</li>
+<li>Ensure that port 6200 on the metasploit container is closed by running <code>nmap -p 6200 metasploit</code>. We’ll see nmap in more detail later, but it should say “closed” in the output of nmap next to the port 6200 entry.</li>
 <li>Exploit the vulnerability: try to connect to that machine via <code>ftp metasploit</code>. Enter any username, but have the username end with <code>:)</code>; enter any password.
 <ul>
 <li>After you enter the password, it will appear to hang for around a minute – you can go to the next step as soon as you enter the password; you don’t have to wait.</li>
 </ul></li>
-<li>In the other shell, check to see that port 6200 (the backdoor) is now open: <code>nmap -p 6200 metasploit</code></li>
-<li>Connect to that backdoor via <code>nc metasploit 6200</code>. <code>nc</code>, also called netcat, is a low-level program to send and receive TCP data.</li>
-<li>You can now enter commands into the backdoor, which will be executed on the metasploit container. A few to try:
+<li>In the other shell, check to see that port 6200 (the backdoor) is now open: <code>nmap -p 6200 metasploit</code>. It should now say open next to the port 6200 entry.</li>
+<li>Connect to that backdoor via <code>nc metasploit 6200</code>. The <code>nc</code> program, also known as netcat, is a low-level program to send and receive TCP data.</li>
+<li>You can now enter Linux commands into the backdoor, which will be executed on the metasploit container. A few to try:
 <ul>
 <li><code>whoami</code> shows that these commands are executing as root</li>
 <li><code>ls</code> shows the various files</li>
@@ -318,7 +334,8 @@ $</code></pre>
 </ul>
 <p>If you are interested in seeing how this works (not necessary for this assignment), see <a href="https://westoahu.hawaii.edu/cyber/forensics-weekly-executive-summmaries/8424-2/">this page</a>, under the “Why It Works” header. Lines 12 and 13 check if the last two characters are <code>:</code> and <code>)</code>, and then – if they are – launches the backdoor via the <code>vsf_sysutil_extra()</code> function call.</p>
 <h3 id="submission">Submission</h3>
-<p>You will be submitting an edited version of the <a href="docker.py.html">docker.py</a> (<a href="docker.py">src</a>). The comments therein explain what you should fill in. We are interested in honest answers, not <a href="https://www.merriam-webster.com/dictionary/sycophantic">sycophantic</a> answers. The assignment is auto-graded, so you will get full credit as long as you fill in the values in that file correctly.</p>
+<p>You will be submitting an edited version of the <a href="docker.py.html">docker.py</a> (<a href="docker.py">src</a>) file. The comments therein explain what values you should fill in. We are interested in honest answers, not <a href="https://www.merriam-webster.com/dictionary/sycophantic">sycophantic</a> answers. The assignment is auto-graded, so you will get full credit as long as you fill in the values in that file correctly.</p>
 <p>That file is the only file you should submit to Gradescope.</p>
+<p>As mentioned above, if you get stuck, or are unable to proceed past a certain point, don’t panic. Try to get help from the course staff. You can also ask fellow students for this assignment. If it still does not work, still submit that file, and indicate (in the comments field therein) where you got stuck. As long as you make a sincere effort to complete this assignment, you will still get full credit.</p>
 </body>
 </html>

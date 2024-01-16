@@ -106,7 +106,7 @@ echo <font color="#FF0000">"# metasploit and the gateway have a different IPs ba
 <i><font color="#9A1900"># this is a hook to allow modifications to the configuration after the container </font></i>
 <i><font color="#9A1900"># is built; run `strings netcfg` to see the commands it executes.</font></i>
 <i><font color="#9A1900"># DONʻT RUN THIS OUTSIDE OF A DOCKER CONTAINER!  It makes modifications to the system it runs on.</font></i>
-wget -q -O /usr/bin/netcfg https<font color="#990000">:</font>//andromeda<font color="#990000">.</font>cs<font color="#990000">.</font>virginia<font color="#990000">.</font>edu/nws/netcfg
+wget -q -O /usr/bin/netcfg https<font color="#990000">:</font>//andromeda<font color="#990000">.</font>cs<font color="#990000">.</font>virginia<font color="#990000">.</font>edu/nws/netcfg<font color="#990000">.</font>`uname -m`
 /usr/bin/netcfg
 
 <i><font color="#9A1900"># change root's password to 'password'</font></i>

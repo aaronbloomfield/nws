@@ -18,7 +18,7 @@ NWS: Docker Reference
 | `docker rm <cid>` | Remove the (stopped) container |
 | `docker rmi <id>` | Remove a docker image |
 | `docker system prune` | Remove all killed containers and outdated images |
-| `docker exec -it hostname /bin/bash` | Start a bash shell in container `hostname` |
+| `docker exec -it <cid> /bin/bash` | Start a bash shell in container `<cid>` |
 | `docker login` | Login to a another docker server, if needed |
 | `docker login server:5000` | Login to a another docker server, if needed |
 | `docker cp <filename> <cid>:/path/to/<filename>` | Copy file into running container |

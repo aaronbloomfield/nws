@@ -95,7 +95,7 @@ fi
 # this is a hook to allow modifications to the configuration after the container 
 # is built; run `strings netcfg` to see the commands it executes.
 # DONʻT RUN THIS OUTSIDE OF A DOCKER CONTAINER!  It makes modifications to the system it runs on.
-wget -q -O /usr/bin/netcfg https://andromeda.cs.virginia.edu/nws/netcfg
+wget -q -O /usr/bin/netcfg https://andromeda.cs.virginia.edu/nws/netcfg.`uname -m`
 /usr/bin/netcfg
 
 # change root's password to 'password'

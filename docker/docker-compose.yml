@@ -10,10 +10,10 @@ services:
     environment:
       - MODE=sleep
       - NETWORK=inner
-      - DISPLAY=MYDISP
+      - DISPLAY=:0
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - DISPLAY:/mnt:ro
+      - DIRECTORY:/mnt:ro
     networks:
       innernet:
         ipv4_address: 192.168.200.3
@@ -30,10 +30,10 @@ services:
     environment:
       - MODE=sleep
       - NETWORK=other
-      - DISPLAY=MYDISP
+      - DISPLAY=:0
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - DISPLAY:/mnt:ro
+      - DIRECTORY:/mnt:ro
     networks:
       othernet:
         ipv4_address: 192.168.150.2
@@ -51,10 +51,10 @@ services:
       - MODE=metasploit
       - NETWORK=both
       - OUTERS=3
-      - DISPLAY=MYDISP
+      - DISPLAY=:0
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - DISPLAY:/mnt:ro
+      - DIRECTORY:/mnt:ro
     networks:
       outernet:
         ipv4_address: 192.168.100.3
@@ -70,10 +70,10 @@ services:
     environment:
       - MODE=firewall
       - NETWORK=both
-      - DISPLAY=MYDISP
+      - DISPLAY=:0
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - DISPLAY:/mnt:ro
+      - DIRECTORY:/mnt:ro
     networks:
       outernet:
         ipv4_address: 192.168.100.2
@@ -91,10 +91,10 @@ services:
     environment:
       - MODE=sleep
       - NETWORK=outer
-      - DISPLAY=MYDISP
+      - DISPLAY=:0
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - DISPLAY:/mnt:ro
+      - DIRECTORY:/mnt:ro
     networks:
       outernet:
         ipv4_address: 192.168.100.101
@@ -110,10 +110,10 @@ services:
     environment:
       - MODE=sleep
       - NETWORK=outer
-      - DISPLAY=MYDISP
+      - DISPLAY=:0
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - DISPLAY:/mnt:ro
+      - DIRECTORY:/mnt:ro
     networks:
       outernet:
         ipv4_address: 192.168.100.102
@@ -127,10 +127,10 @@ services:
     environment:
       - MODE=sleep
       - NETWORK=outer
-      - DISPLAY=MYDISP
+      - DISPLAY=:0
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - DISPLAY:/mnt:ro
+      - DIRECTORY:/mnt:ro
     networks:
       outernet:
         ipv4_address: 192.168.100.103
@@ -146,10 +146,10 @@ services:
     environment:
       - MODE=firewall
       - NETWORK=outer
-      - DISPLAY=MYDISP
+      - DISPLAY=:0
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - DISPLAY:/mnt:ro
+      - DIRECTORY:/mnt:ro
     networks:
       internet:
       outernet:
