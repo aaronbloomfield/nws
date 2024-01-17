@@ -32,7 +32,7 @@ RUN apt update -y -q -q && \
 		lynx 									`# a text-based web browser` \
 		apache2 libapache2-mod-php 				`# the apache2 web server` \
 		software-properties-common 				`# necessary for the installation of other packages` \
-		netcat 									`# for the 'nc' command` \
+		netcat ncat								`# for the 'nc' and `ncat` commands` \
 		apt-transport-https 					`# allows HTTPS tunnels` \
 		libpci-dev 								`# so firefox doesn't complain` \
 		python3-pip 							`# because duh` \
@@ -43,8 +43,10 @@ RUN apt update -y -q -q && \
 		tor 									`# anonymous web browser` \
 		kmod 									`# to manage linux kernel modules` \
 		astyle source-highlight 				`# for making program code look pretty` \
-		unzip					 				`# to extract .zip files` \
+		zip unzip sharutils		 				`# for archive files` \
 		telnet ftp				 				`# basic network utilities` \
+		bind9-utils bind9-host bind9-dnsutils	`# DNS utilities` \
+		whois									`# whois directory service` \
 		fcrackzip				 				`# to crack passwords` \
 		&& \
 	curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > /tmp/msfinstall && \

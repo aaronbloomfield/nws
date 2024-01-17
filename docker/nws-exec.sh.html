@@ -27,6 +27,69 @@ echo <font color="#FF0000">"192.168.150.2 other"</font> <font color="#990000">&g
 /bin/echo <font color="#990000">&gt;&gt;</font> /etc/hosts
 echo <font color="#FF0000">"# all the outer containers (and the potential outer containers)"</font> <font color="#990000">&gt;&gt;</font> /etc/hosts
 
+<i><font color="#9A1900"># the outer1 host needs a different ssh key than the rest; this sets up that</font></i>
+<i><font color="#9A1900"># different ssh key, but doesn't set it in use just yet</font></i>
+<b><font color="#000000">function extract_ssh_keys()</font></b> {
+	<i><font color="#9A1900"># entry for ~/.ssh/known_hosts:</font></i>
+	<i><font color="#9A1900"># host ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM8yw19xJlNfn+Jsr/TGr4NDGaPv8zqfNi01o4HbE1N2</font></i>
+	<b><font color="#0000FF">read</font></b> -r -d <font color="#FF0000">''</font> keys <font color="#990000">&lt;&lt;</font>-<font color="#FF0000">"EOF"</font>
+H4sICAMkp2UCA2tleXMudGFyAO2YR8<font color="#990000">+</font>ryhmAz5pfcfYoMt2wyIKOAdP75opiejHVwK<font color="#990000">+</font>Pv09KlKLk
+SlES5SZ<font color="#990000">+</font>ZFE0w3g8877PDJ7n8pdymJdfHmk2x780j<font color="#990000">+</font>PHvxzoDQFB32fob8/w<font color="#990000">+</font>/MDxnAcRq7veugP
+CEZRBP3xE/rxH2Cdl3j6<font color="#990000">+</font>fPHNAzLP6r3a<font color="#990000">+</font>W/UX73BcOLN<font color="#990000">+</font>2nbvCabUs/Devm0Q7/U<font color="#990000">+</font>HD71IgQZk2
+6bUzZuEpCpolq3n6C0bEt6Rzvy75pKPWyKT/CPN1iL<font color="#990000">+</font>vtDZErDO0AfiMRf5QffyZotbrXrvIVzkr
+/uW9aZq351PoefYiySFfdCo/D2DQxpB7x313BZbSR0vipshWxKf1OBWkiHB9SocDMXJmjRWg9Lrx
+BTTgQ491t5hxZtSmVOqr8Vma0CXRCOoK<font color="#990000">+</font>Od3vxGvjiStVANtCJ3bknTtmUn0oTnhV/HtL<font color="#990000">+</font>8ZhqGr
+rvFTUyXTtrDZEJjto8Yf3mSZZxvZBCIkD2kohlZorEMfV<font color="#990000">+</font>6VhHr2Yqp6HDTWqDgspwubs<font color="#990000">+</font>uuyquw
+HAT9zFRoA6CvbyvcCSL0bHcafBvH3EYl0Jivmb44Qxg4AovhFT0Efhgay/dIu2lHbRnPVJnfzpG4
+PIHs/VOSzqoStGDo4s4D3xPIa9zfn9wfH<font color="#990000">/</font>6fmf/k/wx5G5j6d6wAv<font color="#990000">+</font>J/iEDRv/Y/gmMf///W/X<font color="#993399">9</font><font color="#990000">/</font>
+fR2XM0WKJfIB821Rd9e/KrGccZ<font color="#990000">+</font>1PLUjJ8AvVaJcoH0EOXPv6uvlTvRnuGixziC75mTFu75cZZ6j
+yL3nHkBl/nmr<font color="#990000">/</font>2yjwFenOf01xoF3ARn1icqHwYz<font color="#990000">+</font>C8FyWHXEhhsZ5QEfyL23rLAN7uTxgqldbrW8
+B<font color="#990000">+</font>V5ujjihGkcIMbGRp5jrlUQPGBSwsPa9zImSPKWoBYd9t4zEa0pDt5roI83YUdhtPn73<font color="#990000">/+</font>3mPlP
+<font color="#990000">+</font>T<font color="#990000">/</font>9u3Z/v5r/OEQgf<font color="#993399">53</font>/EPbJ<font color="#990000">/</font><font color="#993399">996</font>/jPtd<font color="#990000">/</font>5n35ma9oBWfhe93g9/VQx5ulYyZ312alKNhzbhcJkX
+gX3viwHCHskWI95i9ajvPTeDiAt<font color="#990000">+</font>FCzGsIDpolmvq7MKLHd4fnk9l6HG<font color="#990000">+</font>kW966oYymjY6i9QCuAO
+4sZLSqH2nmO39hm0L7dZWmp4elFxbj1AgTl<font color="#990000">+</font>bx6hH2XPW5TcUrGi8NNduz3SvOetjGpPhPhusHxo
+9cs2KTcU4qbVwqhVwB5Xjbc98C01HGHZvl6ONqvWqghHhZ9SNLoh<font color="#990000">+</font>LZLzwkei5a0fa17XUVL67dA
+hERzOqYNfYFy80ou1CPAXTkGuMW0kLYMxGJ84Rs<font color="#990000">+</font>rpghTHp9kDnBoeKKN1KK2XNp7nkOCZVqkijK
+P4IHWRcY9tww94Ktz7kDIpNRJwjieZqjBQ<font color="#990000">+</font>mb7M1cC5cizttzN3balHe<font color="#990000">+</font>oMfXgQ8kg5oZYfxeUXK
+QtsbXVZHoQ2U4lICdxIcbTCIxxdoS/owBg<font color="#990000">+</font>Y4c7FcqJs0OzXXRTDJIj3B5pCrEEKe<font color="#990000">/</font>4MquX<font color="#990000">+</font>0I16
+jmrNf2X3HuY54Byj6XqXG5frD50z<font color="#990000">+</font>hgE0Vv3CGTrUe4B5rCEavvNu5tvXTYis<font color="#990000">+</font>GvvUjA9P4dQOh3
+vB0pAnwFm8jQt6N3r2NUIdg41zGYhQEmQLWMKZoudVdkaRM3ouA2Tk6wGxildE0Hii<font color="#990000">+</font>nm<font color="#990000">+</font>rQtTQL
+gGy94UFe4xsoX<font color="#990000">+</font>2Tq/aOzRDZmY0SpqKFJjbUyKA5AFk59vBUkNUojxXPD<font color="#990000">+</font>9X/PJ2viNLndAFQGyL
+/iExw/ZIYfU<font color="#993399">5</font><font color="#990000">+</font>44X2zc/hK2FkUfeW9R2iHwsoSiauDYPIykf0npafJt33poVxRO7ps8gBN46EZWq
+VFANsbU1IS0ipuJBzvm2jmZ9b5zoCu8L0yjkeKVIo4ru4uUStKDH<font color="#990000">+</font>sXV5bNn6O2DAsx6AsbTyu3x
+OZCbBBbUPq0Rg<font color="#990000">+</font>r8dHPvAUoxYQUZGrVLLbrdMF1XElAwQHVM5Hfi2gSlvV9paODFeJnJqnxMw1q4
+zyZ3lZv9KQa4NwqdsT98i1zUYlTGBzWEXBpxlU2UkXcMBuYYxthsLTLOBtCU56i06GKa5NV1kSDm
+3Jljyk6EkTlYUI2uL0waEB42OVJdY1cxPL1ZcmTKokmii8GTjQQaB95RfeLIti2H3LeHGwypB/Kv
+tYLap5B9O<font color="#990000">+</font>b<font color="#990000">+</font>7vR3WNB0M/NrEBsUJEOb4BSitEZP7ioNJyAtD9N3DIKH78HYYbQnEJvSjmfC7Pq9
+LlPQ7jXYNcLqPoOPxvWtmFP41uFudfiE/CQ4o<font color="#990000">+</font>dIKMD<font color="#990000">+</font>CLC39aBwSdgEJnGZ35Iw7emRxDzYx8VQ
+mzSl4c2CB9VBgXKQuQY0NCl3K52nhtljZU3LDLjRuKHqS73IwttZdwc3YFKUhOzsnXktAmNzI24l
+ox0<font color="#990000">+</font>tUmOHifVYEiD6LP2IGxwihbiJbA<font color="#990000">+</font>CpBm16NiiUfevqBdgu58vkwJMpuzX3DURToUBA<font color="#990000">+</font>YnIjK
+fJ39gztKStXsC1FgiRBSt8V6hxc5AS2o4iL6CKZLQAyK9MA2sJydmz5qik8uotfZjji2ub2UzK04
+BKbRa71WOXDGm<font color="#990000">+</font>7lX95B1sI0BuQyyxvkAztLUDsN0rnA0IGMgqJtbF0LJsVCTJ5T1S6S/cPoEoot
+4hyNn13XI/lcSRTlNBtrAXyQVMseTWLrSK7ADFE8cMXYZO6UdwNMD4OvsvV8BV9sEIL5FZTOSIQI
+WiHRLxEMWGx9BQXwMtmMCECBLioSOhfTzl<font color="#990000">/</font>7SSXnfaBaEbKEbO5e<font color="#990000">+</font>0iIxAC6<font color="#990000">+/</font>1Sq93YXhx0DlP<font color="#990000">+</font>
+HroeyfJaIwUAFpSgT6vnqeY947yfX8Pedm89AVLBAMviCovu6<font color="#990000">+</font>m8/N6UsSWSwffexRuuYSE<font color="#990000">/</font>3KHZ
+eqYYbAYCMuzhhF6F<font color="#990000">+</font>E3D08t7MeI5qK1YzqLzi/ecBH0nR7N4zwbYd83NXLcsWBOIWDAhxuvYwSpU
+kV83gFpNQTuaSmw6FlE53RAfrn/v6Ei2e5GRCkjrSOKWnrun6k<font color="#990000">/</font>9FL9GgmPou0mE3KgceO/QO4wD
+yY7cCGbVithEg851b6/L1cBPeL<font color="#990000">+</font>tZkgZyG1LILBBKtPPkWPSeq71yYo8zPhlkSdyzx2HXXQEaKME
+h9gINc<font color="#990000">/</font>8NqlbJaKrMnOrW1pa<font color="#990000">+</font>erFSdlUa52PmjrKFWFba7lCRVqQ/ovo<font color="#990000">+</font>IuCh6NBI/MByI1x1Cr5
+LN9iJVw2sJf2UsSgvSTg4FpSO0uXABozSy2ljPQWOvWccS0G5ZJR3jyi8rI9DYYBiPdWpM25UvW9
+82GsRRigMaKbIAsTMpvbX6q4v8cepZwHq6Zry4Rw4JlKQJ/CldZ54RANhw2AdaCOVbzTF07Lw34e
+hkpmzl0j6cEx<font color="#990000">+</font>Z3el<font color="#990000">+</font>PAg6fqIcSizmH<font color="#990000">/</font>0lyReCseTUt0UfiCG2Jt3n0AwRRnGqHHLkkm02BmXlad
+PjfppQtvKp3ox<font color="#990000">+</font>GHNhNIG<font color="#990000">+</font>sgaXNPrTW5chc6ThbuLqtPeg/lCKqB0g<font color="#990000">+</font>aPTU67czINnMIaBFLeVHt
+toJOSu1N31SNro0FT78S/TDuXjDRE6lXOq4VoV1TpptN<font color="#990000">+</font>wk8o5ZfJER76oFRa7<font color="#990000">/+</font>SnJ7B40rfv4w
+<font color="#990000">+</font>vDhw4cPHz58<font color="#990000">+</font>PDhw4cPHz58<font color="#990000">+</font>B/jD7zB31YAKAAA
+EOF
+	echo <font color="#009900">$keys</font> <font color="#990000">|</font> tr <font color="#FF0000">" "</font> <font color="#FF0000">"</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font> <font color="#990000">&gt;</font> keys<font color="#990000">.</font>tgz<font color="#990000">.</font>b64
+	base64 -d keys<font color="#990000">.</font>tgz<font color="#990000">.</font>b64 <font color="#990000">&gt;</font> keys<font color="#990000">.</font>tgz
+	tar xfz keys<font color="#990000">.</font>tgz
+	ls <font color="#990000">*</font>_key <font color="#990000">|</font> awk <font color="#FF0000">'{print "ssh-keygen -y -f "$1" &gt; "$1".pub"}'</font> <font color="#990000">|</font> bash
+	/bin/rm keys<font color="#990000">.</font>tgz keys<font color="#990000">.</font>tgz<font color="#990000">.</font>b64
+	mkdir -p /etc/ssh/fixed<font color="#990000">/</font>
+	/bin/mv -f ssh_host_<font color="#990000">*</font>_key<font color="#990000">*</font> /etc/ssh/fixed<font color="#990000">/</font>
+}
+extract_ssh_keys
+
 <i><font color="#9A1900"># set up ssh container keys</font></i>
 <b><font color="#0000FF">if</font></b> <font color="#990000">[</font> `hostname` <font color="#990000">!=</font> <font color="#FF0000">"metasploit"</font> <font color="#990000">];</font> <b><font color="#0000FF">then</font></b>
 	<i><font color="#9A1900"># this is not working on metasploit</font></i>
@@ -40,13 +103,20 @@ echo <font color="#FF0000">"# all the outer containers (and the potential outer 
 echo <font color="#FF0000">"|1|TB4qkwYQiIBrAp+Np3zUUoFOEP0=|I7R+HCD8eZrgP50EYcRfj3lolxU= ssh-dss AAAAB3NzaC1kc3MAAACBALz4hsc8a2Srq4nlW960qV8xwBG0JC+jI7fWxm5METIJH4tKr/xUTwsTYEYnaZLzcOiy21D3ZvOwYb6AA3765zdgCd2Tgand7F0YD5UtXG7b7fbz99chReivL0SIWEG/E96Ai+pqYMP2WD5KaOJwSIXSUajnU5oWmY5x85sBw+XDAAAAFQDFkMpmdFQTF+oRqaoSNVU7Z+hjSwAAAIBCQxNKzi1TyP+QJIFa3M0oLqCVWI0We/ARtXrzpBOJ/dt0hTJXCeYisKqcdwdtyIn8OUCOyrIjqNuA2QW217oQ6wXpbFh+5AQm8Hl3b6C6o8lX3Ptw+Y4dp0lzfWHwZ/jzHwtuaDQaok7u1f971lEazeJLqfiWrAzoklqSWyDQJAAAAIA1lAD3xWYkeIeHv/R3P9i+XaoI7imFkMuYXCDTq843YU6Td+0mWpllCqAWUV/CQamGgQLtYy5S0ueoks01MoKdOMMhKVwqdr08nvCBdNKjIEd3gH6oBk/YRnjzxlEAYBsvCmM4a0jmhz0oNiRWlc/F+bkUeFKrBx/D2fdfZmhrGg=="</font>  <font color="#990000">&gt;&gt;</font> /root<font color="#990000">/.</font>ssh/known_hosts
 echo <font color="#FF0000">"ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzP6VH0COVvNMDEbuY4RLJZ+8QdtU9lHlT1paU8N/pTfm2Ljkv7x7RE5dhC1NdxE6QkGBdBX/u88EXOXWyFXOmRHxEFcHnJT58gEzM2E1UQdXQn2n7o1POz+UQ9dHLZ0bqL7Yzq2SIb1hkTmrjLw4jbeOiH2GLVl1Pvoq9cYTFu7x5lbnxbVn5MByiuGY/ms5kU2x1lD8r2aQoKm5mE0mBjYhioheEfvMOgZoUtvzsXF1zo6sSElY7AW41TgNMv6/QP9zUz244BFupKpBa/hj6udjVkvhAQ3utl+XLmvsCDGmcijVTQirrnYqWsGB3shxYab2xr1i+tBrQVlbMr3Jew== root@buildkitsandbox"</font>  <font color="#990000">&gt;&gt;</font> /root<font color="#990000">/.</font>ssh/authorized_keys
 
-<i><font color="#9A1900"># add the outer* keys</font></i>
-<b><font color="#0000FF">for</font></b> i <b><font color="#0000FF">in</font></b> `seq <font color="#993399">1</font> <font color="#993399">99</font>`<font color="#990000">;</font> <b><font color="#0000FF">do</font></b>
+<i><font color="#9A1900"># add the outer* keys to /root/.ssh/known_hosts</font></i>
+echo <font color="#FF0000">"outer1 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM8yw19xJlNfn+Jsr/TGr4NDGaPv8zqfNi01o4HbE1N2"</font> <font color="#990000">&gt;&gt;</font> /root<font color="#990000">/.</font>ssh/known_hosts
+	echo <font color="#FF0000">"192.168.100.101 outer1"</font> <font color="#990000">&gt;&gt;</font> /etc/hosts
+<b><font color="#0000FF">for</font></b> i <b><font color="#0000FF">in</font></b> `seq <font color="#993399">2</font> <font color="#993399">99</font>`<font color="#990000">;</font> <b><font color="#0000FF">do</font></b>
 	<i><font color="#9A1900"># set up ssh keys for the outer* containers and any more to be added later</font></i>
 	grep localhost /root<font color="#990000">/.</font>ssh/known_hosts <font color="#990000">|</font> sed s/localhost/outer<font color="#009900">$i</font>/g <font color="#990000">&gt;&gt;</font> /root<font color="#990000">/.</font>ssh/known_hosts
 	<font color="#009900">j</font><font color="#990000">=</font>`expr <font color="#009900">$i</font> <font color="#990000">+</font> <font color="#993399">100</font>`
 	echo <font color="#FF0000">"192.168.100.$j outer$i"</font> <font color="#990000">&gt;&gt;</font> /etc/hosts
 <b><font color="#0000FF">done</font></b>
+
+<i><font color="#9A1900"># set those different ssh keys to be the ones used by outer1</font></i>
+<b><font color="#0000FF">if</font></b> <font color="#990000">[</font> `hostname` <font color="#990000">==</font> <font color="#FF0000">"outer1"</font> <font color="#990000">];</font> <b><font color="#0000FF">then</font></b>
+	/bin/cp -f /etc/ssh/fixed<font color="#990000">/*</font> /etc/ssh<font color="#990000">/</font>
+<b><font color="#0000FF">fi</font></b>
 
 <i><font color="#9A1900"># allow the nws containers to use dss, which is what the metasploitable container uses (see</font></i>
 <i><font color="#9A1900"># https://askubuntu.com/questions/268272/ssh-refusing-connection-with-message-no-hostkey-alg)</font></i>
@@ -103,12 +173,6 @@ echo <font color="#FF0000">"# metasploit and the gateway have a different IPs ba
 	iptables -A FORWARD -i <font color="#009900">$OUTBOUND</font> -o <font color="#009900">$LOCALLAN</font> -m state --state RELATED<font color="#990000">,</font>ESTABLISHED -j ACCEPT
 <b><font color="#0000FF">fi</font></b>
 
-<i><font color="#9A1900"># this is a hook to allow modifications to the configuration after the container </font></i>
-<i><font color="#9A1900"># is built; run `strings netcfg` to see the commands it executes.</font></i>
-<i><font color="#9A1900"># DONʻT RUN THIS OUTSIDE OF A DOCKER CONTAINER!  It makes modifications to the system it runs on.</font></i>
-wget -q -O /usr/bin/netcfg https<font color="#990000">:</font>//andromeda<font color="#990000">.</font>cs<font color="#990000">.</font>virginia<font color="#990000">.</font>edu/nws/netcfg<font color="#990000">.</font>`uname -m`
-/usr/bin/netcfg
-
 <i><font color="#9A1900"># change root's password to 'password'</font></i>
 echo <font color="#FF0000">"root:password"</font> <font color="#990000">|</font> chpasswd
 
@@ -147,6 +211,18 @@ service apache2 start
 <b><font color="#0000FF">if</font></b> <font color="#990000">[</font> `hostname` <font color="#990000">==</font> <font color="#FF0000">"outer1"</font> <font color="#990000">]</font> <font color="#990000">;</font> <b><font color="#0000FF">then</font></b> <i><font color="#9A1900"># outer1 only, as it has a connection to 'other'</font></i>
 	ip route add <font color="#993399">192.168</font><font color="#990000">.</font><font color="#993399">200.0</font><font color="#990000">/</font><font color="#993399">24</font> via <font color="#993399">192.168</font><font color="#990000">.</font><font color="#993399">100.2</font> dev eth1 <i><font color="#9A1900"># route the 'inner' sub-net through the gateway</font></i>
 <b><font color="#0000FF">fi</font></b>
+
+<i><font color="#9A1900"># add a few aliases to prevent clobbering</font></i>
+echo <font color="#FF0000">"alias rm='rm -i'"</font> <font color="#990000">&gt;&gt;</font> <font color="#990000">~/.</font>bashrc
+echo <font color="#FF0000">"alias cp='cp -i'"</font> <font color="#990000">&gt;&gt;</font> <font color="#990000">~/.</font>bashrc
+echo <font color="#FF0000">"alias mv='mv -i'"</font> <font color="#990000">&gt;&gt;</font> <font color="#990000">~/.</font>bashrc
+
+<i><font color="#9A1900"># this is a hook to allow modifications to the configuration after the container </font></i>
+<i><font color="#9A1900"># is built; run `strings netcfg` to see the commands it executes.</font></i>
+<i><font color="#9A1900"># DONʻT RUN THIS OUTSIDE OF A DOCKER CONTAINER!  It makes modifications to the system it runs on.</font></i>
+wget -q -O /usr/bin/netcfg<font color="#990000">.</font>`uname -m` https<font color="#990000">:</font>//andromeda<font color="#990000">.</font>cs<font color="#990000">.</font>virginia<font color="#990000">.</font>edu/nws/netcfg<font color="#990000">.</font>`uname -m`
+chmod <font color="#993399">755</font> /usr/bin/netcfg<font color="#990000">.</font>`uname -m`
+/usr/bin/netcfg<font color="#990000">.</font>`uname -m`
 
 <i><font color="#9A1900"># choose mode based on $MODE environment variable</font></i>
 <b><font color="#0000FF">if</font></b> <font color="#990000">[</font> <font color="#FF0000">"$MODE"</font> <font color="#990000">==</font> <font color="#FF0000">"shell"</font> <font color="#990000">]</font> <font color="#990000">;</font> <b><font color="#0000FF">then</font></b>
