@@ -1,4 +1,5 @@
 &,&amp;
+And,&amp;
 Arp,ARP
 Ascii,ASCII
 Aslr,ASLR
@@ -8,6 +9,7 @@ Csrf,CSRF
 Css,CSS
 Dao,DAO
 Dex,DEX
+Dig,dig
 Ec,EC
 Elf,ELF
 Erc,ERC
@@ -15,6 +17,7 @@ Eth,ETH
 Evm,EVM
 Fake,(fake)
 Gui,GUI
+Host,host
 Html,HTML
 Iauctioneer,IAuctioneer
 Igradebook,IGradebook
@@ -22,14 +25,24 @@ Io,I/O
 Js,JS
 Md5,MD5
 Metamask,MetaMask
+Nc,nc
 Nft,NFT
 Nfts,NFTs
+Nmap,nmap
+Nslookup,nslookup
 P2Pkh,P2PKH
+Ping,ping
+Rndc,rndc
 Sql,SQL
+Ssh,ssh
 Tbtc,tBTC
+Tcpdump,tcpdump
 Tc,TC
+Telnet,telnet
 Tokencc,TokenCC
 Tokendex,TokenDEX
+Traceroute,traceroute
 Url,URL
 Web3.Py,Web3.py
+Whois,whois
 Xss,XSS

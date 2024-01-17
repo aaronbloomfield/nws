@@ -83,7 +83,12 @@
 <!-- All scholarly articles (such as from the ACM digital library) can be obtained from free from any UVA wireless network. Some of them you will *NOT* be able to get it for free from your home Internet provider such as Comcast (unless you live in a UVA dorm, of course) without using a UVA VPN. -->
 <p>All readings are due by the start of lecture that day. You should expect there to be in-class quizzes on each reading.</p>
 <ul>
-<li>…</li>
+<li>Understand network models, both OSI and TCP/IP</li>
+<li>Understand how to analyze network traffic and how to scan for malware therein</li>
+<li>Understand the details of common network attacks, as well as their defenses (ARP, DOSes, etc.)</li>
+<li>Understand the common network services that help to secure a network (DNSSEC, VPNs, PGP, firewalls, etc.)</li>
+<li>Understand the role and use of cryptography in network security (AES, RSA, DHE, TLS, etc.)</li>
+<li>Be able to secure a network from outside attacks</li>
 </ul>
 <h2 id="homeworks">Homeworks</h2>
 <p>Reading assignments are due by the start of the lecture that day, and all other homeworks are due by the end of the day of the due date given – this means by 11:59:59 pm. The late policies are discussed in the <a href="hw-policies.html">homework policies page</a> (<a href="hw-policies.md">md</a>). Submission is through the Gradescope Canvas tool – all submissions should open up 2 days (i.e., 48 hours) prior to the due date/time. The larger (“P”) homeworks are due on Tuesdays by the end of the day; the smaller homeworks will have varying due days.</p>
@@ -92,13 +97,16 @@
 <h4 id="smaller-homeworks">Smaller Homeworks</h4>
 <p>Readings are due by the start of lecture on that day; all other homeworks are due by the end of the day (11:59:59 pm).</p>
 <h2 id="course-calendar">Course calendar</h2>
+<p>The smaller (“S”) homeworks are usually due Friday, unless otherwise noted.</p>
 <table>
 <thead>
 <tr class="header">
 <th>Week #</th>
 <th>Week of Monday</th>
 <th>Lecture days</th>
-<th>HWs due</th>
+<th>P HWs due Tue</th>
+<th>S HWs due, usually <br> due Fri</th>
+<th>Readings due Mon</th>
 <th>Expected Topics</th>
 <th>Actual Progress</th>
 </tr>
@@ -108,7 +116,9 @@
 <td>1</td>
 <td>Jan 15</td>
 <td>W,F</td>
-<td></td>
+<td>(none)</td>
+<td>(none)</td>
+<td>(none)</td>
 <td><a href="../slides/introduction.html#/">Course introduction</a></td>
 <td></td>
 </tr>
@@ -116,7 +126,9 @@
 <td>2</td>
 <td>Jan 22</td>
 <td>M,W,F</td>
-<td>Google survey</td>
+<td>(none)</td>
+<td>Survey (due Wed), <br> <a href="../hws/docker/index.html">Docker</a> (<a href="../hws/docker/index.md">md</a>) (due Fri)</td>
+<td>(none)</td>
 <td><a href="https://www.handsonsecurity.net/files/slides/N01_Network_Basics.pptx">Network Security Basics</a></td>
 <td></td>
 </tr>
@@ -124,7 +136,9 @@
 <td>3</td>
 <td>Jan 29</td>
 <td>M,W,F</td>
-<td>Docker &amp; Linux</td>
+<td>(none)</td>
+<td><a href="../hws/linux/index.html">Linux tutorial</a> (<a href="../hws/linux/index.md">md</a>) (due Tue), <br> <a href="../hws/netcmds/index.html">Network commands</a> (<a href="../hws/netcmds/index.md">md</a>) (due Fri)</td>
+<td>Du, chap 2 (MAC layer); 18 pp</td>
 <td><a href="https://www.handsonsecurity.net/files/slides/N02_MAC_ARP.pptx">MAC Layer and Attacks</a></td>
 <td></td>
 </tr>
@@ -132,7 +146,9 @@
 <td>4</td>
 <td>Feb 5</td>
 <td>M,W,F</td>
-<td>ARP spoofer / detector</td>
+<td>ARP</td>
+<td>Metasploitable hacks, part 1</td>
+<td>Du, chap 3 (IP); 22 pp</td>
 <td><a href="https://www.handsonsecurity.net/files/slides/N03_IP_ICMP.pptx">IP Layer and Attacks</a></td>
 <td></td>
 </tr>
@@ -140,7 +156,9 @@
 <td>5</td>
 <td>Feb 12</td>
 <td>M,W,F</td>
-<td></td>
+<td>Routing</td>
+<td>Metasploitable hacks, part 2</td>
+<td>Du, chap 4 (packet sniffing); 28 pp</td>
 <td><a href="https://www.handsonsecurity.net/files/slides/N04_Sniffing_Spoofing.pptx">Packet Sniffing &amp; Spoofing</a></td>
 <td></td>
 </tr>
@@ -148,21 +166,27 @@
 <td>6</td>
 <td>Feb 19</td>
 <td>M,W,F</td>
-<td></td>
-<td>Encryption, <a href="https://www.handsonsecurity.net/files/slides/C05_TLS.pptx">TLS</a></td>
+<td>TCP reconstruction</td>
+<td>Web of trust, week 1</td>
+<td>Du, chap 5 (transport layer) &amp; <br> parts of chap 6 (TCP attacks); ~30 pp</td>
+<td><a href="https://www.handsonsecurity.net/files/slides/N06_TCP.pptx">TCP &amp; attacks</a>, <a href="https://www.handsonsecurity.net/files/slides/N05_UDP.pptx">UDP &amp; attacks</a></td>
 <td></td>
 </tr>
 <tr class="odd">
 <td>7</td>
 <td>Feb 26</td>
 <td>M,W,F</td>
-<td></td>
+<td>(midterm on Wed)</td>
+<td>Web of trust, week 2</td>
+<td>Du, chap 7 (firewall); 26 pp</td>
 <td><a href="https://www.handsonsecurity.net/files/slides/N07_Firewalls.pptx">Firewall</a></td>
 <td></td>
 </tr>
 <tr class="even">
 <td>8</td>
 <td>Mar 4</td>
+<td></td>
+<td></td>
 <td></td>
 <td></td>
 <td>Spring break (no classes)</td>
@@ -172,7 +196,9 @@
 <td>9</td>
 <td>Mar 11</td>
 <td>M,W,F</td>
-<td></td>
+<td>Protocol</td>
+<td>Firewall configuration</td>
+<td>Du, chap 8 (VPN); 32 pp</td>
 <td><a href="https://www.handsonsecurity.net/files/slides/N08_VPN.pptx">Virtual Private Network</a></td>
 <td></td>
 </tr>
@@ -180,7 +206,9 @@
 <td>10</td>
 <td>Mar 18</td>
 <td>M,W,F</td>
-<td></td>
+<td>Wireshark</td>
+<td>TBD</td>
+<td>Du, chap 9 (tunneling); 18 pp</td>
 <td><a href="https://www.handsonsecurity.net/files/slides/N09_Tunneling.pptx">Tunneling and Firewall Evasion</a></td>
 <td></td>
 </tr>
@@ -188,7 +216,9 @@
 <td>11</td>
 <td>Mar 25</td>
 <td>M,W,F</td>
-<td></td>
+<td>Network monitoring</td>
+<td>TBD</td>
+<td>parts of Du, chapter 10 (DNS), <br> parts of Du, chap 11 (DNSSEC); ~30 pp</td>
 <td><a href="https://www.handsonsecurity.net/files/slides/N10_DNS.pptx">DNS and Attacks</a>, <a href="https://www.handsonsecurity.net/files/slides/N11_DNSSEC.pptx">DNSSEC</a></td>
 <td></td>
 </tr>
@@ -196,7 +226,9 @@
 <td>12</td>
 <td>Apr 1</td>
 <td>M,W,F</td>
-<td></td>
+<td>DNS</td>
+<td>TBD</td>
+<td>parts of Du, chap 12 (BGP); ~30 pp</td>
 <td><a href="https://www.handsonsecurity.net/files/slides/N12_BGP.pptx">BGP and Attacks</a></td>
 <td></td>
 </tr>
@@ -204,7 +236,9 @@
 <td>13</td>
 <td>Apr 8</td>
 <td>M,W,F</td>
-<td></td>
+<td>BGP</td>
+<td>TBD</td>
+<td>Du, chap 14 (reverse shell); 14 pp</td>
 <td><a href="https://www.handsonsecurity.net/files/slides/N14_Reverse_Shell.pptx">Reverse Shell</a></td>
 <td></td>
 </tr>
@@ -212,7 +246,9 @@
 <td>14</td>
 <td>Apr 15</td>
 <td>M,W,F</td>
-<td></td>
+<td>TCP shell</td>
+<td>TBD</td>
+<td>TBD</td>
 <td><a href="https://www.handsonsecurity.net/files/slides/W01_Web_Security_Basics.pptx">Web Security Basics</a>, <a href="https://www.handsonsecurity.net/files/slides/W03_Web_XSS.pptx">XSS</a></td>
 <td></td>
 </tr>
@@ -220,7 +256,9 @@
 <td>15</td>
 <td>Apr 22</td>
 <td>M,W,F</td>
-<td></td>
+<td>SSH MITM</td>
+<td>TBD</td>
+<td>TBD</td>
 <td>Miscellaneous Topics</td>
 <td></td>
 </tr>
@@ -228,7 +266,9 @@
 <td>16</td>
 <td>Apr 29</td>
 <td>M</td>
-<td></td>
+<td>Xmas scans</td>
+<td>(none)</td>
+<td>(none)</td>
 <td><a href="slides/conclusion.html#/">Course conclusion</a></td>
 <td></td>
 </tr>
