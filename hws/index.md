@@ -10,10 +10,10 @@ You will be bound by the requirements on the [Homeworks policies page](../uva/hw
 
 These are larger programming homeworks.
 
-...
+- None yet!
 
 ### Smaller homeworks
 
 These are smaller homeworks that take less time.  They are typically readings or self-guided tutorials.
 
-...
+- None yet!
