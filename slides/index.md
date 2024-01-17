@@ -10,3 +10,4 @@ The slides used in this course are adapted from the slides for the textbook, [In
 
 - [Course introduction](introduction.html#/)
 - [Network Security Basics](https://www.handsonsecurity.net/files/slides/N01_Network_Basics.pptx)
+- [MAC Layer and Attacks](https://www.handsonsecurity.net/files/slides/N02_MAC_ARP.pptx)
