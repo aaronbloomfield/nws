@@ -337,7 +337,7 @@ root@inner:/#
 
 <!-- .slide: class="wide-pre" -->
 ## ARP via tcpdump
-In another window, `ping outer1` was executed on outer2; below are the packets sent and received.
+In another window, `ping -c 1 outer1` was executed on outer2; below are the packets sent and received (see [docker network diagram](../docker/network.svg))
 ```
 root@outer2:/# tcpdump -i eth0 -n
 tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
@@ -866,7 +866,6 @@ root@outer2:/#
   - Example:
 <pre><code>arpspoof -i eth0 -t 192.168.100.1 192.168.100.102</code></pre>
 - These directions are for our [course docker setup](...)
-- Load up five different tabs (yes, really 5)
 
 
 
