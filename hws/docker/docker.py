@@ -42,6 +42,12 @@ other = {
 	# well, 5 is quite well.
 	'docker_command_understanding': None,
 
+	# How frustrating did you find this process?  This is on a scale of 1-5,
+	# where 1 is not frustrating at all, 2 is a little bit frustrating, 3 is
+	# a reasonable level of frustration (for however you define reasonable),
+	# 4 is very frustrating, and 5 is extremely frustrating.
+	'docker_frustration_level': None,
+
 }
 
 
