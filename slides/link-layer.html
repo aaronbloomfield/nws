@@ -1,0 +1,968 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Network Security slide set</title>
+    <meta name="description" content="A set of slides for a course on Introduction to Cybersecurity">
+    <meta name="author" content="Aaron Bloomfield">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="../slides/nws.css">
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="../slides/reveal.js/plugin/highlight/zenburn.css">
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? '../slides/reveal.js/css/print/pdf.scss' : '../slides/reveal.js/css/print/paper.scss';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+    <!--[if lt IE 9]>
+	<script src="../slides/reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+  </head>
+
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+<section data-markdown id="cover"><script type="text/template">
+# CS 4760
+&nbsp;  
+### Network Security
+
+<p class='titlep'>&nbsp;</p>
+<div class="titlesmall"><p>
+<a href="http://www.cs.virginia.edu/~asb">Aaron Bloomfield</a> (aaron@virginia.edu)<br>
+<a href="http://github.com/aaronbloomfield/nws">@github</a> | <a href="index.html">&uarr;</a> | <a href="?print-pdf"><img class="print" width="20" src="../slides/images/print-icon.webp" style="top:0px;vertical-align:middle"></a>
+</p></div>
+<p class='titlep'>&nbsp;</p>
+
+## Data Link Layer
+</script></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section data-markdown><textarea data-template>
+# Contents
+&nbsp;  
+[Ethernet](#/ethernet)  
+[Network Interfaces](#/nics)  
+[Address Resolution Protocol (ARP)](#/arpdesc)  
+[ARP Spoofing](#/spoofing)  
+[Spoofing Defenses](#/defenses)  
+</textarea></section>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="ethernet" class="center"><textarea data-template>
+# Ethernet
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## Protocol stack: data link layer
+<!-- [![Ethernet plug and switch](https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Ethernet_Connection.jpg/1024px-Ethernet_Connection.jpg)](https://commons.wikimedia.org/wiki/File:Ethernet_Connection.jpg) -->
+
+<img src="https://andromeda.cs.virginia.edu/nws/duimg/n01/image9.png" style="height:300px">
+
+- Is charged with getting one packet of data from one host to another connected host
+  - Via the next layer down
+- Most common example is Ethernet
+  - Other examples: ARP, ISDN, PPP, ATM, FDDI, SONET, SDH, etc.
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## Other protocols
+[![token ring](https://upload.wikimedia.org/wikipedia/commons/c/cb/Token_ring.svg)](https://commons.wikimedia.org/wiki/File:Token_ring.svg)
+- Token ring (IBM, 1984)
+  - Whomever has the token may transmit
+  - If you are done, or have reached your time limit, pass the token on
+  - Pros: no collisions, fast at the time
+  - Cons: slower than later Ethernet, adding a device breaks the ring
+
+
+
+## Ethernet
+- Most common protocol due to high speeds and low cost
+- Although you may use Ethernet, your data will travel over others to its destination, including fiber optic
+  - Such as [SONET and SDH](https://en.wikipedia.org/wiki/Synchronous_optical_networking)
+- Ethernet has a 14 byte header and a 4 byte checksum
+  - And up to 1,500 bytes of data
+  - For large packets, 18/1518 bytes = 1.2% is meta-data
+[![Ethernet packet](images/networking/ethernet-packet.svg)](https://commons.wikimedia.org/wiki/File:Ethernet_Type_II_Frame_format.svg)
+
+
+
+<!-- .slide: style="width:1200px;margin-left:-100px;font-size:smaller" -->
+## Speed Comparison
+
+| Type | Year | Speed<br>(Mbit/s) | 10 Gb<br>download | Aliases |
+|----|----|----|---|---|
+| 10base-2/T | 1983 | 10 | 2h, 13m, 20s |
+| 100base-T | 1995 | 100 | 13m, 20s | fast Ethernet |
+| Comcast avg | N/A | 236 ([ref](https://www.cnet.com/home/internet/xfinity-speed-test-results/)) | 5m, 38s |
+| 1000base-TX | 1999 | 1000 | 1m, 20s | gigabit Ethernet |
+| 10Gbase-T | 2006 | 10,000 | 8s | 10 gigabit Ethernet |
+| 40G fiber | 2007 | 40,000 | 2s |
+| 802.11b wi-fi | 1999 | 11 | 2h, 1m, 12s | Wi-Fi 1 |
+| 802.11g wi-fi | 2003 | 54 | 24m, 41s | Wi-Fi 3 |
+| 80211n wi-fi | 2014 | 600 | 2m, 13s | Wi-Fi 4 |
+| 80211ac wi-fi | 2014 | 6,933 | 11s | Wi-Fi 5 |
+
+
+
+## MAC addresses
+
+<a href="https://commons.wikimedia.org/wiki/File:EverFocus_Electronics_MAC_address_barcode_stickers_20170320.jpg"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/EverFocus_Electronics_MAC_address_barcode_stickers_20170320.jpg/1024px-EverFocus_Electronics_MAC_address_barcode_stickers_20170320.jpg" class="right-float-img-600 no-border" alt="mac addresses"></a>
+
+- MAC = media access control
+- Each physical network card has a unique one
+  - Devices are supposed to be labeled with it
+- 6 bytes, represented in hex
+- Source and destination MAC in header:
+[![Ethernet packet](images/networking/ethernet-packet.svg)](https://commons.wikimedia.org/wiki/File:Ethernet_Type_II_Frame_format.svg)
+
+
+
+## Ethernet Frame
+![](https://andromeda.cs.virginia.edu/nws/duimg/n02/image7.png)
+- From MAC 08:00:27:dd:08:88
+- To MAC 08:00:27:84:5e:b9
+- EtherType is 08:00
+  - We'll see this shortly
+
+
+
+## MAC address randomization
+![ars technical ios randomization article](images/linklayer/ios-random-article.webp) 
+
+
+
+## MAC tracking
+- Businesses can track you in a store(s) via your MAC address
+  - And then associate that with you, such as when you check out
+  - Then they can sell this information
+- Randomization doesn't fully work
+  - When you check out, they still know your (now random) MAC address
+  - And thus where you went in the store or mall
+
+
+
+## Ethernet header & checksum
+[![Ethernet packet](images/networking/ethernet-packet.svg)](https://commons.wikimedia.org/wiki/File:Ethernet_Type_II_Frame_format.svg)
+- EtherType:
+  - 0x0800: for IPv4 packets
+  - 0x0806: for ARP packets (described later)
+  - More [here](https://en.wikipedia.org/wiki/EtherType), but we won't see them
+- CRC checksum:
+  - CRC-32 hash of header *and* data
+  - Good for detecting transmission mistakes
+  - Not good to check for an attacker
+
+
+
+## Early Ethernet
+
+<a href="https://commons.wikimedia.org/wiki/File:Bustopologie.png"><img src="https://upload.wikimedia.org/wikipedia/commons/9/9e/Bustopologie.png" class="right-float-img-600" alt="shared medium" style="width:400px"></a>
+
+- Ethernet uses a *shared network*
+- All devices on the network transmit on the same single bus (network)
+- If two transmit at the same time, it's a *collision*
+  - Each "backs off" at different rates and tries to re-transmit
+- On a busy network, the large number of collisions can reduce overall speed
+
+
+
+<!-- .slide: class="right-float-img-600 no-border" -->
+## Early Ethernet: Hub
+[![hub](https://upload.wikimedia.org/wikipedia/commons/d/d9/4_port_netgear_ethernet_hub.jpg)](https://commons.wikimedia.org/wiki/File:4_port_netgear_ethernet_hub.jpg)
+- A *hub* connects devices on the same shared network
+  - Basically a soldering of the wires together
+  - Creates the topology on the previous slide
+- Collisions happen quite often
+- It's actually a *physical* layer device
+- They haven't been sold since the 1990's
+
+
+
+<!-- .slide: class="right-float-img-600 no-border" -->
+## Modern Ethernet: Switch
+[![switch](https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Netgear_Gigabit_Switch_5-port.jpg/1024px-Netgear_Gigabit_Switch_5-port.jpg)](https://commons.wikimedia.org/wiki/File:Netgear_Gigabit_Switch_5-port.jpg)
+- A *switch* has circuitry inside that only sends messages to the intended recipients
+  - Which could be broadcast
+- Two pairs of devices communicating will not collide with the other pair
+- Modern Ethernet uses 8-wire cables
+  - Send and receive on different pairs
+  - So no collisions
+
+
+
+## Larger switches
+
+<a href="https://commons.wikimedia.org/wiki/File:Brocade_ICX_switches.jpg"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f3/Brocade_ICX_switches.jpg" class="left-float-img-600 no-border" alt="switch" style="width:400px"></a>
+<a href="https://commons.wikimedia.org/wiki/File:Switch-and-nest.jpg"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Switch-and-nest.jpg/1024px-Switch-and-nest.jpg" class="right-float-img-600 no-border" alt="switch" style="width:400px"></a>
+<br clear='all'>
+
+- Left: a switch for a larger home network
+- Right: a (messy) switch for a small business
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## Promiscuous Mode
+[![](https://upload.wikimedia.org/wikipedia/commons/7/70/Censored_rubber_stamp.svg)](https://commons.wikimedia.org/wiki/File:Censored_rubber_stamp.svg)
+- Normally a NIC only listens for packets destined for it
+   - Or broadcast to all
+- Setting the NIC to *promiscuous mode* will have it listen for *all* packets
+  - Useful for packet sniffing
+  - The switch may prevent receipt of other NIC's packets, though
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="nics" class="center"><textarea data-template>
+# Network Interfaces
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## `ifconfig`
+- Stands for interface config
+- Linux / OS X program
+  - Windows probably has something simnilar...
+- `ifconfig` will show the details for all the network interfaces
+- `ifconfig <dev>` will show the details for just that one interface
+
+
+
+<!-- .slide: class="wide-pre" -->
+## Network Interface Card (NIC)
+
+- The hardware device that reads and writes from/to the network cable
+- Each one has a hardware (MAC) address ('ether' in the output below)
+```
+root@inner:/# ifconfig eth0
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.200.3  netmask 255.255.255.0  broadcast 192.168.200.255
+        ether 02:42:c0:a8:c8:03  txqueuelen 0  (Ethernet)
+        RX packets 12  bytes 1895 (1.8 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 10  bytes 3189 (3.1 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+root@inner:/# 
+```
+
+
+
+## Packet flow
+![](https://andromeda.cs.virginia.edu/nws/duimg/n02/image2.png)
+
+
+
+## Types of NICs
+![](https://andromeda.cs.virginia.edu/nws/duimg/n02/image3.png)
+- (a) is a standard NIC, such as eth0
+- (b) is the loopback interface, such as lo
+- (c) creates a dummy tun/tap interface
+  - Tunnel / tap: software can be the other end
+
+
+
+<!-- .slide: class="wide-pre" -->
+## ifconfig
+```
+root@inner:/# ifconfig
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.200.3  netmask 255.255.255.0  broadcast 192.168.200.255
+        ether 02:42:c0:a8:c8:03  txqueuelen 0  (Ethernet)
+        RX packets 12  bytes 1895 (1.8 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 10  bytes 3189 (3.1 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+root@inner:/# 
+```
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="arpdesc" class="center"><textarea data-template>
+# Address Resolution Protocol (ARP)
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## Need for ARP
+![LAN diagram](images/linklayer/lan.svg)
+- A message comes in from the Internet for the TV (192.168.1.102)
+- The router only knows the devices by their MAC addresses
+- How does the router know which MAC addr to send it to?
+- [Reference Wikipedia article](https://en.wikipedia.org/wiki/Address_Resolution_Protocol#ARP_spoofing_and_proxy_ARP)
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## Address resolution
+![LAN diagram](images/linklayer/lan.svg)
+- The router receives a packet for 192.168.1.102
+- It has to determine which device corresponds to that IP address
+- So it asks: "which one of you devices has address .102?"
+- The TV responds "I do"
+  - The router now can associate the TV's MAC address with .102
+- The data is then sent to the device
+
+
+
+<!-- .slide: class="wide-pre" -->
+## ARP via tcpdump
+In another window, `ping outer1` was executed on outer2; below are the packets sent and received.
+```
+root@outer2:/# tcpdump -i eth0 -n
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on eth0, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+21:11:57.120679 ARP, Request who-has 192.168.100.101 tell 192.168.100.102, length 28
+21:11:57.120769 ARP, Reply 192.168.100.101 is-at 02:42:c0:a8:64:65, length 28
+21:11:57.120772 IP 192.168.100.102 > 192.168.100.101: ICMP echo request, id 285, seq 1, length 64
+21:11:57.120873 IP 192.168.100.101 > 192.168.100.102: ICMP echo reply, id 285, seq 1, length 64
+^C
+4 packets captured
+4 packets received by filter
+0 packets dropped by kernel
+root@outer2:/# 
+```
+
+
+
+<!-- ================================================= -->
+
+<table class="transparent"><tr><td>
+
+## Address Resolution Protocol (ARP)
+- ARP is used to determine this mapping
+- It's a data link layer protocol
+- The same packet is set for a query as for a response
+- Defined by [RFC 826](https://datatracker.ietf.org/doc/html/rfc826)
+- It's generic for any set of protocols, but we'll focus on Ethernet and IP addresses
+
+</td><td>
+<div class="wikitablediv">
+<table class="wikitable">
+  <caption>
+    Internet Protocol over Ethernet ARP packet
+  </caption>
+  <tbody>
+    <tr>
+      <th colspan="1">Octet offset</th>
+      <th colspan="8" width="50%">0</th>
+      <th colspan="8" width="50%">1</th>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td colspan="16">Hardware type (HTYPE)</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td colspan="16">Protocol type (PTYPE)</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td colspan="8">Hardware address length (HLEN)</td>
+      <td colspan="8">Protocol address length (PLEN)</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td colspan="16">Operation (OPER)</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td colspan="16" style="background:#f0fff0">Sender hardware address (SHA) (first 2 bytes)</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td colspan="16" style="background:#f0fff0">(next 2 bytes)</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td colspan="16" style="background:#f0fff0">(last 2 bytes)</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td colspan="16" style="background:#d0ffd0">Sender protocol address (SPA) (first 2 bytes)</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td colspan="16" style="background:#d0ffd0">(last 2 bytes)</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td colspan="16" style="background:#f0f0ff">Target hardware address (THA) (first 2 bytes)</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td colspan="16" style="background:#f0f0ff">(next 2 bytes)</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td colspan="16" style="background:#f0f0ff">(last 2 bytes)</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td colspan="16" style="background:#d0d0ff">Target protocol address (TPA) (first 2 bytes)</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td colspan="16" style="background:#d0d0ff">(last 2 bytes)</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</td></tr></table>
+<!-- ================================================= -->
+
+
+
+<!-- ================================================= -->
+## ARP Packet Structure
+
+<table class="transparent"><tr><td>
+
+- HTYPE: 1 for Ethernet
+- PTYPE: 0x0800 for IPv4
+- HLEN: MAC addr length (6)
+- PLEN: IP address length (4)
+- OPER: operation
+  - 1 for request, 2 for reply
+- SHA: Sender's MAC address
+- SPA: Sender's IP address
+- THA: Receiver's MAC address
+  - Ignored in a request, originator's MAC in a reply
+- TPA: Receiver's IP address
+
+</td><td>
+<div class="wikitablediv">
+<table class="wikitable">
+  <caption>
+    Internet Protocol over Ethernet ARP packet
+  </caption>
+  <tbody>
+    <tr>
+      <th colspan="1">Octet offset</th>
+      <th colspan="8" width="50%">0</th>
+      <th colspan="8" width="50%">1</th>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td colspan="16">Hardware type (HTYPE)</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td colspan="16">Protocol type (PTYPE)</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td colspan="8">Hardware address length (HLEN)</td>
+      <td colspan="8">Protocol address length (PLEN)</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td colspan="16">Operation (OPER)</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td colspan="16" style="background:#f0fff0">Sender hardware address (SHA) (first 2 bytes)</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td colspan="16" style="background:#f0fff0">(next 2 bytes)</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td colspan="16" style="background:#f0fff0">(last 2 bytes)</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td colspan="16" style="background:#d0ffd0">Sender protocol address (SPA) (first 2 bytes)</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td colspan="16" style="background:#d0ffd0">(last 2 bytes)</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td colspan="16" style="background:#f0f0ff">Target hardware address (THA) (first 2 bytes)</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td colspan="16" style="background:#f0f0ff">(next 2 bytes)</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td colspan="16" style="background:#f0f0ff">(last 2 bytes)</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td colspan="16" style="background:#d0d0ff">Target protocol address (TPA) (first 2 bytes)</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td colspan="16" style="background:#d0d0ff">(last 2 bytes)</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</td></tr></table>
+<!-- ================================================= -->
+
+
+
+
+## ARP normal query & response
+- The router has IP 192.168.1.1
+  - In hex: c0 a8 01 01
+- It receives a packet for IP 192.168.1.102
+  - In hex: c0 a8 01 66
+- It sends out an ARP query
+- That computer (.102) sends back a response
+- That data is wrapped in an Ethernet packet:
+[![Ethernet packet](images/networking/ethernet-packet.svg)](https://commons.wikimedia.org/wiki/File:Ethernet_Type_II_Frame_format.svg)
+  - The query destination address is ff:ff:ff:ff:ff:ff (broadcast to all)
+  - The Ethertype for ARP is 0x0806
+
+
+
+<!-- ================================================= -->
+<h2>ARP normal query & response</h2>
+<table class="transparent"><tr><td>
+  <div class="wikitablediv">
+    <table class="wikitable">
+      <caption>
+        IPv4 over Ethernet ARP query
+      </caption>
+      <tbody>
+        <tr>
+          <th colspan="1">Octet offset</th>
+          <th colspan="8" width="50%">0</th>
+          <th colspan="8" width="50%">1</th>
+        </tr>
+        <tr>
+          <th>0</th>
+          <td colspan="16">HTYPE: 0x0001</td>
+        </tr>
+        <tr>
+          <th>2</th>
+          <td colspan="16">PTYPE: 0x0800</td>
+        </tr>
+        <tr>
+          <th>4</th>
+          <td colspan="8">HLEN: 0x06</td>
+          <td colspan="8">PLEN: 0x04</td>
+        </tr>
+        <tr>
+          <th>6</th>
+          <td colspan="16">OPER: 0x0001</td>
+        </tr>
+        <tr>
+          <th>8</th>
+          <td colspan="16" style="background:#f0fff0">SHA (first 2 bytes): 0x1122</td>
+        </tr>
+        <tr>
+          <th>10</th>
+          <td colspan="16" style="background:#f0fff0">(next 2 bytes): 0x3344</td>
+        </tr>
+        <tr>
+          <th>12</th>
+          <td colspan="16" style="background:#f0fff0">(last 2 bytes): 0x5566</td>
+        </tr>
+        <tr>
+          <th>14</th>
+          <td colspan="16" style="background:#d0ffd0">SPA (first 2 bytes): 0xc0a8</td>
+        </tr>
+        <tr>
+          <th>16</th>
+          <td colspan="16" style="background:#d0ffd0">(last 2 bytes): 0x0101</td>
+        </tr>
+        <tr>
+          <th>18</th>
+          <td colspan="16" style="background:#f0f0ff">THA (first 2 bytes): 0x0000</td>
+        </tr>
+        <tr>
+          <th>20</th>
+          <td colspan="16" style="background:#f0f0ff">(next 2 bytes): 0x0000</td>
+        </tr>
+        <tr>
+          <th>22</th>
+          <td colspan="16" style="background:#f0f0ff">(last 2 bytes): 0x0000</td>
+        </tr>
+        <tr>
+          <th>24</th>
+          <td colspan="16" style="background:#d0d0ff">TPA (first 2 bytes): 0xc0a8</td>
+        </tr>
+        <tr>
+          <th>26</th>
+          <td colspan="16" style="background:#d0d0ff">(last 2 bytes): 0x0166</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</td><td>
+  <div class="wikitablediv">
+    <table class="wikitable">
+      <caption>
+        IPv4 over Ethernet ARP response
+      </caption>
+      <tbody>
+        <tr>
+          <th colspan="1">Octet offset</th>
+          <th colspan="8" width="50%">0</th>
+          <th colspan="8" width="50%">1</th>
+        </tr>
+        <tr>
+          <th>0</th>
+          <td colspan="16">HTYPE: 0x0001</td>
+        </tr>
+        <tr>
+          <th>2</th>
+          <td colspan="16">PTYPE: 0x0800</td>
+        </tr>
+        <tr>
+          <th>4</th>
+          <td colspan="8">HLEN: 0x06</td>
+          <td colspan="8">PLEN: 0x04</td>
+        </tr>
+        <tr>
+          <th>6</th>
+          <td colspan="16" style="color:red">OPER: 0x0002</td>
+        </tr>
+        <tr>
+          <th>8</th>
+          <td colspan="16" style="background:#f0fff0;color:red">SHA (first 2 bytes): 0x7788</td>
+        </tr>
+        <tr>
+          <th>10</th>
+          <td colspan="16" style="background:#f0fff0;color:red">(next 2 bytes): 0x99aa</td>
+        </tr>
+        <tr>
+          <th>12</th>
+          <td colspan="16" style="background:#f0fff0;color:red">(last 2 bytes): 0xbbcc</td>
+        </tr>
+        <tr>
+          <th>14</th>
+          <td colspan="16" style="background:#d0ffd0">SPA (first 2 bytes): 0xc0a8</td>
+        </tr>
+        <tr>
+          <th>16</th>
+          <td colspan="16" style="background:#d0ffd0;color:red">(last 2 bytes): 0x0164</td>
+        </tr>
+        <tr>
+          <th>18</th>
+          <td colspan="16" style="background:#f0f0ff;color:red">THA (first 2 bytes): 0x1122</td>
+        </tr>
+        <tr>
+          <th>20</th>
+          <td colspan="16" style="background:#f0f0ff;color:red">(next 2 bytes): 0x3344</td>
+        </tr>
+        <tr>
+          <th>22</th>
+          <td colspan="16" style="background:#f0f0ff;color:red">(last 2 bytes): 0x5566</td>
+        </tr>
+        <tr>
+          <th>24</th>
+          <td colspan="16" style="background:#d0d0ff">TPA (first 2 bytes): 0xc0a8</td>
+        </tr>
+        <tr>
+          <th>26</th>
+          <td colspan="16" style="background:#d0d0ff;color:red">(last 2 bytes): 0x0101</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</td></tr></table>
+<!-- ================================================= -->
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## ARP table updates
+![LAN diagram](images/linklayer/lan.svg)
+- When a device (the router) receives an ARP response (from the TV), it updates a mapping table
+  - MAC address to IP address
+  - 77:88:99:aa:bb:cc -> 192.168.1.102
+- Devices will also update the table when a query is sent
+  - The TV updates the router's table entry
+  - 11:22:33:44:55:66 -> 192.168.1.1
+  - This query is broadcast (sent to all devices)
+    - Which means *all* devices on the LAN will update that entry
+
+
+
+## ARP announcements
+- Any device an "announce" their MAC -> IP mapping
+  - Send a query, with that devices MAC & IP
+  - Set TPA (IP being queried) to SPA (sender's IP)
+    - Thus no other device will respond
+  - Also set THA (target hardware address) to 0
+- As this is a query, other devices will update their tables
+- This is called a gratuitous ARP (GARP) or ARP announcement
+- May OSes do this upon boot
+
+
+
+<!-- ================================================= -->
+<h2>ARP announcement packet</h2>
+<table class="transparent"><tr><td>
+<div class="wikitablediv">
+    <table class="wikitable">
+      <caption>
+        IPv4 over Ethernet ARP announcement
+      </caption>
+      <tbody>
+        <tr>
+          <th colspan="1">Octet offset</th>
+          <th colspan="8" width="50%">0</th>
+          <th colspan="8" width="50%">1</th>
+        </tr>
+        <tr>
+          <th>0</th>
+          <td colspan="16">HTYPE: 0x0001</td>
+        </tr>
+        <tr>
+          <th>2</th>
+          <td colspan="16">PTYPE: 0x0800</td>
+        </tr>
+        <tr>
+          <th>4</th>
+          <td colspan="8">HLEN: 0x06</td>
+          <td colspan="8">PLEN: 0x04</td>
+        </tr>
+        <tr>
+          <th>6</th>
+          <td colspan="16">OPER: 0x0002</td>
+        </tr>
+        <tr>
+          <th>8</th>
+          <td colspan="16" style="background:#f0fff0">SHA (first 2 bytes): source's MAC</td>
+        </tr>
+        <tr>
+          <th>10</th>
+          <td colspan="16" style="background:#f0fff0">(next 2 bytes): source's MAC</td>
+        </tr>
+        <tr>
+          <th>12</th>
+          <td colspan="16" style="background:#f0fff0">(last 2 bytes): source's MAC</td>
+        </tr>
+        <tr>
+          <th>14</th>
+          <td colspan="16" style="background:#d0ffd0">SPA (first 2 bytes): source's IP</td>
+        </tr>
+        <tr>
+          <th>16</th>
+          <td colspan="16" style="background:#d0ffd0">(last 2 bytes): source's IP</td>
+        </tr>
+        <tr>
+          <th>18</th>
+          <td colspan="16" style="background:#f0f0ff">THA (first 2 bytes): 0x0000</td>
+        </tr>
+        <tr>
+          <th>20</th>
+          <td colspan="16" style="background:#f0f0ff">(next 2 bytes): 0x0000</td>
+        </tr>
+        <tr>
+          <th>22</th>
+          <td colspan="16" style="background:#f0f0ff">(last 2 bytes): 0x0000</td>
+        </tr>
+        <tr>
+          <th>24</th>
+          <td colspan="16" style="background:#d0d0ff">TPA (first 2 bytes): source's IP</td>
+        </tr>
+        <tr>
+          <th>26</th>
+          <td colspan="16" style="background:#d0d0ff">(last 2 bytes): source's IP</td>
+        </tr>
+      </tbody>
+    </table>
+</div>
+</td></tr></table>
+<!-- ================================================= -->
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## ARP security
+![LAN diagram](images/linklayer/lan.svg)
+- When the ARP query goes out asking who is 192.168.14.102...
+  - What prevents the desktop (.101) from responding that *it* is the target?
+- Nothing, and therein lies the security vulnerability
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="spoofing" class="center"><textarea data-template>
+# ARP Spoofing
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<!-- .slide: class="right-float-img-1200" -->
+## ARP spoofing
+- ARP spoofing is when one device pretends to be the MAC address of another device
+- [Reference Wikipedia article](https://en.wikipedia.org/wiki/ARP_spoofing)
+
+
+
+<!-- .slide: class="right-float-img-1000" -->
+## ARP spoofing
+[![ARP spoofing](images/linklayer/ARP_Spoofing.svg)](https://commons.wikimedia.org/wiki/File:ARP_Spoofing.svg)
+- The malicious (red) node sent out an announcement that it was .102
+- Now the gateway sends all data for .102 to the MAC of .101
+  - The malicious device has the network card listen for *multiple* MAC addresses
+  - .101 then forwards the packets onto device .102
+    - After recording or analyzing them
+- Device .102 has no idea its data is being intercepted
+
+
+
+<!-- .slide: class="right-float-img-1000" -->
+## ARP spoofing
+[![ARP spoofing](images/linklayer/ARP_Spoofing.svg)](https://commons.wikimedia.org/wiki/File:ARP_Spoofing.svg)
+- This requires *two* spoofs
+  - The malicious machine (.101) has to tell the gateway (.1) that it is the target (.102)
+  - The malicious machine (.101) *also* has to tell the target (.102) that it is the gateway (.1)
+
+
+
+## How to do it
+- First, install both `netdiscover` and `arpspoof`
+  - In the `netdiscover` and `dsniff` packages on Ubuntu
+  - And already installed on the Docker image
+- How to use `arpspoof`:
+  - Format is:
+<pre><code>arpspoof -i (interface) -t (target_ip) (recip_ip)</code></pre>
+    "target" is who to impersonate, "recip" is who to tell
+  - Example:
+<pre><code>arpspoof -i eth0 -t 192.168.100.1 192.168.100.102</code></pre>
+- These directions are for our [course docker setup](...)
+- Load up five different tabs (yes, really 5)
+
+
+
+## How to do it: setup
+- This is all done in the docker image
+- Install both `netdiscover` and `arpspoof`
+  - They are in the `netdiscover` and `dsniff` packages on Ubuntu
+  - And they are already installed on the Docker image
+- Ensure the machine that is doing the spoofing can forward IP packets:
+  <pre><code>echo 1 > /proc/sys/net/ipv4/ip_forward</code></pre>
+  - Already done on the Docker image
+- To start, load up five different tabs (yes, really five)
+
+
+
+## How to do it
+![docker lan setup](../docker/network_compact.svg)
+- The following directions are for our [course docker setup](...)
+- We are going to have outer1 spoof (pretend to be) outer2
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n" id="arpexample"><textarea data-template>
+## How to do it
+- Tab 1: run the docker setup: `docker-compose up`
+- Tab 2: connect to outer1 and run:
+  <pre><code>arpspoof -i eth0 -t 192.168.100.102 192.168.100.1</code></pre>
+- Tab 3: connect to outer1 and run:
+  <pre><code>arpspoof -i eth0 -t 192.168.100.1 192.168.100.102</code></pre>
+  - Note that the IP addresses are reversed!
+- Tab 4: connect to outer1 and run:
+  <pre><code>urlsnarf -i eth0</code></pre>
+  - This will display URLs it sees in the intercepted packets
+- Tab 5: wait a minute, then connect to *outer2* and run:
+  <pre><code>wget -q http://google.com</code></pre>
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## How to do it
+- When running `wget` from outer2, any `http://` address will appear in the `urlsnarf` output
+  - There is often a few seconds of delay
+- But notice that an `https://` address will *not* appear
+  - As the URL request is sent in an AES-encrypted packet, so `urlsnarf` cannot read it
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="defenses" class="center"><textarea data-template>
+# Detection and Prevention
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## Basic detection idea
+- Have a map of IP addresses to MAC addresses
+- Build this mapping over time as ARP packets traverse the network
+- If a packet comes in that maps an IP to a *different* MAC
+  - Then raise an alert
+- We can't have a mapping from MACs to IPs
+  - As there are legitimate reasons for this to actually occur: one host has multiple IP addresses
+
+
+
+## Detection problem 1
+- When the detector program starts up, how do we know that the first ARP packet received for an IP -> MAC mapping is a legitimate one or a spoof?
+- Solution: have a hard-coded mapping of the correct IP -> MAC mapping ahead of time
+
+
+
+## Detection problem 2
+- On a switched hub (which is all of them nowadays), a device will only see an ARP packet for itself, and not others
+- Solution: smart switches can monitor this
+  - These tend to be enterprise-level switches, not home switches
+
+
+
+## Prevention
+- If the gateway has hard-coded IPs for MACs, then it can't be fooled by an ARP spoof
+- Usually in the DHCP server settings in the gateway setup
+</textarea></section>
+
+</section>
+	
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	
+</div>
+</div>
+<script src="../slides/reveal.js/dist/reveal.js"></script>
+<script src="../slides/reveal.js/plugin/zoom/zoom.js"></script>
+<script src="../slides/reveal.js/plugin/notes/notes.js"></script>
+<script src="../slides/reveal.js/plugin/search/search.js"></script>
+<script src="../slides/reveal.js/plugin/markdown/markdown.js"></script>
+<script src="../slides/reveal.js/plugin/highlight/highlight.js"></script>
+<script src="../slides/reveal.js/plugin/math/math.js"></script>
+<script src="settings.js"></script>
+</body>
+</html>

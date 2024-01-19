@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Network Security slide set</title>
+    <meta name="description" content="A set of slides for a course on Introduction to Cybersecurity">
+    <meta name="author" content="Aaron Bloomfield">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="../slides/nws.css">
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="../slides/reveal.js/plugin/highlight/zenburn.css">
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? '../slides/reveal.js/css/print/pdf.scss' : '../slides/reveal.js/css/print/paper.scss';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+    <!--[if lt IE 9]>
+	<script src="../slides/reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+  </head>
+
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+<section data-markdown id="cover"><script type="text/template">
+# CS 4760
+&nbsp;  
+### Network Security
+
+<p class='titlep'>&nbsp;</p>
+<div class="titlesmall"><p>
+<a href="http://www.cs.virginia.edu/~asb">Aaron Bloomfield</a> (aaron@virginia.edu)<br>
+<a href="http://github.com/aaronbloomfield/nws">@github</a> | <a href="index.html">&uarr;</a> | <a href="?print-pdf"><img class="print" width="20" src="../slides/images/print-icon.webp" style="top:0px;vertical-align:middle"></a>
+</p></div>
+<p class='titlep'>&nbsp;</p>
+
+## Physical Layer
+</script></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section data-markdown><textarea data-template>
+# Contents
+&nbsp;  
+[Networking Model](#/model)  
+[Physical Layer](#/physical)  
+[Physical layer attacks](#/attacks)  
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="model" class="center"><textarea data-template>
+# Networking Model
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## OSI model
+- "Open Systems Interconnection" model, developed starting in 1977
+- Everybody (including many textbooks!) uses the OSI model diagrams (see next slide), and talks about TCP/IP
+  - But they are not the same!
+  - TCP/IP does not fit perfectly into the OSI model
+  - We don't care too much about the differences here, so we'll do that as well
+  - See [here](http://en.wikipedia.org/wiki/OSI_model#Comparison_with_TCP.2FIP) for details
+
+
+
+## OSI Model
+[![OSI model](images/networking/OSI_Model_v1.svg)](https://commons.wikimedia.org/wiki/File:OSI_Model_v1.svg)
+
+
+
+## TCP/IP Model
+[![OSI model](images/networking/TCPIP_Model.svg)](https://commons.wikimedia.org/wiki/File:OSI_Model_v1.svg)
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## Protocol stack: physical layer
+[![Ethernet cable](images/networking/ethernet-cable.webp)](https://commons.wikimedia.org/wiki/File:Ethernet_cable._SAM.jpg)
+- Is charged with getting data<br>from one end of the 'wire'<br>to the other end
+- Examples:
+  - copper wire
+  - fiber optic cable
+  - wireless transmission<br>(WiFi, Bluetooth, satellite<br>communication), etc.
+
+
+
+## Protocol stack: data link layer
+<!-- [![Ethernet plug and switch](https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Ethernet_Connection.jpg/1024px-Ethernet_Connection.jpg)](https://commons.wikimedia.org/wiki/File:Ethernet_Connection.jpg) -->
+
+<img src="https://andromeda.cs.virginia.edu/nws/duimg/n01/image9.png" style="height:300px">
+
+- Is charged with getting one packet of data from one host to another connected host
+  - Via the next layer down
+- Most common example is Ethernet
+  - Other examples: ARP, ISDN, PPP, ATM, FDDI, SONET, SDH, etc.
+
+
+
+## Protocol stack: network layer
+<!-- [![Router](https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Sprouter100g.jpg/835px-Sprouter100g.jpg)](https://commons.wikimedia.org/wiki/File:Sprouter100g.jpg) -->
+
+<img src="https://andromeda.cs.virginia.edu/nws/duimg/n01/image8.png" style="height:300px">
+
+- Is charged with *routing* a *single* packet of data from one computer to another (via the next layer down)
+- In TCP/IP, called the "Internet" or "Internet Protocol" (hence "IP") layer
+- Example protocols: IP, ICMP (used for 'ping'), IPsec (for VPNs)
+
+
+
+<h2 class="r-fit-text">Protocol stack: transport layer</h2>
+<img src="https://andromeda.cs.virginia.edu/nws/duimg/n01/image7.png" style="height:300px">
+
+- Is charged with taking a large piece of data, splitting it into smaller packets, sending each packet to the destination (via the next layer down), and (maybe) reassembling it at the destination
+  - It will (typically) request a missed packet to be re-sent
+- Example protocols: TCP, UDP
+
+
+
+## Protocol stack: session & presentation layers
+- Are charged with such tasks as managing network sockets, compressing/encoding/ encrypting the data, etc.
+- These layers do not exist in the TCP/IP model!
+  - This functionality is included in the TCP/IP application layer
+- Example protocols: TLS, SSL, NetBIOS
+
+
+
+<!-- .slide: class="right-float-img-800" -->
+## Protocol stack: application layer
+![Web browsers](images/networking/web-browsers.webp)
+- Is the top-level protocol used to communicate to the application on the other end
+- Example protocols: DHCP, DNS, FTP, HTTP, IMAP, NTP, POP, SMTP, SSH
+
+
+
+## Network device terminology
+- Node: any device on a network
+- Switch: a node that connects networks on the *data link layer* only
+  - Also called a bridge
+- Router: a node that connects networks on the *network layer*
+- Gateway: a node that connects two networks that (potentially) use different protocols
+  - Also translates addresses, etc.
+- Firewall: blocks 'bad' traffic (more on this in a few slides)
+
+
+
+## How a packet travels
+![](https://andromeda.cs.virginia.edu/nws/duimg/n01/image5-mod.png)
+- Note that routers connect more than 2 wires
+  - Otherwise itʻs a gateway
+
+
+
+## Packets in packets
+<img src="https://andromeda.cs.virginia.edu/nws/duimg/n01/image6.png#stretch" class="stretch">
+
+
+
+## Firewall
+- A firewall prevents unrequested network connections from outside hosts
+  - Typically part of a residential 'gateway' or 'router'
+  - It isolates the 'inside' network and the 'outside' network
+  - If you request data (a http connection), the sent data is then 'requested' data, and is allowed to pass through
+  - You can 'poke a hole' in a firewall to allow access to a certain port (such as ssh)
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="physical" class="center"><textarea data-template>
+# Physical Layer
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<!-- .slide: class="right-float-img-800 no-border" -->
+## Protocol stack: physical layer
+[![Ethernet cable](images/networking/ethernet-cable.webp)](https://commons.wikimedia.org/wiki/File:Ethernet_cable._SAM.jpg)
+- Is charged with getting data from one end of the 'wire' to the other end
+- Examples:
+  - copper wire
+  - fiber optic cable
+  - wireless transmission (WiFi, Bluetooth, satellite communication), etc.
+
+
+
+## Copper Wire Evolution
+
+<a href='https://commons.wikimedia.org/wiki/File:BNC_connector_with_10BASE2_cable-92170.jpg'><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/BNC_Tee_connector_for_10BASE2-92165.jpg/1024px-BNC_Tee_connector_for_10BASE2-92165.jpg" style="float:left;height:300px" class="no-border"></a>
+<a href='https://commons.wikimedia.org/wiki/File:BNC_Tee_connector_for_10BASE2-92165.jpg'><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/BNC_connector_with_10BASE2_cable-92170.jpg/1024px-BNC_connector_with_10BASE2_cable-92170.jpg" style="float:right;height:300px" class="no-border"></a>
+<br clear='all'>
+
+- Early Ethernet used co-axial cable
+  - Only 2 wires, one ground and one data
+  - Multiple devices on the same network could have their data *collide*
+  - Called 10base-2
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## Copper Wire Evolution
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Ethernet_RJ45_connector_p1160054.jpg/992px-Ethernet_RJ45_connector_p1160054.jpg)](https://commons.wikimedia.org/wiki/File:Ethernet_RJ45_connector_p1160054.jpg)
+- Modern Ethernet uses 10-base/T
+  - 8 wires, twisted in pairs
+  - Separate pairs for each direction
+
+
+
+## Copper Wire Evolution
+- Various manufacturing qualities determine maximum speed
+[![](https://telecom.samm.com/Data/EditorFiles/images/blog/015-what-is-the-ethernet/history-of-ethernet-lan-cables-categories.png)](https://telecom.samm.com/history-of-ethernet-lan-cables-categories)
+
+
+
+<!-- .slide: style="width:1200px;margin-left:-100px;font-size:smaller" -->
+## Speed Comparison
+
+| Type | Year | Speed<br>(Mbit/s) | 10 Gb<br>download | Aliases |
+|----|----|----|---|---|
+| 10base-2 | 1983 | 10 | 2h, 13m, 20s |
+| 100base-T | 1995 | 100 | 13m, 20s | fast Ethernet |
+| Comcast avg | N/A | 236 ([ref](https://www.cnet.com/home/internet/xfinity-speed-test-results/)) | 5m, 38s |
+| 1000base-TX | 1999 | 1000 | 1m, 20s | gigabit Ethernet |
+| 10Gbase-T | 2006 | 10,000 | 8s | 10 gigabit Ethernet |
+| 40G fiber | 2007 | 40,000 | 2s |
+| 802.11b wi-fi | 1999 | 11 | 2h, 1m, 12s | Wi-Fi 1 |
+| 802.11g wi-fi | 2003 | 54 | 24m, 41s | Wi-Fi 3 |
+| 80211n wi-fi | 2014 | 600 | 2m, 13s | Wi-Fi 4 |
+| 80211ac wi-fi | 2014 | 6,933 | 11s | Wi-Fi 5 |
+
+
+
+
+<!-- .slide: class="right-float-img-600 no-border" -->
+## Early Ethernet: Hub
+[![hub](https://upload.wikimedia.org/wikipedia/commons/d/d9/4_port_netgear_ethernet_hub.jpg)](https://commons.wikimedia.org/wiki/File:4_port_netgear_ethernet_hub.jpg)
+- A *hub* connects devices on the same shared network
+  - Basically a soldering of the wires together
+  - Creates the topology on the previous slide
+- Collisions happen quite often
+- They haven't been sold since the 1990's
+  - Replaced by swithces
+
+
+
+<!-- .slide: style="width:1200px;margin-left:-100px;font-size:smaller" -->
+## Speed Comparison
+
+Speeds have improved over time
+
+| Type | Year | Speed<br>(Mbit/s) | 10 Gb<br>download | Aliases |
+|----|----|----|---|---|
+| 802.11b wi-fi | 1999 | 11 | 2h, 1m, 12s | Wi-Fi 1 |
+| 802.11g wi-fi | 2003 | 54 | 24m, 41s | Wi-Fi 3 |
+| 80211n wi-fi | 2014 | 600 | 2m, 13s | Wi-Fi 4 |
+| 80211ac wi-fi | 2014 | 6,933 | 11s | Wi-Fi 5 |
+
+
+
+## Wi-Fi encryption
+- This encrypts all data sent over a wireless network
+  - This encryption is done at the network or data-link level
+  - Application-level encryption (https, ssh, imaps, etc.) is on top of Wi-Fi encryption
+- We will see wireless security later this semester
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="attacks" class="center"><textarea data-template>
+# Physical Layer Attacks
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## Physical attacks
+- Plug an Ethernet cable into a hub (or switch), and you have access (probably) to the network
+- Cut the wires, and you have caused network problems
+- Send high voltages through the Ethernet cables to short out the network devices
+- Send interference on the wifi channels to block other devices from connecting
+- Yank the hard drive and image it
+  - Encryption would block this
+- Lots of wifi attacks, which we'll see later
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## Plunder Bug LAN Tap
+![](https://hak5.org/cdn/shop/products/plunderbug2_2000x.jpg?v=1550959645)
+- Available [here](https://hak5.org/products/bug) for $80 from [hak5.org](https://hak5.org)
+- Network monitoring and recording via a USB-C port
+  - There is another network port on the end not visible in the picture
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## Packet Squirrel
+![](https://hak5.org/cdn/shop/products/ps2_2000x.png?v=1689035859)
+- Available [here](https://hak5.org/products/packet-squirrel-mark-ii) for $100 from [hak5.org](https://hak5.org)
+- It intercepts network packets, and can pass them to the USB-connected computer
+  - Also has a network jack on the far end
+- Can perform network manipulation, monitoring, and various attacks
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## LAN turtle
+![](https://hak5.org/cdn/shop/products/lan-turtle_2000x.jpg?v=1592003446)
+- Available [here](https://hak5.org/products/lan-turtle) for $80 from [hak5.org](https://hak5.org)
+- Discrete network access; looks like an Ethernet adapter
+- Chip inside can perform MITM attacks, scan networks, manage remote access, etc.
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## USB Rubber Ducky
+![](https://hak5.org/cdn/shop/products/usb-rubber-ducky_mk2_2000x.jpg?v=1659974440)
+- Available [here](https://hak5.org/products/usb-rubber-ducky) for $80 from [hak5.org](https://hak5.org)
+- Looks like a USB flash drive
+- Appears to the computer as a keyboard
+  - Some pre-set commands come built in
+  - You have it "type" custom commands
+- Technically not a network attack
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## Bash Bunny
+![](https://hak5.org/cdn/shop/products/bash-bunny-mk2_001_c58d9658-b151-4328-af26-11eef3c47355_2000x.jpg?v=1624910237)
+- Available [here](https://hak5.org/products/bash-bunny) for $120 from [hak5.org](https://hak5.org)
+- Has a series of pre-programmed exploits to try on whatever computer it is plugged into
+- LED light turns green when one works
+- Technically not a network attack
+
+
+
+<!-- .slide: class="right-float-img-600 no-border" -->
+## USBKill
+![](https://usbkill.com/cdn/shop/files/V4-key-professional_grande_1_600x337.png?v=1614343820)
+- Available [here](https://usbkill.com) for `$`56 to `$`145, depending on the model
+- A high Farad capacitor that charges from the USB port
+- Then shoots that power back into the machine, likely frying it
+- Technically not a network attack
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## Defenses
+![](https://m.media-amazon.com/images/I/71epm7DRjBL._AC_SL1500_.jpg)
+- Only three of these attacks do *physical* damage:
+  - The electrical surge over the Ethernet wire
+    - [This $16 device on Amazon](https://www.amazon.com/dp/B00UYXRDU8) can protect against this
+  - Cutting the network wires
+    - Block physical access to all unauthorized individuals
+  - USBKill
+    - Block physical access to all unauthorized individuals
+- The other attacks allowed physical access for a software attack
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	
+</div>
+</div>
+<script src="../slides/reveal.js/dist/reveal.js"></script>
+<script src="../slides/reveal.js/plugin/zoom/zoom.js"></script>
+<script src="../slides/reveal.js/plugin/notes/notes.js"></script>
+<script src="../slides/reveal.js/plugin/search/search.js"></script>
+<script src="../slides/reveal.js/plugin/markdown/markdown.js"></script>
+<script src="../slides/reveal.js/plugin/highlight/highlight.js"></script>
+<script src="../slides/reveal.js/plugin/math/math.js"></script>
+<script src="settings.js"></script>
+</body>
+</html>
