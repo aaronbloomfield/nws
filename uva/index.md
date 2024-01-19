@@ -66,7 +66,7 @@ The smaller ("S") homeworks are usually due Friday, unless otherwise noted.
 
 | Week # | Week of Monday | Lecture days | P HWs due Tue | S HWs due, usually <br> due Fri | Readings due Mon | Expected Topics | Actual Progress |
 |--------|----------------|--------------|---------|---------|-----------------|-----------------|-----------------|
-| 1  | Jan 15 | W,F | (none) | (none) | (none) | [Course introduction](../slides/introduction.html#/) | Wed: introduction (finished) |
+| 1  | Jan 15 | W,F | (none) | (none) | (none) | [Course introduction](../slides/introduction.html#/) | Wed: introduction (finished); Fri: physical layer (finished) |
 | 2  | Jan 22 | M,W,F | (none) | Survey (due Wed), <br> [Docker](../hws/docker/index.html) ([md](../hws/docker/index.md)) (due Fri) | (none) | [Network Security Basics](https://www.handsonsecurity.net/files/slides/N01_Network_Basics.pptx) | |
 | 3  | Jan 29 | M,W,F | (none) | [Linux tutorial](../hws/linux/index.html) ([md](../hws/linux/index.md)) (due Tue), <br> [Network commands](../hws/netcmds/index.html) ([md](../hws/netcmds/index.md)) (due Fri) | Du, chap 2 (MAC layer); 18 pp | [MAC Layer and Attacks](https://www.handsonsecurity.net/files/slides/N02_MAC_ARP.pptx) | |
 | 4  | Feb 5  | M,W,F | ARP | Metasploitable hacks, part 1 | Du, chap 3 (IP); 22 pp | [IP Layer and Attacks](https://www.handsonsecurity.net/files/slides/N03_IP_ICMP.pptx) | |
