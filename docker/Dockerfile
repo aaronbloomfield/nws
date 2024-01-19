@@ -47,6 +47,7 @@ RUN apt update -y -q -q && \
 		telnet ftp				 				`# basic network utilities` \
 		bind9-utils bind9-host bind9-dnsutils	`# DNS utilities` \
 		whois									`# whois directory service` \
+		tcpdump									`# tcpdump` \
 		fcrackzip				 				`# to crack passwords` \
 		&& \
 	curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > /tmp/msfinstall && \

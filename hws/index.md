@@ -16,4 +16,6 @@ These are larger programming homeworks.
 
 These are smaller homeworks that take less time.  They are typically readings or self-guided tutorials.
 
-- None yet!
+- HW S1: Google survey (link on Canvas landing page)
+- HW S2: [Docker setup](docker/index.html) ([md](docker/index.md))
+

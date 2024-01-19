@@ -1,5 +1,5 @@
-Docker Configuration
-====================
+Docker Setup
+============
 
 [Go up to the NWS HW page](../index.html) ([md](../index.md))
 
