@@ -5,11 +5,9 @@ Linux Tutorial
 
 ### Overview
 
-This assignment is a tutorial for how to use Linux.  It introduces the basic commands that you will need to know to navigate in a Linux environment.  This assignment does not go over Docker commands, which are instead presented in the [Docker configuration assignment](../docker/index.html) ([md](../docker/index.md)).
+This assignment is a tutorial for how to use Linux.  It introduces the basic commands that you will need to know to navigate in a Linux environment.  This assignment does not go over Docker commands, which were presented in the [Docker configuration assignment](../docker/index.html) ([md](../docker/index.md)).
 
-If you already know Linux, then you can just browse through this assignment to ensure that you are familiar with all the material presented.
-
-The idea is that this assignment can be used as a reference for when you are using Linux.
+If you already know Linux, then you can just browse through this assignment to ensure that you are familiar with all the material presented.  The commands we expect you to know are listed below.
 
 You will be submitting an edited version of the [linux.py](linux.py.html) ([src](linux.py)) file.
 
@@ -23,7 +21,21 @@ Any changes to this page will be put here for easy reference.  Typo fixes and mi
 
 ### Tutorial
 
-The tutorial we recommend is [here](https://www.freecodecamp.org/news/linux-command-line-tutorial/).  However, only the second half of the sections are relevant:
+The goal of this tutorial is for you to feel more comfortable with Linux.  We would expect that you would have some knowledge of the following commands:
+
+- Basic commands: `man`, `clear`, `whoami`
+- Directory commands: `ls`, `mkdir`, `rmdir`, `cd`, `pwd`
+- Working with files commands: `touch`, `rm`, `cp`, `mv`, `rename`
+- File content commands: `head`, `tail`, `cat`, `less`, `echo`, `wc`, `grep`
+- I/O redirects: `<`, `>`, `>>`, `|`
+
+Some of them are more important (`ls`, `cd`), some less important (`wc`, for example).  But you should have seen them all to some extent.
+
+If you are familiar with Linux, just be sure you know the commands listed above.
+
+#### Tutorial
+
+[This tutorial](https://www.freecodecamp.org/news/linux-command-line-tutorial/) is one we recommend.  It is your typical tutorial -- read through it, and try out the commands in your Docker image.  Note that only the second half of the sections are relevant:
 
 - [Linux commands to run in the terminal](https://www.freecodecamp.org/news/linux-command-line-tutorial/#basic-linux-commands-to-run-in-the-terminal)
 - [How to work with directories in Linux](https://www.freecodecamp.org/news/linux-command-line-tutorial/#how-to-work-with-directories-in-linux)
@@ -32,6 +44,8 @@ The tutorial we recommend is [here](https://www.freecodecamp.org/news/linux-comm
 - [Linux command operations](https://www.freecodecamp.org/news/linux-command-line-tutorial/#linux-command-operations)
 
 As you learn the commands, you should try them out in the Docker containers.  How to start the containers, and then connect to them, is described in the [Docker configuration assignment](../docker/index.html) ([md](../docker/index.md)).
+
+You are welcome to try out other tutorials, including video tutorials.  If you like to learn by playing games, check out [Bandit](https://overthewire.org/wargames/bandit/).  But if you do use other tutorials, check that you have learned the commands above.  If you missed one or two, enter `man <cmd>` into your favorite search engine, and learn how to use the command from the manual page.
 
 
 ### Submission

@@ -26,12 +26,14 @@ other = {
 
 	# On a scale of 1-5, how well do you feel you knew Linux commands *before*
 	# going through this tutorial?  1 is not at all, 2 a bit, but not much, 3
-	# is neutral, 4 is well, 5 is quite well.
+	# is neutral, 4 is well, 5 is quite well.  The answer to this will not
+	# change your grade at all.
 	'knew_linux_cmds_before': None,
 
 	# On a scale of 1-5, how well do you feel you know Linux commands *after*
 	# going through this tutorial?  1 is not at all, 2 a bit, but not much, 3
-	# is neutral, 4 is well, 5 is quite well.
+	# is neutral, 4 is well, 5 is quite well.  The answer to this will not
+	# change your grade at all.
 	'knew_linux_cmds_after': None,
 
 }
