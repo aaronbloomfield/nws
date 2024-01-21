@@ -64,23 +64,23 @@ Course calendar
 
 The smaller ("S") homeworks are usually due Friday, unless otherwise noted.
 
-| Week # | Week of Monday | Lecture days | P HWs due Tue | S HWs due, usually <br> due Fri | Readings due Mon | Expected Topics | Actual Progress |
-|--------|----------------|--------------|---------|---------|-----------------|-----------------|-----------------|
-| 1  | Jan 15 | W,F | (none) | (none) | (none) | [Course introduction](../slides/introduction.html#/) | Wed: introduction (finished); Fri: physical layer (finished) |
-| 2  | Jan 22 | M,W,F | (none) | Survey (due Wed), <br> [Docker](../hws/docker/index.html) ([md](../hws/docker/index.md)) (due Fri) | (none) | [Network Security Basics](https://www.handsonsecurity.net/files/slides/N01_Network_Basics.pptx) | |
-| 3  | Jan 29 | M,W,F | (none) | [Linux tutorial](../hws/linux/index.html) ([md](../hws/linux/index.md)) (due Tue), <br> [Network commands](../hws/netcmds/index.html) ([md](../hws/netcmds/index.md)) (due Fri) | Du, chap 2 (MAC layer); 18 pp | [MAC Layer and Attacks](https://www.handsonsecurity.net/files/slides/N02_MAC_ARP.pptx) | |
-| 4  | Feb 5  | M,W,F | ARP | Metasploitable hacks, part 1 | Du, chap 3 (IP); 22 pp | [IP Layer and Attacks](https://www.handsonsecurity.net/files/slides/N03_IP_ICMP.pptx) | |
-| 5  | Feb 12 | M,W,F | Routing | Metasploitable hacks, part 2 | Du, chap 4 (packet sniffing); 28 pp | [Packet Sniffing & Spoofing](https://www.handsonsecurity.net/files/slides/N04_Sniffing_Spoofing.pptx) | |
-| 6  | Feb 19 | M,W,F | TCP reconstruction | Web of trust, week 1 | Du, chap 5 (transport layer) & <br> parts of chap 6 (TCP attacks); ~30 pp | [TCP & attacks](https://www.handsonsecurity.net/files/slides/N06_TCP.pptx), [UDP & attacks](https://www.handsonsecurity.net/files/slides/N05_UDP.pptx) | |
-| 7  | Feb 26 | M,W,F | (midterm on Wed) | Web of trust, week 2 | Du, chap 7 (firewall); 26 pp | [Firewall](https://www.handsonsecurity.net/files/slides/N07_Firewalls.pptx) | |
-| 8  | Mar 4  |       | | | | Spring break (no classes) | |
-| 9  | Mar 11 | M,W,F | Protocol | Firewall configuration | Du, chap 8 (VPN); 32 pp | [Virtual Private Network](https://www.handsonsecurity.net/files/slides/N08_VPN.pptx) | |
-| 10 | Mar 18 | M,W,F | Wireshark | TBD | Du, chap 9 (tunneling); 18 pp | [Tunneling and Firewall Evasion](https://www.handsonsecurity.net/files/slides/N09_Tunneling.pptx) | |
-| 11 | Mar 25 | M,W,F | Network monitoring | TBD | parts of Du, chapter 10 (DNS), <br> parts of Du, chap 11 (DNSSEC); ~30 pp | [DNS and Attacks](https://www.handsonsecurity.net/files/slides/N10_DNS.pptx), [DNSSEC](https://www.handsonsecurity.net/files/slides/N11_DNSSEC.pptx) | |
-| 12 | Apr 1  | M,W,F | DNS | TBD | parts of Du, chap 12 (BGP); ~30 pp | [BGP and Attacks](https://www.handsonsecurity.net/files/slides/N12_BGP.pptx) | |
-| 13 | Apr 8  | M,W,F | BGP | TBD | Du, chap 14 (reverse shell); 14 pp | [Reverse Shell](https://www.handsonsecurity.net/files/slides/N14_Reverse_Shell.pptx) | |
-| 14 | Apr 15 | M,W,F | TCP shell | TBD | TBD | [Web Security Basics](https://www.handsonsecurity.net/files/slides/W01_Web_Security_Basics.pptx), [XSS](https://www.handsonsecurity.net/files/slides/W03_Web_XSS.pptx) | |
+| Week<br># | Week&nbsp;of<br>Monday | Lecture<br>days | P HWs due Tue | S HWs due, usually <br> due Fri | Readings due Mon | Expected Topics | Actual Progress |
+|----|----------|--------|---------|---------|-----------------|-----------------|-----------------|
+| 1 | Jan 15 | W,F | (none) | (none) | (none) | [Introduction](../slides/introduction.html#/), [physical layer](../slides/physical-layer.html#/) | Wed: introduction (finished); Fri: physical layer (finished) |
+| 2 | Jan 22 | M,W,F | (none) | Survey (due Tue),<br>[Docker](../hws/docker/index.html) ([md](../hws/docker/index.md)) (due Fri) | (none) | [Data link layer](../slides/link-layer.html#/) | |
+| 3 | Jan 29 | M,W,F | (none) | [Linux tutorial](../hws/linux/index.html) ([md](../hws/linux/index.md)) (due Tue), <br>[Network commands](../hws/netcmds/index.html) ([md](../hws/netcmds/index.md)) (due Fri) | ~~Du, chap 2 (MAC layer); 18 pp~~ | [Network layer](../slides/network-layer.html#/) | |
+| 4 | Feb 5 | M,W,F | ARP | Metasploitable hacks, part 1 | Du, chap 3 (IP); 22 pp | | |
+| 5 | Feb 12 | M,W,F | Routing | Metasploitable hacks, part 2 | Du, chap 4 (packet sniffing); 28 pp | | |
+| 6 | Feb 19 | M,W,F | TCP reconstruction | Web of trust, week 1 | Du, chap 5 (transport layer), <br>parts of chap 6 (TCP attacks); ~30 pp | | |
+| 7 | Feb 26 | M,W,F | (midterm on Wed) | Web of trust, week 2 | Du, chap 7 (firewall); 26 pp | | |
+| 8 | Mar 4 | | | | Spring break (no classes) | | |
+| 9 | Mar 11 | M,W,F | Protocol | Firewall configuration | Du, chap 8 (VPN); 32 pp | | |
+| 10 | Mar 18 | M,W,F | Wireshark | TBD | Du, chap 9 (tunneling); 18 pp | | |
+| 11 | Mar 25 | M,W,F | Network monitoring | TBD | parts of Du, chapter 10 (DNS),<br>parts of Du, chap 11 (DNSSEC); ~30 pp | | |
+| 12 | Apr 1 | M,W,F | DNS | TBD | parts of Du, chap 12 (BGP); ~30 pp | | |
+| 13 | Apr 8 | M,W,F | BGP | TBD | Du, chap 14 (reverse shell); 14 pp | | |
+| 14 | Apr 15 | M,W,F | TCP shell | TBD | TBD | | |
 | 15 | Apr 22 | M,W,F | SSH MITM | TBD | TBD | Miscellaneous Topics | |
-| 16 | Apr 29 | M     | Xmas scans | (none) | (none) | [Course conclusion](slides/conclusion.html#/) | |
+| 16 | Apr 29 | M | Xmas scans | (none) | (none) | | |
 
 [1]: https://canvas.its.virginia.edu/courses/92875
