@@ -205,6 +205,10 @@ p.blankline { height:1em; }
   padding:0;
 }
 
+.no-img-corner-radius img, img.no-img-corner-radius {
+  border-radius:0;
+}
+
 .right-float-img-200 img {
     float:right;
     max-width:200px;
@@ -610,8 +614,13 @@ div.wikitablediv {
 }
 
 /* wide pre */
-.wide-pre pre {
+.wide-pre pre, .pre-wide pre {
   margin-left:-100px;
   width:120%;
 }
+
+/* smaller pres */
+.small-pre pre { font-size:50%;}
+.smaller-pre pre { font-size:40%;}
+.smallest-pre pre { font-size:30%;}
 
