@@ -8,10 +8,18 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="../../markdown.css" />
@@ -61,7 +69,10 @@
 <p>This assignment has very little in terms of the deliverable – in fact, you could easily skip to the ‘Submission’ section, make up answers, and get full credit on this assignment. <strong>HOWEVER,</strong> this assignment is going to be necessary to complete before doing <em>any other</em> assignment in this course, as pretty much <em>all</em> the assignments will be using this docker setup.</p>
 <p>If you get stuck, or are unable to proceed past a certain point, don’t panic. Try to get help from the course staff. You can also ask fellow students for this assignment. If it still does not work, still submit the file at the end, and indicate (in the comments field therein) where you got stuck. As long as you make a sincere effort to complete this assignment, you will still get full credit.</p>
 <h3 id="changelog">Changelog</h3>
-<p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. So far there aren’t any significant changes to report.</p>
+<p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. <!-- So far there aren't any significant changes to report. --></p>
+<ul>
+<li>Mon, Jan 22: Windows users: the installation command in WSL should be <code>sudo apt update</code> followed by <code>sudo apt install x11-xserver-utils</code> (there was a typo in the original version)</li>
+</ul>
 <h3 id="step-1-pre-requisites">Step 1: Pre-requisites</h3>
 <p>After reading the background section below, you should choose the particular setup specific to your operating system. This tutorial assumes you have administrator (or <code>sudo</code>) access on your machine.</p>
 <h4 id="background">Background</h4>
@@ -69,7 +80,7 @@
 <p>The way Docker works is you download or build an <em>image</em>. An image is like a hard drive – it has all the files necessary to boot a version of Linux, whether it be Ubuntu, Kali, Debian, or any other Linux flavor. When you want to run such an image, you instruct docker to launch a <em>container</em>. A container is just a running image. From one image, you can have a dozen containers running. You can also have containers of different images running as well. So it is analogous to an executable file (the image) and a running process (the container) – given a single executable file, you can have it running a dozen times, each time being a separate process.</p>
 <h4 id="windows-host-setup">Windows host setup</h4>
 <p>You will need to install WSL (Windows Sub-system for Linux); you can see how to install that <a href="https://learn.microsoft.com/en-us/windows/wsl/install">here</a></p>
-<p>Once you have installed WSL, you need to install the x11-server-utils package: <code>sudo apt update</code> followed by <code>sudo apt install x11-server-utils</code>.</p>
+<p>Once you have installed WSL, you need to install the x11-xserver-utils package: <code>sudo apt update</code> followed by <code>sudo apt install x11-xserver-utils</code>.</p>
 <h4 id="mac-os-x-host-setup">Mac OS X host setup</h4>
 <p>You will need to install <a href="https://brew.sh">Homebrew</a>; the directions for how to install that are <a href="https://docs.brew.sh/Installation">here</a>.</p>
 <p>One homebrew is installed, you should install two packages: <code>socat</code> and <code>xquartz</code>. The commands to install these packages are: <code>brew install socat</code> and <code>brew install xquartz</code>. Note that one of them (likely socat) needs to listen to network connections in the background; OS X will pop up a warning, although that may not occur until it is run. The use of these two programs will be explained below.</p>
@@ -159,10 +170,7 @@ $</code></pre>
 <ul>
 <li>Windows host users: make the initial ‘d’ of ‘dockerfile.metasploit’ be lower-case</li>
 </ul></li>
-<li><code>docker build -t nws .</code>: this builds the course image for the not-intentionally vulnerable images
-<ul>
-<li>Windows host users: make the initial ‘d’ of ‘dockerfile’ be lower-case</li>
-</ul></li>
+<li><code>docker build -t nws .</code>: this builds the course image for the not-intentionally vulnerable images</li>
 </ul>
 <p>One those completed, and assuming they completed successfully, you should run <code>docker images</code> again, and you will see something simnilar to the following:</p>
 <pre><code>$ docker images

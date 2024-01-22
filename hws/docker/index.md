@@ -24,7 +24,9 @@ If you get stuck, or are unable to proceed past a certain point, don't panic.  T
 
 ### Changelog
 
-Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  So far there aren't any significant changes to report.
+Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  <!-- So far there aren't any significant changes to report. -->
+
+- Mon, Jan 22: Windows users: the installation command in WSL should be `sudo apt update` followed by `sudo apt install x11-xserver-utils` (there was a typo in the original version)
 
 
 ### Step 1: Pre-requisites
@@ -43,7 +45,7 @@ The way Docker works is you download or build an *image*.  An image is like a ha
 
 You will need to install WSL (Windows Sub-system for Linux); you can see how to install that [here](https://learn.microsoft.com/en-us/windows/wsl/install)
 
-Once you have installed WSL, you need to install the x11-server-utils package: `sudo apt update` followed by `sudo apt install x11-server-utils`.
+Once you have installed WSL, you need to install the x11-xserver-utils package: `sudo apt update` followed by `sudo apt install x11-xserver-utils`.
 
 #### Mac OS X host setup
 
@@ -164,7 +166,6 @@ There are four commands you need to enter, in succession, to build the course im
 - `docker build -t metasploit2 -f Dockerfile.metasploit2 .`: this builds a variant of the intentionally vulnerable image so that it will work well in our setup
 	- Windows host users: make the initial 'd' of 'dockerfile.metasploit' be lower-case
 - `docker build -t nws .`: this builds the course image for the not-intentionally vulnerable images
-	- Windows host users: make the initial 'd' of 'dockerfile' be lower-case
 
 One those completed, and assuming they completed successfully, you should run `docker images` again, and you will see something simnilar to the following:
 
