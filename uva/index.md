@@ -65,7 +65,7 @@ The smaller ("S") homeworks are usually due Friday, unless otherwise noted.  The
 | Week<br># | Week&nbsp;of<br>Monday | Lecture<br>days | P HWs due Tue | S HWs due, usually <br> due Fri | Readings due Mon | Expected Topics | Actual Progress |
 |----|----------|--------|---------|--------------|-----------------|-----------------|----|
 | 1 | Jan 15 | W,F | (none) | (none) | (none) | [Introduction](../slides/introduction.html#/), [Physical layer](../slides/physical-layer.html#/) | Wed: introduction (finished); Fri: physical layer (finished) |
-| 2 | Jan 22 | M,W,F | (none) | Survey (due Tue),<br>[Docker](../hws/docker/index.html) ([md](../hws/docker/index.md)) (due Fri) | (none) | [Data link layer](../slides/link-layer.html#/) | |
+| 2 | Jan 22 | M,W,F | (none) | Survey (due Tue),<br>[Docker](../hws/docker/index.html) ([md](../hws/docker/index.md)) (due Fri) | (none) | [Data link layer](../slides/link-layer.html#/) | Mon: link layer to 5.5 |
 | 3 | Jan 29 | M,W,F | (none) | [Linux tutorial](../hws/linux/index.html) ([md](../hws/linux/index.md)) (due Tue), <br>Network commands (due Fri) | ~~Du, chap 2 (MAC layer); 18 pp~~ | [Network layer](../slides/network-layer.html#/) | |
 | 4 | Feb 5 | M,W,F | ARP | Metasploitable hacks, part 1 | Du, chap 3 (IP); 22 pp | | |
 | 5 | Feb 12 | M,W,F | Routing | Metasploitable hacks, part 2 | Du, chap 4 (packet sniffing); 28 pp | | |
