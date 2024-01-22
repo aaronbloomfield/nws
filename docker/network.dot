@@ -1,7 +1,8 @@
 graph network {
-    graph [fontname = "Helvetica"];
-    node [fontname = "Helvetica",shape=rect];
-    edge [fontname = "Helvetica"];
+    graph [fontname="Helvetica"];
+    node [fontname="Helvetica",shape=rect,style=rounded];
+    edge [fontname="Helvetica"];
+    rank=LR;
 
     outer_network [shape=box,label="outernet network: 192.168.100.x",shape=oval];
     inner_network [shape=box,label="innernet network: 192.168.200.x",shape=oval];
@@ -37,9 +38,10 @@ graph network {
 }
 
 graph network_compact {
-    graph [fontname = "Helvetica"];
-    node [fontname = "Helvetica",shape=rect];
-    edge [fontname = "Helvetica"];
+    graph [fontname="Helvetica"];
+    node [fontname="Helvetica",shape=rect,style=rounded];
+    edge [fontname="Helvetica"];
+    rank=LR;
 
     outer_network [shape=box,label="outernet network: 192.168.100.x",shape=oval];
     inner_network [shape=box,label="innernet network: 192.168.200.x",shape=oval];
@@ -76,9 +78,9 @@ graph network_compact {
 }
 
 digraph network_for_routing {
-    graph [fontname = "Helvetica"];
-    node [fontname = "Helvetica",shape=rect];
-    edge [fontname = "Helvetica"];
+    graph [fontname="Helvetica"];
+    node [fontname="Helvetica",shape=rect,style=rounded];
+    edge [fontname="Helvetica"];
     rankdir="TB";
 
     firewall [label=< &lt;bridge IP&gt; (eth0)<br/><b>firewall</b><br/>192.168.100.1 (eth1) >];
@@ -98,5 +100,44 @@ digraph network_for_routing {
     {rank=same outer1 gateway}
     {rank=min firewall}
     {rank=max other}
+}
 
+digraph network_compact_for_arp_normal {
+    graph [fontname="Helvetica"];
+    node [fontname="Helvetica",shape=rect,style=rounded];
+    edge [fontname="Helvetica"];
+    rank=LR;
+
+    internet [label=< <b>Internet</b> >,shape=plaintext,fontsize=20];
+    firewall [label=< &lt;bridge IP&gt; (eth0)<br/><b>firewall</b><br/>192.168.100.1 (eth1) >];
+    outer1 [label=< 192.168.100.101 (eth0)<br/><b>outer1</b><br/>  >];
+    outer2 [label=< 192.168.100.102 (eth0)<br/><b>outer2</b><br/>  >];
+
+    internet -> firewall [arrowhead=none];
+    firewall -> outer2 [color=green,dir=both,fontcolor=green,penwidth=2,label="normal"];
+    firewall -> outer1 [color=red,dir=both,fontcolor=red,penwidth=2,label="spoofed"];
+    outer1 -> outer2 [color=red,dir=both,fontcolor=red,penwidth=2,label="spoofed"];
+
+    {rank=same firewall internet}
+    {rank=same outer1 outer2}
+}
+
+digraph network_compact_for_arp_spoofed {
+    graph [fontname="Helvetica"];
+    node [fontname="Helvetica",shape=rect,style=rounded];
+    edge [fontname="Helvetica"];
+    rank=LR;
+
+    internet [label=< <b>Internet</b> >,shape=plaintext,fontsize=20];
+    firewall [label=< &lt;bridge IP&gt; (eth0)<br/><b>firewall</b><br/>192.168.100.1 (eth1) >];
+    outer1 [label=< 192.168.100.101 (eth0)<br/><b>outer1</b><br/>  >];
+    outer2 [label=< 192.168.100.102 (eth0)<br/><b>outer2</b><br/>  >];
+
+    internet -> firewall [arrowhead=none];
+    firewall -> outer2 [color=green,dir=both,fontcolor=green,penwidth=2,label="normal"];
+    firewall -> outer1 [color=black,dir=both,penwidth=2,fontcolor=invis,label="spoofed"];
+    outer1 -> outer2 [color=invis,dir=both,fontcolor=invis,penwidth=2,label="spoofed"];
+
+    {rank=same firewall internet}
+    {rank=same outer1 outer2}
 }
