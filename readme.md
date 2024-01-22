@@ -32,4 +32,4 @@ Source code: all of the source code created for this repository is released unde
 
 Non source code: All non-source material is released under a [Creative Commons BY-SA license](https://creativecommons.org/licenses/by-sa/4.0/) (CC BY-SA).  Note that there are some external images that are included in some of the slides, but are not hosted in this repository; their licenses are determined by their respective owners.
 
-Slides: many of the slide sets are links to [this site](https://www.handsonsecurity.net/resources.html).  They are not part of this repo, and are not released under a CC BY-SA license.
+Slides images: some of the slide sets are from [this site](https://www.handsonsecurity.net/resources.html), and are used with permission.  They are not part of this repo, and are not released under a CC BY-SA license.

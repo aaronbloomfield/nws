@@ -37,9 +37,7 @@ Readings
 
 <!-- All scholarly articles (such as from the ACM digital library) can be obtained from free from any UVA wireless network. Some of them you will *NOT* be able to get it for free from your home Internet provider such as Comcast (unless you live in a UVA dorm, of course) without using a UVA VPN. -->
 
-All readings are due by the start of lecture that day. You should expect there to be in-class quizzes on each reading.
-
-- none assigned yet!
+All readings are due by the start of lecture that day. You should expect there to be in-class quizzes on each reading.  The list of readings, and when they are due, are on the [Canvas landing page][1].
 
 
 Homeworks
@@ -62,13 +60,13 @@ Readings are due by the start of lecture on that day; all other homeworks are du
 Course calendar
 ---------------
 
-The smaller ("S") homeworks are usually due Friday, unless otherwise noted.
+The smaller ("S") homeworks are usually due Friday, unless otherwise noted.  The larger programming ("P") homeworks are due Tuesday.  All homeworks are due by the end of the day (11:59:59 pm).
 
 | Week<br># | Week&nbsp;of<br>Monday | Lecture<br>days | P HWs due Tue | S HWs due, usually <br> due Fri | Readings due Mon | Expected Topics | Actual Progress |
-|----|----------|--------|---------|---------|-----------------|-----------------|-----------------|
-| 1 | Jan 15 | W,F | (none) | (none) | (none) | [Introduction](../slides/introduction.html#/), [physical layer](../slides/physical-layer.html#/) | Wed: introduction (finished); Fri: physical layer (finished) |
+|----|----------|--------|---------|--------------|-----------------|-----------------|----|
+| 1 | Jan 15 | W,F | (none) | (none) | (none) | [Introduction](../slides/introduction.html#/), [Physical layer](../slides/physical-layer.html#/) | Wed: introduction (finished); Fri: physical layer (finished) |
 | 2 | Jan 22 | M,W,F | (none) | Survey (due Tue),<br>[Docker](../hws/docker/index.html) ([md](../hws/docker/index.md)) (due Fri) | (none) | [Data link layer](../slides/link-layer.html#/) | |
-| 3 | Jan 29 | M,W,F | (none) | [Linux tutorial](../hws/linux/index.html) ([md](../hws/linux/index.md)) (due Tue), <br>[Network commands](../hws/netcmds/index.html) ([md](../hws/netcmds/index.md)) (due Fri) | ~~Du, chap 2 (MAC layer); 18 pp~~ | [Network layer](../slides/network-layer.html#/) | |
+| 3 | Jan 29 | M,W,F | (none) | [Linux tutorial](../hws/linux/index.html) ([md](../hws/linux/index.md)) (due Tue), <br>Network commands (due Fri) | ~~Du, chap 2 (MAC layer); 18 pp~~ | [Network layer](../slides/network-layer.html#/) | |
 | 4 | Feb 5 | M,W,F | ARP | Metasploitable hacks, part 1 | Du, chap 3 (IP); 22 pp | | |
 | 5 | Feb 12 | M,W,F | Routing | Metasploitable hacks, part 2 | Du, chap 4 (packet sniffing); 28 pp | | |
 | 6 | Feb 19 | M,W,F | TCP reconstruction | Web of trust, week 1 | Du, chap 5 (transport layer), <br>parts of chap 6 (TCP attacks); ~30 pp | | |

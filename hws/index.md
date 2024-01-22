@@ -18,4 +18,4 @@ These are smaller homeworks that take less time.  They are typically readings or
 
 - HW S1: Google survey (link on Canvas landing page)
 - HW S2: [Docker setup](docker/index.html) ([md](docker/index.md))
-
+- HW S3: [Linux tutorial](linux/index.html) ([md](linux/index.md))
