@@ -685,7 +685,7 @@ root@outer2:/#
         </tr>
         <tr>
           <th>16</th>
-          <td colspan="16" style="background:#d0ffd0;color:red">(last 2 bytes): 0x0164</td>
+          <td colspan="16" style="background:#d0ffd0;color:red">(last 2 bytes): 0x0166</td>
         </tr>
         <tr>
           <th>18</th>
@@ -864,6 +864,7 @@ root@outer2:/#
 - This requires *two* spoofs
   - The malicious machine (.101) has to tell the gateway (.1) that it is the target (.102)
   - The malicious machine (.101) *also* has to tell the target (.102) that it is the gateway (.1)
+- This is another form of MITM (Man (Perosn) in the Middle) attack
 
 
 
@@ -894,23 +895,27 @@ root@outer2:/#
 
 
 ## How to do it
-![docker lan setup](../docker/network_compact.svg)
-- The following directions are for our [course docker setup](...)
-- We are going to have outer1 spoof (pretend to be) outer2
+
+<img src='../docker/network_compact_for_arp_normal.svg' style="float:left;width:45%">
+<img src='../docker/network_compact_for_arp_spoofed.svg' style="float:right;width:45%">
+
+- The following directions are for our [course docker setup](../docker/network.svg)
+- We are going to have `outer1` spoof (intercept the packets for) `outer2`
+- We will run `urlsnarf` on `outer1`
+  - This will display URLs it sees in the intercepted packets
 </textarea></section>
 
 <section data-markdown data-separator="^\n\n\n" id="arpexample"><textarea data-template>
 ## How to do it
-- Tab 1: run the docker setup: `docker-compose up`
-- Tab 2: connect to outer1 and run:
+- Tab 1: run the docker setup:
+  <pre><code>docker-compose up</code></pre>
+- Tab 2: connect to `outer1` and run:
   <pre><code>arpspoof -i eth0 -t 192.168.100.102 192.168.100.1</code></pre>
-- Tab 3: connect to outer1 and run:
+- Tab 3: connect to `outer1` and run (note reversed!):
   <pre><code>arpspoof -i eth0 -t 192.168.100.1 192.168.100.102</code></pre>
-  - Note that the IP addresses are reversed!
-- Tab 4: connect to outer1 and run:
+- Tab 4: connect to `outer1` and run:
   <pre><code>urlsnarf -i eth0</code></pre>
-  - This will display URLs it sees in the intercepted packets
-- Tab 5: wait a minute, then connect to *outer2* and run:
+- Tab 5: wait a minute, then connect to `outer2` and run:
   <pre><code>wget -q http://google.com</code></pre>
 </textarea></section>
 
