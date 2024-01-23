@@ -682,7 +682,9 @@ root@outer2:/#
 There are many other things that netcat can do, and we will see some throughout the semester.  You can see a fuller tutorial on netcat [here](https://nooblinux.com/how-to-use-netcat/), if you want to go into more detail.
 
 
-### curl
+### curl and wget
+
+#### `curl`
 
 `curl` is a command-line utility for transferring data via a URI, such as an http:// address.  It is useful in scripts and programs, as we avoid having to load up a browser each time.
 
@@ -711,6 +713,10 @@ root@outer1:/#
 In a real script, you would NEVER want to include the password, but it's not really much of a secret for the metasploit container.
 
 There are many other things that `curl` can do; [here](https://linuxize.com/post/curl-command-examples/) is a list of example usages if you are interested in learning more (not required for this assignment).
+
+#### `wget`
+
+`wget` is similar to `curl` in that it will download a file.  Whereas `curl` can do a whole bunch of protocols, `wget` is only for http:// and https:// (and a few other related protocols).  `wget` has some more options, such as mirroring a website, changing URLs, etc.  For our usages in this course, it will operate just like `curl`, but is better for web pages.
 
 
 ### Other commands
