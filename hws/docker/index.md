@@ -26,6 +26,7 @@ If you get stuck, or are unable to proceed past a certain point, don't panic.  T
 
 Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  <!-- So far there aren't any significant changes to report. -->
 
+- Mon, Jan 22: Mac users: the `socat` command should be: `socat TCP-LISTEN:6000,bind=127.0.0.1,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\"`
 - Mon, Jan 22: Windows users: the installation command in WSL should be `sudo apt update` followed by `sudo apt install x11-xserver-utils` (there was a typo in the original version)
 
 
@@ -142,7 +143,9 @@ If you have a Windows host, you may have to enable WSL bindings in the Docker En
 
 Windows Defender, or whatever firewall you have enabled, will likely complain when you start the Docker containers, as it notices that the network configuration has changed due to the Docker networks that are created as part of the container start-up.  You will have to allow this in order to use this Docker setup on your machine.
 
-Lastly, in Windows, note that when you have to enter "Dockerfile" on the command line (or "Dockerfile.metasploit2") in the commands below, you have to do it all lower-case ("dockerfile" or "dockerfile.metasploit2").  This only applies to Windows hosts.
+Docker Desktop seems to go to sleep.  If none of your commands in WSL work, try waking up Docker Desktop, which will reactivate the Docker Engine.
+
+Lastly, in Windows, note that when you have to enter "Dockerfile" on the command line (or "Dockerfile.metasploit2") in the commands below, you *may* have to do it all lower-case ("dockerfile" or "dockerfile.metasploit2").  This only applies to Windows hosts, and has been found to be inconsistent between Windows installations (some need lower-case, some don't).
 
 #### Build the image
 
@@ -280,7 +283,7 @@ You will have to log out and then log back in (or restart) after you installed x
 
 - Make sure the docker engine is running -- you should see a docker icon in the top bar (it looks like a container ship).
 - Launch socat from the command line:
-    - `socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\"`
+    - `socat TCP-LISTEN:6000,bind=127.0.0.1,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\"`
     	- Cut and paste that exactly as-is, with the backslashes and all
 	- You can put it in the background by appending `&` to it
 - Run xquartz: `open -a Xquartz`
