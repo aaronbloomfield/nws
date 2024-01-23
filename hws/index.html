@@ -8,10 +8,18 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="../markdown.css" />
@@ -60,6 +68,7 @@
 <li>HW S1: Google survey (link on Canvas landing page)</li>
 <li>HW S2: <a href="docker/index.html">Docker setup</a> (<a href="docker/index.md">md</a>)</li>
 <li>HW S3: <a href="linux/index.html">Linux tutorial</a> (<a href="linux/index.md">md</a>)</li>
+<li>HW S4: <a href="netcmds/index.html">Network commands tutorial</a> (<a href="netcmds/index.md">md</a>)</li>
 </ul>
 </body>
 </html>

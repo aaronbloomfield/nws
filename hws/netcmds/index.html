@@ -49,6 +49,7 @@
     document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
   }
   </script>
+  
 </head>
 <body>
 <h1 id='network-command-introduction'>Network Command Introduction</h1>
@@ -61,25 +62,26 @@
 <button class='tablinks' onclick="openTab(event,'tping')">ping</button>
 <button class='tablinks' onclick="openTab(event,'tnslookup-and-dig')">nslookup &amp; dig</button>
 <button class='tablinks' onclick="openTab(event,'ttraceroute')">traceroute</button>
-<button class='tablinks' onclick="openTab(event,'tnc')">nc</button>
+<button class='tablinks' onclick="openTab(event,'tnetcat')">netcat</button>
+<button class='tablinks' onclick="openTab(event,'tcurl')">curl</button>
 <button class='tablinks' onclick="openTab(event,'tother-commands')">Other Commands</button>
 <button class='tablinks' onclick="openTab(event,'tsubmission')">Submission</button>
 </div>
 <div id='toverview' class='tabcontent'><h3 id='overview'>Overview</h3>
-<p>This assignment is a tutorial about various network commands on a Linux system. It is different than the <a href='../linux/index.html'>Linux tutorial</a> (<a href='../linux/index.md'>md</a>) assignment – that assignment went over the basics of how to use Linux. This tutorial goes over how to use commands that are specific to interacting with the network. This assignment does not go over Docker commands, which are instead presented in the <a href='../docker/index.html'>Docker configuration assignment</a> (<a href='../docker/index.md'>md</a>).</p>
-<p>The idea is that this assignment can be used as a reference for when you are using Linux.</p>
+<p>This assignment is a tutorial about various network commands on a Linux system. It is different than the <a href='../linux/index.html'>Linux tutorial</a> (<a href='../linux/index.md'>md</a>) assignment – that assignment went over the basics of how to use Linux, whereas this tutorial goes over how to use commands that are specific to interacting with the network. This assignment does not go over Docker commands, which are instead presented in the <a href='../docker/index.html'>Docker configuration assignment</a> (<a href='../docker/index.md'>md</a>).</p>
+<p>The idea is that this assignment can be used as a reference for when you need to use these network commands.</p>
 <p>You will be submitting an edited version of the <a href='netcmds.py.html'>netcmds.py</a> (<a href='netcmds.py'>src</a>) file.</p>
 <p>This assignment has very little in terms of the deliverable – in fact, you could easily skip to the ‘Submission’ section, make up answers, and get full credit on this assignment. <strong>HOWEVER,</strong> this assignment is going to be necessary to complete before doing <em>any other</em> assignment in this course. The material gone over in this tutorial are also fair game for pop quizzes and exams.</p>
-<p>There are multiple sections (tabs), and each one goes over how to use a given command. Some of them reference external pages.</p>
+<p>There are multiple sections (tabs), and each one goes over how to use a given command (or two). Some of them reference external pages.</p>
 <p>As you learn the commands, you should try them out in the Docker containers. How to start the containers, and then connect to them, is described in the <a href='../docker/index.html'>Docker configuration assignment</a> (<a href='../docker/index.md'>md</a>).</p>
-<p>For all the commands below, there is a manual page. Normally, you could run <code>man &lt;cmd&gt;</code> (example: <code>man ssh</code>) to see the full set of options available for that command. However, the manuals are not included in the Docker images to conserve space. You can instead do a web search for <code>man dig</code>, and the manual page will likely be the first entry that appears.</p>
-<p>All of these commands are available for all operating systems. However, many may not be installed on your host system. However, they are all installed on the course Docker setup.</p>
+<p>For all the commands below, there is a manual page. Normally, you could run <code>man &lt;cmd&gt;</code> (example: <code>man ssh</code>) to see the full set of options available for that command. However, the manual pages are not included in the Docker images to conserve space. You can instead do a web search for <code>man dig</code>, and the manual page will likely be the first entry that appears.</p>
+<p>All of these commands are available for all operating systems. However, many may not be installed on your host system. They are all installed on the course Docker setup.</p>
 </div><div id='tchangelog' class='tabcontent'><h3 id='changelog'>Changelog</h3>
 <p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. So far there aren’t any significant changes to report.</p>
 </div><div id='tssh-and-telnet' class='tabcontent'><h3 id='ssh-and-telnet'>ssh and telnet</h3>
-<p>ssh, for Secure Shell, is a way to connect to another host. <code>telnet</code> is the same idea as ssh, but does not use encryption of any sort. <code>ssh</code> uses TLS encryption for the entire session.</p>
+<p>ssh, for Secure Shell, is a way to connect to another host. telnet is the same idea as ssh, but does not use encryption of any sort. ssh uses TLS encryption for the entire session.</p>
 <h4 id='basic-ssh'>Basic ssh</h4>
-<p>To connect to a different host, you can use the <code>ssh</code> command. Note that to connect to a container for the first time, we use <code>docker exec</code>. But once within the containers, we can use <code>ssh</code>.</p>
+<p>To connect to a different host, you can use the <code>ssh</code> command. Note that to connect to a container for the first time, we use <code>docker exec</code>. But once within the containers, we can use <code>ssh</code> to connect to the other containers.</p>
 <p>The containers are set up so that you can easily ssh between the containers by just entering <code>ssh &lt;hostname&gt;</code>:</p>
 <pre><code>$ docker exec -it nws-outer1 /bin/bash
 root@outer1:/# ssh inner
@@ -107,7 +109,7 @@ metasploit
 root@metasploit:~# logout
 Connection to metasploit closed.
 root@outer1:/# </code></pre>
-<p>The password is <code>password</code>.</p>
+<p>The password is just <code>password</code>. This will log you in as <code>root</code>; you can also log into that container with <code>msfadmin</code> and password <code>msfadmin</code>.</p>
 <p>The containers <em>other</em> than metasploit are configured to not require public key authentication (see <a href='https://dev.to/gvelrajan/how-to-configure-and-setup-ssh-certificates-for-ssh-authentication-b52'>here</a> if you want to set this up on your own machine). But the metasploit container is such an old version of ssh that it cannot deal with the more recent types of public keys that the ssh currently uses.</p>
 <h4 id='more-typical-ssh-usage'>More typical ssh usage</h4>
 <p>Normally, you would have to enter the username and the full hostname as well, such as <code>ssh mst3k@portal.cs.virginia.edu</code>. On the course docker configuration, all the hostnames are already defined (see them via <code>more /etc/hosts</code>). If you do not specify a username, it assumes the same username that you are using. When you connect via <code>docker exec</code>, you are the <code>root</code> user, so it assumes you want to connect to those hosts as the <code>root</code> user as well.</p>
@@ -115,7 +117,7 @@ root@outer1:/# </code></pre>
 <p>In addition to connecting to a container via <code>docker exec</code>, we can also ssh <em>into</em> the containers. If you run <code>docker ps -a</code>, you will see this (among other running containers):</p>
 <pre><code>CONTAINER ID   IMAGE         COMMAND                  CREATED        STATUS        PORTS                  NAMES
 6c553bc3a1af   nws           "/bin/sh -c '/nws-ex…"   16 hours ago   Up 16 hours   0.0.0.0:2222-&gt;22/tcp   nws-firewall</code></pre>
-<p>This is saying that port 2222 on you local computer is being redirected to port 22 in the nws-firewall container. Port 22 is the default ssh connection port. You can thus ssh <em>into</em> the firewall container via <code>ssh -p 2222 root@0.0.0.0</code>. Note that in that command we are specifying the port (22) and the IP address listed in the <code>docker ps -a</code> output (here, <code>0.0.0.0</code>, but that may vary for your host).</p>
+<p>This is saying that port 2222 on you local computer is being redirected to port 22 in the nws-firewall container. Port 22 is the default ssh connection port. You can thus ssh <em>into</em> the firewall container via <code>ssh -p 2222 root@0.0.0.0</code>. Note that in that command we are specifying the port (22) and the IP address listed in the <code>docker ps -a</code> output (here, <code>0.0.0.0</code>, but that may vary for your host). The IP address listed – here <code>0.0.0.0</code>, but might be listed on your machine as a <code>127.0.0.1/24</code> address – means that one can only connect from localhost (i.e., your host machine) and not from an external machine.</p>
 <pre><code>$ ssh -p 2222 root@0.0.0.0          
 The authenticity of host '[0.0.0.0]:2222 ([0.0.0.0]:2222)' can't be established.
 ED25519 key fingerprint is SHA256:XnnbHbdWKbeL8o85dOT8Ziamt1BZ+6geS1AfD0ptYU0.
@@ -142,8 +144,8 @@ Add correct host key in /Users/mst3k/.ssh/known_hosts to get rid of this message
 Offending ECDSA key in /Users/mst3k/.ssh/known_hosts:42
 Host key for [0.0.0.0]:2222 has changed and you have requested strict checking.
 Host key verification failed.</code></pre>
-<p>We are going to go over ssh man-in-the-middle attacks later in the semester. To fix this, you will need to remove the specified line (42, in this case) and run the ssh command again.</p>
-<p>In actual usage, meaning when not trying to connect to your Docker container, you should take that type of warning <strong><em>VERY</em></strong> seriously.</p>
+<p>We are going to go over ssh man-in-the-middle attacks later in the semester. For now, to fix this, you will need to remove the specified line (42, in this case) and run the ssh command again.</p>
+<p>In actual usage, meaning when not trying to connect to your Docker container but to an actual network host, you should take that type of warning <strong><em>VERY</em></strong> seriously.</p>
 <h4 id='telnet'><code>telnet</code></h4>
 <p>Telnet works in a similar fashion, but does not use encryption. You should NEVER use this in practice; we will only use it in the context of some exploits. The format is <code>telnet &lt;host&gt; [&lt;port&gt;]</code>, where the <code>&lt;port&gt;</code> is optional.</p>
 </div><div id='tnmap' class='tabcontent'><h3 id='nmap'>nmap</h3>
@@ -172,11 +174,11 @@ $ </code></pre>
 <li>filtered means that nmap is not getting a response back, so packets to that port are being dropped</li>
 <li>closed (not shown above) means there is no response on that port</li>
 </ul>
-<p>There are a number of options that you can supply to nmap:</p>
+<p>There are many options that you can supply to nmap; here are a few important ones:</p>
 <ul>
-<li><code>-p &lt;ports&gt;</code>: allows you to narrow down, or expand, the ports that are scanned. For example <code>-p 6200</code> will scan only port 6200, and <code>-p 100-200</code> will only scan those ports.</li>
-<li><code>-A</code> enables OS and version detection of the processes</li>
+<li><code>-p &lt;ports&gt;</code>: allows you to narrow down, or expand, the ports that are scanned. For example <code>-p 6200</code> will scan only port 6200, and <code>-p 100-200</code> will only scan those ports; you can also specify an individual port (<code>-p 22</code>), a range of ports (<code>-p 20-30</code>), or a comma-separated list of the above (<code>-p 22,24,26-30</code>).</li>
 <li><code>-sV</code> will attempt to determine the versions of the services running on each port</li>
+<li><code>-A</code> enables operating system detection</li>
 </ul>
 <p>Below shows another run of nmap, with the additional information that the above flags provide.</p>
 <pre><code>$ nmap -A -sV scanme.nmap.org
@@ -225,7 +227,8 @@ PORT    STATE  SERVICE
 
 Nmap done: 1 IP address (1 host up) scanned in 5.96 seconds
 $</code></pre>
-<p>We can also run nmap on the <code>metasploit</code> container, as shown below. You don’t need to read through all of this, just know that you can get a lot of information about the services running on the metasploit container via this command. For example, the 6th line in the output below states, <code>21/tcp   open  ftp         vsftpd 2.3.4</code> – this is the vulnerable vsFTPd version that was exploited in the <a href='../docker/index.html'>Docker configuration assignment</a> (<a href='../docker/index.md'>md</a>).</p>
+<p>Note that some nmap scans can take quite some time to run, especially as you add more options. Be patient, or specify a smaller port range, as the default is to scan about 1,000 well-known ports.</p>
+<p>We can also run nmap on the <code>metasploit</code> container, as shown below. You don’t need to read through all of the output below, just know that you can get a lot of information about the services running on the metasploit container via this command. For example, the 6th line in the output below states, <code>21/tcp   open  ftp         vsftpd 2.3.4</code> – this is the vulnerable vsFTPd version that was exploited in the <a href='../docker/index.html'>Docker configuration assignment</a> (<a href='../docker/index.md'>md</a>).</p>
 <pre><code>root@outer1:/# nmap -A -sV metasploit
 Starting Nmap 7.80 ( https://nmap.org ) at 2024-01-16 12:26 EST
 Nmap scan report for metasploit (192.168.100.3)
@@ -335,7 +338,7 @@ Nmap done: 1 IP address (1 host up) scanned in 97.11 seconds
 root@outer1:/# </code></pre>
 <p>Many of these services are intentionally vulnerable, and we will be exploiting them throughout the semester.</p>
 </div><div id='twhois' class='tabcontent'><h3 id='whois'>whois</h3>
-<p><code>whois</code> will look up information on a domain. This information will tell you who owns it, who is the technical contact (meaning who to contact if there is a technical issue), etc. Using the <code>-H</code> option will remove the legal disclaimers.</p>
+<p><code>whois</code> will look up information on a domain. This information will tell you who owns it, who is the technical contact (meaning who to contact if there is a technical issue), etc. Using the <code>-H</code> option will remove the legal disclaimers. This can tell you who owns a domain, but often times domain owners hide their identity by listing the domain name registrar (who you buy domain names from) in the registrant fields.</p>
 <pre><code>$ whois -H virginia.edu
 
 -------------------------------------------------------------
@@ -400,10 +403,10 @@ PING portal (128.143.69.112) 56(84) bytes of data.
 4 packets transmitted, 0 received, 100% packet loss, time 3069ms
 
 $</code></pre>
-<p>However, <code>nmap -Pn</code> will show that <code>portal.cs.virginia.edu</code> is up and has a few services open.</p>
+<p>However, <code>nmap -Pn</code> will show that <code>portal.cs.virginia.edu</code> is up and has a few services open, as shown above.</p>
 <p>Lastly, note that <code>ping</code> will perform a quick DNS lookup to convert a hostname into an IP address.</p>
 </div><div id='tnslookup-and-dig' class='tabcontent'><h3 id='nslookup-and-dig'>nslookup and dig</h3>
-<p>Both <code>nslookup</code> and <code>dig</code> (“domain information groper”) perform a DNS lookup – returning, say, an IP address (or multiple IP address(es)) for a hostname. The difference between them is that <code>dig</code> uses the resolver libraries in the operating system, whereas <code>nslookup</code> has it’s own internal resolvers. In general, their results should be the same.</p>
+<p>Both <code>nslookup</code> (“name service lookup”) and <code>dig</code> (“domain information groper”) perform a DNS lookup – returning, say, an IP address (or multiple IP addresses) for a given hostname. The difference between them is that <code>dig</code> uses the resolver libraries in the operating system, whereas <code>nslookup</code> has it’s own internal resolvers. In general, their results should be the same.</p>
 <h4 id='nslookup'><code>nslookup</code></h4>
 <p><code>nslookup</code> will look up an IP address and convert it to an hostname. For example:</p>
 <pre><code>$ nslookup 128.143.33.144
@@ -428,18 +431,10 @@ Address: 54.197.224.147
 Name:   virginia.edu
 Address: 128.143.33.137
 </code></pre>
-<p>This shows that the virginia.edu domain is likely redirecting to those IP addresses, likely for load balancing issues.</p>
+<p>This shows that the virginia.edu domain is redirecting to those IP addresses, likely for load balancing issues.</p>
 <p>Not all IP addresses can be looked up this way, though:</p>
-<pre><code>$ nslookup duckduckgo.com
-Server:         127.0.0.53
-Address:        127.0.0.53#53
-
-Non-authoritative answer:
-Name:   duckduckgo.com
-Address: 52.149.246.39
-
-aaron@orion:~/Dropbox/git/nws/hws/netcmds$ nslookup 52.149.246.39
-** server can't find 39.246.149.52.in-addr.arpa: NXDOMAIN
+<pre><code>$ nslookup 1.2.3.4
+** server can't find 4.3.2.1.in-addr.arpa: NXDOMAIN
 
 $</code></pre>
 <h4 id='dig'><code>dig</code></h4>
@@ -471,7 +466,7 @@ virginia.edu.           158     IN      A       54.197.224.147
 $</code></pre>
 <p>You will note that this command provides much of the same information as <code>nslookup</code> did, specifically the four load-balanced IP addresses.</p>
 </div><div id='ttraceroute' class='tabcontent'><h3 id='traceroute'>traceroute</h3>
-<p>When a packet travels over the network from a source to a destination, it is routed through a number of nodes. Each of these ‘hops’ is a separate step in the path. <code>traceroute</code> will show that path. For example, the following will trace the route to Google’s web server.</p>
+<p>When a packet travels over the network from a source to a destination, it is routed through a number of nodes. Each of these ‘hops’ is a separate step in the path. <code>traceroute</code> will show that path. For example, the following will trace the route to Google’s web server from <code>portal</code>.</p>
 <pre><code>$ traceroute www.google.com
 traceroute to www.google.com (142.250.105.99), 30 hops max, 60 byte packets
  1  128.143.63.1 (128.143.63.1)  1.042 ms  2.383 ms  2.333 ms
@@ -496,10 +491,132 @@ traceroute to www.google.com (142.250.105.99), 30 hops max, 60 byte packets
 20  * yt-in-f99.1e100.net (142.250.105.99)  15.670 ms *
 $</code></pre>
 <p>The <code>* * *</code> entries means that <code>traceroute</code> was unable to determine the IP address or hostname of that node, presumably because that node does not respond to the identification requests.</p>
-</div><div id='tnc' class='tabcontent'><h3 id='nc'>nc</h3>
+</div><div id='tnetcat' class='tabcontent'><h3 id='netcat'>netcat</h3>
 <p><code>nc</code>, also known as <code>netcat</code> (both are the same command), is a all-purpose command to send and receive TCP and UDP packets. You saw this command in the <a href='../docker/index.html'>Docker configuration assignment</a> (<a href='../docker/index.md'>md</a>) – it was used to connect to the open port 6200 in the vsFTPd exploit. Note that the <code>ncat</code> command is similar in concept to <code>nc</code>, but a different implementation – we’ll only be going over <code>nc</code>/<code>netcat</code> here.</p>
-<p>You can see a fuller tutorial on <code>nc</code> <a href='https://nooblinux.com/how-to-use-netcat/'>here</a>, if you want to go into more detail.</p>
-<p>…</p>
+<p>Netcat is a Swiss army knife of network utilities. It can do most things that the previous commands can do. However, the previous commands have some options that netcat doesn’t have, and are often much easier to use.</p>
+<h4 id='connect-to-a-web-server'>Connect to a web server</h4>
+<p>Using netcat we can connect to a web server:</p>
+<pre><code>root@outer1:/# nc -v example.com 80
+Connection to example.com (93.184.216.34) 80 port [tcp/http] succeeded!
+help
+HTTP/1.0 501 Not Implemented
+Content-Type: text/html
+Content-Length: 357
+Connection: close
+Date: Tue, 23 Jan 2024 14:41:07 GMT
+Server: ECSF (dce/26C1)
+
+&lt;?xml version="1.0" encoding="iso-8859-1"?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+    &lt;head&gt;
+        &lt;title&gt;501 - Not Implemented&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;501 - Not Implemented&lt;/h1&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+^C
+root@outer1:/# </code></pre>
+<p>While we successfully connected, we entered <code>help</code>, and that is not hart of the http protocol, which is why it responded with “Not Implemented” – the command “help” is not implemented by any web server. Instead, we need to speak http to the webserver – we are going to send it the following (followed by an extra newline):</p>
+<pre><code>HEAD / HTTP/1.1
+Host: example.com
+User-Agent: curl/7.74.0
+Accept: */*</code></pre>
+<p>Then our output looks like the following:</p>
+<pre><code>root@outer1:/# nc -v example.com 80
+Connection to example.com (93.184.216.34) 80 port [tcp/http] succeeded!
+HEAD / HTTP/1.1
+Host: example.com
+User-Agent: curl/7.74.0
+Accept: */*
+
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Age: 363138
+Cache-Control: max-age=604800
+Content-Type: text/html; charset=UTF-8
+Date: Tue, 23 Jan 2024 14:43:00 GMT
+Etag: "3147526947"
+Expires: Tue, 30 Jan 2024 14:43:00 GMT
+Last-Modified: Thu, 17 Oct 2019 07:18:26 GMT
+Server: ECS (dce/2698)
+X-Cache: HIT
+Content-Length: 1256
+
+^C
+root@outer1:/#</code></pre>
+<p>Now we are getting better results. However, this is not the easiest way to get a web page, and we can see here how a application specific to the protocol (a web browser) is going to be much easier to use than netcat.</p>
+<h4 id='scanning-ports'>Scanning ports</h4>
+<p>We can use netcat to scan ports:</p>
+<pre><code>root@outer1:/# netcat -z -v metasploit 1-1000 | grep -v Connection.refused
+Connection to metasploit (192.168.100.3) 21 port [tcp/ftp] succeeded!
+Connection to metasploit (192.168.100.3) 22 port [tcp/ssh] succeeded!
+Connection to metasploit (192.168.100.3) 23 port [tcp/telnet] succeeded!
+Connection to metasploit (192.168.100.3) 25 port [tcp/smtp] succeeded!
+Connection to metasploit (192.168.100.3) 80 port [tcp/http] succeeded!
+Connection to metasploit (192.168.100.3) 111 port [tcp/sunrpc] succeeded!
+Connection to metasploit (192.168.100.3) 139 port [tcp/netbios-ssn] succeeded!
+Connection to metasploit (192.168.100.3) 445 port [tcp/microsoft-ds] succeeded!
+Connection to metasploit (192.168.100.3) 512 port [tcp/exec] succeeded!
+Connection to metasploit (192.168.100.3) 513 port [tcp/login] succeeded!
+Connection to metasploit (192.168.100.3) 514 port [tcp/shell] succeeded!
+root@outer1:/# </code></pre>
+<p>There were a lot of “Connection refused” lines, but those were omitted from the output above via the <code>grep</code> pipe.</p>
+<h4 id='client-server'>Client-server</h4>
+<p>We can have netcat listen on a port via the <code>-l</code> option. To show this working, below is a communication between <code>outer1</code> and <code>outer2</code>; the spacing was included to show the timing.</p>
+<table>
+<tr>
+<td>
+<pre><code>root@outer1:/# nc -l 4760
+hello, outer1
+
+
+hello back, outer2
+goodbye, outer1
+
+
+bye, outer2!
+
+root@outer1:/# 
+</code></pre>
+</td>
+<td>
+<pre><code>root@outer2:/# nc outer1 4760
+
+hello, outer1
+hello back, outer2
+
+
+goodbye, outer1  
+bye, outer2!
+
+^C
+root@outer2:/#
+</code></pre>
+</td>
+</tr>
+</table>
+<h4 id='more-on-netcat'>More on netcat</h4>
+<p>There are many other things that netcat can do, and we will see some throughout the semester. You can see a fuller tutorial on netcat <a href='https://nooblinux.com/how-to-use-netcat/'>here</a>, if you want to go into more detail.</p>
+</div><div id='tcurl' class='tabcontent'><h3 id='curl'>curl</h3>
+<p><code>curl</code> is a command-line utility for transferring data via a URI, such as an http:// address. It is useful in scripts and programs, as we avoid having to load up a browser each time.</p>
+<p>For example, we can download the UVA logo at the top of <a href='https://www.virginia.edu'>https://www.virginia.edu</a>:</p>
+<pre><code>$ curl https://www.virginia.edu/sites/all/themes/custom/uva/images/logo-horizontal-retina.svg -o uva-logo.svg
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 16296  100 16296    0     0  75489      0 --:--:-- --:--:-- --:--:-- 75795
+$</code></pre>
+<p>The <code>-o uva-logo.svg</code> tells <code>curl</code> what filename to save the file as; adding <code>-O</code> will save it as the original file name.. The output displayed shows statistics about the download – as this file was so small in size, there isn’t much to display. Add the <code>-s</code> option to have it suppress this output.</p>
+<p>We can use other protocols, such as FTP (File Transfer Protocol). In the docker containers:</p>
+<pre><code>root@outer1:/# curl -O -u msfadmin:msfadmin ftp://metasploit/vulnerable/tikiwiki/tikiwiki-1.9.4.zip 
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  9.9M  100  9.9M    0     0   102M      0 --:--:-- --:--:-- --:--:--  103M
+root@outer1:/# </code></pre>
+<p>In a real script, you would NEVER want to include the password, but it’s not really much of a secret for the metasploit container.</p>
+<p>There are many other things that <code>curl</code> can do; <a href='https://linuxize.com/post/curl-command-examples/'>here</a> is a list of example usages if you are interested in learning more (not required for this assignment).</p>
 </div><div id='tother-commands' class='tabcontent'><h3 id='other-commands'>Other commands</h3>
 <p>There are a number of other network commands that were not gone over in this assignment, but will be gone over in future assignments.</p>
 <ul>

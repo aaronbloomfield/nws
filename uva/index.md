@@ -63,22 +63,22 @@ Course calendar
 The smaller ("S") homeworks are usually due Friday, unless otherwise noted.  The larger programming ("P") homeworks are due Tuesday.  All homeworks are due by the end of the day (11:59:59 pm).
 
 | Week<br># | Week&nbsp;of<br>Monday | Lecture<br>days | P HWs due Tue | S HWs due, usually <br> due Fri | Readings due Mon | Expected Topics | Actual Progress |
-|----|----------|--------|---------|--------------|-----------------|-----------------|----|
-| 1 | Jan 15 | W,F | (none) | (none) | (none) | [Introduction](../slides/introduction.html#/), [Physical layer](../slides/physical-layer.html#/) | Wed: introduction (finished); Fri: physical layer (finished) |
-| 2 | Jan 22 | M,W,F | (none) | Survey (due Tue),<br>[Docker](../hws/docker/index.html) ([md](../hws/docker/index.md)) (due Fri) | (none) | [Data link layer](../slides/link-layer.html#/) | Mon: link layer to 5.5 |
-| 3 | Jan 29 | M,W,F | (none) | [Linux tutorial](../hws/linux/index.html) ([md](../hws/linux/index.md)) (due Tue), <br>Network commands (due Fri) | ~~Du, chap 2 (MAC layer); 18 pp~~ | [Network layer](../slides/network-layer.html#/) | |
-| 4 | Feb 5 | M,W,F | ARP | Metasploitable hacks, part 1 | Du, chap 3 (IP); 22 pp | | |
-| 5 | Feb 12 | M,W,F | Routing | Metasploitable hacks, part 2 | Du, chap 4 (packet sniffing); 28 pp | | |
-| 6 | Feb 19 | M,W,F | TCP reconstruction | Web of trust, week 1 | Du, chap 5 (transport layer), <br>parts of chap 6 (TCP attacks); ~30 pp | | |
-| 7 | Feb 26 | M,W,F | (midterm on Wed) | Web of trust, week 2 | Du, chap 7 (firewall); 26 pp | | |
-| 8 | Mar 4 | | | | Spring break (no classes) | | |
-| 9 | Mar 11 | M,W,F | Protocol | Firewall configuration | Du, chap 8 (VPN); 32 pp | | |
-| 10 | Mar 18 | M,W,F | Wireshark | TBD | Du, chap 9 (tunneling); 18 pp | | |
-| 11 | Mar 25 | M,W,F | Network monitoring | TBD | parts of Du, chapter 10 (DNS),<br>parts of Du, chap 11 (DNSSEC); ~30 pp | | |
-| 12 | Apr 1 | M,W,F | DNS | TBD | parts of Du, chap 12 (BGP); ~30 pp | | |
-| 13 | Apr 8 | M,W,F | BGP | TBD | Du, chap 14 (reverse shell); 14 pp | | |
-| 14 | Apr 15 | M,W,F | TCP shell | TBD | TBD | | |
-| 15 | Apr 22 | M,W,F | SSH MITM | TBD | TBD | Miscellaneous Topics | |
-| 16 | Apr 29 | M | Xmas scans | (none) | (none) | | |
+|---|---|---|---|---|---|---|---|
+| 1 | Jan 15 | W,F | (none) | (none) | (none) | [Introduction](../slides/introduction.html#/); [Physical layer](../slides/physical-layer.html#/) | Wed: introduction (finished); Fri: physical layer (finished) |
+| 2 | Jan 22 | M,W,F | (none) | Survey (due Tue), [Docker](../hws/docker/index.html) ([md](../hws/docker/index.md)) (due Fri) | (none) | [Data link layer](../slides/link-layer.html#/) | Mon: link layer to 5.5 |
+| 3 | Jan 29 | M,W,F | (none) | [Linux tutorial](../hws/linux/index.html) ([md](../hws/linux/index.md)) (due Tue), [Network commands](../hws/netcmds/) (due Fri) | ~~Du, chap 2 (MAC layer); 18 pp~~ | [Network layer](../slides/network-layer.html#/) |  |
+| 4 | Feb 5 | M,W,F | ARP | Metasploitable hacks, part 1 | Du, chap 3 (IP); 22 pp | Packet capture & analysis; Transport layer |  |
+| 5 | Feb 12 | M,W,F | Routing | Metasploitable hacks, part 2 | Du, chap 4 (packet sniffing); 28 pp | Transport layer; Firewalls & evasion |  |
+| 6 | Feb 19 | M,W,F | Wireshark | Web of trust, week 1 | Du, chap 5 (transport layer), parts of chap 6 (TCP attacks); ~30 pp | Session layer; Encryption |  |
+| 7 | Feb 26 | M,W,F | (midterm on Wed) | Web of trust, week 2 | Du, chap 7 (firewall); 26 pp | Encryption; TLS |  |
+| 8 | Mar 4 |  |  |  | Spring break (no classes) |  |  |
+| 9 | Mar 11 | M,W,F | TCP reconstruction | Firewall configuration | Du, chap 8 (VPN); 32 pp | Presentation layer; Application layer |  |
+| 10 | Mar 18 | M,W,F | Xmas scans | TBD | Du, chap 9 (tunneling); 18 pp | TCP shells & botnets; WWW exploits |  |
+| 11 | Mar 25 | M,W,F | Protocol | TBD | parts of Du, chapter 10 (DNS), parts of Du, chap 11 (DNSSEC); ~30 pp | WWW exploits; Network monitoring |  |
+| 12 | Apr 1 | M,W,F | TCP shell | TBD | parts of Du, chap 12 (BGP); ~30 pp | Obtaining and using access; BGP |  |
+| 13 | Apr 8 | M,W,F | Network monitoring | TBD | Du, chap 14 (reverse shell); 14 pp | Network attacks |  |
+| 14 | Apr 15 | M,W,F | BGP | TBD | TBD | DNS; Heartbleed |  |
+| 15 | Apr 22 | M,W,F | DNS | TBD | TBD | Trojans, rootkits, ransomware; Scanning & fuzzing; Social Engineering |  |
+| 16 | Apr 29 | M | SSH MITM | (none) | (none) | Conclusion |  |
 
 [1]: https://canvas.its.virginia.edu/courses/92875

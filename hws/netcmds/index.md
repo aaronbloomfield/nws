@@ -5,21 +5,21 @@ Network Command Introduction
 
 ### Overview
 
-This assignment is a tutorial about various network commands on a Linux system.  It is different than the [Linux tutorial](../linux/index.html) ([md](../linux/index.md)) assignment -- that assignment went over the basics of how to use Linux.  This tutorial goes over how to use commands that are specific to interacting with the network.  This assignment does not go over Docker commands, which are instead presented in the [Docker configuration assignment](../docker/index.html) ([md](../docker/index.md)).
+This assignment is a tutorial about various network commands on a Linux system.  It is different than the [Linux tutorial](../linux/index.html) ([md](../linux/index.md)) assignment -- that assignment went over the basics of how to use Linux, whereas this tutorial goes over how to use commands that are specific to interacting with the network.  This assignment does not go over Docker commands, which are instead presented in the [Docker configuration assignment](../docker/index.html) ([md](../docker/index.md)).
 
-The idea is that this assignment can be used as a reference for when you are using Linux.
+The idea is that this assignment can be used as a reference for when you need to use these network commands.
 
 You will be submitting an edited version of the [netcmds.py](netcmds.py.html) ([src](netcmds.py)) file.
 
 This assignment has very little in terms of the deliverable -- in fact, you could easily skip to the 'Submission' section, make up answers, and get full credit on this assignment.  **HOWEVER,** this assignment is going to be necessary to complete before doing *any other* assignment in this course.  The material gone over in this tutorial are also fair game for pop quizzes and exams.
 
-There are multiple sections (tabs), and each one goes over how to use a given command.  Some of them reference external pages.
+There are multiple sections (tabs), and each one goes over how to use a given command (or two).  Some of them reference external pages.
 
 As you learn the commands, you should try them out in the Docker containers.  How to start the containers, and then connect to them, is described in the [Docker configuration assignment](../docker/index.html) ([md](../docker/index.md)).
 
-For all the commands below, there is a manual page.  Normally, you could run `man <cmd>` (example: `man ssh`) to see the full set of options available for that command.  However, the manuals are not included in the Docker images to conserve space.  You can instead do a web search for `man dig`, and the manual page will likely be the first entry that appears.
+For all the commands below, there is a manual page.  Normally, you could run `man <cmd>` (example: `man ssh`) to see the full set of options available for that command.  However, the manual pages are not included in the Docker images to conserve space.  You can instead do a web search for `man dig`, and the manual page will likely be the first entry that appears.
 
-All of these commands are available for all operating systems.  However, many may not be installed on your host system.  However, they are all installed on the course Docker setup.
+All of these commands are available for all operating systems.  However, many may not be installed on your host system.  They are all installed on the course Docker setup.
 
 ### Changelog
 
@@ -27,11 +27,11 @@ Any changes to this page will be put here for easy reference.  Typo fixes and mi
 
 ### ssh and telnet
 
-ssh, for Secure Shell, is a way to connect to another host.  `telnet` is the same idea as ssh, but does not use encryption of any sort.  `ssh` uses TLS encryption for the entire session.
+ssh, for Secure Shell, is a way to connect to another host.  telnet is the same idea as ssh, but does not use encryption of any sort.  ssh uses TLS encryption for the entire session.
 
 #### Basic ssh
 
-To connect to a different host, you can use the `ssh` command.  Note that to connect to a container for the first time, we use `docker exec`.  But once within the containers, we can use `ssh`.
+To connect to a different host, you can use the `ssh` command.  Note that to connect to a container for the first time, we use `docker exec`.  But once within the containers, we can use `ssh` to connect to the other containers.
 
 The containers are set up so that you can easily ssh between the containers by just entering `ssh <hostname>`:
 
@@ -70,7 +70,7 @@ Connection to metasploit closed.
 root@outer1:/# 
 ```
 
-The password is `password`.
+The password is just `password`.  This will log you in as `root`; you can also log into that container with `msfadmin` and password `msfadmin`.
 
 The containers *other* than metasploit are configured to not require public key authentication (see [here](https://dev.to/gvelrajan/how-to-configure-and-setup-ssh-certificates-for-ssh-authentication-b52) if you want to set this up on your own machine).  But the metasploit container is such an old version of ssh that it cannot deal with the more recent types of public keys that the ssh currently uses.
 
@@ -89,7 +89,7 @@ CONTAINER ID   IMAGE         COMMAND                  CREATED        STATUS     
 6c553bc3a1af   nws           "/bin/sh -c '/nws-ex…"   16 hours ago   Up 16 hours   0.0.0.0:2222->22/tcp   nws-firewall
 ```
 
-This is saying that port 2222 on you local computer is being redirected to port 22 in the nws-firewall container.  Port 22 is the default ssh connection port.  You can thus ssh *into* the firewall container via `ssh -p 2222 root@0.0.0.0`.  Note that in that command we are specifying the port (22) and the IP address listed in the `docker ps -a` output (here, `0.0.0.0`, but that may vary for your host).
+This is saying that port 2222 on you local computer is being redirected to port 22 in the nws-firewall container.  Port 22 is the default ssh connection port.  You can thus ssh *into* the firewall container via `ssh -p 2222 root@0.0.0.0`.  Note that in that command we are specifying the port (22) and the IP address listed in the `docker ps -a` output (here, `0.0.0.0`, but that may vary for your host).  The IP address listed -- here `0.0.0.0`, but might be listed on your machine as a `127.0.0.1/24` address -- means that one can only connect from localhost (i.e., your host machine) and not from an external machine.
 
 
 ```
@@ -126,9 +126,9 @@ Host key for [0.0.0.0]:2222 has changed and you have requested strict checking.
 Host key verification failed.
 ```
 
-We are going to go over ssh man-in-the-middle attacks later in the semester.  To fix this, you will need to remove the specified line (42, in this case) and run the ssh command again.
+We are going to go over ssh man-in-the-middle attacks later in the semester.  For now, to fix this, you will need to remove the specified line (42, in this case) and run the ssh command again.
 
-In actual usage, meaning when not trying to connect to your Docker container, you should take that type of warning ***VERY*** seriously.
+In actual usage, meaning when not trying to connect to your Docker container but to an actual network host, you should take that type of warning ***VERY*** seriously.
 
 #### `telnet`
 
@@ -165,11 +165,11 @@ Each port will list it's *state*:
 - filtered means that nmap is not getting a response back, so packets to that port are being dropped
 - closed (not shown above) means there is no response on that port
 
-There are a number of options that you can supply to nmap:
+There are many options that you can supply to nmap; here are a few important ones:
 
-- `-p <ports>`: allows you to narrow down, or expand, the ports that are scanned.  For example `-p 6200` will scan only port 6200, and `-p 100-200` will only scan those ports.
-- `-A` enables OS and version detection of the processes
+- `-p <ports>`: allows you to narrow down, or expand, the ports that are scanned.  For example `-p 6200` will scan only port 6200, and `-p 100-200` will only scan those ports; you can also specify an individual port (`-p 22`), a range of ports (`-p 20-30`), or a comma-separated list of the above (`-p 22,24,26-30`).
 - `-sV` will attempt to determine the versions of the services running on each port
+- `-A` enables operating system detection
 
 Below shows another run of nmap, with the additional information that the above flags provide.
 
@@ -230,7 +230,9 @@ Nmap done: 1 IP address (1 host up) scanned in 5.96 seconds
 $
 ```
 
-We can also run nmap on the `metasploit` container, as shown below.  You don't need to read through all of this, just know that you can get a lot of information about the services running on the metasploit container via this command.  For example, the 6th line in the output below states, `21/tcp   open  ftp         vsftpd 2.3.4` -- this is the vulnerable vsFTPd version that was exploited in the [Docker configuration assignment](../docker/index.html) ([md](../docker/index.md)).
+Note that some nmap scans can take quite some time to run, especially as you add more options.  Be patient, or specify a smaller port range, as the default is to scan about 1,000 well-known ports.
+
+We can also run nmap on the `metasploit` container, as shown below.  You don't need to read through all of the output below, just know that you can get a lot of information about the services running on the metasploit container via this command.  For example, the 6th line in the output below states, `21/tcp   open  ftp         vsftpd 2.3.4` -- this is the vulnerable vsFTPd version that was exploited in the [Docker configuration assignment](../docker/index.html) ([md](../docker/index.md)).
 
 
 ```
@@ -348,7 +350,7 @@ Many of these services are intentionally vulnerable, and we will be exploiting t
 
 ### whois
 
-`whois` will look up information on a domain.  This information will tell you who owns it, who is the technical contact (meaning who to contact if there is a technical issue), etc.  Using the `-H` option will remove the legal disclaimers.
+`whois` will look up information on a domain.  This information will tell you who owns it, who is the technical contact (meaning who to contact if there is a technical issue), etc.  Using the `-H` option will remove the legal disclaimers.  This can tell you who owns a domain, but often times domain owners hide their identity by listing the domain name registrar (who you buy domain names from) in the registrant fields.
 
 ```
 $ whois -H virginia.edu
@@ -427,14 +429,14 @@ PING portal (128.143.69.112) 56(84) bytes of data.
 $
 ```
 
-However, `nmap -Pn` will show that `portal.cs.virginia.edu` is up and has a few services open.
+However, `nmap -Pn` will show that `portal.cs.virginia.edu` is up and has a few services open, as shown above.
 
 Lastly, note that `ping` will perform a quick DNS lookup to convert a hostname into an IP address.
 
 
 ### nslookup and dig
 
-Both `nslookup` and `dig` ("domain information groper") perform a DNS lookup -- returning, say, an IP address (or multiple IP address(es)) for a hostname.  The difference between them is that `dig` uses the resolver libraries in the operating system, whereas `nslookup` has it's own internal resolvers.  In general, their results should be the same.
+Both `nslookup` ("name service lookup") and `dig` ("domain information groper") perform a DNS lookup -- returning, say, an IP address (or multiple IP addresses) for a given hostname.  The difference between them is that `dig` uses the resolver libraries in the operating system, whereas `nslookup` has it's own internal resolvers.  In general, their results should be the same.
 
 #### `nslookup`
 
@@ -470,21 +472,13 @@ Address: 128.143.33.137
 
 ```
 
-This shows that the virginia.edu domain is likely redirecting to those IP addresses, likely for load balancing issues.
+This shows that the virginia.edu domain is redirecting to those IP addresses, likely for load balancing issues.
 
 Not all IP addresses can be looked up this way, though:
 
 ```
-$ nslookup duckduckgo.com
-Server:         127.0.0.53
-Address:        127.0.0.53#53
-
-Non-authoritative answer:
-Name:   duckduckgo.com
-Address: 52.149.246.39
-
-aaron@orion:~/Dropbox/git/nws/hws/netcmds$ nslookup 52.149.246.39
-** server can't find 39.246.149.52.in-addr.arpa: NXDOMAIN
+$ nslookup 1.2.3.4
+** server can't find 4.3.2.1.in-addr.arpa: NXDOMAIN
 
 $
 ```
@@ -525,7 +519,7 @@ You will note that this command provides much of the same information as `nslook
 
 ### traceroute
 
-When a packet travels over the network from a source to a destination, it is routed through a number of nodes.  Each of these 'hops' is a separate step in the path.  `traceroute` will show that path.  For example, the following will trace the route to Google's web server.
+When a packet travels over the network from a source to a destination, it is routed through a number of nodes.  Each of these 'hops' is a separate step in the path.  `traceroute` will show that path.  For example, the following will trace the route to Google's web server from `portal`.
 
 ```
 $ traceroute www.google.com
@@ -556,19 +550,167 @@ $
 The `* * *` entries means that `traceroute` was unable to determine the IP address or hostname of that node, presumably because that node does not respond to the identification requests.
 
 
-### nc
+### netcat
 
 `nc`, also known as `netcat` (both are the same command), is a all-purpose command to send and receive TCP and UDP packets.  You saw this command in the [Docker configuration assignment](../docker/index.html) ([md](../docker/index.md)) -- it was used to connect to the open port 6200 in the vsFTPd exploit.  Note that the `ncat` command is similar in concept to `nc`, but a different implementation -- we'll only be going over `nc`/`netcat` here.
 
-You can see a fuller tutorial on `nc` [here](https://nooblinux.com/how-to-use-netcat/), if you want to go into more detail.
+Netcat is a Swiss army knife of network utilities.  It can do most things that the previous commands can do.  However, the previous commands have some options that netcat doesn't have, and are often much easier to use.
+
+#### Connect to a web server
+
+Using netcat we can connect to a web server:
+
+```
+root@outer1:/# nc -v example.com 80
+Connection to example.com (93.184.216.34) 80 port [tcp/http] succeeded!
+help
+HTTP/1.0 501 Not Implemented
+Content-Type: text/html
+Content-Length: 357
+Connection: close
+Date: Tue, 23 Jan 2024 14:41:07 GMT
+Server: ECSF (dce/26C1)
+
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>501 - Not Implemented</title>
+	</head>
+	<body>
+		<h1>501 - Not Implemented</h1>
+	</body>
+</html>
+^C
+root@outer1:/# 
+```
+
+While we successfully connected, we entered `help`, and that is not hart of the http protocol, which is why it responded with "Not Implemented" -- the command "help" is not implemented by any web server.  Instead, we need to speak http to the webserver -- we are going to send it the following (followed by an extra newline):
+
+```
+HEAD / HTTP/1.1
+Host: example.com
+User-Agent: curl/7.74.0
+Accept: */*
+```
+
+Then our output looks like the following:
+
+```
+root@outer1:/# nc -v example.com 80
+Connection to example.com (93.184.216.34) 80 port [tcp/http] succeeded!
+HEAD / HTTP/1.1
+Host: example.com
+User-Agent: curl/7.74.0
+Accept: */*
+
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Age: 363138
+Cache-Control: max-age=604800
+Content-Type: text/html; charset=UTF-8
+Date: Tue, 23 Jan 2024 14:43:00 GMT
+Etag: "3147526947"
+Expires: Tue, 30 Jan 2024 14:43:00 GMT
+Last-Modified: Thu, 17 Oct 2019 07:18:26 GMT
+Server: ECS (dce/2698)
+X-Cache: HIT
+Content-Length: 1256
+
+^C
+root@outer1:/#
+```
+
+Now we are getting better results.  However, this is not the easiest way to get a web page, and we can see here how a application specific to the protocol (a web browser) is going to be much easier to use than netcat.
+
+#### Scanning ports
+
+We can use netcat to scan ports:
+
+```
+root@outer1:/# netcat -z -v metasploit 1-1000 | grep -v Connection.refused
+Connection to metasploit (192.168.100.3) 21 port [tcp/ftp] succeeded!
+Connection to metasploit (192.168.100.3) 22 port [tcp/ssh] succeeded!
+Connection to metasploit (192.168.100.3) 23 port [tcp/telnet] succeeded!
+Connection to metasploit (192.168.100.3) 25 port [tcp/smtp] succeeded!
+Connection to metasploit (192.168.100.3) 80 port [tcp/http] succeeded!
+Connection to metasploit (192.168.100.3) 111 port [tcp/sunrpc] succeeded!
+Connection to metasploit (192.168.100.3) 139 port [tcp/netbios-ssn] succeeded!
+Connection to metasploit (192.168.100.3) 445 port [tcp/microsoft-ds] succeeded!
+Connection to metasploit (192.168.100.3) 512 port [tcp/exec] succeeded!
+Connection to metasploit (192.168.100.3) 513 port [tcp/login] succeeded!
+Connection to metasploit (192.168.100.3) 514 port [tcp/shell] succeeded!
+root@outer1:/# 
+```
+
+There were a lot of "Connection refused" lines, but those were omitted from the output above via the `grep` pipe.
+
+#### Client-server
+
+We can have netcat listen on a port via the `-l` option.  To show this working, below is a communication between `outer1` and `outer2`; the spacing was included to show the timing.
+
+<table><tr><td><pre><code
+>root@outer1:/# nc -l 4760
+hello, outer1
 
 
-...
+hello back, outer2
+goodbye, outer1
 
 
+bye, outer2!
+
+root@outer1:/# 
+</code></pre></td><td><pre><code
+>root@outer2:/# nc outer1 4760
+
+hello, outer1
+hello back, outer2
 
 
+goodbye, outer1  
+bye, outer2!
 
+^C
+root@outer2:/#
+</code></pre></td></tr></table>
+
+
+#### More on netcat
+
+There are many other things that netcat can do, and we will see some throughout the semester.  You can see a fuller tutorial on netcat [here](https://nooblinux.com/how-to-use-netcat/), if you want to go into more detail.
+
+
+### curl
+
+`curl` is a command-line utility for transferring data via a URI, such as an http:// address.  It is useful in scripts and programs, as we avoid having to load up a browser each time.
+
+For example, we can download the UVA logo at the top of [https://www.virginia.edu](https://www.virginia.edu):
+
+```
+$ curl https://www.virginia.edu/sites/all/themes/custom/uva/images/logo-horizontal-retina.svg -o uva-logo.svg
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 16296  100 16296    0     0  75489      0 --:--:-- --:--:-- --:--:-- 75795
+$
+```
+
+The `-o uva-logo.svg` tells `curl` what filename to save the file as; adding `-O` will save it as the original file name..  The output displayed shows statistics about the download -- as this file was so small in size, there isn't much to display.  Add the `-s` option to have it suppress this output.
+
+We can use other protocols, such as FTP (File Transfer Protocol).  In the docker containers:
+
+```
+root@outer1:/# curl -O -u msfadmin:msfadmin ftp://metasploit/vulnerable/tikiwiki/tikiwiki-1.9.4.zip 
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  9.9M  100  9.9M    0     0   102M      0 --:--:-- --:--:-- --:--:--  103M
+root@outer1:/# 
+```
+
+In a real script, you would NEVER want to include the password, but it's not really much of a secret for the metasploit container.
+
+There are many other things that `curl` can do; [here](https://linuxize.com/post/curl-command-examples/) is a list of example usages if you are interested in learning more (not required for this assignment).
 
 
 ### Other commands

@@ -8,10 +8,18 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="../markdown.css" />
@@ -103,7 +111,7 @@
 <td>(none)</td>
 <td>(none)</td>
 <td>(none)</td>
-<td><a href="../slides/introduction.html#/">Introduction</a>, <a href="../slides/physical-layer.html#/">Physical layer</a></td>
+<td><a href="../slides/introduction.html#/">Introduction</a>; <a href="../slides/physical-layer.html#/">Physical layer</a></td>
 <td>Wed: introduction (finished); Fri: physical layer (finished)</td>
 </tr>
 <tr class="even">
@@ -111,7 +119,7 @@
 <td>Jan 22</td>
 <td>M,W,F</td>
 <td>(none)</td>
-<td>Survey (due Tue),<br><a href="../hws/docker/index.html">Docker</a> (<a href="../hws/docker/index.md">md</a>) (due Fri)</td>
+<td>Survey (due Tue), <a href="../hws/docker/index.html">Docker</a> (<a href="../hws/docker/index.md">md</a>) (due Fri)</td>
 <td>(none)</td>
 <td><a href="../slides/link-layer.html#/">Data link layer</a></td>
 <td>Mon: link layer to 5.5</td>
@@ -121,7 +129,7 @@
 <td>Jan 29</td>
 <td>M,W,F</td>
 <td>(none)</td>
-<td><a href="../hws/linux/index.html">Linux tutorial</a> (<a href="../hws/linux/index.md">md</a>) (due Tue), <br>Network commands (due Fri)</td>
+<td><a href="../hws/linux/index.html">Linux tutorial</a> (<a href="../hws/linux/index.md">md</a>) (due Tue), <a href="../hws/netcmds/">Network commands</a> (due Fri)</td>
 <td><del>Du, chap 2 (MAC layer); 18 pp</del></td>
 <td><a href="../slides/network-layer.html#/">Network layer</a></td>
 <td></td>
@@ -133,7 +141,7 @@
 <td>ARP</td>
 <td>Metasploitable hacks, part 1</td>
 <td>Du, chap 3 (IP); 22 pp</td>
-<td></td>
+<td>Packet capture &amp; analysis; Transport layer</td>
 <td></td>
 </tr>
 <tr class="odd">
@@ -143,17 +151,17 @@
 <td>Routing</td>
 <td>Metasploitable hacks, part 2</td>
 <td>Du, chap 4 (packet sniffing); 28 pp</td>
-<td></td>
+<td>Transport layer; Firewalls &amp; evasion</td>
 <td></td>
 </tr>
 <tr class="even">
 <td>6</td>
 <td>Feb 19</td>
 <td>M,W,F</td>
-<td>TCP reconstruction</td>
+<td>Wireshark</td>
 <td>Web of trust, week 1</td>
-<td>Du, chap 5 (transport layer), <br>parts of chap 6 (TCP attacks); ~30 pp</td>
-<td></td>
+<td>Du, chap 5 (transport layer), parts of chap 6 (TCP attacks); ~30 pp</td>
+<td>Session layer; Encryption</td>
 <td></td>
 </tr>
 <tr class="odd">
@@ -163,7 +171,7 @@
 <td>(midterm on Wed)</td>
 <td>Web of trust, week 2</td>
 <td>Du, chap 7 (firewall); 26 pp</td>
-<td></td>
+<td>Encryption; TLS</td>
 <td></td>
 </tr>
 <tr class="even">
@@ -180,80 +188,80 @@
 <td>9</td>
 <td>Mar 11</td>
 <td>M,W,F</td>
-<td>Protocol</td>
+<td>TCP reconstruction</td>
 <td>Firewall configuration</td>
 <td>Du, chap 8 (VPN); 32 pp</td>
-<td></td>
+<td>Presentation layer; Application layer</td>
 <td></td>
 </tr>
 <tr class="even">
 <td>10</td>
 <td>Mar 18</td>
 <td>M,W,F</td>
-<td>Wireshark</td>
+<td>Xmas scans</td>
 <td>TBD</td>
 <td>Du, chap 9 (tunneling); 18 pp</td>
-<td></td>
+<td>TCP shells &amp; botnets; WWW exploits</td>
 <td></td>
 </tr>
 <tr class="odd">
 <td>11</td>
 <td>Mar 25</td>
 <td>M,W,F</td>
-<td>Network monitoring</td>
+<td>Protocol</td>
 <td>TBD</td>
-<td>parts of Du, chapter 10 (DNS),<br>parts of Du, chap 11 (DNSSEC); ~30 pp</td>
-<td></td>
+<td>parts of Du, chapter 10 (DNS), parts of Du, chap 11 (DNSSEC); ~30 pp</td>
+<td>WWW exploits; Network monitoring</td>
 <td></td>
 </tr>
 <tr class="even">
 <td>12</td>
 <td>Apr 1</td>
 <td>M,W,F</td>
-<td>DNS</td>
+<td>TCP shell</td>
 <td>TBD</td>
 <td>parts of Du, chap 12 (BGP); ~30 pp</td>
-<td></td>
+<td>Obtaining and using access; BGP</td>
 <td></td>
 </tr>
 <tr class="odd">
 <td>13</td>
 <td>Apr 8</td>
 <td>M,W,F</td>
-<td>BGP</td>
+<td>Network monitoring</td>
 <td>TBD</td>
 <td>Du, chap 14 (reverse shell); 14 pp</td>
-<td></td>
+<td>Network attacks</td>
 <td></td>
 </tr>
 <tr class="even">
 <td>14</td>
 <td>Apr 15</td>
 <td>M,W,F</td>
-<td>TCP shell</td>
+<td>BGP</td>
 <td>TBD</td>
 <td>TBD</td>
-<td></td>
+<td>DNS; Heartbleed</td>
 <td></td>
 </tr>
 <tr class="odd">
 <td>15</td>
 <td>Apr 22</td>
 <td>M,W,F</td>
-<td>SSH MITM</td>
+<td>DNS</td>
 <td>TBD</td>
 <td>TBD</td>
-<td>Miscellaneous Topics</td>
+<td>Trojans, rootkits, ransomware; Scanning &amp; fuzzing; Social Engineering</td>
 <td></td>
 </tr>
 <tr class="even">
 <td>16</td>
 <td>Apr 29</td>
 <td>M</td>
-<td>Xmas scans</td>
+<td>SSH MITM</td>
 <td>(none)</td>
 <td>(none)</td>
-<td></td>
+<td>Conclusion</td>
 <td></td>
 </tr>
 </tbody>
