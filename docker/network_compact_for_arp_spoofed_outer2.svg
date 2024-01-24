@@ -56,10 +56,10 @@
 <!-- firewall&#45;&gt;outer2 -->
 <g id="edge2" class="edge">
 <title>firewall&#45;&gt;outer2</title>
-<path fill="none" stroke="green" stroke-width="2" d="M283.66,-93.69C296.32,-82.08 310.68,-68.92 323.34,-57.31"/>
-<polygon fill="green" stroke="green" stroke-width="2" points="280.93,-91.44 275.92,-100.78 285.66,-96.6 280.93,-91.44"/>
-<polygon fill="green" stroke="green" stroke-width="2" points="325.97,-59.65 330.98,-50.31 321.24,-54.49 325.97,-59.65"/>
-<text text-anchor="middle" x="334" y="-71.8" font-family="Helvetica,sans-Serif" font-size="14.00" fill="green">normal</text>
+<path fill="none" stroke="transparent" stroke-width="2" d="M283.66,-93.69C296.32,-82.08 310.68,-68.92 323.34,-57.31"/>
+<polygon fill="transparent" stroke="transparent" stroke-width="2" points="280.93,-91.44 275.92,-100.78 285.66,-96.6 280.93,-91.44"/>
+<polygon fill="transparent" stroke="transparent" stroke-width="2" points="325.97,-59.65 330.98,-50.31 321.24,-54.49 325.97,-59.65"/>
+<text text-anchor="middle" x="334" y="-71.8" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#fffffe">normal</text>
 </g>
 <!-- outer1&#45;&gt;outer2 -->
 <g id="edge4" class="edge">

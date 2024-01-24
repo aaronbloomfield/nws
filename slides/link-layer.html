@@ -572,7 +572,7 @@ root@outer2:/#
   <div class="wikitablediv">
     <table class="wikitable">
       <caption>
-        IPv4 over Ethernet ARP query
+        IPv4 via Ethernet ARP query
       </caption>
       <tbody>
         <tr>
@@ -644,7 +644,7 @@ root@outer2:/#
   <div class="wikitablediv">
     <table class="wikitable">
       <caption>
-        IPv4 over Ethernet ARP response
+        IPv4 via Ethernet ARP response
       </caption>
       <tbody>
         <tr>
@@ -721,19 +721,19 @@ root@outer2:/#
 ## ARP table updates
 ![LAN diagram](images/linklayer/lan.svg)
 - When a device (the router) receives an ARP response (from the TV), it updates a mapping table
-  - MAC address to IP address
-  - 77:88:99:aa:bb:cc -> 192.168.1.102
+  - IP address to MAC address
+  - 192.168.1.102 -> 77:88:99:aa:bb:cc
 - Devices will also update the table when a query is sent
   - The TV updates the router's table entry
-  - 11:22:33:44:55:66 -> 192.168.1.1
+  - 192.168.1.1 -> 11:22:33:44:55:66
   - This query is broadcast (sent to all devices)
     - Which means *all* devices on the LAN will update that entry
 
 
 
 ## ARP announcements
-- Any device an "announce" their MAC -> IP mapping
-  - Send a query, with that devices MAC & IP
+- Any device an "announce" their IP -> MAC mapping
+  - Send a query, with that devices IP & MAC
   - Set TPA (IP being queried) to SPA (sender's IP)
     - Thus no other device will respond
   - Also set THA (target hardware address) to 0
@@ -749,7 +749,7 @@ root@outer2:/#
 <div class="wikitablediv">
     <table class="wikitable">
       <caption>
-        IPv4 over Ethernet ARP announcement
+        IPv4 via Ethernet ARP announcement
       </caption>
       <tbody>
         <tr>
@@ -772,7 +772,7 @@ root@outer2:/#
         </tr>
         <tr>
           <th>6</th>
-          <td colspan="16">OPER: 0x0002</td>
+          <td colspan="16">OPER: 0x0001</td>
         </tr>
         <tr>
           <th>8</th>
@@ -884,14 +884,6 @@ root@outer2:/#
 
 
 
-## How to do it: setup
-- This is all done in the docker image
-- Install both `netdiscover` and `arpspoof`
-  - They are in the `netdiscover` and `dsniff` packages on Ubuntu
-  - And they are already installed on the Docker image
-
-
-
 ## Ensure outer1 can forward IP
 - Check if outer1, the node that is doing the spoofing, can forward IP packets:
 ```
@@ -900,7 +892,10 @@ $ cat /proc/sys/net/ipv4/ip_forward
 $
 ```
 - If not, enable outer1 to forward IP packets:
-  <pre><code>echo 1 > /proc/sys/net/ipv4/ip_forward</code></pre>
+
+```
+echo 1 > /proc/sys/net/ipv4/ip_forward
+```
 - To start, load up five different tabs (yes, really five)
 
 
@@ -1026,7 +1021,7 @@ outer2 - - [23/Jan/2024:12:10:56 -0500] "GET http://www.google.com/ HTTP/1.1" - 
 - A "powerful Python-based interactive packet manipulation program and library"
   <pre><code class='python'>from scapy.all import *</code></pre>
 - Uses `/` for layer stacking: 
-  <pre><code class='python'>frame = Ether() / IP</code></pre>
+  <pre><code class='python'>frame = Ether() / IP()</code></pre>
 - Already installed on the Docker images
 
 

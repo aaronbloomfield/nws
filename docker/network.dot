@@ -114,7 +114,7 @@ digraph network_compact_for_arp_spoofed_outer2 {
     outer2 [label=< 192.168.100.102 (eth0)<br/><b>outer2</b><br/>  >];
 
     internet -> firewall [arrowhead=none];
-    firewall -> outer2 [color=green,dir=both,fontcolor=green,penwidth=2,label="normal"];
+    firewall -> outer2 [color=invis,dir=both,fontcolor=invis,penwidth=2,label="normal"];
     firewall -> outer1 [color=red,dir=both,fontcolor=red,penwidth=2,label="spoofed"];
     outer1 -> outer2 [color=red,dir=both,fontcolor=red,penwidth=2,label="spoofed"];
 
