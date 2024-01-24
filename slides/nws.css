@@ -624,3 +624,6 @@ div.wikitablediv {
 .smaller-pre pre { font-size:40%;}
 .smallest-pre pre { font-size:35%;}
 
+.table-small table { font-size:90%; }
+.table-smaller table { font-size:80%; }
+.table-smallest table { font-size:75%; }
