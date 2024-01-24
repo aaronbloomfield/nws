@@ -49,7 +49,7 @@ graph network_compact {
 
     internet [label=< <b>Internet</b> >,shape=plaintext,fontsize=20];
     firewall [label=< &lt;bridge IP&gt; (eth0)<br/><b>firewall</b><br/>192.168.100.1 (eth1) >];
-    outer1 [label=< 192.168.100.101 (eth0)<br/><b>outer1</b><br/>  >];
+    outer1 [label=< 192.168.100.101 (eth1)<br/><b>outer1</b><br/>192.168.150.3 (eth0) >];
     outer2 [label=< 192.168.100.102 (eth0)<br/><b>outer2</b><br/>  >];
     outer3 [label=< 192.168.100.103 (eth0)<br/><b>outer3</b><br/>  >];
     gateway [label=< 192.168.100.2 (eth2)<br/><b>gateway</b><br/>192.168.200.1 (eth0)<br/>192.168.150.1 (eth1) >];
@@ -102,7 +102,7 @@ digraph network_for_routing {
     {rank=max other}
 }
 
-digraph network_compact_for_arp_normal {
+digraph network_compact_for_arp_spoofed_outer2 {
     graph [fontname="Helvetica"];
     node [fontname="Helvetica",shape=rect,style=rounded];
     edge [fontname="Helvetica"];
@@ -110,7 +110,7 @@ digraph network_compact_for_arp_normal {
 
     internet [label=< <b>Internet</b> >,shape=plaintext,fontsize=20];
     firewall [label=< &lt;bridge IP&gt; (eth0)<br/><b>firewall</b><br/>192.168.100.1 (eth1) >];
-    outer1 [label=< 192.168.100.101 (eth0)<br/><b>outer1</b><br/>  >];
+    outer1 [label=< 192.168.100.101 (eth1)<br/><b>outer1</b><br/>  >];
     outer2 [label=< 192.168.100.102 (eth0)<br/><b>outer2</b><br/>  >];
 
     internet -> firewall [arrowhead=none];
@@ -122,7 +122,7 @@ digraph network_compact_for_arp_normal {
     {rank=same outer1 outer2}
 }
 
-digraph network_compact_for_arp_spoofed {
+digraph network_compact_for_arp_normal_outer2 {
     graph [fontname="Helvetica"];
     node [fontname="Helvetica",shape=rect,style=rounded];
     edge [fontname="Helvetica"];
@@ -130,7 +130,7 @@ digraph network_compact_for_arp_spoofed {
 
     internet [label=< <b>Internet</b> >,shape=plaintext,fontsize=20];
     firewall [label=< &lt;bridge IP&gt; (eth0)<br/><b>firewall</b><br/>192.168.100.1 (eth1) >];
-    outer1 [label=< 192.168.100.101 (eth0)<br/><b>outer1</b><br/>  >];
+    outer1 [label=< 192.168.100.101 (eth1)<br/><b>outer1</b><br/>  >];
     outer2 [label=< 192.168.100.102 (eth0)<br/><b>outer2</b><br/>  >];
 
     internet -> firewall [arrowhead=none];
@@ -140,4 +140,24 @@ digraph network_compact_for_arp_spoofed {
 
     {rank=same firewall internet}
     {rank=same outer1 outer2}
+}
+
+digraph network_compact_for_arp_spoofed_metasploit {
+    graph [fontname="Helvetica"];
+    node [fontname="Helvetica",shape=rect,style=rounded];
+    edge [fontname="Helvetica"];
+    rank=LR;
+
+    internet [label=< <b>Internet</b> >,shape=plaintext,fontsize=20];
+    firewall [label=< &lt;bridge IP&gt; (eth0)<br/><b>firewall</b><br/>192.168.100.1 (eth1) >];
+    outer1 [label=< 192.168.100.101 (eth1)<br/><b>outer1</b><br/>  >];
+    metasploit [label=< 192.168.100.3 (eth1)<br/><b>metasploit</b><br/>  >];
+
+    internet -> firewall [arrowhead=none];
+    firewall -> metasploit [color=green,dir=both,fontcolor=green,penwidth=2,label="normal"];
+    firewall -> outer1 [color=red,dir=both,fontcolor=red,penwidth=2,label="spoofed"];
+    outer1 -> metasploit [color=red,dir=both,fontcolor=red,penwidth=2,label="spoofed"];
+
+    {rank=same firewall internet}
+    {rank=same outer1 metasploit}
 }

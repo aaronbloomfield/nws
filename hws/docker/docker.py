@@ -64,7 +64,7 @@ sanity_checks = {
 	# Does your directory entry in docker-compose.yml have a `:ro` suffix on it?
 	'added_ro_suffix_to_docker-compose.yml_directory': False,
 
-	# Did you update the DISPLAY value in docker-compose.yml?
+	# Did you update the DISPLAY value, if necessary, in docker-compose.yml?
 	'changed_docker-compose.yml-display-value': False,
 
 }

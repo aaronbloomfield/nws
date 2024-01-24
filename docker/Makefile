@@ -11,10 +11,12 @@ graph:
 	convert network_compact.svg network_compact.png
 	mv network.dot.3.svg network_for_routing.svg
 	convert network_for_routing.svg network_for_routing.png
-	mv network.dot.4.svg network_compact_for_arp_spoofed.svg
-	convert network_compact_for_arp_spoofed.svg network_compact_for_arp_spoofed.png
-	mv network.dot.5.svg network_compact_for_arp_normal.svg
-	convert network_compact_for_arp_normal.svg network_compact_for_arp_normal.png
+	mv network.dot.4.svg network_compact_for_arp_spoofed_outer2.svg
+	convert network_compact_for_arp_spoofed_outer2.svg network_compact_for_arp_spoofed_outer2.png
+	mv network.dot.5.svg network_compact_for_arp_normal_outer2.svg
+	convert network_compact_for_arp_normal_outer2.svg network_compact_for_arp_normal_outer2.png
+	mv network.dot.6.svg network_compact_for_arp_normal_metasploit.svg
+	convert network_compact_for_arp_normal_metasploit.svg network_compact_for_arp_normal_metasploit.png
 
 clean:
 	/bin/rm -f network*.svg network*.png

