@@ -26,6 +26,7 @@ If you get stuck, or are unable to proceed past a certain point, don't panic.  T
 
 Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  <!-- So far there aren't any significant changes to report. -->
 
+- Wed, Jan 24: Mac hosts: added one more step (the `xhost + 1.2.3.4:0` step in xquartx, where 1.2.3.4 is your computer's IP) that some hosts seem to be needing.  Also, more troubleshooting tips for Mac hosts are listed in the docker reference](../../docker/index.html) ([md](../../docker/index.md)).
 - Mon, Jan 22: Mac users: the `socat` command should be: `socat TCP-LISTEN:6000,bind=127.0.0.1,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\"`
 - Mon, Jan 22: Windows users: the installation command in WSL should be `sudo apt update` followed by `sudo apt install x11-xserver-utils` (there was a typo in the original version)
 
@@ -294,6 +295,7 @@ You will have to log out and then log back in (or restart) after you installed x
 	- Be sure to put the `:0` at the end of the IP address
 	- Example: `DISPLAY=192.168.1.100:0` (with a `- ` before it in the docker-compose.yml file); this should have been changed throughout the docker-compose.yml file from the directions above (step 3), although your IP address may have changed
 	- If you made a change to the docker-compose.yml file, restart the containers via `docker-compose down` followed by `docker-compose up`
+- In xquartz, run `xhost + 1.2.3.4:0`, where 1.2.3.4 is your computer's IP address (the one on `en0`, not localhost).  You may have to execute this command each time you restart xquartz to run a GUI.
 - Connect to a docker container (any one), and run a GUI program, such as `xeyes`
 
 The [docker reference](../../docker/index.html) ([md](../../docker/index.md)) page lists a number of troubleshooting tips to try if things are not working correctly.

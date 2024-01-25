@@ -79,6 +79,7 @@
 </div><div id='tchangelog' class='tabcontent'><h3 id='changelog'>Changelog</h3>
 <p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. </p>
 <ul>
+<li>Wed, Jan 24: Mac hosts: added one more step (the <code>xhost + 1.2.3.4:0</code> step in xquartx, where 1.2.3.4 is your computer’s IP) that some hosts seem to be needing. Also, more troubleshooting tips for Mac hosts are listed in the docker reference](../../docker/index.html) (<a href='../../docker/index.md'>md</a>).</li>
 <li>Mon, Jan 22: Mac users: the <code>socat</code> command should be: <code>socat TCP-LISTEN:6000,bind=127.0.0.1,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\"</code></li>
 <li>Mon, Jan 22: Windows users: the installation command in WSL should be <code>sudo apt update</code> followed by <code>sudo apt install x11-xserver-utils</code> (there was a typo in the original version)</li>
 </ul>
@@ -280,6 +281,7 @@ $</code></pre>
 <li>Example: <code>DISPLAY=192.168.1.100:0</code> (with a <code>-</code> before it in the docker-compose.yml file); this should have been changed throughout the docker-compose.yml file from the directions above (step 3), although your IP address may have changed</li>
 <li>If you made a change to the docker-compose.yml file, restart the containers via <code>docker-compose down</code> followed by <code>docker-compose up</code></li>
 </ul></li>
+<li>In xquartz, run <code>xhost + 1.2.3.4:0</code>, where 1.2.3.4 is your computer’s IP address (the one on <code>en0</code>, not localhost). You may have to execute this command each time you restart xquartz to run a GUI.</li>
 <li>Connect to a docker container (any one), and run a GUI program, such as <code>xeyes</code></li>
 </ul>
 <p>The <a href='../../docker/index.html'>docker reference</a> (<a href='../../docker/index.md'>md</a>) page lists a number of troubleshooting tips to try if things are not working correctly.</p>
