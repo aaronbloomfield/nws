@@ -1127,9 +1127,156 @@ Sent 1 packets.
 </textarea></section>
     
 <section data-markdown data-separator="^\n\n\n"><textarea data-template>
-## WiFi Security
-- These standards (WEP, WPA, WPA2, and WPA3) are link-layer standards
-- We will come back to this later in the semester, likely after we have covered encryption in more detail
+<!-- .slide: class="right-float-img-600" -->
+## Wi-Fi encryption
+![](images/linklayer/wifi-security.webp)
+- This encrypts all data sent over a wireless network
+  - This encryption is done at the network or data-link level
+  - Application-level encryption (https, ssh, imaps, etc.) is on top of Wi-Fi encryption
+- There are two primary types
+  - Wired Equivalent Privacy (WEP)
+  - Wi-Fi Protected Access (WPA, WPA2, and WP3)
+
+
+
+<!-- .slide: class="no-border" -->
+<h2 class="r-fit-text">US Gov't Encryption restrictions</h2>
+<a href='https://commons.wikimedia.org/wiki/File:Munitions_T-shirt_(front).jpg'><img src='https://upload.wikimedia.org/wikipedia/commons/9/96/Munitions_T-shirt_%28front%29.jpg' style="float:left;height:350px"></a>
+<a href='https://commons.wikimedia.org/wiki/File:Netscape_Navigator_1.1_for_Macintosh_Install_Disk.jpg'><img src='https://upload.wikimedia.org/wikipedia/commons/e/e0/Netscape_Navigator_1.1_for_Macintosh_Install_Disk.jpg' style="float:right;height:350px"></a>
+<br clear='all'>
+
+- After WW2, the US Gov't classified encryption technology as a "war munition"
+- These export restrictions gradually fell away during the 1990's and 2000's
+- [Wikipedia article](https://en.wikipedia.org/wiki/Export_of_cryptography_from_the_United_States)
+
+
+
+<!-- .slide: class="right-float-img-800" -->
+<h2 class="r-fit-text">Wired Equivalent Privacy (WEP) (1997)</h2>
+<a href='https://commons.wikimedia.org/wiki/File:Wep-crypt-alt.svg'><img src='https://upload.wikimedia.org/wikipedia/commons/4/44/Wep-crypt-alt.svg' style='width:400px'></a>
+
+- Created in 1997 to provide confidentiality comparable to that of a traditional wired network
+- Security weaknesses were identified in 2001
+- In 2003, WEP was replaced by WPA (and, later, WPA2)
+- 64 bit key: 40 bit key plus 24 bits of an Initialization Vector (IV)
+- Usually entered as 8 ASCII (!) characters
+
+
+
+## Encryption without IVs
+- The same key is used to encrypt each packet
+  - Not what is used in WEP
+
+<a href='https://commons.wikimedia.org/wiki/File:ECB_encryption.svg'><img src='https://upload.wikimedia.org/wikipedia/commons/d/d6/ECB_encryption.svg' style="width:800px"></a>
+
+
+
+## Encryption with IVs
+- Each previous block is used as the IV of the next block
+  - What is used in WEP
+
+<a href='https://commons.wikimedia.org/wiki/File:CBC_encryption_less_blocks.svg'><img src='https://upload.wikimedia.org/wikipedia/commons/8/8c/CBC_encryption_less_blocks.svg' style='width:800px'></a>
+
+- One of the variants of AES used in TLS (aka https://) is AES-CBC
+
+
+
+## WEP weaknesses
+- IV transmitted as plaintext
+- Initial versions used 64 bit keys
+  - Due to US gov't export restrictions
+  - Later versions used 128 bit keys
+- The stream cipher used (RC4) is secure
+  - But a 24 bit IV has only $2^{24} \approx 16$ million possibilities
+    - Because of the way the IVs are used, there is a 50% chance of a key being repeated in a minute on a busy network
+    - Repeated packets can be used to crack the IV and key
+- Weaknesses identified in 2001, replaced by WPA in 2003
+- Uses CRC as the checksum
+
+
+
+<h2 class="r-fit-text">Wi-Fi Protected Access (WPA) (2003)</h2>
+
+- Improvements of WEP:
+  - Used a better hash: TKIP (Temporal Key Integrity Protocol) instead of CRC
+  - Used bigger keys: 64-bit or 128-bit
+    - Typically 13 characters
+  - IVs were the 64-bits or 128-bits in size
+  - Sequence numbers prevent replay attacks
+- Designed to work on the existing WEP-capable wifi devices
+- IEEE standard 802.11
+- A bit of a quick kludge to fix the (broken) WEP
+
+
+
+## WPA weaknesses
+- Password cracking due to weak passwords
+  - Look-up tables exist for a million different WPA/WPA2 passwords
+- Brute force attacks can crack moderate passwords
+  - A truly random password of 13 characters (from the 95 available) can prevent brute-force attacks
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+<h2 class="r-fit-text">Wi-Fi Protected Access 2 (WPA2) (2004)</h2>
+
+[![](https://upload.wikimedia.org/wikipedia/commons/6/60/4-way-handshake_WPA2.png)](https://commons.wikimedia.org/wiki/File:4-way-handshake_WPA2.png)
+- Improvements over WPA:
+  - Used a better cipher, AES, in something like CBC mode
+  - Only 128-bit keys
+  - Better handshake to establish the AES key
+    - Somewhat like TLS
+- Still considered secure, 20 years later
+  - Unless you use a poor password
+
+
+
+<!-- .slide: class="right-float-img-600 no-border" -->
+## Forward secrecy
+[![](https://upload.wikimedia.org/wikipedia/commons/4/43/Das_Geheimnis_-_Le_secret.jpg)](https://commons.wikimedia.org/wiki/File:Das_Geheimnis_-_Le_secret.jpg)
+- If someone records your encrypted communication today...
+- And the *server* keys were revealed later
+  - Meaning the WiFi key, or a server's private key
+- Would they be able to decrypt your (recorded) communication?
+- If not, then the algorithm is *forward secret*
+
+
+
+<h2 class="r-fit-text">Wi-Fi Protected Access 2 (WPA2) (2018)</h2>
+
+- Improvements over WPA2:
+  - Requires 192-bit (AES) keys
+  - Improved key generation handshake (like TLS)
+  - Forward secret!
+- Supposedly will "mitigate security issues posed by weak passwords"
+
+
+
+<h2 class='xkcd'>Security</h2>
+<img src="https://imgs.xkcd.com/comics/security.png" title="Actual actual reality: nobody cares about his secrets.  (Also, I would be hard-pressed to find that wrench for $5.)" alt="Security"  style="image-orientation:none" class='stretch'>
+<p class='center'><a href='http://xkcd.com/538/'>xkcd # 538</a></p>
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## WiFi Pineapple
+![](https://hak5.org/cdn/shop/products/wp-mk7_81d03a53-bf1a-426f-9425-a34c8b3d9c85_800x.jpg)
+- Available [here](https://hak5.org/products/wifi-pineapple) for $120 from [hak5.org](https://hak5.org)
+- When your computer tries to connect to *saved* WiFi networks...
+  - It broadcasts a "are you here" message for each saved network
+  - This device always answers "yes"
+  - And answers "yes" to whatever password is provided
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## WiFi Pineapple
+![](https://hak5.org/cdn/shop/products/wp-mk7_81d03a53-bf1a-426f-9425-a34c8b3d9c85_800x.jpg)
+- It's a MITM (in-the-middle) attack on WiFi
+  - The network data is forwarded on through your computer's (real) network connection
+- Very effective at coffee shop WiFi hotspots
+- Has anybody here been victim of one?
+  - How would you ever know?
 </textarea></section>
 
 </section>
