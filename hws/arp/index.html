@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml' lang='' xml:lang=''>
+<head>
+  <meta charset='utf-8'></meta>
+  <meta name='generator' content='pandoc'></meta>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=yes'></meta>
+  <title>ARP Spoofer and Detector</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel='stylesheet' href='../../markdown.css'></link>
+  <script>
+  function openTab(evt, tabName) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+
+  function insertCopyLink(text) {
+    document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
+  }
+  </script>
+</head>
+<body>
+<h1 id='arp-spoofer-and-detector'>ARP Spoofer and Detector</h1>
+<p><a href='../index.html'>Go up to the NWS HW page</a> (<a href='../index.md'>md</a>) | <a href='index-full.html'>view one-page version</a></p><div class='tab'>
+<button class='tablinks' onclick="openTab(event,'toverview')" id='defaultOpen'>Overview</button>
+<button class='tablinks' onclick="openTab(event,'tchangelog')">Changelog</button>
+<button class='tablinks' onclick="openTab(event,'tbuilt-in-commands')">Built In Commands</button>
+<button class='tablinks' onclick="openTab(event,'tarp-spoofing')">ARP Spoofing</button>
+<button class='tablinks' onclick="openTab(event,'tpacket-interception')">Packet Interception</button>
+<button class='tablinks' onclick="openTab(event,'tspoof-detector')">Spoof Detector</button>
+<button class='tablinks' onclick="openTab(event,'tsubmission')">Submission</button>
+</div>
+<div id='toverview' class='tabcontent'><h3 id='overview'>Overview</h3>
+<p>In this assignment you will…</p>
+<p>This assignment is to be done in Python, and uses the <code>scapy</code> library. If you are developing it on your own computer, you should install scapy via pip (or pip3): <code>pip install scapy</code>.</p>
+<p>You will be submitting one code file as well as <a href='arp.py.html'>arp.py</a> (<a href='arp.py'>src</a>).</p>
+</div><div id='tchangelog' class='tabcontent'><h3 id='changelog'>Changelog</h3>
+<p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. So far there aren’t any significant changes to report.</p>
+</div><div id='tbuilt-in-commands' class='tabcontent'><h3 id='built-in-commands'>Built-in Commands</h3>
+<p>There are a few commands installed that we are going to use.</p>
+<h4 id='arp'><code>arp</code></h4>
+<p><code>arp</code> will allow us to see and manipulate the contents of the ARP cache. Running <code>arp -a</code> will display the cache:</p>
+<pre><code>root@outer1:/# arp -a
+outer2 (192.168.100.102) at 02:42:c0:a8:64:66 [ether] on eth0
+metasploit (192.168.100.3) at 02:42:c0:a8:64:03 [ether] on eth0
+gateway (192.168.100.2) at 02:42:c0:a8:64:02 [ether] on eth0
+firewall (192.168.100.1) at 02:42:c0:a8:64:01 [ether] on eth0
+outer3 (192.168.100.103) at 02:42:c0:a8:64:67 [ether] on eth0
+root@outer1:/# </code></pre>
+<p>If you just connected to that container, there may be nothing in the ARP cache. Run <code>ping -c 1 &lt;host&gt;</code> on a few hosts (<code>outer1</code>, <code>outer2</code>, <code>gateway</code>, <code>inner</code>, etc.). The ping process will obtain the ARP mapping; running the <code>arp -a</code> command again will now show entries in the cache.</p>
+<p>You can clear entries in the cache via <code>-d</code>: <code>arp -d &lt;ipaddr&gt;</code>. If you are running this on your own machine, you will have to put <code>sudo</code> before it to run it as the super-user. The entries have to be deleted one at a time.</p>
+<h4 id='netdiscover-and-arp-scan'><code>netdiscover</code> and <code>arp-scan</code></h4>
+<p><code>netdiscover</code> will query all the hosts on the sub-net, and display their MAC addresses and IP addresses. However, it does <em>not</em> populate the ARP cache. And then it will send out ARP requests to all the hosts on all other sub-nets – this can take quite some time. We can limit that to a given sub-net via the <code>-r</code> argument: <code>-r 192.168.100.0/24</code>.</p>
+<p>Here’s an execution run on <code>outer1</code>:</p>
+<pre><code>root@outer1:/# netdiscover -r 192.168.100.0/24 -P
+ _____________________________________________________________________________
+   IP            At MAC Address     Count     Len  MAC Vendor / Hostname      
+ -----------------------------------------------------------------------------
+ 192.168.100.1   02:42:c0:a8:64:01      1      42  Unknown vendor
+ 192.168.100.2   02:42:c0:a8:64:02      1      42  Unknown vendor
+ 192.168.100.3   02:42:c0:a8:64:03      1      42  Unknown vendor
+ 192.168.100.102 02:42:c0:a8:64:66      1      42  Unknown vendor
+ 192.168.100.103 02:42:c0:a8:64:67      1      42  Unknown vendor
+
+-- Active scan completed, 5 Hosts found.
+root@outer1:/# </code></pre>
+<p>In the example shown, the <code>-P</code> option was added that improves formatting for this assignment – you probably won’t want to use the <code>-P</code> option when you run it.</p>
+<p><code>arp-scan</code> works similarly: it will send ARP requests to the hosts, but not populate the ARP cache. Using the <code>-l</code> option (<code>arp-scan -l</code>) will only scan the local network.</p>
+</div><div id='tarp-spoofing' class='tabcontent'><h3 id='arp-spoofing'>ARP Spoofing</h3>
+<p>We are going to execute two different ARP spoofing attacks. Before each of them, you may want to clear the ARP cache via <code>arp -d</code>, as explained above.</p>
+<h4 id='basic-arp-spoofing-attack'>Basic ARP spoofing attack</h4>
+<p>The first task is to experiment with the <code>arpspoof</code> command that is already installed on the Docker images. This part will go through the same steps that were <a href='../../slides/link-layer.html#/arpexample'>gone over in the lecture slides</a>, which are repeated here.</p>
+<p>We will be using the <a href='../../docker/network.svg'>course Docker setup</a>, and will be changing first image (normal operation) to the second image (spoofed operation).</p>
+<p><img src='../../docker/network_compact_for_arp_normal_outer2.svg' style='width:400px'> <img src='../../docker/network_compact_for_arp_spoofed_outer2.svg' style='width:400px'> <br clear='all'></p>
+<p>Load up 5 tabs:</p>
+<ul>
+<li>Tab 1: run the docker setup: <code>docker-compose up</code></li>
+<li>Tab 2: connect to outer1 and run:<code>arpspoof -i eth0 -t 192.168.100.102 192.168.100.1</code></li>
+<li>Tab 3: connect to outer1 and run: <code>arpspoof -i eth0 -t 192.168.100.1 192.168.100.102</code>
+<ul>
+<li>Note that the IP addresses are reversed!</li>
+</ul></li>
+<li>Tab 4: connect to outer1 and run: <code>urlsnarf -i eth0</code>
+<ul>
+<li>This will display URLs it sees in the intercepted packets</li>
+</ul></li>
+<li>Tab 5: wait a minute, then connect to <em>outer2</em> and run: <code>wget -q http://google.com</code></li>
+</ul>
+<p>At this point, you should see the URL chosen (<code>http://google.com</code>) output by the <code>urlsnarf</code> program.</p>
+<p>When running <code>wget</code> from outer2, any <code>http://</code> address will appear in the <code>urlsnarf</code> output, but there is often a few seconds of delay.</p>
+<p>Notice that an <code>https://</code> address will <em>not</em> appear in the <code>urlsnarf</code> output – the packet is encrypted with AES, so <code>urlsnarf</code> cannot see that it’s a URL request therein.</p>
+<h4 id='mitm-arp-spoofer'>MITM ARP spoofer</h4>
+<p>Next we are going to execute the MITM (in-the-middle) attack via an ARP spoof; this is <a href='../../slides/link-layer.html#/mitmarp'>as shown in the slides as well</a>. We are going to ARP spoof <em>metsploit</em> via <em>outer1</em>.</p>
+<p><img src='../../docker/network_compact_for_arp_normal_metasploit.svg' style='width:400px'> <br clear='all'></p>
+<ul>
+<li>First, turn off IP forwarding: <code>echo 0 &gt; /proc/sys/net/ipv4/ip_forward</code></li>
+<li>Clear out the ARP cache, via <code>arp -d</code>, as explained above</li>
+<li>Run <code>arpspoof</code> in two terminals on <em>outer1</em>.
+<ul>
+<li><code>arpspoof -i eth1 -t 192.168.100.3 192.168.100.1</code></li>
+<li><code>arpspoof -i eth1 -t 192.168.100.1 192.168.100.3</code></li>
+</ul></li>
+<li>Download the <a href='../../slides/code/arp_mitm.py.html'>arp_mitm.py</a> (<a href='../../slides/arp_mitm.py'>src</a>) file</li>
+<li>Run that file on <em>outer1</em></li>
+<li>Connect to <em>firewall</em> via <code>docker exec</code>. If you connect via <code>ssh</code>, then that will (correctly) populate the ARP cache, negating our hack.</li>
+<li>From <em>firewall</em>, ssh into metasploit (<code>ssh msfadmin@metasploit</code>, password is <code>msfadmin</code>).</li>
+<li>Type <code>echo foo</code> into the terminal. The response will be <code>bar</code>.</li>
+</ul>
+</div><div id='tpacket-interception' class='tabcontent'><h3 id='packet-interception'>Packet interception</h3>
+<p>We are going to use the <a href='https://scapy.net'>scapy</a> Python library to intercept all packets. For this part, we are not modifying the packets. We saw something similar in the <a href='../../slides/code/arp_mitm.py.html'>arp_mitm.py</a> (<a href='../../slides/arp_mitm.py'>src</a>) from above:</p>
+<pre><code>def spoof_pkt(pkt):
+  # code omitted from this listing, but in the original file
+
+filter = "tcp and (ether src " + FIREWALL_MAC + " or ether src " + VICTIM_MAC + ")"
+pkt = sniff(iface='eth1', filter=filter, prn=spoof_pkt)</code></pre>
+<p>Notes:</p>
+<ul>
+<li>The <code>spoof_pkt()</code> is passed the packet by the <code>sniff()</code> function.</li>
+<li>The <code>filter</code> parameter to <code>sniff</code> is a (mostly) English description of what packets the function (via the <code>prn</code> parameter) should be called on. To sniff all arp packets, use ‘arp’ as the filter. The full description of the filter language can be found <a href='https://biot.com/capstats/bpf.html'>here</a>, if you are interested.</li>
+<li>To get a part of the filter, you pass the name of the part in as an array index: <code>packet['Ether']</code> or <code>packet['ARP']</code>, for example</li>
+<li>ARP packets have two source addresses, protocol (IP) and hardware (MAC), called <code>psrc</code> and <code>hwsrc</code>, respectively. Likewise the destination filters are <code>pdst</code> and <code>hwdst</code>.</li>
+<li>Thus, to get the MAC address it came from, use <code>packet['ARP'].hwsrc</code></li>
+</ul>
+</div><div id='tspoof-detector' class='tabcontent'><h3 id='spoof-detector'>Spoof Detector</h3>
+<p>Having experimented with ARP spoofing, we are going to write an ARP spoofing detector. Testing for this is described below.</p>
+<p>The result of this part should be in a file called <code>arpDetector.py</code>.</p>
+<h4 id='overview-1'>Overview</h4>
+<p>Your program should do the following:</p>
+<ol type='1'>
+<li>Read the list of ARP mappings that the computer currently has.</li>
+<li>Read a file called <code>arp-overrides.txt</code> that also provides mappings. The file may not be present – if not, then move on to the next step. The format of this file is described below. The mappings in this may override what was read in the previous step – if so, just overwrite the mapping.</li>
+<li>Listen for ARP messages, and print out various messages, described below. The output is very specific!</li>
+<li>Keep running indefinitely; we’ll use Ctrl-C to terminate the program.</li>
+</ol>
+<h4 id='step-1-read-the-interface-from-the-first-command-line-parameter'>Step 1: Read the interface from the first command line parameter</h4>
+<p>This is critical! Whatever the interface is where you are testing it – likely <code>en0</code>, <code>eth0</code>, or <code>eth1</code> – that is NOT going to be the interface when we test it. You are welcome to have a default if no parameter is specified. But the first command line parameter is the interface to pass to the <code>iface</code> parameter of <code>sniff()</code>.</p>
+<h4 id='step-2-read-from-system'>Step 2: read from system</h4>
+<p>The first step is to read in the current ARP mappings, of MAC to IP, that the computer has. If you run <code>arp -a</code>, you will get something similar to the following:</p>
+<pre><code>root@outer1:/# arp -a
+outer2 (192.168.100.102) at 02:42:c0:a8:64:66 [ether] on eth0
+metasploit (192.168.100.3) at 02:42:c0:a8:64:03 [ether] on eth0
+gateway (192.168.100.2) at 02:42:c0:a8:64:02 [ether] on eth0
+firewall (192.168.100.1) at 02:42:c0:a8:64:01 [ether] on eth0
+outer3 (192.168.100.103) at 02:42:c0:a8:64:67 [ether] on eth0
+root@outer1:/# </code></pre>
+<p>You can run this via the <code>subprocess</code> module to capture the input. Or you can redirect to a file, then read that file (then delete that file). You can assume that the output will be in the format described above (but without the prompts on the first and last line) – in particular, the MAC address will be the 4th item, and the IP address will be the 2nd item. Note that the IP address has parentheses around it.</p>
+<p>This step should produce no output on a successful run (if the program runs into an error, then you can print out whatever output you want).</p>
+<h4 id='step-3-read-from-file'>Step 3: read from file</h4>
+<p>Next we need to read in a file that contains mappings. This file may not exist, or it may be empty. Here is a sample file, which is the typical set of MAC addresses for the outer network of the docker setup.</p>
+<pre><code># ARP spoofing file
+
+# mappings of the hosts on the outer network in the docker setup
+02:42:c0:a8:64:01 192.168.100.1
+02:42:c0:a8:64:02 192.168.100.2
+02:42:c0:a8:64:03 192.168.100.3
+02:42:c0:a8:64:05 192.168.100.101
+02:42:c0:a8:64:06 192.168.100.102
+02:42:c0:a8:64:07 192.168.100.103</code></pre>
+<p>There are three types of lines:</p>
+<ul>
+<li>A comment will have the hash symbol (<code>#</code>) as the first character; in this case, ignore that line. You only need to check the first character of a line for this symbol.</li>
+<li>An empty line is ignored.</li>
+<li>A mapping line will have two values, separated by a single space. The first is the MAC address (either upper-case or lower-case hex), the second is the IPv4 address.</li>
+</ul>
+<p>In particular, the mappings in this file may overwrite the mappings from the previous step – this is intentional, as this can be used when testing the program. You can assume the file, if it exists, will match the format above – meaning it will not have errors. Note that it can be an empty file, though, or it may not be present.</p>
+<p>This step should also produce no output on a successful run. If the program runs into an error, then you can print out whatever output you want. The file not being present, or the file being empty, is not an error, and should produce no output.</p>
+<h4 id='step-4-monitor-the-network'>Step 4: monitor the network</h4>
+<p>In this step, you will listen to the network for ARP messages – use the <code>scapy</code> library, as <a href='../../slides/arp.html#/'>discussed in lecture</a> for this.</p>
+<p>Your program should produce two types of output for this part:</p>
+<ul>
+<li><p>If a new ARP mapping is observed, the print out a line stating so:</p>
+<pre><code>New mapping: 192.168.100.101 -&gt; 02:42:c0:a8:64:65</code></pre>
+<p>This is the “mapping detector” part.</p></li>
+<li><p>If a ARP packet is received where the MAC and IP therein do NOT match what is in the program’s mapping, the you should output the following line:</p>
+<pre><code>Possible ARP attack detected: 192.168.100.102 may be pretending to be 02:42:c0:a8:64:02</code></pre>
+<p>This is the “spoofing detector” part,</p></li>
+</ul>
+<p>As this part of the assignment will be auto-graded, you have to have that exact output. To ensure you have the exact right output, the following functions are provided that you should use.</p>
+<pre><code>def outputNewMapping(mac,ip):
+    return "New mapping: " + str(ip) + " -&gt; " + str(mac).lower()
+
+def outputARPConflict(mac,old_ip,new_ip):
+    return "Possible ARP attack detected: " + str(old_ip) + \
+           " may be pretending to be " + str(new_ip) + \
+           " for MAC " + str(mac)</code></pre>
+<h4 id='step-5-keep-running'>Step 5: keep running</h4>
+<p>Your program should keep running until Ctrl-C is pressed, which will terminate the program – you don’t have to put in any code to read in the Ctrl-C.</p>
+<p>You can also send a signal to the program that is the equivalent of Ctrl-C. First, you have to find the process number of the running program:</p>
+<pre><code>$ ps aux | grep arpDetector</code></pre>
+<p>This may print out multiple lines of processes, but one of them is going to be the process line. (The others may be the grep line, or the <code>sudo</code> line, if you have to run it with <code>sudo</code>). For example:</p>
+<pre><code>$ ps aux | grep arpDetector 
+root             62439   0.1  0.2 409569856  63728 s001  S+    9:09AM   0:00.56 /opt/homebrew/Cellar/python@3.11/3.11.6_1/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python arpDetector.py
+aaron            63076   0.0  0.0 408626944   1328 s004  R+    9:09AM   0:00.00 grep arpDetector
+root             62436   0.0  0.0 408642048   9568 s001  S+    9:09AM   0:00.02 sudo python3 arpDetector.py
+$</code></pre>
+<p>You can then send Ctrl-C to the process via:</p>
+<pre><code>$ sudo kill -SIGINT 62439</code></pre>
+<p>This is how we will be doing it in the automated testing. Replace the process number with the one specific to your process. Note that you don’t have to include any code to handle Ctrl-C.</p>
+<h4 id='testing'>Testing</h4>
+<p>To test this, first find the IP -&gt; MAC addresses on your local network. You can do this from the output of <code>arp -a</code>, or from step 1 above. You can find the mappings by running <code>sudo arp-scan -l</code>. (Note that we did not use that for step 1, as we specifically don’t want all the ARP mappings – we want the program to be able to discover them via the ARP packets.) This program is already installed on the docker images; you can install it under Linux via <code>sudo apt install arp-scan</code>, and on a Mac via <code>brew install arp-scan</code>.</p>
+<p>To test the new mapping detection, run it on one of the containers. Clear out the ARP cache via <code>arp -d</code>. In another terminal and in the same container, ping a few other nodes from that container. Each time, your program should print out that it found a new mapping. Check that those IP -&gt; MAC mappings are in the ARP cache via <code>arp -a</code>. Then, in a <em>different</em> container, run an ARP spoof via <code>arpspoof</code>. Your program should print out that it detected a possible ARP spoof.</p>
+<h4 id='example-output'>Example output</h4>
+<pre><code>root@outer1:/# arp -a
+root@outer1:/# python3 arpDetector.py 
+New mapping: 192.168.100.101 -&gt; 02:42:c0:a8:64:65
+New mapping: 192.168.100.103 -&gt; 02:42:c0:a8:64:67
+Possible ARP attack detected: 192.168.100.102 may be pretending to be 192.168.100.1 for MAC 02:42:c0:a8:64:66
+Possible ARP attack detected: 192.168.100.102 may be pretending to be 192.168.100.1 for MAC 02:42:c0:a8:64:66
+Possible ARP attack detected: 192.168.100.102 may be pretending to be 192.168.100.1 for MAC 02:42:c0:a8:64:66
+^C
+root@outer1:/# </code></pre>
+<p><strong><em>NOTE:</em></strong> These are not <em>extensive</em> tests, and we will be providing more comprehensive tests when we test your program. These two tests are mean to get you started with testing your program.</p>
+</div><div id='tsubmission' class='tabcontent'><h3 id='submission'>Submission</h3>
+<p>You will be submitting your <code>arpDetector.py</code> file, as well as <a href='arp.py.html'>arp.py</a> (<a href='arp.py'>src</a>). That arp.py file describes, in the comments, what needs to be filled in.</p>
+</div><script>document.getElementById('defaultOpen').click();</script></body>
+</html>
+
