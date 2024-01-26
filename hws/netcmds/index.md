@@ -724,7 +724,7 @@ There are many other things that `curl` can do; [here](https://linuxize.com/post
 There are a number of other network commands that were not gone over in this assignment, but will be gone over in future assignments.
 
 - `tcpdump` will be gone over in the Wireshark assignment
-- `arp` will be gone over in the ARP assignment
+- `arp`, `arp-scan`, and `netdiscover` will be gone over in the ARP assignment
 - `host` and `rndc` will be gone over in the DNS assignment
 
 
