@@ -136,13 +136,15 @@ You will need to configure that file for your particular setup:
 		- Via system settings -> network -> wifi -> details (for the current wireless connection) -> TCP/IP.
 	- Make sure you put the `:0` after the IP address
 
-#### Platform notes: Windows
+#### Platform notes: Windows hosts
 
 Note that for the `docker` command to work in WSL, the Docker Engine has to be loaded.
 
 If you have a Windows host, you may have to enable WSL bindings in the Docker Engine application.  When in WSL, try entering `docker help` -- if the command is not found, then you need to enable it.  In the Docker Engine application, in settings (gear wheel on the top bar), it's the WSL setting therein. See [https://docs.docker.com/desktop/wsl/](https://docs.docker.com/desktop/wsl/) for more details about using Docker with WSL.
 
 Windows Defender, or whatever firewall you have enabled, will likely complain when you start the Docker containers, as it notices that the network configuration has changed due to the Docker networks that are created as part of the container start-up.  You will have to allow this in order to use this Docker setup on your machine.
+
+For the path of your docker/ directory, that you edited above, you should enter it slightly differently.  From WSL, your C:\\ drive is visible as /mnt/c.  So if your Windows docker directory is c:\\Users\\mst3k\\docker\\, you should enter your path as `/mnt/c/Users/mst3k/docker/`.
 
 Docker Desktop seems to go to sleep.  If none of your commands in WSL work, try waking up Docker Desktop, which will reactivate the Docker Engine.
 

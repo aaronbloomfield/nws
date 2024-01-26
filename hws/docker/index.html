@@ -49,7 +49,6 @@
     document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
   }
   </script>
-  
 </head>
 <body>
 <h1 id='docker-setup'>Docker Setup</h1>
@@ -159,10 +158,11 @@ $ </code></pre>
 <li>Make sure you put the <code>:0</code> after the IP address</li>
 </ul></li>
 </ol>
-<h4 id='platform-notes-windows'>Platform notes: Windows</h4>
+<h4 id='platform-notes-windows-hosts'>Platform notes: Windows hosts</h4>
 <p>Note that for the <code>docker</code> command to work in WSL, the Docker Engine has to be loaded.</p>
 <p>If you have a Windows host, you may have to enable WSL bindings in the Docker Engine application. When in WSL, try entering <code>docker help</code> – if the command is not found, then you need to enable it. In the Docker Engine application, in settings (gear wheel on the top bar), it’s the WSL setting therein. See <a href='https://docs.docker.com/desktop/wsl/'>https://docs.docker.com/desktop/wsl/</a> for more details about using Docker with WSL.</p>
 <p>Windows Defender, or whatever firewall you have enabled, will likely complain when you start the Docker containers, as it notices that the network configuration has changed due to the Docker networks that are created as part of the container start-up. You will have to allow this in order to use this Docker setup on your machine.</p>
+<p>For the path of your docker/ directory, that you edited above, you should enter it slightly differently. From WSL, your C:\ drive is visible as /mnt/c. So if your Windows docker directory is c:\Users\mst3k\docker\, you should enter your path as <code>/mnt/c/Users/mst3k/docker/</code>.</p>
 <p>Docker Desktop seems to go to sleep. If none of your commands in WSL work, try waking up Docker Desktop, which will reactivate the Docker Engine.</p>
 <p>Lastly, in Windows, note that when you have to enter “Dockerfile” on the command line (or “Dockerfile.metasploit2”) in the commands below, you <em>may</em> have to do it all lower-case (“dockerfile” or “dockerfile.metasploit2”). This only applies to Windows hosts, and has been found to be inconsistent between Windows installations (some need lower-case, some don’t).</p>
 <h4 id='build-the-image'>Build the image</h4>
