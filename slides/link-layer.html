@@ -850,7 +850,7 @@ root@outer2:/#
 
 <!-- .slide: class="right-float-img-1000" -->
 ## ARP spoofing
-[![ARP spoofing](images/linklayer/ARP_Spoofing.svg)](https://commons.wikimedia.org/wiki/File:ARP_Spoofing.svg)
+[![ARP spoofing](images/linklayer/ARP_Spoofing.webp)](https://commons.wikimedia.org/wiki/File:ARP_Spoofing.svg)
 - The malicious (red) node sent out an announcement that it was .102
 - Now the gateway sends all data for .102 to the MAC of .101
   - The malicious device has the network card listen for *multiple* MAC addresses
@@ -862,7 +862,7 @@ root@outer2:/#
 
 <!-- .slide: class="right-float-img-1000" -->
 ## ARP spoofing
-[![ARP spoofing](images/linklayer/ARP_Spoofing.svg)](https://commons.wikimedia.org/wiki/File:ARP_Spoofing.svg)
+[![ARP spoofing](images/linklayer/ARP_Spoofing.webp)](https://commons.wikimedia.org/wiki/File:ARP_Spoofing.svg)
 - This requires *two* spoofs
   - The malicious machine (.101) has to tell the gateway (.1) that it is the target (.102)
   - The malicious machine (.101) *also* has to tell the target (.102) that it is the gateway (.1)
@@ -1136,6 +1136,7 @@ Sent 1 packets.
 - There are two primary types
   - Wired Equivalent Privacy (WEP)
   - Wi-Fi Protected Access (WPA, WPA2, and WP3)
+- OWE (Opportunistic Wireless Encryption) is a recent addition
 
 
 
@@ -1242,13 +1243,23 @@ Sent 1 packets.
 
 
 
-<h2 class="r-fit-text">Wi-Fi Protected Access 2 (WPA2) (2018)</h2>
+<h2 class="r-fit-text">Wi-Fi Protected Access 3 (WPA3) (2018)</h2>
 
 - Improvements over WPA2:
   - Requires 192-bit (AES) keys
   - Improved key generation handshake (like TLS)
   - Forward secret!
 - Supposedly will "mitigate security issues posed by weak passwords"
+
+
+
+## OWE (Opportunistic Wireless Encryption) (2018)
+- Defined in [RFC 8110](https://www.rfc-editor.org/rfc/rfc8110)
+- Intended for open networks where anyone can connect
+- Provides encryption without the need for authentication
+  - Uses DHE (Diffe-Hellman key Exchange) 
+- As secure as WPA2 and WPA3
+  - Uses AES, with 256+ bit keys
 
 
 
@@ -1265,7 +1276,7 @@ Sent 1 packets.
 - When your computer tries to connect to *saved* WiFi networks...
   - It broadcasts a "are you here" message for each saved network
   - This device always answers "yes"
-  - And answers "yes" to whatever password is provided
+  - And then answers "yes" to whatever password is provided
 
 
 
