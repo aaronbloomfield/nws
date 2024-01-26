@@ -1,10 +1,9 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <base target="_blank">
-    <meta charset="utf-8">
-    <title>NWS: Network Security Course slide set</title>
-    <meta name="description" content="A set of slides for a course on Cryptocurrency">
+    <meta charset="utf-8"><base target="_blank">
+    <title>Network Security slide set</title>
+    <meta name="description" content="A set of slides for a course on Introduction to Cybersecurity">
     <meta name="author" content="Aaron Bloomfield">
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -26,75 +25,452 @@
     <!--[if lt IE 9]>
 	<script src="../slides/reveal.js/lib/js/html5shiv.js"></script>
 	<![endif]-->
-    <style>
-.reveal li {
-font-size:90%;
-line-height:120%;
-}
-    </style>
   </head>
+
   <body>
+    <div class="reveal">
+      <div class="slides">
 
-		<div class="reveal">
-
-			<!-- Any section element inside of this container is displayed as a slide -->
-			<div class="slides">
-
-	<section data-markdown><textarea>
+<section data-markdown id="cover"><script type="text/template">
 # CS 4760
-&nbsp;
+&nbsp;  
 ### Network Security
 
 <p class='titlep'>&nbsp;</p>
 <div class="titlesmall"><p>
 <a href="http://www.cs.virginia.edu/~asb">Aaron Bloomfield</a> (aaron@virginia.edu)<br>
-<a href="http://github.com/aaronbloomfield/nws">@github</a> | <a href="index.html">&uarr;</a> | <a href="?print-pdf"><img class="print" width="20" src="../slides/images/print-icon.png" style="top:0px;vertical-align:middle"></a>
+<a href="http://github.com/aaronbloomfield/nws">@github</a> | <a href="index.html">&uarr;</a> | <a href="?print-pdf"><img class="print" width="20" src="../slides/images/print-icon.webp" style="top:0px;vertical-align:middle"></a>
 </p></div>
 <p class='titlep'>&nbsp;</p>
 
 ## Network Layer
-	</textarea></section>
+</script></section>
 
-	<section data-markdown><textarea>
-## Slide set not ready
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-This slide set is not yet ready, but will be placed at this URL when it is.
-	</textarea></section>
+<section data-markdown><textarea data-template>
+# Contents
+&nbsp;  
+[Network Layer](#/network)  
+[Routing](#/routing)  
+[VPNs and IPsec](#/vpns)  
+[ICMP](#/icmp)  
+</textarea></section>
 
-<!-- ============================================================ -->
-	
-      </div>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-    </div>
+<section>
 
-    <script src='../slides/reveal.js/dist/reveal.js'></script><script src='../slides/reveal.js/plugin/zoom/zoom.js'></script><script src='../slides/reveal.js/plugin/notes/notes.js'></script><script src='../slides/reveal.js/plugin/search/search.js'></script><script src='../slides/reveal.js/plugin/markdown/markdown.js'></script><script src='../slides/reveal.js/plugin/highlight/highlight.js'></script><script src='../slides/reveal.js/plugin/math/math.js'></script>
-    <script src="../slides/settings.js"></script>
+<section data-markdown id="network" class="center"><textarea data-template>
+# Network Layer
+</textarea></section>
 
-    <script>
-      var vals = new Array();
-      
-      // often changed variables
-      vals['btc_price'] = 65000;
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## Protocol stack: network layer
+<!-- [![Router](https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Sprouter100g.jpg/835px-Sprouter100g.jpg)](https://commons.wikimedia.org/wiki/File:Sprouter100g.jpg) -->
 
-      // rarely changed variables
-      vals['btc_reward_btc'] = 6.25;
+<img src="http://andromeda.cs.virginia.edu/nws/duimg/n01/image8.png" style="height:300px">
 
-      // computations; not changed
-      vals['btc_reward_usd'] = vals['btc_price'] * vals['btc_reward_btc'];
-
-      Reveal.addEventListener( 'update', function() { myupdate(); } );
-
-      function myupdate() {
-	  for (var k in vals) {
-	      if ( document.getElementById(k) ) {
-		  document.getElementById(k).innerHTML = vals[k].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-	      }
-	  }
-      }
-      
-    </script>
+- Is charged with *routing* a *single* packet of data from one computer to another (via the next layer down)
+- In TCP/IP, called the "Internet" or "Internet Protocol" (hence "IP") layer
+- Example protocols: IPv4, IPv6, ICMP (used for 'ping'), IPsec (for VPNs)
 
 
-    
-  </body>
+
+## Internet Protocol version 4
+
+<a href='https://commons.wikimedia.org/wiki/File:IPv4_header_(1).png'><img src='https://upload.wikimedia.org/wikipedia/commons/f/f9/IPv4_header_%281%29.png' style="width:100%"></a>
+
+- Addresses are 32 bits, represented as 4 decimal numbers, period-separated
+- Note the TTL & protocol fields; we'll see these shortly
+
+
+
+<!-- .slide: class="small-pre" -->
+## IPv4 Addresses
+```
+Class A (#126)             |<--     Host ID      -->|
+  1.  0.  0.  0 = 00000001 00000000 00000000 00000000
+126.255.255.255 = 01111110 11111111 11111111 11111111
+
+Class B (#16,384)                   |<-- Host ID -->|
+128.  0.  0.  0 = 10000000 00000000 00000000 00000000
+191.255.255.255 = 10111111 11111111 11111111 11111111
+
+Class C (#~2M)                               |HostID|
+192.  0.  0.  0 = 11000000 00000000 00000000 00000000
+223.255.255.255 = 11011111 11111111 11111111 11111111
+
+Class D (#16)         |<--     Address Range     -->|
+224.  0.  0.  0 = 11100000 00000000 00000000 00000000
+239.255.255.255 = 11101111 11111111 11111111 11111111
+
+Class E (#16)         |<--     Address Range     -->|
+240.  0.  0.  0 = 11110000 00000000 00000000 00000000
+255.255.255.255 = 11101111 11111111 11111111 11111111
+```
+- 32 bit addresses
+- UVA has the 128.143 class B address range
+
+
+
+## IP Address Ranges
+- Class D and class E addresses are reserved (multicast & "research purposes")
+- Consider the range of addresses from 127.0.0.0 to 127.255.255.255
+  - That's $2^{24} \approx 16$ million addresses
+- That range is referred to as: 127.0.0.0/24
+  - Meaning the last 24 bits can be anything
+  - So any address that starts with 127.
+- UVA's range is 128.143.0.0/16
+
+
+
+## IPv4 Addresses
+- There are also *private* IP address ranges:
+  - 10.0.0.0/24 (class A)
+  - 127.0.0.0/24 (class A)
+  - 169.254.0.0/16 (class B)
+  - 172.16.0.0/16 to 172.31.0.0 (class Bs)
+  - 192.168.0.0/8 to 192.168.255.0/8 (class Cs)
+- Primary usage:
+  - 127.0.0.1 is used as the localhost IP
+  - 192.168.0.0/16 are used as router private IPs
+
+
+
+## IP protocols
+
+- Full list [here](https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers)
+- Relevant ones:
+  - 1 is ICMP
+  - 6 is TCP
+  - 9 is for IGP / IGRP (router-router messages)
+  - 51 is IPsec
+
+
+
+## IPv4 limitations
+- With only 32 bits, there are at most $2^{32} \approx 4$ billion addresses
+  - There are about 30 billion connected devices in 2024 ([source](https://www.statista.com/statistics/512650/worldwide-connected-devices-amount/))
+- How to connect them all?
+- Solution 1: Network Address Translation (NAT)
+- Solution 2: IPv6 (128 bit addresses)
+
+
+
+<h2 class="r-fit-text">Network Address Translation (NAT)</h2>
+<a href='https://commons.wikimedia.org/wiki/File:NAT_Concept-en.svg'><img src='https://upload.wikimedia.org/wikipedia/commons/c/c7/NAT_Concept-en.svg' width='100%'></a>
+
+
+
+## NAT in Practice
+- UVA
+  - UVA has many tens of thousands of connected devices
+    - Most student, faculty, and staff (30k people) have a computer and a cell phone
+    - Thousands of lab computers throughout UVA
+    - Thousands of servers in the data centers
+  - Yet only 16k publicly addressable IP addresses
+  - Any non-public facing computer is NAT'ed
+- Your home router
+   - May or may not have a public IP address
+   - Likely dozens of devices connecting to it
+
+
+
+## IP version 6 (IPv6)
+
+<a href='https://commons.wikimedia.org/wiki/File:Ipv6_header.svg'><img src='https://upload.wikimedia.org/wikipedia/commons/a/ab/Ipv6_header.svg' style="width:75%"></a>
+
+
+
+## IPv6 Addresses
+
+<a href='https://commons.wikimedia.org/wiki/File:Ipv6_address_leading_zeros.svg'><img src='https://upload.wikimedia.org/wikipedia/commons/7/70/Ipv6_address_leading_zeros.svg'></a>
+
+
+
+<!-- .slide: class="wide-pre small-pre" -->
+## IPv6 Addresses
+- Addresses are 128 bits, or 16 bytes, or 32 hex characters
+- Represented in 8 sets of 2-byte hex values (4 digits each)
+```
+asb2t@portal04:~$ ping6 -c 1 google.com
+PING google.com(lga25s79-in-x0e.1e100.net (2607:f8b0:4006:81f::200e)) 56 data bytes
+From fe80::a68c:dbff:fedd:9401%enp4s0 (fe80::a68c:dbff:fedd:9401%enp4s0) icmp_seq=1 Destination unreachable: No route
+
+--- google.com ping statistics ---
+1 packets transmitted, 0 received, +1 errors, 100% packet loss, time 0ms
+
+asb2t@portal04:~$ 
+```
+- The `::` means `:0000:`, and trailing zeros are omitted
+- Full address: fe80:0000:a68c:dbff:fedd:9401:0000:0000
+
+
+
+## IPv6 Usage
+- Essentially all IPv6 hosts have a IPv4 address as well
+  - Often NAT'ed
+- Some places have not yet enabled IPv6
+  - As IPv4 w/NAT is fine for now
+- IPv4 are much easier for us to use
+- Thus, we won't be seeing any more IPv6 in this course
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  
+<section>
+
+<section data-markdown id="routing" class="center"><textarea data-template>
+# Routing
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<!-- .slide: class="right-float-img-800" -->
+## Gateway
+[![](https://upload.wikimedia.org/wikipedia/commons/e/eb/Gateway_firewall.svg)](https://commons.wikimedia.org/wiki/File:Gateway_firewall.svg)
+- A *gateway* con- nects two different networks
+  - Which are possibly of different types
+- Very little routing going on
+  - If a packet comes in one end, then it goes out the other end
+
+
+
+<!-- .slide: class="right-float-img-800" -->
+## Router
+
+<img src="images/network-layer/general-routing-diagram.svg" style="width:400px">
+
+- A router connects more than 2 networks
+  - If it's 2, then it's a gateway
+  - If it's 1, then it's a computer
+- It keeps a *routing table*
+  - For a given IP range, which outbound wire to send it along?
+- Routing:
+  - If a packet comes from network 1...
+  - Look up in the table whether to send it down network 2 or 3
+
+
+
+<!-- .slide: class="wide-pre" -->
+## Routing table
+![](../docker/network_compact.svg)
+```
+root@gateway:/# ip route
+default via 192.168.100.1 dev eth2 
+192.168.100.0/24 dev eth2 proto kernel scope link src 192.168.100.2 
+192.168.150.0/24 dev eth1 proto kernel scope link src 192.168.150.1 
+192.168.200.0/24 dev eth0 proto kernel scope link src 192.168.200.1 
+root@gateway:/# 
+```
+
+
+
+## gateway's routing table
+
+<img src="images/network-layer/gateways-routing.svg" style="width:900px">
+
+- The routing table routes are in bold
+- This routing table is hard coded in our docker setup
+  - Via the `nws-exec.sh` script run upon container startup
+
+
+
+## Hops (TTL)
+
+<a href='https://commons.wikimedia.org/wiki/File:Hop-count-trans2.png'><img src='https://upload.wikimedia.org/wikipedia/commons/3/35/Hop-count-trans2.png' style="height:250px"></a>
+
+- When a packet is routed through a network, it passes through a number of nodes
+  - Each node is a hop
+- There is maximum number of hops before the packet times out (is discarded)
+  - This is time-to-live (TTL), and is decremented each hop
+  - It's a counter, not a duration
+
+
+
+## traceroute
+<!-- .slide: class="smaller-pre" -->
+```
+asb2t@portal08:~$ traceroute www.google.com
+traceroute to www.google.com (142.250.80.100), 64 hops max
+  1   128.143.63.1  2.643ms  3.459ms  0.964ms 
+  2   128.143.221.17  0.283ms  0.200ms  0.192ms 
+  3   128.143.236.90  0.290ms  0.265ms  0.266ms 
+  4   128.143.236.5  0.397ms  0.289ms  0.281ms 
+  5   192.35.48.30  3.450ms  3.340ms  3.402ms 
+  6   72.14.197.96  5.553ms  4.860ms  4.946ms 
+  7   *  *  * 
+  8   108.170.246.33  4.463ms  4.338ms  4.288ms 
+  9   108.170.246.2  7.250ms  33.738ms  9.570ms 
+ 10   216.239.63.235  4.696ms  4.410ms  4.414ms 
+ 11   142.251.227.117  9.620ms  9.707ms  9.602ms 
+ 12   209.85.255.37  29.699ms  16.033ms  13.441ms 
+ 13   108.170.248.97  8.618ms  8.606ms  8.573ms 
+ 14   142.251.65.115  8.881ms  8.902ms  8.872ms 
+ 15   142.250.80.100  8.763ms  8.733ms  8.745ms 
+asb2t@portal08:~$ 
+```
+- Sends multiple probes from TTL of 1 and up
+- The maximum number of hops is 64, it took 15
+- Hop 7 was an anonymous hop
+- The times are 3 different round-trip times
+
+
+
+<!-- .slide: class="right-float-img-800" -->
+## Adding to the routing table
+
+<img src="images/network-layer/general-routing-diagram.svg" style="width:400px">
+
+- Assume: a packet comes in from network 1, and the IP address is not in the router's routing table
+- The router asks it's neighboring routers how many hops they would take to get to that address
+  - Those routers may ask their neighbors, and so on
+- The router picks the route with the lowest TTL
+  - And updates its routing table
+- Example protocols: [RIP](https://en.wikipedia.org/wiki/Routing_Information_Protocol), [IGRP](https://en.wikipedia.org/wiki/Interior_Gateway_Routing_Protocol), [EIGRP](https://en.wikipedia.org/wiki/Enhanced_Interior_Gateway_Routing_Protocol), etc.
+
+
+
+<!-- .slide: class="right-float-img-1000 no-border" -->
+## Adding to the routing table
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Sprouter100g.jpg/835px-Sprouter100g.jpg)](https://commons.wikimedia.org/wiki/File:Sprouter100g.jpg)
+- Routers can send other messages as well
+  - Redirect (via [ICMP](https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol))
+  - Destination unreachable (also via [ICMP](https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol))
+- These cause updates to the router's routing table
+- The router then broadcasts these updates to its neighbors
+- Thus, receiving a re-route message is expected behavior
+  - And a vulnerability
+
+
+
+<h2 class="r-fit-text">Maliciously modifying a routing table</h2>
+
+![](../docker/network_compact.svg)
+
+- `other`'s default gateway is `gateway`
+- What if `outer1` sent an update to `other` that it was the new route?
+- This is the subject of the upcoming routing assignment
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  
+<section>
+
+<section data-markdown id="vpns" class="center"><textarea data-template>
+# VPNs and IPsec
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## Virtual Private Network (VPN)
+- A firewall differentiates between 'inside' and 'outside' to allow more access to those 'inside'
+  - How, then, does a (valid) user have that level of access from the 'outside'?
+  - Example: using UVa's library's access for online books and what-not
+    - It's allowed on-grounds (technically, for any computer in the virginia.edu domain)
+    - But not off-grounds (such as from va-67-76-91-214.dyn.embarqhsd.net)
+- The answer: VPNs
+
+
+
+## Normal (non-VPN) usage
+
+<img src="images/network-layer/vpn-diagram-1.svg" style="height:350px">
+
+- A normal connection has your data being routed to the website through your ISP's servers (red lines)
+- The ISP sees who you are routing to, and any unencrypted traffic
+
+
+
+## Using a VPN
+
+<img src="images/network-layer/vpn-diagram-2.svg" style="height:350px">
+
+- A VPN creates an encrypted "tunnel" to UVA's VPN server
+  - The only thing the ISP sees is the encrypted data going to/from UVA
+- The VPN provider (UVA) sees who you are routing to (green lines), the ISP does not
+
+
+
+## Virtual Private Network (VPN)
+- A VPN makes potentially vastly separated IP addresses appear to be a single (virtual) private network
+  - Then, the access is provided to that private network
+- Keeps one from having to construct one's own private network (expensive)
+- It matters not what type of ISP the user is on
+- Typically requires a setting or two in a residential 'gateway' (specifically, IPsec)
+
+
+
+## VPN Scams
+- Do you trust your VPN provider?
+- Consider the VPN ad in [this podcast episode](https://roosterteeth.com/watch/black-box-down-2023-2-8)
+  - Saved locally [here]()
+  - The ad starts at 28:43, and ends at 29:48
+    - Not a good example
+- Thoughts?
+
+
+
+## IP Security (IPsec)
+- IPsec is a protocol suite designed to allow encryption of IP packets (at the Network level)
+  - Other similar ones exist: TLS (Transport Layer Security) does something similar at the Transport level
+    - SSL (Secure Sockets Layer) is the predecessor to TLS
+- Allows for authentication, exchange of cryptographic keys, and encryption/decryption of IP data packets
+  - Encryption is via AES
+- For our purposes, we'll say it works like TLS (which we'll see later)
+
+
+
+## IPsec Tunnel vs Transport
+
+<a href='https://commons.wikimedia.org/wiki/File:Ipsec-ah.svg'><img src='https://upload.wikimedia.org/wikipedia/commons/a/a8/Ipsec-ah.svg'></a>
+- AH = Authentication Header
+
+
+
+## Is IPsec secure?
+- As part of the [Snowden leaks](https://en.wikipedia.org/wiki/Global_surveillance_disclosures_(2013–present)) (2013), it was revealed that NSA was actively working to insert security vulnerabilities into IPsec
+  - Called the larger [Bullrun program](https://en.wikipedia.org/wiki/Bullrun_(decryption_program))
+- [Logjam attack](https://en.wikipedia.org/wiki/Logjam_(computer_security)) (2015): a weakness in the selection of random primes for DHE made it crackable
+  - The NSA claimed around then, in leaked papers, that they could break much of current cryptography; this is consistent with this DHE weakness
+- The [NSA-tied Equation group](https://en.wikipedia.org/wiki/Equation_Group), around 2016, was believed to have used [zero-day exploits](https://en.wikipedia.org/wiki/Zero-day_(computing)) against VPN equipment
+  - The [Cisco PIX and ASA firewalls](https://en.wikipedia.org/wiki/Cisco_PIX#Security_vulnerabilities) had vulnerabilities that the NSA exploited for warantless wiretapping 
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  
+<section>
+
+<section data-markdown id="icmp" class="center"><textarea data-template>
+# ICMP
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## first slide
+- 1
+- 2
+- 3
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+</div>
+</div>
+<script src="../slides/reveal.js/dist/reveal.js"></script>
+<script src="../slides/reveal.js/plugin/zoom/zoom.js"></script>
+<script src="../slides/reveal.js/plugin/notes/notes.js"></script>
+<script src="../slides/reveal.js/plugin/search/search.js"></script>
+<script src="../slides/reveal.js/plugin/markdown/markdown.js"></script>
+<script src="../slides/reveal.js/plugin/highlight/highlight.js"></script>
+<script src="../slides/reveal.js/plugin/math/math.js"></script>
+<script src="settings.js"></script>
+</body>
 </html>
