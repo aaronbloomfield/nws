@@ -11,9 +11,7 @@ ENV DEBIAN_FRONTEND noninteractive
 	
 
 RUN apt-get update -y -q -q && \
-	apt-get install -y -q -q \
-		emacs nano vim `# editors` \
-		&& \
+	apt-get install -y -q -q emacs nano vim && \
 	echo "#include <unistd.h>" > /sleep.c && \
 	echo "int main() { while (1) sleep(10); return 0; }" >> /sleep.c && \
 	gcc -o /sleep /sleep.c && \
@@ -24,3 +22,5 @@ RUN apt-get update -y -q -q && \
 COPY nws-exec.sh /nws-exec.sh
 RUN chmod 755 /nws-exec.sh
 CMD '/nws-exec.sh'
+
+# emacs nano vim: editors

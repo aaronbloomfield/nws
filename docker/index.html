@@ -49,9 +49,6 @@
     document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
   }
   </script>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
 </head>
 <body>
 <h1 id="nws-docker-reference">NWS: Docker Reference</h1>
@@ -66,15 +63,15 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>docker-compose build</code></td>
-<td>Build the containers</td>
-</tr>
-<tr class="even">
-<td><code>docker-compose up</code></td>
+<td><code>docker compose up</code></td>
 <td>Run the containers</td>
 </tr>
+<tr class="even">
+<td><code>docker compose up -d</code></td>
+<td>Run the containers in the background</td>
+</tr>
 <tr class="odd">
-<td><code>docker-compose down</code></td>
+<td><code>docker compose down</code></td>
 <td>Stop the containers</td>
 </tr>
 <tr class="even">

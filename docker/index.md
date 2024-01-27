@@ -7,9 +7,9 @@ NWS: Docker Reference
 
 | Command | description |
 |---------|-------------|
-| `docker-compose build` | Build the containers |
-| `docker-compose up` | Run the containers |
-| `docker-compose down` | Stop the containers |
+| `docker compose up` | Run the containers |
+| `docker compose up -d` | Run the containers in the background |
+| `docker compose down` | Stop the containers |
 | `docker pull <image>` | Download or update the specified image |
 | `docker images` | See information on the docker images on your host |
 | `docker ps -a` | See what containers are running |
