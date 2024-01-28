@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="GNU source-highlight 3.1.9
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite">
+<title>traceroute.py</title>
+</head>
+<body bgcolor="white">
+<pre><tt><i><font color="#9A1900">#!/usr/bin/python3</font></i>
+
+<i><font color="#9A1900"># traceroute program using scapy</font></i>
+
+<b><font color="#000080">import</font></b> sys
+<b><font color="#000080">from</font></b> scapy<font color="#990000">.</font>all <b><font color="#000080">import</font></b> <font color="#990000">*</font>
+
+dest <font color="#990000">=</font><font color="#FF0000">'142.250.80.100'</font> <i><font color="#9A1900"># google.com</font></i>
+
+<b><font color="#0000FF">for</font></b> TTL <b><font color="#0000FF">in</font></b> <b><font color="#000000">range</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">,</font><font color="#993399">40</font><font color="#990000">):</font>
+	response <font color="#990000">=</font> <b><font color="#000000">sr1</font></b><font color="#990000">(</font><b><font color="#000000">IP</font></b><font color="#990000">(</font>dst<font color="#990000">=</font>dest<font color="#990000">,</font>ttl<font color="#990000">=</font>TTL<font color="#990000">)/</font><b><font color="#000000">ICMP</font></b><font color="#990000">(),</font> timeout<font color="#990000">=</font><font color="#993399">2</font><font color="#990000">,</font> verbose<font color="#990000">=</font><font color="#993399">0</font><font color="#990000">)</font>
+	<b><font color="#0000FF">if</font></b> response <b><font color="#0000FF">is</font></b> None<font color="#990000">:</font>
+		<b><font color="#0000FF">print</font></b><font color="#990000">(</font><font color="#FF0000">"%2d * * *"</font> <font color="#990000">%</font> TTL<font color="#990000">)</font>
+	<b><font color="#0000FF">else</font></b><font color="#990000">:</font>
+		<b><font color="#0000FF">print</font></b><font color="#990000">(</font><font color="#FF0000">"%2d %s"</font> <font color="#990000">%</font> <font color="#990000">(</font>TTL<font color="#990000">,</font>response<font color="#990000">.</font>src<font color="#990000">))</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font> response<font color="#990000">.</font>src <font color="#990000">==</font> dest <font color="#990000">):</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font></tt></pre>
+</body>
+</html>

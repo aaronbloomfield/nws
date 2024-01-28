@@ -52,9 +52,10 @@
 # Contents
 &nbsp;  
 [Network Layer](#/network)  
+[IP Fragmentation](#/ipfrag)  
 [Routing](#/routing)  
-[VPNs and IPsec](#/vpns)  
 [ICMP](#/icmp)  
+[VPNs and IPsec](#/vpns)  
 </textarea></section>
 
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -144,7 +145,8 @@ Class E (#16)         |<--     Address Range     -->|
 - Relevant ones:
   - 1 is ICMP
   - 6 is TCP
-  - 9 is for IGP / IGRP (router-router messages)
+  - 9 is IGP / IGRP (router-router messages)
+  - 17 is UDP
   - 51 is IPsec
 
 
@@ -223,6 +225,87 @@ asb2t@portal04:~$
   
 <section>
 
+<section data-markdown id="ipfrag" class="center"><textarea data-template>
+# IP Fragmentation
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<!-- .slide: class="right-float-img-600" -->
+## The Problem
+[![](https://upload.wikimedia.org/wikipedia/commons/f/f9/IPv4_header_%281%29.png)](https://commons.wikimedia.org/wiki/File:IPv4_header_(1).png)
+[![Ethernet packet](images/networking/ethernet-packet.svg)](https://commons.wikimedia.org/wiki/File:Ethernet_Type_II_Frame_format.svg)
+- IP packets can be large: up to 64 Kb
+- Ethernet packets max payload is 1,500 bytes
+- IP packets have to be split (fragmented) to be transmitted in multiple Ethernet packets
+
+
+
+<!-- .slide: class="right-float-img-500" -->
+## IP Fragmentation
+[![](https://upload.wikimedia.org/wikipedia/commons/f/f9/IPv4_header_%281%29.png)](https://commons.wikimedia.org/wiki/File:IPv4_header_(1).png)
+- The "identification" is the same for all fragments of a given packet
+- "Fragment offset" times 8 is the offset location
+  - Only the last 13 (of 16) bits used for this value
+- First 3 bits (0-2) of "fragment offset" are flags:
+  0. Reserved, and always 0
+  1. DF: do not fragment
+  2. MF: more fragments (not the last)
+
+
+
+<!-- .slide: class="right-float-img-500" -->
+## IP Fragmentation
+[![](https://upload.wikimedia.org/wikipedia/commons/f/f9/IPv4_header_%281%29.png)](https://commons.wikimedia.org/wiki/File:IPv4_header_(1).png)
+- The *payload* (TCP or UDP packet) is fragmented, not the IP header
+- Example: a 5,000 byte payload, in a 520 byte IP packet
+  - Fragment 1: 1,480 bytes of payload + 20 bytes of header = 1,500 bytes
+    - MF is set to 1
+  - Fragments 2 and 3: same size and MF value as fragment 1
+  - Fragment 4: remaining 560 bytes of payload, plus 20 bytes of header = 580 bytes
+    - MF is set to 0
+
+
+
+<!-- .slide: class="right-float-img-400" -->
+## [Teardrop attack](https://en.wikipedia.org/wiki/Denial-of-service_attack#Teardrop_attacks)
+![](https://www.internetsecurity.tips/wp-content/uploads/2020/07/What-is-a-Teardrop-Attack-360x264.png)
+- IP fragments can overlap
+- This would crash very old versions of Windowsa
+  - Windows 3.1, NT, and 95
+- It would crash it *without user input!*
+
+
+
+<!-- .slide: class="right-float-img-500" -->
+## [Ping of Death](https://en.wikipedia.org/wiki/Ping_of_death)
+[![](https://upload.wikimedia.org/wikipedia/commons/f/f9/IPv4_header_%281%29.png)](https://commons.wikimedia.org/wiki/File:IPv4_header_(1).png)
+- Max IP packet size is 65,535
+  - Includes header
+- Fragment field is 13 bits
+  - That times 8 is the offset
+  - $(2^{13}-1) * 8 = 65,528$
+  - $65,535 - 65,528 = 7$
+- What if the last fragment starts at location 65,528, and is more than 7 bytes?
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## [Ping of Death](https://en.wikipedia.org/wiki/Ping_of_death)
+[![](https://www.cloudns.net/blog/wp-content/uploads/2023/04/Ping-of-Death-attack-ClouDNS.png)](https://www.cloudns.net/blog/ping-of-death-pod-what-is-it-and-how-does-it-work/)
+- Many IP buffers for fragment reassembly were *fixed size*
+- Attack:
+  - Create a packet larger (*much* larger), which will overflow that buffer
+  - This can even inject code
+- Most OSes were vulnerable long ago
+- Windows IPv6 fragmentation was found to be vulnerable in 2020
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
 <section data-markdown id="routing" class="center"><textarea data-template>
 # Routing
 </textarea></section>
@@ -247,7 +330,7 @@ asb2t@portal04:~$
   - If it's 2, then it's a gateway
   - If it's 1, then it's a computer
 - It keeps a *routing table*
-  - For a given IP range, which outbound wire to send it along?
+  - For a given IP or range, which outbound wire to send it along?
 - Routing:
   - If a packet comes from network 1...
   - Look up in the table whether to send it down network 2 or 3
@@ -319,6 +402,85 @@ asb2t@portal08:~$
 
 
 
+## Traceroute in Python w/Scapy
+File is [traceroute.py](slides/code/traceroute.py) ([src](slides/code/traceroute.py))
+```
+import sys
+from scapy.all import *
+
+dest ='142.250.80.100' # google.com
+
+for TTL in range(1,40):
+  response = sr1(IP(dst=dest,ttl=TTL)/ICMP(), timeout=2, 
+                 verbose=0)
+  if response is None:
+    print("%2d * * *" % TTL)
+  else:
+    print("%2d %s" % (TTL,response.src))
+  if ( response is not None and response.src == dest ):
+    break;
+```
+
+
+
+## Traceroute in Python w/Scapy
+```
+$ sudo python3 traceroute.py
+ 1 192.168.14.1
+ 2 96.120.18.197
+ 3 96.108.129.85
+ 4 96.108.141.249
+ 5 96.110.42.133
+ 6 96.110.34.118
+ 7 66.208.216.218
+ 8 108.170.246.33
+ 9 108.170.246.49
+10 142.251.49.73
+11 142.251.69.26
+12 142.251.69.0
+13 108.170.248.97
+14 142.251.65.115
+15 142.250.80.100
+$ 
+```
+Note the `sudo`
+
+
+
+<h2 class="r-fit-text">What about <a href='https://www.cs.virginia.edu'>www.cs.virginia.edu</a>?</h2>
+
+```
+$ sudo python3 traceroute.py
+ 1 192.168.14.1
+ 2 96.120.18.197
+ 3 96.108.129.85
+ 4 96.108.141.249
+ 5 96.110.42.129
+ 6 96.110.32.122
+ 7 162.252.69.145
+ 8 163.253.1.144
+ 9 192.122.175.58
+10 192.35.48.33
+11 128.143.236.6
+12 128.143.236.89
+13 * * *
+14 * * *
+15 * * *
+16 * * *
+^C
+$
+```
+
+
+
+## Traceroute security
+- Traceroute can be used to map the internals of a company's network
+  - By the ICMP time-exceeded packet response
+- Many firewalls block these packets
+  - Hence the `* * *` output, as no response was received
+
+
+
 <!-- .slide: class="right-float-img-800" -->
 ## Adding to the routing table
 
@@ -358,7 +520,25 @@ asb2t@portal08:~$
 </section>
 
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-  
+
+<section>
+
+<section data-markdown id="icmp" class="center"><textarea data-template>
+# ICMP
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## first slide
+- 1
+- 2
+- 3
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+ 
 <section>
 
 <section data-markdown id="vpns" class="center"><textarea data-template>
@@ -438,24 +618,6 @@ asb2t@portal08:~$
   - The NSA claimed around then, in leaked papers, that they could break much of current cryptography; this is consistent with this DHE weakness
 - The [NSA-tied Equation group](https://en.wikipedia.org/wiki/Equation_Group), around 2016, was believed to have used [zero-day exploits](https://en.wikipedia.org/wiki/Zero-day_(computing)) against VPN equipment
   - The [Cisco PIX and ASA firewalls](https://en.wikipedia.org/wiki/Cisco_PIX#Security_vulnerabilities) had vulnerabilities that the NSA exploited for warantless wiretapping 
-</textarea></section>
-
-</section>
-
-<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-  
-<section>
-
-<section data-markdown id="icmp" class="center"><textarea data-template>
-# ICMP
-</textarea></section>
-
-<section data-markdown data-separator="^\n\n\n"><textarea data-template>
-## first slide
-- 1
-- 2
-- 3
-
 </textarea></section>
 
 </section>
