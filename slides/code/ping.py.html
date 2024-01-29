@@ -1,0 +1,21 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="GNU source-highlight 3.1.9
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite">
+<title>ping.py</title>
+</head>
+<body bgcolor="white">
+<pre><tt><i><font color="#9A1900">#!/usr/bin/python</font></i>
+<b><font color="#000080">from</font></b> scapy<font color="#990000">.</font>all <b><font color="#000080">import</font></b> <font color="#990000">*</font>
+ip <font color="#990000">=</font> <font color="#FF0000">"128.143.67.11"</font> <i><font color="#9A1900"># www.cs.virginia.edu</font></i>
+pkt <font color="#990000">=</font> <b><font color="#000000">IP</font></b><font color="#990000">(</font>dst<font color="#990000">=</font>ip<font color="#990000">)</font> <font color="#990000">/</font> <b><font color="#000000">ICMP</font></b><font color="#990000">(</font>type<font color="#990000">=</font><font color="#993399">8</font><font color="#990000">)</font>
+reply <font color="#990000">=</font> <b><font color="#000000">sr1</font></b><font color="#990000">(</font>pkt<font color="#990000">)</font>
+<b><font color="#0000FF">print</font></b> <font color="#990000">(</font><font color="#FF0000">"Reply from"</font><font color="#990000">,</font> reply<font color="#990000">[</font>IP<font color="#990000">].</font>src<font color="#990000">,</font> <font color="#FF0000">"with destination"</font><font color="#990000">,</font> 
+	   reply<font color="#990000">[</font>IP<font color="#990000">].</font>dst<font color="#990000">)</font>
+</tt></pre>
+</body>
+</html>

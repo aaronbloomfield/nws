@@ -514,7 +514,8 @@ $
 
 - `other`'s default gateway is `gateway`
 - What if `outer1` sent an update to `other` that it was the new route?
-- This is the subject of the upcoming routing assignment
+- This was going to be the subject of the upcoming routing assignment
+  - But Docker
 </textarea></section>
 
 </section>
@@ -525,14 +526,150 @@ $
 
 <section data-markdown id="icmp" class="center"><textarea data-template>
 # ICMP
+
+### Internet Control Message Protocol
 </textarea></section>
 
 <section data-markdown data-separator="^\n\n\n"><textarea data-template>
-## first slide
-- 1
-- 2
-- 3
+<!-- .slide: class="right-float-img-600" -->
+## ICMP
 
+<a href='https://commons.wikimedia.org/wiki/File:ICMP_header_-_General-en.svg'><img src='https://upload.wikimedia.org/wikipedia/commons/e/e1/ICMP_header_-_General-en.svg' style="width:500px"></a>
+
+- Type:
+  - 0: ping reply
+  - 3: TTL exceeded
+  - 4: source quench
+  - 5: redirect
+  - 8: ping
+  - 13 & 14: time sync & reply
+  - 30: traceroute
+  - Full list [here](https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol#Control_messages)
+- Code: a parameter to type
+- Content: if needed for the type & code
+- Can have a data section (fuller error messages)
+
+
+
+## [ping.py](code/ping.py.html) ([src](code/ping.py)) in Scapy
+```python
+from scapy.all import *
+ip = "128.143.67.11" # www.cs.virginia.edu
+pkt = IP(dst=ip) / ICMP(type=8)
+reply = sr1(pkt)
+print ("Reply from", reply[IP].src, "with destination", 
+     reply[IP].dst)
+```
+```
+$ sudo python3 ping.py 
+Begin emission:
+Finished sending 1 packets.
+...........*
+Received 12 packets, got 1 answers, remaining 0 packets
+Reply from 128.143.67.11 with destination 128.143.67.84
+$
+```
+
+
+
+<!-- .slide: class="right-float-img-600 no-border" -->
+## [Smurf attack](https://en.wikipedia.org/wiki/Smurf_attack)
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Grote_Smurf_%2801%29.jpg/818px-Grote_Smurf_%2801%29.jpg)
+- Although this doesn't work anymore...
+```python
+vip = '...' # victim IP
+# set broadcast ip in `bip` as victim's 
+# ip w/255 @ end
+send (IP(src=vip, dst=bip) / ICMP(type=8))
+```
+- Broadcasts are sent to everybody
+- So everybody replies, but to the victim's IP
+- Network flood: one packet causes 250 more to be sent
+- Now hosts don't respond to a ping to a broadcast address
+- Named because many small, numerous attackers
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## ICMP Tunneling
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/SMP_May_2008-9a.jpg/716px-SMP_May_2008-9a.jpg)](https://commons.wikimedia.org/wiki/File:SMP_May_2008-9a.jpg)
+- Communication can be sent in the data in an ICMP packet
+  - Hard to detect, and ICMP is often let through firewalls
+- Requires a server at the other end to process the ICMP data
+- Very popular with malware!
+- Malware can communicate with the C&C (Command & Control) server
+  - Or one can send covert messages to a botnet
+  - Etc.
+
+
+
+## ICMP Tunneling
+```python
+from scapy.all import *
+ip = "192.168.100.101" # outer1
+pkt = IP(dst=ip) / ICMP(type=8) / \
+    b"the condor is in flight"
+reply = sr1(pkt)
+print ("Reply from", reply[IP].src, "with destination", 
+       reply[IP].dst)
+print ("Message:", reply.load)
+```
+```
+root@outer2:~# python3 ping.py
+Begin emission:
+Finished sending 1 packets.
+..*
+Received 3 packets, got 1 answers, remaining 0 packets
+Reply from 192.168.100.101 with destination 192.168.100.102
+Message: b'the condor is in flight'
+root@outer2:~# 
+```
+
+
+
+## ICMP Tunneling Server
+```python
+from scapy.all import *
+
+def icmp_cnc(pkt):
+  #print(pkt.show())
+  print("From",pkt[IP].src,"received:",pkt[Raw].load)
+
+filter = "icmp"
+pkt = sniff(iface='eth1', filter=filter, prn=icmp_cnc)
+```
+```
+root@outer1:/mnt# python3 icmp_cnc.py 
+From 192.168.100.102 received: b'the condor is in flight'
+From 192.168.100.101 received: b'the condor is in flight'
+^C
+root@outer1:/mnt# 
+```
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## Stopping ICMP Tunneling
+
+<a href='https://commons.wikimedia.org/wiki/File:ICMP_header_-_General-en.svg'><img src='https://upload.wikimedia.org/wikipedia/commons/e/e1/ICMP_header_-_General-en.svg' style="width:500px"></a>
+
+- Solution 1: block all ICMP traffic
+  - Causes network issues, such as very slow host-is-offline discoveries
+  - Some expected network functionality no longer works
+- Solution 2: only allow fixed-size ICMP messages through
+  - Prevents arbitrary sized payloads
+  - An ICMP packet without any data is exactly 8 bytes in size
+- Solution 3: restrict ICMP to authenticated users
+  - Complicated to manage
+
+
+
+<!-- .slide: class="right-float-img-600 no-border" -->
+## Other ICMP Tunneling Uses
+[![](http://cdn.images.dailystar.co.uk/dynamic/23/photos/712000/620x/In-flight-Wi-Fi-486282.jpg)](https://duckduckgo.com/?q=airplane+wifi&t=osx)
+- Allows Internet access behind a paywall or login portal
+  - Example: airplane wifi
+  - Requires a server on the other side to receive the ICMP packets and forward them on
 </textarea></section>
 
 </section>
