@@ -10,7 +10,7 @@ You will be bound by the requirements on the [Homeworks policies page](../uva/hw
 
 These are larger programming homeworks.
 
-- None yet!
+- HW P1: [ARP Spoofing and Detection](arp/index.html) ([md](arp/index.md))
 
 ### Smaller homeworks
 
@@ -20,3 +20,4 @@ These are smaller homeworks that take less time.  They are typically readings or
 - HW S2: [Docker setup](docker/index.html) ([md](docker/index.md))
 - HW S3: [Linux tutorial](linux/index.html) ([md](linux/index.md))
 - HW S4: [Network commands tutorial](netcmds/index.html) ([md](netcmds/index.md))
+- HW S5: [Metasploitable2 Exploration](metasploit/index.html) ([md](metasploit/index.md))

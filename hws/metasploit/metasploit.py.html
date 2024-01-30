@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="GNU source-highlight 3.1.9
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite">
+<title>metasploit.py</title>
+</head>
+<body bgcolor="white">
+<pre><tt><i><font color="#9A1900"># Submission information for the Metasploitable2 Exploration HW</font></i>
+<i><font color="#9A1900"># https://aaronbloomfield.github.io/nws/metasploit/</font></i>
+
+<i><font color="#9A1900"># The filename of this file must be 'metasploit.py', else the submission</font></i>
+<i><font color="#9A1900"># verification routines will not work properly.</font></i>
+
+<i><font color="#9A1900"># You are welcome to have additional variables or fields in this file; you</font></i>
+<i><font color="#9A1900"># just can't remove variables or fields.</font></i>
+
+
+<i><font color="#9A1900"># Who are you?  Name and UVA userid.  The name can be in any human-readable</font></i>
+<i><font color="#9A1900"># format.</font></i>
+userid <font color="#990000">=</font> <font color="#FF0000">"mst3k"</font>
+name <font color="#990000">=</font> <font color="#FF0000">"Jane Doe"</font>
+
+
+<i><font color="#9A1900"># This dictionary contains various information that will vary depending on the</font></i>
+<i><font color="#9A1900"># assignment.</font></i>
+other <font color="#990000">=</font> <font color="#990000">{</font>
+	
+	<i><font color="#9A1900"># What is the module name, from msfconsole, for the exploit that you</font></i>
+	<i><font color="#9A1900"># explored in the 'One more' section?  The 'One more' sections in the</font></i>
+	<i><font color="#9A1900"># homework describes how to find the module name. This should be a string.</font></i>
+	<font color="#FF0000">'exploit_module_name'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># What is the description, from msfconsole, for the exploit that you</font></i>
+	<i><font color="#9A1900"># explored in the 'One more' section?  The 'One more' sections in the</font></i>
+	<i><font color="#9A1900"># homework describes how to find the description. This should be a string.</font></i>
+	<font color="#FF0000">'exploit_module_description'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Give a *brief* descritpion of how accessing that module went.  We are</font></i>
+	<i><font color="#9A1900"># looking for a single sentence here.  This should be a string.</font></i>
+	<font color="#FF0000">'exploit_how_it_went'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># How much did you feel you learned from this assignment?  This is all</font></i>
+	<i><font color="#9A1900"># relative to the assignment size, of course.  This is an integer on a</font></i>
+	<i><font color="#9A1900"># 1-5 scale, where 1 nothing at all, 2 a little, 3 a fair amount, 4 is a</font></i>
+	<i><font color="#9A1900"># lot, and 5 is a huge amount.  A typical, well designed, CS elective</font></i>
+	<i><font color="#9A1900"># homework would probably be around a 3.</font></i>
+	<font color="#FF0000">'how_much_was_learned'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># How frustrating was this assignment?  This is an integer on a 1-5 scale,</font></i>
+	<i><font color="#9A1900"># where 1 is not frustrating at all, 2 is a little bit frustrating, 3 is</font></i>
+	<i><font color="#9A1900"># somewhat frustrating, 4 is rather frustrating, and 5 is very</font></i>
+	<i><font color="#9A1900"># frustrating.  A typical, well designed, CS elective homework would</font></i>
+	<i><font color="#9A1900"># probably be around a 1 or 2.</font></i>
+	<font color="#FF0000">'frustration_level'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># How hard did you find this assignment?  This is an integer on a 1-5</font></i>
+	<i><font color="#9A1900"># scale, where 1 is very easy, 2 is somewhat easy, 3 is neutral</font></i>
+	<i><font color="#9A1900"># (neither easy or hard), 4 is somewhat hard, 5 is very hard.  A tyipcal,</font></i>
+	<i><font color="#9A1900"># well designed, CS elective homework would be a 3.</font></i>
+	<font color="#FF0000">'difficulty'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+<font color="#990000">}</font>
+
+
+<i><font color="#9A1900"># These are various sanity checks, and are meant to help you ensure that you</font></i>
+<i><font color="#9A1900"># submitted everything that you are supposed to submit.  Other than</font></i>
+<i><font color="#9A1900"># submitting the necessary files to Gradescope (which checks for those</font></i>
+<i><font color="#9A1900"># files), all other submission requirements are listed herein.  These values </font></i>
+<i><font color="#9A1900"># need to be changed to True (instead of False).</font></i>
+sanity_checks <font color="#990000">=</font> <font color="#990000">{</font>
+
+        <i><font color="#9A1900"># none for this assignment</font></i>
+q
+<font color="#990000">}</font>
+
+
+<i><font color="#9A1900"># While some of these are optional, you still have to replace those optional</font></i>
+<i><font color="#9A1900"># ones with the empty string (instead of None).</font></i>
+comments <font color="#990000">=</font> <font color="#990000">{</font>
+
+	<i><font color="#9A1900"># How long did this assignment take, in hours?  Please format as an</font></i>
+	<i><font color="#9A1900"># integer or float.</font></i>
+	<font color="#FF0000">'time_taken'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Any suggestions for how to improve this assignment?  This part is</font></i>
+	<i><font color="#9A1900"># completely optional.  If none, then you can have the value here be the</font></i>
+	<i><font color="#9A1900"># empty string (but not None).</font></i>
+	<font color="#FF0000">'suggestions'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Any other comments or feedback?  This part is completely optional. If</font></i>
+	<i><font color="#9A1900"># none, then you can have the value here be the empty string (but not</font></i>
+	<i><font color="#9A1900"># None).</font></i>
+	<font color="#FF0000">'comments'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+<font color="#990000">}</font>
+</tt></pre>
+</body>
+</html>
