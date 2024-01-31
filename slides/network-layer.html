@@ -206,8 +206,8 @@ From fe80::a68c:dbff:fedd:9401%enp4s0 (fe80::a68c:dbff:fedd:9401%enp4s0) icmp_se
 
 asb2t@portal04:~$ 
 ```
-- The `::` means `:0000:`, and trailing zeros are omitted
-- Full address: fe80:0000:a68c:dbff:fedd:9401:0000:0000
+- The `::` means enough `:0000:` parts to fill to 8 bytes
+- Full address: fe80:0000:0000:0000:a68c:dbff:fedd:9401
 
 
 
@@ -672,6 +672,7 @@ root@outer1:/mnt#
 - Allows Internet access behind a paywall or login portal
   - Example: airplane wifi
   - Requires a server on the other side to receive the ICMP packets and forward them on
+- Potential upcoming HW: allow a network connection to be routed through pings
 </textarea></section>
 
 </section>
@@ -733,7 +734,24 @@ root@outer1:/mnt#
 
 
 
-## IP Security (IPsec)
+## VPN Types
+
+<img src="http://andromeda.cs.virginia.edu/nws/duimg/n08/image-a.png" style="height:300px">
+
+- Implemented at the IP level using IPsec
+
+
+
+## VPN Types
+
+<img src="http://andromeda.cs.virginia.edu/nws/duimg/n08/image-b.png" style="height:300px">
+
+- Implemented at the *application* level using TLS/SSL, DTLS, or even SSH
+- Network packets are "intercepted" by the application, sent over the link, and then re-sent from the other side
+
+
+
+## VPN type: IP Security (IPsec)
 - IPsec is a protocol suite designed to allow encryption of IP packets (at the Network level)
   - Other similar ones exist: TLS (Transport Layer Security) does something similar at the Transport level
     - SSL (Secure Sockets Layer) is the predecessor to TLS
@@ -747,6 +765,7 @@ root@outer1:/mnt#
 
 <a href='https://commons.wikimedia.org/wiki/File:Ipsec-ah.svg'><img src='https://upload.wikimedia.org/wikipedia/commons/a/a8/Ipsec-ah.svg'></a>
 - AH = Authentication Header
+- And "Authenticated" means encrypted also
 
 
 
@@ -756,7 +775,63 @@ root@outer1:/mnt#
 - [Logjam attack](https://en.wikipedia.org/wiki/Logjam_(computer_security)) (2015): a weakness in the selection of random primes for DHE made it crackable
   - The NSA claimed around then, in leaked papers, that they could break much of current cryptography; this is consistent with this DHE weakness
 - The [NSA-tied Equation group](https://en.wikipedia.org/wiki/Equation_Group), around 2016, was believed to have used [zero-day exploits](https://en.wikipedia.org/wiki/Zero-day_(computing)) against VPN equipment
-  - The [Cisco PIX and ASA firewalls](https://en.wikipedia.org/wiki/Cisco_PIX#Security_vulnerabilities) had vulnerabilities that the NSA exploited for warantless wiretapping 
+  - The [Cisco PIX and ASA firewalls](https://en.wikipedia.org/wiki/Cisco_PIX#Security_vulnerabilities) had vulnerabilities that the NSA exploited for warantless wiretapping
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## IPsec pros & cons
+![](http://andromeda.cs.virginia.edu/nws/duimg/n08/image-a.png)
+- Pro: it is part of the TCP/IP network stack, so using it is quite easy
+- Con: since it's part of the stack, it's part of the kernel, which adds kernel complexity
+- Con: firewalls have to be configured to allow IPsec
+- These have been falling out of favor lately
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## VPN type: applciation level
+![](http://andromeda.cs.virginia.edu/nws/duimg/n08/image-b.png)
+- An application "intercepts" the packets
+  - We've seen this with Scapy
+- Then encrypts them via TLS, and sends them to a receiving application on the other side
+
+
+
+## VPN type: TLS
+- TLS (aka SSL/TLS): establishes a TLS link (encrypted TCP), then intercepts the transport-layer packets (TCP or UDP) and sends them over the TLS link
+  - Rephrased: TCP packets are encrypted, then put into a TCP packet (!)
+- Pro: relatively easy to implement
+- Pro: avoids IPsec issues, such as firewall problems
+- Pro: application level, so less kernel complexity
+- Con: extra overhead and delays due to putting a TCP packet in a TCP packet
+
+
+
+<!-- .slide: class="right-float-img-400 no-border" -->
+## VPN type: DTLS
+![](images/network-layer/cisco-vpn.webp)
+- Datagram Transport Layer Security (DTLS): puts a TCP packet into a UDP packet
+- Pro: less overhead than TLS VPNs
+- Pro: avoids meltdown issues in TLS VPNs
+- Pro: avoids IPsec problems
+- Pro: application level, so less kernel complexity
+- Con: Because it uses UDP, has to deal with packets missing and out of order
+- Cisco's AnyConnect VPN (what UVA uses) is this type
+
+
+
+## VPN type: SSH
+- ssh can redirect a port through an ssh connection; usage:
+```
+$ ssh -L 8080:server:80 user@server
+```
+- Connecting to port 8080 on the localhost machine will connect, through the ssh tunnel, to port 80 on the remote server
+- Pro: easy for anybody to setup and use
+- Pro: does not need a VPN application
+- Pro: application level, so less kernel complexity
+- Con: does not redirect all traffic
+- Con: slower than other methods
 </textarea></section>
 
 </section>
