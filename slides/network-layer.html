@@ -70,7 +70,7 @@
 ## Protocol stack: network layer
 <!-- [![Router](https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Sprouter100g.jpg/835px-Sprouter100g.jpg)](https://commons.wikimedia.org/wiki/File:Sprouter100g.jpg) -->
 
-<img src="http://andromeda.cs.virginia.edu/nws/duimg/n01/image8.png" style="height:300px">
+<img src="http://www.cs.virginia.edu/~asb2t/duimg/n01/image8.png" style="height:300px">
 
 - Is charged with *routing* a *single* packet of data from one computer to another (via the next layer down)
 - In TCP/IP, called the "Internet" or "Internet Protocol" (hence "IP") layer
@@ -680,7 +680,7 @@ root@outer1:/mnt#
 - Allows Internet access behind a paywall or login portal
   - Example: airplane wifi
   - Requires a server on the other side to receive the ICMP packets and forward them on
-- Potential upcoming HW: allow a network connection to be routed through pings
+- Upcoming HW: allow a network connection to be sent through pings
 </textarea></section>
 
 </section>
@@ -732,19 +732,41 @@ root@outer1:/mnt#
 
 
 
-## VPN Scams
-- Do you trust your VPN provider?
-- Consider the VPN ad in [this podcast episode](https://roosterteeth.com/watch/black-box-down-2023-2-8)
-  - Saved locally [here]()
-  - The ad starts at 28:43, and ends at 29:48
-    - Not a good example
-- Thoughts?
+## VPN Network Details
+![](http://www.cs.virginia.edu/~asb2t/duimg/n08/image22.png)
+
+
+
+
+## Types of NICs
+![](http://www.cs.virginia.edu/~asb2t/duimg/n02/image3.png)
+- TAP/TUN: NIC connects directly to software
+  - TAP: link-level connection
+  - TUN (tunnel): connection to network level
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## Internet Key Exchange (IKE)
+[![](https://upload.wikimedia.org/wikipedia/commons/9/9c/I_Like_Ike_button%2C_1952.png)](https://commons.wikimedia.org/wiki/File:I_Like_Ike_button,_1952.svg)
+- How the VPN establishes the key
+  - A network-level encryption protocol
+- Like TLS:
+  - Uses Diffie-Hellman key exchange
+  - Public key encryption to start
+  - Establishes a shared private key
+- Advantage is that it has the certificates and server key configured ahead of time
+
+
+
+## So many VPN types
+[![](https://upload.wikimedia.org/wikipedia/commons/0/09/VPN_classification-en.svg)](https://commons.wikimedia.org/wiki/File:VPN_classification-en.svg)
 
 
 
 ## VPN Types
 
-<img src="http://andromeda.cs.virginia.edu/nws/duimg/n08/image-a.png" style="height:300px">
+<img src="http://www.cs.virginia.edu/~asb2t/duimg/n08/image-a.png" style="height:300px">
 
 - Implemented at the IP level using IPsec
 
@@ -752,7 +774,7 @@ root@outer1:/mnt#
 
 ## VPN Types
 
-<img src="http://andromeda.cs.virginia.edu/nws/duimg/n08/image-b.png" style="height:300px">
+<img src="http://www.cs.virginia.edu/~asb2t/duimg/n08/image-b.png" style="height:300px">
 
 - Implemented at the *application* level using TLS/SSL, DTLS, or even SSH
 - Network packets are "intercepted" by the application, sent over the link, and then re-sent from the other side
@@ -777,19 +799,9 @@ root@outer1:/mnt#
 
 
 
-## Is IPsec secure?
-- As part of the [Snowden leaks](https://en.wikipedia.org/wiki/Global_surveillance_disclosures_(2013–present)) (2013), it was revealed that NSA was actively working to insert security vulnerabilities into IPsec
-  - Called the larger [Bullrun program](https://en.wikipedia.org/wiki/Bullrun_(decryption_program))
-- [Logjam attack](https://en.wikipedia.org/wiki/Logjam_(computer_security)) (2015): a weakness in the selection of random primes for DHE made it crackable
-  - The NSA claimed around then, in leaked papers, that they could break much of current cryptography; this is consistent with this DHE weakness
-- The [NSA-tied Equation group](https://en.wikipedia.org/wiki/Equation_Group), around 2016, was believed to have used [zero-day exploits](https://en.wikipedia.org/wiki/Zero-day_(computing)) against VPN equipment
-  - The [Cisco PIX and ASA firewalls](https://en.wikipedia.org/wiki/Cisco_PIX#Security_vulnerabilities) had vulnerabilities that the NSA exploited for warantless wiretapping
-
-
-
 <!-- .slide: class="right-float-img-600" -->
 ## IPsec pros & cons
-![](http://andromeda.cs.virginia.edu/nws/duimg/n08/image-a.png)
+![](http://www.cs.virginia.edu/~asb2t/duimg/n08/image-a.png)
 - Pro: it is part of the TCP/IP network stack, so using it is quite easy
 - Con: since it's part of the stack, it's part of the kernel, which adds kernel complexity
 - Con: firewalls have to be configured to allow IPsec
@@ -799,7 +811,7 @@ root@outer1:/mnt#
 
 <!-- .slide: class="right-float-img-600" -->
 ## VPN type: applciation level
-![](http://andromeda.cs.virginia.edu/nws/duimg/n08/image-b.png)
+![](http://www.cs.virginia.edu/~asb2t/duimg/n08/image-b.png)
 - An application "intercepts" the packets
   - We've seen this with Scapy
 - Then encrypts them via TLS, and sends them to a receiving application on the other side
@@ -825,7 +837,7 @@ root@outer1:/mnt#
 - Pro: avoids IPsec problems
 - Pro: application level, so less kernel complexity
 - Con: Because it uses UDP, has to deal with packets missing and out of order
-- Cisco's AnyConnect VPN (what UVA uses) is this type
+- Cisco's AnyConnect VPN (what [UVA's VPN](https://virginia.service-now.com/its?id=itsweb_kb_article&sys_id=f24e5cdfdb3acb804f32fb671d9619d0) uses) is this type
 
 
 
@@ -840,6 +852,52 @@ $ ssh -L 8080:server:80 user@server
 - Pro: application level, so less kernel complexity
 - Con: does not redirect all traffic
 - Con: slower than other methods
+
+
+
+## VPN Scams
+- Do you trust your VPN provider?
+- Consider the VPN ad in [this podcast episode](https://roosterteeth.com/watch/black-box-down-2023-2-8)
+  - Saved locally [here]()
+  - The ad starts at 28:43, and ends at 29:48
+    - Not a good example
+- Thoughts?
+
+
+
+## Is IPsec secure?
+- As part of the [Snowden leaks](https://en.wikipedia.org/wiki/Global_surveillance_disclosures_(2013–present)) (2013), it was revealed that NSA was actively working to insert security vulnerabilities into IPsec
+  - Called the larger [Bullrun program](https://en.wikipedia.org/wiki/Bullrun_(decryption_program))
+- [Logjam attack](https://en.wikipedia.org/wiki/Logjam_(computer_security)) (2015): a weakness in the selection of random primes for DHE made it crackable
+  - The NSA claimed around then, in leaked papers, that they could break much of current cryptography; this is consistent with this DHE weakness
+- The [NSA-tied Equation group](https://en.wikipedia.org/wiki/Equation_Group), around 2016, was believed to have used [zero-day exploits](https://en.wikipedia.org/wiki/Zero-day_(computing)) against VPN equipment
+  - The [Cisco PIX and ASA firewalls](https://en.wikipedia.org/wiki/Cisco_PIX#Security_vulnerabilities) had vulnerabilities that the NSA exploited for warantless wiretapping
+
+
+
+<!-- .slide: class="right-float-img-600 no-border" -->
+## Are VPN's secure?
+[![](https://upload.wikimedia.org/wikipedia/commons/6/60/Edward_Snowden-2.jpg)](https://commons.wikimedia.org/wiki/File:Edward_Snowden-2.jpg)
+- Snowden's 2014 leaks revealed that:
+  - "IKE is being exploited in an unknown manner to decrypt IPsec traffic"
+  - The [Logjam vulnerability](https://en.wikipedia.org/wiki/Logjam_(computer_security)) affects VPNS & IKE (next slide)
+  - And this was from a 2014 leak (2013 data dump); who knows what has happened since
+- IPsec that allow multiple configurations are susceptible to [downgrade attacks](https://en.wikipedia.org/wiki/Downgrade_attack)
+- IKE is susceptible to dictionary attacks with low quality passwords
+
+
+
+<!-- .slide: class="right-float-img-400 no-border" -->
+## [Logjam vulnerability](https://en.wikipedia.org/wiki/Logjam_(computer_security)) (2015)
+[![](https://www.atlantic.net/wp-content/uploads/2018/01/Logjam-lrg1.jpg)](https://www.atlantic.net/vps-hosting/what-is-the-logjam-vulnerability/)
+- Recall [Diffie-Hellman key exchange](https://en.wikipedia.org/wiki/Diffie–Hellman_key_exchange)
+  - A way for two devices to agree on a shared secret key via plaintext
+  - Uses exponentiation of a fixed base $G$, then a log; discrete logarithms are the "hard" part that prevent cracking
+- Has 4 difficult computational steps to crack
+  - The first three only depend on $G$, the last is easier
+- A 512-bit number (export grade) was cracked using "several thousand" CPU cores for a week
+- Cracking a 1024-bit number was well within the NSA's budget
+- Solution: use a 2048-bit key
 </textarea></section>
 
 </section>
