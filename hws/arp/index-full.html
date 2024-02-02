@@ -8,10 +8,18 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="../../markdown.css" />
@@ -41,9 +49,6 @@
     document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
   }
   </script>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
 </head>
 <body>
 <h1 id="arp-spoofer-and-detector">ARP Spoofer and Detector</h1>
@@ -57,7 +62,7 @@
 <h3 id="changelog">Changelog</h3>
 <p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. <!-- So far there aren't any significant changes to report. --></p>
 <ul>
-<li>Fri, Feb 2: Clarified that the command, for the MITM attack, should be <code>telnet</code>, not <code>ssh</code></li>
+<li>Fri, Feb 2: Clarified that the command, for the MITM attack, should be <code>telnet</code>, not <code>ssh</code>; also clarified that <code>urlsnarf</code> on <em>outer1</em> should run on <code>eth1</code>, not <code>eth0</code></li>
 </ul>
 <h3 id="built-in-commands">Built-in Commands</h3>
 <p>There are a few commands installed that we are going to use.</p>
@@ -112,7 +117,7 @@ root@outer1:/# </code></pre>
 <ul>
 <li>Note that the IP addresses are reversed in that second command!</li>
 </ul></li>
-<li>Tab 4: connect to <em>outer1</em> and run: <code>urlsnarf -i eth0</code>
+<li>Tab 4: connect to <em>outer1</em> and run: <code>urlsnarf -i eth1</code>
 <ul>
 <li>This will display URLs it sees in the intercepted packets</li>
 </ul></li>
@@ -131,7 +136,7 @@ root@outer1:/# </code></pre>
 <li><code>arpspoof -i eth1 -t 192.168.100.3 192.168.100.1</code></li>
 <li><code>arpspoof -i eth1 -t 192.168.100.1 192.168.100.3</code></li>
 </ul></li>
-<li>Download the <a href="../../slides/code/arp_mitm.py.html">arp_mitm.py</a> (<a href="../../slides/arp_mitm.py">src</a>) file</li>
+<li>Download the <a href="../../slides/code/arp_mitm.py.html">arp_mitm.py</a> (<a href="../../slides/code/arp_mitm.py">src</a>) file</li>
 <li>Run that file on <em>outer1</em></li>
 <li>Connect to <em>firewall</em> via <code>docker exec</code>. If you connect via <code>telnet</code>, then that will (correctly) populate the ARP cache, negating our hack.</li>
 <li>From <em>firewall</em>, telnet into <em>metasploit</em> (<code>telnet msfadmin@metasploit</code>, password is <code>msfadmin</code>).</li>
