@@ -62,15 +62,15 @@ Course calendar
 
 The smaller ("S") homeworks are usually due Friday, unless otherwise noted.  The larger programming ("P") homeworks are due Tuesday.  All homeworks are due by the end of the day (11:59:59 pm).
 
-| Week<br># | Week&nbsp;of<br>Monday | Lecture<br>days | P HWs due Tue | S HWs due, usually <br> due Fri | Readings due Mon | Expected Topics | Actual Progress |
+| Week<br># | Week&nbsp;of<br>Monday | Lecture<br>days | P HWs due Tue | S HWs due, usually <br> due Fri | Readings due | Expected Topics | Actual Progress |
 |---|---|---|---|---|---|---|---|
 | 1 | Jan 15 | W,F | (none) | (none) | (none) | [Introduction](../slides/introduction.html#/); [Physical layer](../slides/physical-layer.html#/) | Wed: introduction (finished); Fri: physical layer (finished) |
 | 2 | Jan 22 | M,W,F | (none) | Survey (due Tue), [Docker](../hws/docker/index.html) ([md](../hws/docker/index.md)) (due Fri) | (none) | [Data link layer](../slides/link-layer.html#/) | Mon: link layer to 5.5; Wed: link layer to 8.5; Fri: finished link layer |
-| 3 | Jan 29 | M,W,F | (none) | [Linux tutorial](../hws/linux/index.html) ([md](../hws/linux/index.md)) (due Tue), [Network commands](../hws/netcmds/) (due Fri) | ~~Du, chap 2 (MAC layer); 18 pp~~ | [Network layer](../slides/network-layer.html#/) | Mon: network layer to 5.3 |
-| 4 | Feb 5 | M,W,F | ARP | Metasploitable hacks, part 1 | Du, chap 3 (IP); 22 pp | Packet capture & analysis; Transport layer |  |
-| 5 | Feb 12 | M,W,F | Routing | Metasploitable hacks, part 2 | Du, chap 4 (packet sniffing); 28 pp | Transport layer; Firewalls & evasion |  |
-| 6 | Feb 19 | M,W,F | Wireshark | Web of trust, week 1 | Du, chap 5 (transport layer), parts of chap 6 (TCP attacks); ~30 pp | Session layer; Encryption |  |
-| 7 | Feb 26 | M,W,F | (midterm on Wed) | Web of trust, week 2 | Du, chap 7 (firewall); 26 pp | Encryption; TLS |  |
+| 3 | Jan 29 | M,W,F | (none) | [Linux tutorial](../hws/linux/index.html) ([md](../hws/linux/index.md)) (due Tue), [Network commands](../hws/netcmds/) (due Fri) | Du, chap 3 (IP); 22 pp | [Network layer](../slides/network-layer.html#/) | Mon: network layer to 5.3; Wed: network layer to 6.3 |
+| 4 | Feb 5 | M,W,F | ARP | Metasploitable hacks, part 1 | Du, chap 5 (transport layer), sections 6.1-6.3 of chapter 6 (TCP attacks); 25 pp | Packet capture & analysis; Transport layer |  |
+| 5 | Feb 12 | M,W,F | Routing | Metasploitable hacks, part 2 | | Transport layer; Firewalls & evasion |  |
+| 6 | Feb 19 | M,W,F | Wireshark | Web of trust, week 1 | | Session layer; Encryption |  |
+| 7 | Feb 26 | M,W,F | (midterm on Wed) | Web of trust, week 2 | | Encryption; TLS |  |
 | 8 | Mar 4 |  |  |  | Spring break (no classes) |  |  |
 | 9 | Mar 11 | M,W,F | TCP reconstruction | Firewall configuration | Du, chap 8 (VPN); 32 pp | Presentation layer; Application layer |  |
 | 10 | Mar 18 | M,W,F | Xmas scans | TBD | Du, chap 9 (tunneling); 18 pp | TCP shells & botnets; WWW exploits |  |

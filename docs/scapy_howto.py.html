@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="GNU source-highlight 3.1.9
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite">
+<title>scapy_howto.py</title>
+</head>
+<body bgcolor="white">
+<pre><tt><i><font color="#9A1900">#!/usr/bin/python3</font></i>
+
+<i><font color="#9A1900"># These are examples of how to perform various functions in scapy.  The parts</font></i>
+<i><font color="#9A1900"># below that require parameters are in functions; the ones that do not</font></i>
+<i><font color="#9A1900"># require parameters are included in the print statements in `main()`</font></i>
+
+<b><font color="#000080">from</font></b> scapy<font color="#990000">.</font>all <b><font color="#000080">import</font></b> <font color="#990000">*</font>
+
+<i><font color="#9A1900"># This will return all the IP addresses of localhost on all the network</font></i>
+<i><font color="#9A1900"># interfaces.</font></i>
+<b><font color="#0000FF">def</font></b> <b><font color="#000000">get_ip_list_of_localhost</font></b><font color="#990000">():</font>
+	<b><font color="#0000FF">return</font></b> <b><font color="#000000">set</font></b><font color="#990000">([</font> x<font color="#990000">[</font><font color="#993399">4</font><font color="#990000">]</font> <b><font color="#0000FF">for</font></b> x <b><font color="#0000FF">in</font></b> <b><font color="#000000">read_routes</font></b><font color="#990000">()</font> <font color="#990000">])</font>
+
+<i><font color="#9A1900"># given a hostname, local or otherwise, it will resolve it to an IP address.</font></i>
+<i><font color="#9A1900"># If there are many IP addresses, this will return only one of them.</font></i>
+<b><font color="#0000FF">def</font></b> <b><font color="#000000">resolve_hostname_to_ip</font></b><font color="#990000">(</font>name<font color="#990000">):</font>
+	<b><font color="#0000FF">return</font></b> socket<font color="#990000">.</font><b><font color="#000000">gethostbyname</font></b><font color="#990000">(</font>name<font color="#990000">)</font>
+
+<i><font color="#9A1900"># scapy sniff() filter howto at https://biot.com/capstats/bpf.html</font></i>
+
+<b><font color="#0000FF">def</font></b> <b><font color="#000000">main</font></b><font color="#990000">():</font>
+	<b><font color="#0000FF">print</font></b><font color="#990000">(</font><font color="#FF0000">"localhost's IP list:"</font><font color="#990000">,</font><b><font color="#000000">get_ip_list_of_localhost</font></b><font color="#990000">())</font>
+	<b><font color="#0000FF">print</font></b><font color="#990000">(</font><font color="#FF0000">"duckduckgo.com's IP:"</font><font color="#990000">,</font><b><font color="#000000">resolve_hostname_to_ip</font></b><font color="#990000">(</font><font color="#FF0000">"duckduckgo.com"</font><font color="#990000">))</font>
+	<b><font color="#0000FF">print</font></b><font color="#990000">(</font><font color="#FF0000">"localhost hostname :"</font><font color="#990000">,</font>socket<font color="#990000">.</font><b><font color="#000000">gethostname</font></b><font color="#990000">())</font>
+
+
+<b><font color="#0000FF">if</font></b> __name__ <font color="#990000">==</font> <font color="#FF0000">"__main__"</font><font color="#990000">:</font>
+	<b><font color="#000000">main</font></b><font color="#990000">()</font>
+</tt></pre>
+</body>
+</html>
