@@ -21,6 +21,7 @@ You will be submitting one code file as well as [arp.py](arp.py.html) ([src](arp
 Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  <!-- So far there aren't any significant changes to report. -->
 
 - Fri, Feb 2: Clarified that the command, for the MITM attack, should be `telnet`, not `ssh`; also clarified that `urlsnarf` on *outer1* should run on `eth1`, not `eth0`
+- Sat, Feb 3: Updated the `outputARPConflictfunction()` function.
 
 
 ### Built-in Commands
@@ -245,8 +246,8 @@ def outputNewMapping(mac,ip):
     print ("New mapping: " + str(ip) + " -> " + str(mac).lower())
 
 def outputARPConflict(mac,old_ip,new_ip):
-    print ("Possible ARP attack detected: " + str(old_ip) + \
-           " may be pretending to be " + str(new_ip) + \
+    print ("Possible ARP attack detected: " + str(new_ip) + \
+           " may be pretending to be " + str(old_ip) + \
            " for MAC " + str(mac))
 ```
 

@@ -63,6 +63,7 @@
 <p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. <!-- So far there aren't any significant changes to report. --></p>
 <ul>
 <li>Fri, Feb 2: Clarified that the command, for the MITM attack, should be <code>telnet</code>, not <code>ssh</code>; also clarified that <code>urlsnarf</code> on <em>outer1</em> should run on <code>eth1</code>, not <code>eth0</code></li>
+<li>Sat, Feb 3: Updated the <code>outputARPConflictfunction()</code> function.</li>
 </ul>
 <h3 id="built-in-commands">Built-in Commands</h3>
 <p>There are a few commands installed that we are going to use.</p>
@@ -218,8 +219,8 @@ root@outer1:/# </code></pre>
     print (&quot;New mapping: &quot; + str(ip) + &quot; -&gt; &quot; + str(mac).lower())
 
 def outputARPConflict(mac,old_ip,new_ip):
-    print (&quot;Possible ARP attack detected: &quot; + str(old_ip) + \
-           &quot; may be pretending to be &quot; + str(new_ip) + \
+    print (&quot;Possible ARP attack detected: &quot; + str(new_ip) + \
+           &quot; may be pretending to be &quot; + str(old_ip) + \
            &quot; for MAC &quot; + str(mac))</code></pre>
 <h4 id="step-5-keep-running">Step 5: keep running</h4>
 <p>Your program should keep running until Ctrl-C is pressed, which will terminate the program – you don’t have to put in any code to terminate on a Ctrl-C.</p>
