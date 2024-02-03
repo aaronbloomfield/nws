@@ -218,7 +218,7 @@ There are three types of lines:
 
 In particular, the mappings in this file may overwrite the mappings from the previous step -- this is intentional, as this can be used when testing the program.  You can assume the file, if it exists, will match the format above -- meaning it will not have errors.  Note that it can be an empty file, though, or it may not be present.
 
-If one of the mappings in the `arp-settings.txt` file is different than what you obtained from `arp -a`, then you should output the appropriate message (described below), and overwrite the value in the map with what was in the `arp-settings.txt` file.  Otherwise, if there are no conflicts, there should be no output from this step.  If the program runs into an error, then you can print out whatever output you want.  The file not being present, or the file being empty, is not an error, and should not produce any output.
+If one of the mappings in the `arp-settings.txt` file is different than what you obtained from `arp -a`, then you should output the appropriate message (the "spoofing detector" one, described below), and overwrite the value in the map with what was in the `arp-settings.txt` file.  Otherwise, if there are no conflicts, there should be no output from this step.  If the program runs into an error, then you can print out whatever output you want.  The file not being present, or the file being empty, is not an error, and should not produce any output.
 
 
 #### Step 4: monitor the network
@@ -234,9 +234,9 @@ New mapping: 192.168.100.101 -> 02:42:c0:a8:64:65
   This is the "mapping detector" part.
 - If a ARP packet is received where the MAC and IP therein do NOT match what is in the program's mapping, the you should output the following line:
   ```
-Possible ARP attack detected: 192.168.100.102 may be pretending to be 02:42:c0:a8:64:02
+Possible ARP attack detected: 192.168.100.102 may be pretending to be 192.168.100.101 for MAC 02:42:c0:a8:64:02
 ```
-  This is the "spoofing detector" part,
+  This is the "spoofing detector" part.
 
 As this part of the assignment will be auto-graded, you have to have that exact output.  To ensure you have the exact right output, the following functions are provided that you should use.
 
