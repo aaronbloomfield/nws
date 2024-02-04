@@ -22,7 +22,7 @@ Any changes to this page will be put here for easy reference.  Typo fixes and mi
 
 - Fri, Feb 2: Clarified that the command, for the MITM attack, should be `telnet`, not `ssh`; also clarified that `urlsnarf` on *outer1* should run on `eth1`, not `eth0`
 - Sat, Feb 3: Updated the `outputARPConflictfunction()` function.
-
+- Sun, Feb 4: Clarified about using the same IP address twice in `outputARPConflict()` when the other IP is now known.
 
 ### Built-in Commands
 
@@ -250,6 +250,8 @@ def outputARPConflict(mac,old_ip,new_ip):
            " may be pretending to be " + str(old_ip) + \
            " for MAC " + str(mac))
 ```
+
+A situation can occur when you do not know the other IP address.  For example, if a given IP and MAC has an existing mapping, but then an ARP packet arrives mapping that same IP to a different MAC.  In this case, just use the same IP address for both `old_ip` and `new_ip`.
 
 #### Step 5: keep running
 

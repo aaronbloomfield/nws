@@ -64,6 +64,7 @@
 <ul>
 <li>Fri, Feb 2: Clarified that the command, for the MITM attack, should be <code>telnet</code>, not <code>ssh</code>; also clarified that <code>urlsnarf</code> on <em>outer1</em> should run on <code>eth1</code>, not <code>eth0</code></li>
 <li>Sat, Feb 3: Updated the <code>outputARPConflictfunction()</code> function.</li>
+<li>Sun, Feb 4: Clarified about using the same IP address twice in <code>outputARPConflict()</code> when the other IP is now known.</li>
 </ul>
 <h3 id="built-in-commands">Built-in Commands</h3>
 <p>There are a few commands installed that we are going to use.</p>
@@ -222,6 +223,7 @@ def outputARPConflict(mac,old_ip,new_ip):
     print (&quot;Possible ARP attack detected: &quot; + str(new_ip) + \
            &quot; may be pretending to be &quot; + str(old_ip) + \
            &quot; for MAC &quot; + str(mac))</code></pre>
+<p>A situation can occur when you do not know the other IP address. For example, if a given IP and MAC has an existing mapping, but then an ARP packet arrives mapping that same IP to a different MAC. In this case, just use the same IP address for both <code>old_ip</code> and <code>new_ip</code>.</p>
 <h4 id="step-5-keep-running">Step 5: keep running</h4>
 <p>Your program should keep running until Ctrl-C is pressed, which will terminate the program – you don’t have to put in any code to terminate on a Ctrl-C.</p>
 <p>You can also send a signal to the program that is the equivalent of Ctrl-C. First, you have to find the process number of the running program:</p>
