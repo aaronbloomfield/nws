@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml' lang='' xml:lang=''>
+<head>
+  <meta charset='utf-8'></meta>
+  <meta name='generator' content='pandoc'></meta>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=yes'></meta>
+  <title>Ping Shell Commands</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel='stylesheet' href='../../markdown.css'></link>
+  <script>
+  function openTab(evt, tabName) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+
+  function insertCopyLink(text) {
+    document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
+  }
+  </script>
+</head>
+<body>
+<h1 id='ping-shell-commands'>Ping Shell Commands</h1>
+<p><a href='../index.html'>Go up to the NWS HW page</a> (<a href='../index.md'>md</a>) | <a href='index-full.html'>view one-page version</a></p><div class='tab'>
+<button class='tablinks' onclick="openTab(event,'toverview')" id='defaultOpen'>Overview</button>
+<button class='tablinks' onclick="openTab(event,'tchangelog')">Changelog</button>
+<button class='tablinks' onclick="openTab(event,'tremote-shell')">Remote Shell</button>
+<button class='tablinks' onclick="openTab(event,'tsample-output')">Sample Output</button>
+<button class='tablinks' onclick="openTab(event,'thints-and-notes')">Hints &amp; Notes</button>
+<button class='tablinks' onclick="openTab(event,'tsubmission')">Submission</button>
+</div>
+<div id='toverview' class='tabcontent'><h3 id='overview'>Overview</h3>
+<p>In this assignment you will write a simple remote shell using ICMP. This assignment will use the Scapy Python package. The client will send messages as the payload (content) in an ICMP ping message. The server will execute the commands, and return the output to the client.</p>
+<p>You will be submitting your source code in <code>ping_shell.py</code> as well as an edited version of <a href='pingcmd.py.html'>pingcmd.py</a> (<a href='pingcmd.py%5D'>src</a>).</p>
+</div><div id='tchangelog' class='tabcontent'><h3 id='changelog'>Changelog</h3>
+<p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. So far there aren’t any significant changes to report.</p>
+</div><div id='tremote-shell' class='tabcontent'><h3 id='remote-shell'>Remote Shell</h3>
+<p>You are going to write a Python program that handles both the client side and the server side of this remote shell. On the client side, if the user enters any input, it is sent as the payload of an ICMP packet to the server, which executes the command, and then sends the output back to the client, which will display that output. Both sides will exit if <code>quit</code> is entered.</p>
+<p>When the program starts, it will be given three command line parameters. You can assume that the command line parameters will always be correct – both in how many are present, and in their values.</p>
+<ul>
+<li>The server will be invoked by: <code>ping_shell.py server eth1 192.168.100.101</code>
+<ul>
+<li>The first parameter is “server” or “client”, so that your program can be in server mode or client mode</li>
+<li>The second parameter is which interface to listen to.</li>
+<li>The third parameter is the IP of the server (always), and will be on the interface in the second parameter.</li>
+</ul></li>
+</ul>
+<p>Note that not all parameters are needed by each mode, but at least some mode needs each parameter.</p>
+<p>Both sides should use the <code>sniff()</code> function from Scapy to sniff for ICMP packets. This blocks, so you will want to use threading to start the sniffing in another thread. As some may not be familiar with threading in Python, here is a quick way to do it; you have to import the <code>threading</code> package:</p>
+<pre><code>def sniff_icmp_commands(pkt):
+    # fill me in...
+    pass
+
+def start_sniffing(sig = None, frame = None):
+    sniff(filter='icmp',iface=iface,prn=sniff_icmp_commands)
+
+threading.Thread(target=start_sniffing, args=(), daemon=True).start()</code></pre>
+<p>The other thread (the one not sniffing) should receive input (via <code>input()</code>) until the user enters “quit”. Any input received (other than “quit”, which just exits) will be sent to the server as an ping payload. Any response from the server will be displayed to the screen. Note that, since any exit (from the “quit” command) needs to exit <em>both</em> threads, so use <code>os._exit(0)</code>.</p>
+</div><div id='tsample-output' class='tabcontent'><h3 id='sample-output'>Sample output</h3>
+<h4 id='execution-run-1'>Execution run 1</h4>
+<p>The first execution run has a lot of debugging information to help you trace how it will work. That debugging output always has the string “debug:” in it, includes time with milliseconds, and prints out a packet summary via <code>pkt.summary()</code>.</p>
+<p>Client side:</p>
+<pre><code># ./pingcmd.py client eth0 192.168.100.101                
+debug: sniffing ICMP...
+pwd
+1707065371.9326015   debug: packet sent from client: IP / ICMP 192.168.100.102 &gt; 192.168.100.101 echo-request 0 / Raw
+1707065371.9560843   debug: client received response
+/mnt
+
+whoami
+1707065386.3909845   debug: packet sent from client: IP / ICMP 192.168.100.102 &gt; 192.168.100.101 echo-request 0 / Raw
+1707065386.401789    debug: client received response
+root
+
+quit
+root@outer2:/mnt# </code></pre>
+<p>The server side:</p>
+<pre><code>root@outer1:/mnt# clear;./pingcmd.py server eth1 192.168.100.101^C
+debug: sniffing ICMP...
+1707065371.9186223   debug: server received packet: Ether / IP / ICMP 192.168.100.102 &gt; 192.168.100.101 echo-request 0 / Raw 8 pwd
+debug: server executing command: pwd
+1707065386.3786142   debug: server received packet: Ether / IP / ICMP 192.168.100.102 &gt; 192.168.100.101 echo-request 0 / Raw 8 whoami
+debug: server executing command: whoami
+quit
+root@outer1:/mnt# </code></pre>
+<h4 id='execution-run-2'>Execution run 2</h4>
+<p>This is similar to the previous command, but all the debugging output is removed.</p>
+<p>Client-side:</p>
+<pre><code>root@outer2:/mnt# ./pingcmd.py client eth0 192.168.100.101
+pwd
+/mnt
+
+whoami
+root
+
+quit
+root@outer2:/mnt# </code></pre>
+<p>Server side:</p>
+<pre><code>root@outer1:/mnt# ./pingcmd.py server eth1 192.168.100.101
+quit
+root@outer1:/mnt# </code></pre>
+<p>Note that the server does not need to output anything.</p>
+</div><div id='thints-and-notes' class='tabcontent'><h3 id='hints-and-notes'>Hints and Notes</h3>
+<p>There are Scapy commands to do a lot of the conversions that are needed. For example, <code>get_if_addr(iface)</code> will get the IP address for that interface. If you run the client on <em>outer2</em>, where <code>iface</code> is <code>eth0</code>, this will get 192.168.100.102.</p>
+<p>Keep in mind that the interfaces are different on the different containers. If you are using the 192.168.100.0/24 network, then the interface on <em>outer1</em> is <code>eth1</code>, and the interface for that network on <em>outer2</em> is <code>eth0</code>.</p>
+<p>You can assume that any <code>ping</code> packets are meant for this program – you don’t have to worry about other IMCP ping packets.</p>
+<p>The <a href='../../slides/network-layer.html#/icmp'>ICMP section of the lecture slides</a> show how to add a payload to an ICMP packet with Scapy, as well as how to retrieve one from an incoming ICMP packet.</p>
+<p>The easiest way to get the output of a shell command run from Python is the <code>subprocess.check_output()</code> function.</p>
+</div><div id='tsubmission' class='tabcontent'><h3 id='submission'>Submission</h3>
+<p>You will be submitting your source code in <code>ping_shell.py</code> as well as an edited version of <a href='pingcmd.py.html'>pingcmd.py</a> (<a href='pingcmd.py%5D'>src</a>).</p>
+</div><script>document.getElementById('defaultOpen').click();</script></body>
+</html>
+
