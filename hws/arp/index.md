@@ -294,6 +294,7 @@ To test the new mapping detection, run it on one of the containers.  Clear out t
 ```
 root@outer1:/# arp -a
 root@outer1:/# python3 arpDetector.py 
+New mapping: 192.168.100.1 -> 02:42:c0:a8:64:01
 New mapping: 192.168.100.101 -> 02:42:c0:a8:64:65
 New mapping: 192.168.100.103 -> 02:42:c0:a8:64:67
 Possible ARP attack detected: 192.168.100.102 may be pretending to be 192.168.100.1 for MAC 02:42:c0:a8:64:66
