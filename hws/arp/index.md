@@ -288,28 +288,62 @@ To test this, first find the IP -> MAC addresses on the Docker network.  We used
 
 To test the new mapping detection, run it on one of the containers.  Clear out the ARP cache via `arp -d`.  In another terminal and in the same container, ping a few other nodes from that container.  Each time, your program should print out that it found a new mapping.  Check that those IP -> MAC mappings are in the ARP cache via `arp -a`.  Then, in a *different* container, run an ARP spoof via `arpspoof`.  Your program should print out that it detected a possible ARP spoof.
 
-
-#### Example output
-
-```
-root@outer1:/# arp -a
-root@outer1:/# python3 arpDetector.py 
-New mapping: 192.168.100.1 -> 02:42:c0:a8:64:01
-New mapping: 192.168.100.101 -> 02:42:c0:a8:64:65
-New mapping: 192.168.100.103 -> 02:42:c0:a8:64:67
-Possible ARP attack detected: 192.168.100.102 may be pretending to be 192.168.100.1 for MAC 02:42:c0:a8:64:66
-Possible ARP attack detected: 192.168.100.102 may be pretending to be 192.168.100.1 for MAC 02:42:c0:a8:64:66
-Possible ARP attack detected: 192.168.100.102 may be pretending to be 192.168.100.1 for MAC 02:42:c0:a8:64:66
-^C
-root@outer1:/# 
-```
-
-***NOTE:*** These are not *extensive* tests, and we will be providing more comprehensive tests when we test your program.  These two tests are mean to get you started with testing your program.
-
 #### Notes and Hints
 
 - Note that the network interface is differnet on the different containers.  Because *outer1* is on two networks, the outernet network (192.168.100.1/24) is `eth1`.  As *outer2* is only on one network, the outernet network (192.168.100.1/24) is `eth0`.
 - To clear the entire ARP cache from a container, you have to run `arp -a`, followed by a number of `arp -d` calls.  Here is a single command that will clear it out for you, and then display the (empty) ARP cache: `arp -a | sed s/\(//g | sed s/\)//g | awk '{print "arp -d "$2}' | bash;arp -a`
+
+#### Example output
+
+
+```
+root@outer1:/mnt# arp -a
+
+root@outer1:/mnt# cat arp-settings.txt 
+192.168.100.1 02:42:c0:a8:64:01
+192.168.100.101 02:42:c0:a8:64:65
+192.168.100.102 02:42:c0:a8:64:66
+
+root@outer1:/mnt# python3 arpDetector.py eth1
+New mapping: 02:42:c0:a8:64:01 -> 192.168.100.1
+New mapping: 02:42:c0:a8:64:65 -> 192.168.100.101
+New mapping: 02:42:c0:a8:64:66 -> 192.168.100.102
+Possible ARP attack detected: 192.168.100.102 may be pretending to be 192.168.100.1 for MAC 02:42:c0:a8:64:66
+^C
+
+root@outer1:/mnt# 
+```
+
+The command run on *outer2* to generate the spoof was `arpspoof -i eth0 -t 192.168.100.101 192.168.100.1`.  The `arpspoof` command was run *after* the `arpDetector.py` program started.  You are welcome to print multiple "ARP attack" warning lines or just one.
+
+Another example is below.  This doesn't use `arpspoof` to do the spoof, but instead sets the ARP cache manually, and incorrectly, so that when the `arpDetector.py` program starts, it will detect an incorrect mapping.
+
+```
+root@outer1:/mnt# arp -a
+
+root@outer1:/mnt# arp -s 192.168.100.1 02:42:c0:a8:64:66
+
+root@outer1:/mnt# arp -a
+firewall (192.168.100.1) at 02:42:c0:a8:64:66 [ether] PERM on eth1
+
+root@outer1:/mnt# cat arp-settings.txt 
+192.168.100.1 02:42:c0:a8:64:01
+192.168.100.101 02:42:c0:a8:64:65
+192.168.100.102 02:42:c0:a8:64:66
+
+root@outer1:/mnt# python3 ./arpDetector.py eth1
+New mapping: 02:42:c0:a8:64:01 -> 192.168.100.1
+New mapping: 02:42:c0:a8:64:65 -> 192.168.100.101
+Possible ARP attack detected: 192.168.100.1 may be pretending to be 192.168.100.102 for MAC 02:42:c0:a8:64:66
+New mapping: 02:42:c0:a8:64:66 -> 192.168.100.102
+^C
+
+root@outer1:/mnt# 
+```
+
+
+***NOTE:*** These are not *extensive* tests, and we will be providing more comprehensive tests when we test your program.  These two tests are mean to get you started with testing your program.
+
 
 ### Submission
 
