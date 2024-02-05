@@ -8,18 +8,10 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
+    ul.task-list{list-style: none;}
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel='stylesheet' href='../../markdown.css'></link>
@@ -49,6 +41,7 @@
     document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
   }
   </script>
+  
 </head>
 <body>
 <h1 id='arp-spoofer-and-detector'>ARP Spoofer and Detector</h1>
@@ -151,7 +144,7 @@ root@outer1:/# </code></pre>
 <li>Download the <a href='../../slides/code/arp_mitm.py.html'>arp_mitm.py</a> (<a href='../../slides/code/arp_mitm.py'>src</a>) file</li>
 <li>Run that file on <em>outer1</em></li>
 <li>Connect to <em>firewall</em> via <code>docker exec</code>. If you connect via <code>telnet</code>, then that will (correctly) populate the ARP cache, negating our hack.</li>
-<li>From <em>firewall</em>, telnet into <em>metasploit</em> (<code>telnet msfadmin@metasploit</code>, password is <code>msfadmin</code>).</li>
+<li>From <em>firewall</em>, telnet into <em>metasploit</em> (<code>telnet metasploit</code>, username <em>and</em> password is <code>msfadmin</code>).</li>
 <li>Type <code>echo foo</code> into the terminal. The response will be <code>bar</code>.</li>
 </ul>
 </div><div id='tpacket-interception' class='tabcontent'><h3 id='packet-interception'>Packet interception</h3>
@@ -293,7 +286,9 @@ New mapping: 02:42:c0:a8:64:66 -&gt; 192.168.100.102
 ^C
 
 root@outer1:/mnt# </code></pre>
+<p>Your code may pick up on a slightly different issue: after reading the first line of arp-settings.txt, 192.168.100.1 now has two MACs. That’s fine – in that case, your output would have 192.168.100.1 as <em>both</em> IP addresses output in the “ARP attack” line.</p>
 <p><strong><em>NOTE:</em></strong> These are not <em>extensive</em> tests, and we will be providing more comprehensive tests when we test your program. These two tests are mean to get you started with testing your program.</p>
+
 </div><div id='tsubmission' class='tabcontent'><h3 id='submission'>Submission</h3>
 <p>You will be submitting your <code>arpDetector.py</code> file, as well as <a href='arp.py.html'>arp.py</a> (<a href='arp.py'>src</a>). That arp.py file describes, in the comments, what needs to be filled in.</p>
 </div><script>document.getElementById('defaultOpen').click();</script></body>

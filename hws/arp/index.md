@@ -131,7 +131,7 @@ Next we are going to execute the MITM (in-the-middle) attack via an ARP spoof; t
 - Download the [arp_mitm.py](../../slides/code/arp_mitm.py.html) ([src](../../slides/code/arp_mitm.py)) file
 - Run that file on *outer1*
 - Connect to *firewall* via `docker exec`.  If you connect via `telnet`, then that will (correctly) populate the ARP cache, negating our hack.
-- From *firewall*, telnet into *metasploit* (`telnet msfadmin@metasploit`, password is `msfadmin`).
+- From *firewall*, telnet into *metasploit* (`telnet metasploit`, username *and* password is `msfadmin`).
 - Type `echo foo` into the terminal.  The response will be `bar`.
 
 ### Packet interception
@@ -342,8 +342,25 @@ New mapping: 02:42:c0:a8:64:66 -> 192.168.100.102
 root@outer1:/mnt# 
 ```
 
+Your code may pick up on a slightly different issue: after reading the first line of arp-settings.txt, 192.168.100.1 now has two MACs.  That's fine -- in that case, your output would have 192.168.100.1 as *both* IP addresses output in the "ARP attack" line.
 
 ***NOTE:*** These are not *extensive* tests, and we will be providing more comprehensive tests when we test your program.  These two tests are mean to get you started with testing your program.
+
+<!-- 
+
+
+#### Testing for grading
+
+Not yet complete!
+
+We are going to test a few different cases:
+
+- Note: we are not going test for the "new mapping" output for either `arp -a` nor reading in arp-settings.txt, as that output is not required (but it's fine if you do output that)
+- That it successfully shows a conflict if an entry in arp-settings.txt conflits with `arp -a`
+  - We are just going to look for the "ARP attack" line in your output and the correct IPs and MACs
+- That it updates the cache (via the "new mapping" message) when a new ARP packet (that does *not* cause a conflict) arrives
+- That it monitors the network, and prints an error message when an ARP mapping comes in with a known MAC, but a different IP than what is in the program's memory
+ -->
 
 
 ### Submission
