@@ -23,6 +23,7 @@ Any changes to this page will be put here for easy reference.  Typo fixes and mi
 - Fri, Feb 2: Clarified that the command, for the MITM attack, should be `telnet`, not `ssh`; also clarified that `urlsnarf` on *outer1* should run on `eth1`, not `eth0`
 - Sat, Feb 3: Updated the `outputARPConflictfunction()` function.
 - Sun, Feb 4: Clarified about using the same IP address twice in `outputARPConflict()` when the other IP is now known.
+- Mon, Feb 5: Updated the example outputs
 
 ### Built-in Commands
 
