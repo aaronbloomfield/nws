@@ -18,6 +18,8 @@ def resolve_hostname_to_ip(name):
 
 # scapy sniff() filter howto at https://biot.com/capstats/bpf.html
 
+# to send without output, but `verbose=False` as a parameter to send() or sr1()
+
 def main():
 	print("localhost's IP list:",get_ip_list_of_localhost())
 	print("duckduckgo.com's IP:",resolve_hostname_to_ip("duckduckgo.com"))
