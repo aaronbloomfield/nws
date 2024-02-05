@@ -59,18 +59,19 @@
 <h3 id="changelog">Changelog</h3>
 <p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. So far there aren’t any significant changes to report.</p>
 <h3 id="remote-shell">Remote Shell</h3>
+<h4 id="the-task">The Task</h4>
 <p>You are going to write a Python program that handles both the client side and the server side of this remote shell. On the client side, if the user enters any input, it is sent as the payload of an ICMP packet to the server, which executes the command, and then sends the output back to the client, which will display that output. Both sides will exit if <code>quit</code> is entered.</p>
 <p>When the program starts, it will be given three command line parameters. You can assume that the command line parameters will always be correct – both in how many are present, and in their values.</p>
 <ul>
-<li>The server will be invoked by: <code>ping_shell.py server eth1 192.168.100.101</code>
+<li>The program is invoked by: <code>ping_shell.py server eth1 192.168.100.101</code>
 <ul>
 <li>The first parameter is “server” or “client”, so that your program can be in server mode or client mode</li>
 <li>The second parameter is which interface to listen to.</li>
-<li>The third parameter is the IP of the server (always), and will be on the interface in the second parameter.</li>
+<li>The third parameter is the IP of the server (always), and is guaranteed to be on the network of the interface in the second parameter.</li>
 </ul></li>
 </ul>
 <p>Note that not all parameters are needed by each mode, but at least some mode needs each parameter.</p>
-<p>Both sides should use the <code>sniff()</code> function from Scapy to sniff for ICMP packets. This blocks, so you will want to use threading to start the sniffing in another thread. As some may not be familiar with threading in Python, here is a quick way to do it; you have to import the <code>threading</code> package:</p>
+<p>Both sides should use the <code>sniff()</code> function from Scapy to sniff for ICMP packets. This function blocks, so you will want to use threading to start the sniffing in another thread. As some may not be familiar with threading in Python, here is a quick way to do it; you have to import the <code>threading</code> package:</p>
 <pre><code>def sniff_icmp_commands(pkt):
     # fill me in...
     pass
@@ -80,9 +81,11 @@ def start_sniffing(sig = None, frame = None):
 
 threading.Thread(target=start_sniffing, args=(), daemon=True).start()</code></pre>
 <p>The other thread (the one not sniffing) should receive input (via <code>input()</code>) until the user enters “quit”. Any input received (other than “quit”, which just exits) will be sent to the server as an ping payload. Any response from the server will be displayed to the screen. Note that, since any exit (from the “quit” command) needs to exit <em>both</em> threads, so use <code>os._exit(0)</code>.</p>
+<h4 id="hints">Hints</h4>
+<p>This section will have links to the various code parts gone over in lecture about how to do what…</p>
 <h3 id="sample-output">Sample output</h3>
 <h4 id="execution-run-1">Execution run 1</h4>
-<p>The first execution run has a lot of debugging information to help you trace how it will work. That debugging output always has the string “debug:” in it, includes time with milliseconds, and prints out a packet summary via <code>pkt.summary()</code>.</p>
+<p>The first execution run has a lot of debugging information to help one trace how it works. That debugging output always has the string “debug:” in it, includes time with milliseconds, and prints out a packet summary via <code>pkt.summary()</code>.</p>
 <p>Client side:</p>
 <pre><code># ./pingcmd.py client eth0 192.168.100.101                
 debug: sniffing ICMP...

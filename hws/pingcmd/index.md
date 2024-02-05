@@ -17,18 +17,20 @@ Any changes to this page will be put here for easy reference.  Typo fixes and mi
 
 ### Remote Shell
 
+#### The Task
+
 You are going to write a Python program that handles both the client side and the server side of this remote shell.  On the client side, if the user enters any input, it is sent as the payload of an ICMP packet to the server, which executes the command, and then sends the output back to the client, which will display that output.  Both sides will exit if `quit` is entered.
 
 When the program starts, it will be given three command line parameters.  You can assume that the command line parameters will always be correct -- both in how many are present, and in their values.
 
-- The server will be invoked by: `ping_shell.py server eth1 192.168.100.101`
+- The program is invoked by: `ping_shell.py server eth1 192.168.100.101`
 	- The first parameter is "server" or "client", so that your program can be in server mode or client mode
 	- The second parameter is which interface to listen to.
-	- The third parameter is the IP of the server (always), and will be on the interface in the second parameter.
+	- The third parameter is the IP of the server (always), and is guaranteed to be on the network of the interface in the second parameter.
 
 Note that not all parameters are needed by each mode, but at least some mode needs each parameter.
 
-Both sides should use the `sniff()` function from Scapy to sniff for ICMP packets.  This blocks, so you will want to use threading to start the sniffing in another thread.  As some may not be familiar with threading in Python, here is a quick way to do it; you have to import the `threading` package:
+Both sides should use the `sniff()` function from Scapy to sniff for ICMP packets.  This function blocks, so you will want to use threading to start the sniffing in another thread.  As some may not be familiar with threading in Python, here is a quick way to do it; you have to import the `threading` package:
 
 ```
 def sniff_icmp_commands(pkt):
@@ -43,12 +45,15 @@ threading.Thread(target=start_sniffing, args=(), daemon=True).start()
 
 The other thread (the one not sniffing) should receive input (via `input()`) until the user enters "quit".  Any input received (other than "quit", which just exits) will be sent to the server as an ping payload.  Any response from the server will be displayed to the screen.  Note that, since any exit (from the "quit" command) needs to exit *both* threads, so use `os._exit(0)`.
 
+#### Hints
+
+This section will have links to the various code parts gone over in lecture about how to do what...
 
 ### Sample output
 
 #### Execution run 1
 
-The first execution run has a lot of debugging information to help you trace how it will work.  That debugging output always has the string "debug:" in it, includes time with milliseconds, and prints out a packet summary via `pkt.summary()`.
+The first execution run has a lot of debugging information to help one trace how it works.  That debugging output always has the string "debug:" in it, includes time with milliseconds, and prints out a packet summary via `pkt.summary()`.
 
 Client side:
 
