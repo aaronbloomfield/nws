@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="GNU source-highlight 3.1.9
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite">
+<title>socket_ex.py</title>
+</head>
+<body bgcolor="white">
+<pre><tt><i><font color="#9A1900">#!/usr/bin/python3</font></i>
+
+<b><font color="#000080">import</font></b> socket<font color="#990000">,</font> sys
+mode <font color="#990000">=</font> sys<font color="#990000">.</font>argv<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">]</font>
+remotehost <font color="#990000">=</font> sys<font color="#990000">.</font>argv<font color="#990000">[</font><font color="#993399">2</font><font color="#990000">]</font>
+PORT <font color="#990000">=</font> <font color="#993399">5678</font>
+other_ip <font color="#990000">=</font> socket<font color="#990000">.</font><b><font color="#000000">gethostbyname</font></b><font color="#990000">(</font>remotehost<font color="#990000">)</font>
+
+<b><font color="#0000FF">if</font></b> mode <font color="#990000">==</font> <font color="#FF0000">"server"</font><font color="#990000">:</font>
+	sock <font color="#990000">=</font> socket<font color="#990000">.</font><b><font color="#000000">socket</font></b><font color="#990000">(</font>socket<font color="#990000">.</font>AF_INET<font color="#990000">,</font> socket<font color="#990000">.</font>SOCK_DGRAM<font color="#990000">)</font>
+	sock<font color="#990000">.</font><b><font color="#000000">bind</font></b><font color="#990000">((</font><font color="#FF0000">"0.0.0.0"</font><font color="#990000">,</font> PORT<font color="#990000">))</font>
+<b><font color="#0000FF">elif</font></b> mode <font color="#990000">==</font> <font color="#FF0000">"client"</font><font color="#990000">:</font>
+	sock <font color="#990000">=</font> socket<font color="#990000">.</font><b><font color="#000000">socket</font></b><font color="#990000">(</font>socket<font color="#990000">.</font>AF_INET<font color="#990000">,</font> socket<font color="#990000">.</font>SOCK_DGRAM<font color="#990000">)</font>
+
+<b><font color="#0000FF">if</font></b> mode <font color="#990000">==</font> <font color="#FF0000">"client"</font><font color="#990000">:</font>
+	sock<font color="#990000">.</font><b><font color="#000000">sendto</font></b><font color="#990000">(</font>b<font color="#FF0000">"hello, world"</font><font color="#990000">,</font> <font color="#990000">(</font>other_ip<font color="#990000">,</font> PORT<font color="#990000">))</font>
+	<b><font color="#0000FF">print</font></b><font color="#990000">(</font>mode<font color="#990000">,</font><font color="#FF0000">"sent 'hello, world' to server at"</font><font color="#990000">,</font>other_ip<font color="#990000">)</font>
+
+<b><font color="#0000FF">if</font></b> mode <font color="#990000">==</font> <font color="#FF0000">"server"</font><font color="#990000">:</font>
+	data<font color="#990000">,</font> <font color="#990000">(</font>ip<font color="#990000">,</font> port<font color="#990000">)</font> <font color="#990000">=</font> sock<font color="#990000">.</font><b><font color="#000000">recvfrom</font></b><font color="#990000">(</font><font color="#993399">2</font><font color="#990000">**</font><font color="#993399">16</font><font color="#990000">)</font>
+	<b><font color="#0000FF">print</font></b><font color="#990000">(</font>mode<font color="#990000">,</font><font color="#FF0000">"received"</font><font color="#990000">,</font>data<font color="#990000">,</font><font color="#FF0000">"from"</font><font color="#990000">,</font>ip<font color="#990000">,</font>port<font color="#990000">)</font>
+	sock<font color="#990000">.</font><b><font color="#000000">sendto</font></b><font color="#990000">(</font>b<font color="#FF0000">"goodbye!"</font><font color="#990000">,</font> <font color="#990000">(</font>other_ip<font color="#990000">,</font> port<font color="#990000">))</font>
+	<b><font color="#0000FF">print</font></b><font color="#990000">(</font>mode<font color="#990000">,</font><font color="#FF0000">"sent 'goodbye!' to client at"</font><font color="#990000">,</font>other_ip<font color="#990000">,</font>port<font color="#990000">)</font>
+	
+<b><font color="#0000FF">if</font></b> mode <font color="#990000">==</font> <font color="#FF0000">"client"</font><font color="#990000">:</font>
+	data<font color="#990000">,</font> <font color="#990000">(</font>ip<font color="#990000">,</font> port<font color="#990000">)</font> <font color="#990000">=</font> sock<font color="#990000">.</font><b><font color="#000000">recvfrom</font></b><font color="#990000">(</font><font color="#993399">2</font><font color="#990000">**</font><font color="#993399">16</font><font color="#990000">)</font>
+	<b><font color="#0000FF">print</font></b><font color="#990000">(</font>mode<font color="#990000">,</font><font color="#FF0000">"received"</font><font color="#990000">,</font>data<font color="#990000">,</font><font color="#FF0000">"from server at"</font><font color="#990000">,</font>ip<font color="#990000">,</font>port<font color="#990000">)</font>
+</tt></pre>
+</body>
+</html>

