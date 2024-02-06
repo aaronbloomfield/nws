@@ -8,10 +8,18 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel='stylesheet' href='../../markdown.css'></link>
@@ -41,7 +49,6 @@
     document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
   }
   </script>
-  
 </head>
 <body>
 <h1 id='arp-spoofer-and-detector'>ARP Spoofer and Detector</h1>
@@ -148,7 +155,7 @@ root@outer1:/# </code></pre>
 <li>Type <code>echo foo</code> into the terminal. The response will be <code>bar</code>.</li>
 </ul>
 </div><div id='tpacket-interception' class='tabcontent'><h3 id='packet-interception'>Packet interception</h3>
-<p>We are going to use the <a href='https://scapy.net'>scapy</a> Python library to intercept all packets. For this part, we are not modifying the packets. We saw something similar in the <a href='../../slides/code/arp_mitm.py.html'>arp_mitm.py</a> (<a href='../../slides/arp_mitm.py'>src</a>) from above:</p>
+<p>We are going to use the <a href='https://scapy.net'>scapy</a> Python library to intercept all packets. For this part, we are not modifying the packets. We saw something similar in the <a href='../../slides/code/arp_mitm.py.html'>arp_mitm.py</a> (<a href='../../slides/code/arp_mitm.py'>src</a>) from above:</p>
 <pre><code>def spoof_pkt(pkt):
   # code omitted from this listing, but in the original arp_mitm.py file
 
@@ -208,7 +215,7 @@ root@outer1:/# </code></pre>
 <p>In particular, the mappings in this file may overwrite the mappings from the previous step – this is intentional, as this can be used when testing the program. You can assume the file, if it exists, will match the format above – meaning it will not have errors. Note that it can be an empty file, though, or it may not be present.</p>
 <p>If one of the mappings in the <code>arp-settings.txt</code> file is different than what you obtained from <code>arp -a</code>, then you should output the appropriate message (the “spoofing detector” one, described below), and overwrite the value in the map with what was in the <code>arp-settings.txt</code> file. Otherwise, if there are no conflicts, there should be no output from this step. If the program runs into an error, then you can print out whatever output you want. The file not being present, or the file being empty, is not an error, and should not produce any output.</p>
 <h4 id='step-4-monitor-the-network'>Step 4: monitor the network</h4>
-<p>In this step, you will listen to the network for ARP messages – use the <code>scapy</code> library, as <a href='../../slides/arp.html#/'>discussed in lecture</a> for this.</p>
+<p>In this step, you will listen to the network for ARP messages – use the <code>scapy</code> library, as <a href='../../slides/link-layer.html#/'>discussed in lecture</a> (specifically <a href='../../slides/link-layer.html#/7/4'>here</a>) for this.</p>
 <p>Your program should produce two types of output for this part:</p>
 <ul>
 <li><p>If a new ARP mapping is observed, the print out a line stating so:</p>
@@ -288,7 +295,18 @@ New mapping: 02:42:c0:a8:64:66 -&gt; 192.168.100.102
 root@outer1:/mnt# </code></pre>
 <p>Your code may pick up on a slightly different issue: after reading the first line of arp-settings.txt, 192.168.100.1 now has two MACs. That’s fine – in that case, your output would have 192.168.100.1 as <em>both</em> IP addresses output in the “ARP attack” line.</p>
 <p><strong><em>NOTE:</em></strong> These are not <em>extensive</em> tests, and we will be providing more comprehensive tests when we test your program. These two tests are mean to get you started with testing your program.</p>
-
+<h4 id='testing-for-grading'>Testing for grading</h4>
+<p>Not yet complete!</p>
+<p>We are going to test a few different cases:</p>
+<ul>
+<li>Note: we are <em>not</em> going test for the “new mapping” output for either <code>arp -a</code> nor reading in arp-settings.txt, as that output is not required (but it’s fine if you do output that)</li>
+<li>Test: that it successfully shows a conflict if an entry in arp-settings.txt conflits with <code>arp -a</code>; this was the second example, above
+<ul>
+<li>We are just going to look for the “ARP attack” line in your output and the correct IPs and MACs</li>
+</ul></li>
+<li>Test: that it updates the cache (via the “new mapping” message) when a new ARP packet (that does <em>not</em> cause a conflict) arrives</li>
+<li>Test: that it monitors the network, and prints an error message when an ARP mapping comes in with a known MAC, but a different IP than what is in the program’s memory</li>
+</ul>
 </div><div id='tsubmission' class='tabcontent'><h3 id='submission'>Submission</h3>
 <p>You will be submitting your <code>arpDetector.py</code> file, as well as <a href='arp.py.html'>arp.py</a> (<a href='arp.py'>src</a>). That arp.py file describes, in the comments, what needs to be filled in.</p>
 </div><script>document.getElementById('defaultOpen').click();</script></body>

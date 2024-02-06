@@ -136,7 +136,7 @@ Next we are going to execute the MITM (in-the-middle) attack via an ARP spoof; t
 
 ### Packet interception
 
-We are going to use the [scapy](https://scapy.net) Python library to intercept all packets.  For this part, we are not modifying the packets.  We saw something similar in the [arp_mitm.py](../../slides/code/arp_mitm.py.html) ([src](../../slides/arp_mitm.py)) from above:
+We are going to use the [scapy](https://scapy.net) Python library to intercept all packets.  For this part, we are not modifying the packets.  We saw something similar in the [arp_mitm.py](../../slides/code/arp_mitm.py.html) ([src](../../slides/code/arp_mitm.py)) from above:
 
 ```
 def spoof_pkt(pkt):
@@ -225,7 +225,7 @@ If one of the mappings in the `arp-settings.txt` file is different than what you
 
 #### Step 4: monitor the network
 
-In this step, you will listen to the network for ARP messages -- use the `scapy` library, as [discussed in lecture](../../slides/arp.html#/) for this.
+In this step, you will listen to the network for ARP messages -- use the `scapy` library, as [discussed in lecture](../../slides/link-layer.html#/) (specifically [here](../../slides/link-layer.html#/7/4)) for this.
 
 Your program should produce two types of output for this part:
 
@@ -346,8 +346,6 @@ Your code may pick up on a slightly different issue: after reading the first lin
 
 ***NOTE:*** These are not *extensive* tests, and we will be providing more comprehensive tests when we test your program.  These two tests are mean to get you started with testing your program.
 
-<!-- 
-
 
 #### Testing for grading
 
@@ -355,12 +353,12 @@ Not yet complete!
 
 We are going to test a few different cases:
 
-- Note: we are not going test for the "new mapping" output for either `arp -a` nor reading in arp-settings.txt, as that output is not required (but it's fine if you do output that)
-- That it successfully shows a conflict if an entry in arp-settings.txt conflits with `arp -a`
+- Note: we are *not* going test for the "new mapping" output for either `arp -a` nor reading in arp-settings.txt, as that output is not required (but it's fine if you do output that)
+- Test: that it successfully shows a conflict if an entry in arp-settings.txt conflits with `arp -a`; this was the second example, above
   - We are just going to look for the "ARP attack" line in your output and the correct IPs and MACs
-- That it updates the cache (via the "new mapping" message) when a new ARP packet (that does *not* cause a conflict) arrives
-- That it monitors the network, and prints an error message when an ARP mapping comes in with a known MAC, but a different IP than what is in the program's memory
- -->
+- Test: that it updates the cache (via the "new mapping" message) when a new ARP packet (that does *not* cause a conflict) arrives
+- Test: that it monitors the network, and prints an error message when an ARP mapping comes in with a known MAC, but a different IP than what is in the program's memory
+
 
 
 ### Submission

