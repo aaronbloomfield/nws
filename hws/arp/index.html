@@ -8,18 +8,10 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
+    ul.task-list{list-style: none;}
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel='stylesheet' href='../../markdown.css'></link>
@@ -49,6 +41,7 @@
     document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
   }
   </script>
+  
 </head>
 <body>
 <h1 id='arp-spoofer-and-detector'>ARP Spoofer and Detector</h1>
@@ -305,7 +298,7 @@ root@outer1:/mnt# </code></pre>
 <li>We are just going to look for the “ARP attack” line in your output and the correct IPs and MACs</li>
 </ul></li>
 <li>Test: that it updates the cache (via the “new mapping” message) when a new ARP packet (that does <em>not</em> cause a conflict) arrives</li>
-<li>Test: that it monitors the network, and prints an error message when an ARP mapping comes in with a known MAC, but a different IP than what is in the program’s memory</li>
+<li>Test: that it monitors the network, and prints an error message when an ARP spoof packet comes in</li>
 </ul>
 </div><div id='tsubmission' class='tabcontent'><h3 id='submission'>Submission</h3>
 <p>You will be submitting your <code>arpDetector.py</code> file, as well as <a href='arp.py.html'>arp.py</a> (<a href='arp.py'>src</a>). That arp.py file describes, in the comments, what needs to be filled in.</p>

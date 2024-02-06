@@ -357,7 +357,7 @@ We are going to test a few different cases:
 - Test: that it successfully shows a conflict if an entry in arp-settings.txt conflits with `arp -a`; this was the second example, above
   - We are just going to look for the "ARP attack" line in your output and the correct IPs and MACs
 - Test: that it updates the cache (via the "new mapping" message) when a new ARP packet (that does *not* cause a conflict) arrives
-- Test: that it monitors the network, and prints an error message when an ARP mapping comes in with a known MAC, but a different IP than what is in the program's memory
+- Test: that it monitors the network, and prints an error message when an ARP spoof packet comes in
 
 
 
