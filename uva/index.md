@@ -66,8 +66,8 @@ The smaller ("S") homeworks are usually due Friday, unless otherwise noted.  The
 |---|---|---|---|---|---|---|---|
 | 1 | Jan 15 | W,F | (none) | (none) | (none) | [Introduction](../slides/introduction.html#/); [Physical layer](../slides/physical-layer.html#/) | Wed: introduction (finished); Fri: physical layer (finished) |
 | 2 | Jan 22 | M,W,F | (none) | Survey (due Tue), [Docker](../hws/docker/index.html) ([md](../hws/docker/index.md)) (due Fri) | (none) | [Data link layer](../slides/link-layer.html#/) | Mon: link layer to 5.5; Wed: link layer to 8.5; Fri: finished link layer |
-| 3 | Jan 29 | M,W,F | (none) | [Linux tutorial](../hws/linux/index.html) ([md](../hws/linux/index.md)) (due Tue), [Network commands](../hws/netcmds/) (due Fri) | Du, chap 3 (IP); 22 pp | [Network layer](../slides/network-layer.html#/) | Mon: network layer to 5.3; Wed: network layer to 6.3 |
-| 4 | Feb 5 | M,W,F | ARP | Metasploitable hacks, part 1 | Du, chap 5 (transport layer), sections 6.1-6.3 of chapter 6 (TCP attacks); 25 pp | Packet capture & analysis; Transport layer | Mon: finished network layer, packets to 4.4 |
+| 3 | Jan 29 | M,W,F | (none) | [Linux tutorial](../hws/linux/index.html) ([md](../hws/linux/index.md)) (due Tue), [Network commands](../hws/netcmds/) (due Fri) | Du, chap 3 (IP); 22 pp | [Network layer](../slides/network-layer.html#/) | Mon: network layer to 5.3; Wed: network layer to 6.3; Fri: ... |
+| 4 | Feb 5 | M,W,F | ARP | Metasploitable hacks, part 1 | Du, chap 5 (transport layer), sections 6.1-6.3 of chapter 6 (TCP attacks); 25 pp | Packet capture & analysis; Transport layer | Mon: finished network layer, packets to 4.4; Wed: finished packets, transport-layer to 5.3 |
 | 5 | Feb 12 | M,W,F | Routing | Metasploitable hacks, part 2 | | Transport layer; Firewalls & evasion |  |
 | 6 | Feb 19 | M,W,F | Wireshark | Web of trust, week 1 | | Session layer; Encryption |  |
 | 7 | Feb 26 | M,W,F | (midterm on Wed) | Web of trust, week 2 | | Encryption; TLS |  |

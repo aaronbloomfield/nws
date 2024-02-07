@@ -136,11 +136,11 @@ TCP handles all of these; UDP usually only handles the first one
 ## TCP vs UDP in Python
 To open a TCP connection:
 ```
-udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+tcp_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 ```
 To open a UDP connection:
 ```
-tcp_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 ```
 Only the last parameter is different
 
