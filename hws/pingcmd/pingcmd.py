@@ -45,6 +45,9 @@ sanity_checks = {
 	# that line?
 	'debug_output_was_removed': False,
 
+	# does the server also quit if "quit" is entered on the client?
+	'server_quits_on_client_quit': False,
+
 }
 
 

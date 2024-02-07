@@ -19,7 +19,9 @@ Any changes to this page will be put here for easy reference.  Typo fixes and mi
 
 #### The Task
 
-You are going to write a Python program that handles both the client side and the server side of this remote shell.  On the client side, if the user enters any input, it is sent as the payload of an ICMP packet to the server, which executes the command, and then sends the output back to the client, which will display that output.  Either sides will exit if `quit` is entered (entering it on one side does not quit the other side).
+You are going to write a Python program that handles both the client side and the server side of this remote shell.  On the client side, if the user enters any input, it is sent as the payload of an ICMP packet to the server, which executes the command, and then sends the output back to the client, which will display that output.
+
+The server only listens for input from the client.  If it receives "quit" from the client, it will exit.  Any other input is executed, and the output is sent back to the client.  You are welcome to have the server also listen for "quit" and also exit then, if that's easier (since it mirrors how the client works).  But the server should quit if "quit" is entered on the client.
 
 When the program starts, it will be given three command line parameters.  You can assume that the command line parameters will always be correct -- both in how many are present, and in their values.
 
@@ -43,7 +45,7 @@ def start_sniffing(sig = None, frame = None):
 threading.Thread(target=start_sniffing, args=(), daemon=True).start()
 ```
 
-The other thread (the one not sniffing) should receive input (via `input()`) until the user enters "quit".  Any input received (other than "quit", which just exits) will be sent to the server as an ping payload.  Any response from the server will be displayed to the screen.  Note that, since any exit (from the "quit" command) needs to exit *both* threads, so use `os._exit(0)`.
+The other thread (the one not sniffing) should receive input (via `input()`) until the user enters "quit".  Any input received, including "quit", will be sent to the server as an ping payload.  The client also quits on "quit".  Any response from the server will be displayed to the screen.  Note that, since any exit (from the "quit" command) needs to exit *both* threads, so use `os._exit(0)`.
 
 You don't need to send the replies to the ping!  Let the operating system do that.  The client sends the command to the server in a ping-request (type=8), and the operating system sends the ping-reply (type=0).  Then the server sends the output in a new ping-request, and the operating system sends a ping-reply.
 
@@ -91,9 +93,10 @@ debug: sniffing ICMP...
 debug: server executing command: pwd
 1707065386.3786142 	 debug: server received packet: Ether / IP / ICMP 192.168.100.102 > 192.168.100.101 echo-request 0 / Raw 8 whoami
 debug: server executing command: whoami
-quit
 root@outer1:/mnt# 
 ```
+
+The server quit when it received "quit" from the client.
 
 #### Execution run 2
 
@@ -120,7 +123,7 @@ quit
 root@outer1:/mnt# 
 ```
 
-Note that the server does not need to output anything.
+Note that the server does not need to output anything.  Again, the server quit when it received "quit" from the client.
 
 
 ### Hints and Notes
