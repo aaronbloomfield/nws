@@ -176,8 +176,10 @@ echo <font color="#FF0000">"# metasploit and the gateway have a different IPs ba
 <i><font color="#9A1900"># change root's password to 'password'</font></i>
 echo <font color="#FF0000">"root:password"</font> <font color="#990000">|</font> chpasswd
 
-<i><font color="#9A1900"># start apache2</font></i>
-service apache2 start
+<i><font color="#9A1900"># start apache2, but can be disabled by an environment variable</font></i>
+<b><font color="#0000FF">if</font></b> <font color="#990000">[</font> x<font color="#009900">$NOAPACHE</font> <font color="#990000">==</font> x<font color="#FF0000">""</font> <font color="#990000">];</font> <b><font color="#0000FF">then</font></b>
+	service apache2 start
+<b><font color="#0000FF">fi</font></b>
 
 <i><font color="#9A1900"># set up metasploit's known_hosts</font></i>
 <b><font color="#0000FF">if</font></b> <font color="#990000">[</font> `hostname` <font color="#990000">==</font> <font color="#FF0000">"metasploit"</font> <font color="#990000">]</font> <font color="#990000">;</font> <b><font color="#0000FF">then</font></b>

@@ -12,15 +12,17 @@ RUN apt update -y -q -q && \
 	apt install -y -q -q apt-utils locales tzdata && \
 	locale-gen en_US.UTF-8 && \
 	ln -fs /usr/share/zoneinfo/US/Eastern /etc/localtime && \
-	dpkg-reconfigure -f noninteractive tzdata && \
-	apt install -y \
+	dpkg-reconfigure -f noninteractive tzdata
+
+RUN apt install -y \
 		curl gnupg wireshark firewalld  nmap iputils-ping traceroute net-tools \
 		x11-apps openssh-server g++ gdb less emacs emacs-nox nano vim netdiscover \
 		dsniff git lynx apache2 libapache2-mod-php software-properties-common \
 		netcat ncat apt-transport-https libpci-dev python3-pip arp-scan lsof \
 		libssl-dev snort tor kmod astyle source-highlight zip unzip sharutils \
-		telnet ftp bind9-utils bind9-host bind9-dnsutils whois tcpdump fcrackzip && \
-	curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > /tmp/msfinstall && \
+		telnet ftp bind9-utils bind9-host bind9-dnsutils whois tcpdump fcrackzip
+
+RUN curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > /tmp/msfinstall && \
 	chmod 755 /tmp/msfinstall && \
 	/tmp/msfinstall && \
 	apt clean -y && \

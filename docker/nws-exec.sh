@@ -165,8 +165,10 @@ fi
 # change root's password to 'password'
 echo "root:password" | chpasswd
 
-# start apache2
-service apache2 start
+# start apache2, but can be disabled by an environment variable
+if [ x$NOAPACHE == x"" ]; then
+	service apache2 start
+fi
 
 # set up metasploit's known_hosts
 if [ `hostname` == "metasploit" ] ; then
