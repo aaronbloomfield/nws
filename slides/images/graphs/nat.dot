@@ -1,0 +1,205 @@
+digraph timeline {
+
+    subgraph other_line {
+        node [fontname="Helvetica",shape=point,style=rounded,width=0.01];
+        rank=TB;
+        other [shape=none,image="./terminal.svg",fill=white,label="&nbsp;.101"];
+        other -> o1 [arrowhead=none];
+        o1 -> o2 [arrowhead=none];
+        o2 -> o3 [arrowhead=none];
+        o3 -> o4 [arrowhead=none];
+        o4 -> o5 [arrowhead=none];
+        o5 -> o6 [arrowhead=none];
+        o6 -> o7 [arrowhead=none];
+        o8 [label=< opens port 51,333 <br/> to receive data >,shape=text];
+        o7 -> o8 [arrowhead=none];
+        o8 -> o9 [arrowhead=none];
+        o9 -> o10 [arrowhead=none];
+        o10 -> o11 [arrowhead=none];
+        o11 -> o12 [arrowhead=none];
+        o12 -> o13 [arrowhead=none];
+        o13 -> o14 [arrowhead=none];
+        o14 -> o15 [arrowhead=none];
+        o15 -> o16 [arrowhead=none];
+        o16 -> o17 [arrowhead=none];
+        o17 -> o18 [arrowhead=none];
+        o18 -> o19 [arrowhead=none];
+        o19 -> o20 [arrowhead=none];
+        o20 -> o21 [arrowhead=none];
+        //{rank=same o1 o2 o3 o4 o5 o6 o7 o8 o9 o10 o11 o12 o13 o14 o15 o16 o17 o18 o19 o20}
+    }
+
+    subgraph terminal_line {
+        node [fontname="Helvetica",shape=point,style=rounded,width=0.01];
+        rank=TB;
+        terminal [shape=none,image="./terminal.svg",fill=white,label="&nbsp;.102"];
+        t1 [label=< opens port 51,111 <br/> to receive data >,shape=text];
+        terminal -> t1 [arrowhead=none];
+        t1 -> t2 [arrowhead=none];
+        t2 -> t3 [arrowhead=none];
+        t3 -> t4 [arrowhead=none];
+        t4 -> t5 [arrowhead=none];
+        t5 -> t6 [arrowhead=none];
+        t6 -> t7 [arrowhead=none];
+        t7 -> t8 [arrowhead=none];
+        t8 -> t9 [arrowhead=none];
+        t9 -> t10 [arrowhead=none];
+        t10 -> t11 [arrowhead=none];
+        t11 -> t12 [arrowhead=none];
+        t12 -> t13 [arrowhead=none];
+        t13 -> t14 [arrowhead=none];
+        t14 -> t15 [arrowhead=none];
+        t15 -> t16 [arrowhead=none];
+        t16 -> t17 [arrowhead=none];
+        t17 -> t18 [arrowhead=none];
+        t18 -> t19 [arrowhead=none];
+        t19 -> t20 [arrowhead=none];
+        t20 -> t21 [arrowhead=none];
+    }
+
+// plain, plaintext, none
+    subgraph firewall_line {
+        node [fontname="Helvetica",shape=point,style=rounded,width=0.01];
+        edge [fontname="Helvetica"];
+        rank=TB;
+        firewall [shape=none,label="",image="./home-router.svg",fill=white];
+        firewall -> f1 [arrowhead=none];
+        f1 -> f2 [arrowhead=none];
+        f3 [label=< opens port 65,222 <br/> maps .102:51,111 to 65,222 >,shape=text];
+        f2 -> f3 [arrowhead=none];
+        f3 -> f4 [arrowhead=none];
+        f4 -> f5 [arrowhead=none];
+        f6 [label=< receives on port 65,222 <br/> fowards to .102:51,111 >,shape=text];
+        f5 -> f6 [arrowhead=none];
+        f6 -> f7 [arrowhead=none];
+        f7 -> f8 [arrowhead=none];
+        f8 -> f9 [arrowhead=none];
+        f10 [label=< opens port 65,444 <br/> maps .102:51,333 to 65,444 >,shape=text];
+        f9 -> f10 [arrowhead=none];
+        f10 -> f11 [arrowhead=none];
+        f11 -> f12 [arrowhead=none];
+        f13 [label=< receives on port 65,444 <br/> fowards to .102:51,333 >,shape=text];
+        f12 -> f13 [arrowhead=none];
+        f13 -> f14 [arrowhead=none];
+        f14 -> f15 [arrowhead=none];
+        f15 -> f16 [arrowhead=none];
+        f17 [label=< data is to opened port <br/> on established connection <br/> from correct IP >,shape=text];
+        f16 -> f17 [arrowhead=none];
+        f17 -> f18 [arrowhead=none];
+        f18 -> f19 [arrowhead=none];
+        f20 [label=< data discarded b/c not <br/> established connection <br/> (not correct IP/port) >,shape=text];
+        f19 -> f20 [arrowhead=none];
+        f20 -> f21 [arrowhead=none];
+    }
+
+    subgraph server_line {
+        node [fontname="Helvetica",shape=point,style=rounded,width=0.01];
+        rank=TB;
+        server [shape=none,label="",image="./server.svg",fill=white];
+        server -> s1 [arrowhead=none];
+        s1 -> s2 [arrowhead=none];
+        s2 -> s3 [arrowhead=none];
+        s3 -> s4 [arrowhead=none];
+        s4 -> s5 [arrowhead=none];
+        s5 -> s6 [arrowhead=none];
+        s6 -> s7 [arrowhead=none];
+        s7 -> s8 [arrowhead=none];
+        s8 -> s9 [arrowhead=none];
+        s9 -> s10 [arrowhead=none];
+        s10 -> s11 [arrowhead=none];
+        s11 -> s12 [arrowhead=none];
+        s12 -> s13 [arrowhead=none];
+        s13 -> s14 [arrowhead=none];
+        s15 [label=< page sends unrequested, <br/> dynamic web page data >,shape=text];
+        s14 -> s15 [arrowhead=none];
+        s15 -> s16 [arrowhead=none];
+        s16 -> s17 [arrowhead=none];
+        s17 -> s18 [arrowhead=none];
+        s18 -> s19 [arrowhead=none];
+        s19 -> s20 [arrowhead=none];
+        s20 -> s21 [arrowhead=none];
+    }
+
+subgraph hacker_line {
+        node [fontname="Helvetica",shape=point,style=rounded,width=0.01];
+        rank=TB;
+        hacker [shape=none,image="./virus.svg",fill=white,label=""];
+        hacker -> h1 [arrowhead=none];
+        h1 -> h2 [arrowhead=none];
+        h2 -> h3 [arrowhead=none];
+        h3 -> h4 [arrowhead=none];
+        h4 -> h5 [arrowhead=none];
+        h5 -> h6 [arrowhead=none];
+        h6 -> h7 [arrowhead=none];
+        h7 -> h8 [arrowhead=none];
+        h8 -> h9 [arrowhead=none];
+        h9 -> h10 [arrowhead=none];
+        h10 -> h11 [arrowhead=none];
+        h11 -> h12 [arrowhead=none];
+        h12 -> h13 [arrowhead=none];
+        h13 -> h14 [arrowhead=none];
+        h14 -> h15 [arrowhead=none];
+        h15 -> h16 [arrowhead=none];
+        h16 -> h17 [arrowhead=none];
+        h17 -> h18 [arrowhead=none];
+        h18 -> h19 [arrowhead=none];
+        h19 -> h20 [arrowhead=none];
+        h20 -> h21 [arrowhead=none];
+        //{rank=same h1 h2 h3 h4 h5 h6 h7 h8 h9 h10 h11 h12 h13 h14 h15 h16 h17 h18 h19 h20}
+    }
+
+    graph [fontname="Helvetica"];
+    node [fontname="Helvetica"];
+    edge [fontname="Helvetica",minlen=6];
+
+    { rank=same
+      t2 -> f2 [label="opened port 51,111&nbsp;&nbsp;&nbsp;"];
+      t2 -> f2 [label="request to www:80",color=invis,arrowhead=none];
+    }
+    { rank=same
+      f4 -> s4 [label="opened port 65,222&nbsp;&nbsp;&nbsp;"];
+      f4 -> s4 [label="request to www:80",color=invis,arrowhead=none];
+    }
+    { rank=same
+      f5 -> s5 [label="response from 80&nbsp;&nbsp;&nbsp;",arrowhead=none,arrowtail=normal,dir=both];
+      f5 -> s5 [label="to port 65,222",color=invis,arrowhead=none];
+    }
+    { rank=same
+      t7 -> f7 [label="response from 80&nbsp;&nbsp;&nbsp;",arrowhead=none,arrowtail=normal,dir=both];
+      t7 -> f7 [label="to port 51,111",color=invis,arrowhead=none];
+    }
+
+    { rank=same
+      o9 -> t9 [label="opened port 51,333&nbsp;&nbsp;&nbsp;",arrowhead=none];
+      o9 -> t9 [label="request to www:80",color=invis,arrowhead=none];
+      t9 -> f9;
+    }
+    { rank=same
+      f11 -> s11 [label="opened port 65,444&nbsp;&nbsp;&nbsp;"];
+      f11 -> s11 [label="request to www:80",color=invis,arrowhead=none];
+    }
+    { rank=same
+      f12 -> s12 [label="response from 80&nbsp;&nbsp;&nbsp;",arrowhead=none,arrowtail=normal,dir=both];
+      f12 -> s12 [label="to port 65,444",color=invis,arrowhead=none];
+    }
+    { rank=same
+      o14 -> t14 [label="response from 80&nbsp;&nbsp;&nbsp;",arrowhead=none,arrowtail=normal,dir=both];
+      o14 -> t14 [label="to port 51,333",color=invis,arrowhead=none];
+      t14 -> f14 [arrowhead=none];
+    }
+
+    { rank=same
+      f16 -> s16 [label="data from 80&nbsp;&nbsp;&nbsp;",arrowhead=none,arrowtail=normal,dir=both];
+      f16 -> s16 [label="to port 65,222",color=invis,arrowhead=none];
+    }
+    { rank=same
+      t18 -> f18 [label="data from 80&nbsp;&nbsp;&nbsp;",arrowhead=none,arrowtail=normal,dir=both];
+      t18 -> f18 [label="to port 51,111",color=invis,arrowhead=none];
+    }
+
+    { rank=same
+      f19 -> s19 [label="malicious network&nbsp;&nbsp;&nbsp;",arrowhead=none,arrowtail=normal,dir=both];
+      f19 -> s19 [label="attack to any port",color=invis,arrowhead=none];
+      s19 -> h19 [arrowhead=none];
+    }
+}

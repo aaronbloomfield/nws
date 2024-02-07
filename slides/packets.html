@@ -78,13 +78,15 @@
 
 
 <!-- .slide: class="right-float-img-1000 no-border" -->
-## Ports
 ![](images/packets/etc-services.webp)
 - A *port* is a way to connect to a given service (program) on a host
   - A way for the OS kernel to figure out which service a network connection wants
-  - Ports under 1,024 are *privileged* -- only the system can use them
   - Anybody can open up unprivileged ports
 - Well known ports are listed in /etc/services
+- Port ranges:
+  - 0-1,023: system reserved, well-known
+  - 1,024-49,151: application specific
+  - 49,152-65,535: private ports
 
 
 

