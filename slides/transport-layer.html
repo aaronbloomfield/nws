@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Network Security slide set</title>
+    <meta name="description" content="A set of slides for a course on Introduction to Cybersecurity">
+    <meta name="author" content="Aaron Bloomfield">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="../slides/nws.css">
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="../slides/reveal.js/plugin/highlight/zenburn.css">
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? '../slides/reveal.js/css/print/pdf.scss' : '../slides/reveal.js/css/print/paper.scss';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+    <!--[if lt IE 9]>
+	<script src="../slides/reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+  </head>
+
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+<section data-markdown id="cover"><script type="text/template">
+# CS 4760
+&nbsp;  
+### Network Security
+
+<p class='titlep'>&nbsp;</p>
+<div class="titlesmall"><p>
+<a href="http://www.cs.virginia.edu/~asb">Aaron Bloomfield</a> (aaron@virginia.edu)<br>
+<a href="http://github.com/aaronbloomfield/nws">@github</a> | <a href="index.html">&uarr;</a> | <a href="?print-pdf"><img class="print" width="20" src="../slides/images/print-icon.webp" style="top:0px;vertical-align:middle"></a>
+</p></div>
+<p class='titlep'>&nbsp;</p>
+
+## Transport Layer
+</script></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section data-markdown><textarea data-template>
+# Contents
+&nbsp;  
+[Overview](#/overview)  
+[UDP & Attacks](#/udp)  
+[TCP & Attacks](#/tcp)  
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="overview" class="center"><textarea data-template>
+# Overview
+</textarea></section>
+ 
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<h2 class="r-fit-text">Protocol stack: transport layer</h2>
+<img src="http://www.cs.virginia.edu/~asb2t/duimg/n01/image7.png" style="height:300px">
+
+- Is charged with taking a large piece of data, splitting it into smaller packets, sending each packet to the destination (via the next layer down), and (maybe) reassembling it at the destination
+  - It might request a missed packet to be re-sent
+- Example protocols: TCP, UDP
+
+
+
+## Network Data Flow
+<img src="http://www.cs.virginia.edu/~asb2t/duimg/n01/image6.png" style="height:500px">
+
+
+
+## Transport tasks to solve
+- Which application receives the data
+- How to split a large file into smaller packets
+- How to handle a lost packet
+- How to handle packet order
+- How to handle packets arriving too fast
+- Encryption (TLS)
+
+TCP handles all of these; UDP usually only handles the first one
+
+
+
+<h2 class="r-fit-text">Transport Control Protocol (TCP)</h2>
+
+- This is the TCP/IP version of the OSI transport layer
+- TCP will ensure any lost packet is re-sent: used for sending files
+[![TCP header](images/networking/tcp-header.webp)](https://commons.wikimedia.org/wiki/File:TCP_header.png)
+
+
+
+<h2 class="r-fit-text">User Datagram Protocol (UDP)</h2>
+
+- UDP doesn't bother resending a missed packet
+  - If one doesn't arrive, it will continue on: used for live streams
+[![TCP header](https://upload.wikimedia.org/wikipedia/commons/0/0c/UDP_header.png)](https://commons.wikimedia.org/wiki/File:UDP_header.png)
+
+
+
+## UDP & TCP comparison
+- UDP properties
+  - Lighter weight: less information in the packet header, less work to do in the network stack
+  - If you care about the packet order, you have to implement that
+  - Used in *real-time* streaming (not movies!)
+- TCP properties
+  - The only choice when you want a guarantee that the original file/data sent will arrive in the same form
+  - Heavier weight, both in packet size and computation needed to send/receive packets
+
+
+
+<!-- .slide: class="right-float-img-1000 no-border" -->
+## Ports
+![](images/packets/etc-services.webp)
+- A *port* is a way to connect to a given service (program) on a host
+  - A way for the OS kernel to figure out which service a network connection wants
+  - Anybody can open up unprivileged ports
+- Well known ports are listed in /etc/services
+- Port ranges:
+  - 0-1,023: system reserved, well-known
+  - 1,024-49,151: application specific
+  - 49,152-65,535: private ports
+
+
+
+<!-- .slide: class="small-pre" -->
+## TCP vs UDP in Python
+To open a TCP connection:
+```
+udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+```
+To open a UDP connection:
+```
+tcp_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+```
+Only the last parameter is different
+
+
+
+<!-- .slide: class="small-pre" -->
+## TCP vs UDP in Python
+TCP connecting to a port and sending data:
+```
+tcp_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+tcp_sock.connect("123.456.78.9",1234)
+tcp_sock.sendall(b'hello world')
+```
+UDP connecting to a port and sending data:
+```
+udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+udp_sock.sendto(b'hello world', ("123.456.78.9",PORT))
+```
+Use `sendall()` for TCP sockets, and `sendto()` for UDP sockets
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="udp" class="center"><textarea data-template>
+# UDP & Attacks
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<h2 class="r-fit-text">User Datagram Protocol (UDP)</h2>
+
+- UDP doesn't bother resending a missed packet
+  - If one doesn't arrive, it will continue on: used for live streams
+[![TCP header](https://upload.wikimedia.org/wikipedia/commons/0/0c/UDP_header.png)](https://commons.wikimedia.org/wiki/File:UDP_header.png)
+
+
+
+## UDP Attacks
+- UDP packets do not require setting up a connection first
+- Basic idea: have the attacker request data from B
+  - But spoof the return address to be of A
+  - This can be a DOS attack against A
+![](http://www.cs.virginia.edu/~asb2t/duimg/n05/image5.png)
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## UDP Fraggle Attack
+![](http://www.cs.virginia.edu/~asb2t/duimg/n05/image6.png)
+- Attacker sends a spoofed packet to B, claiming to be from A
+- Options:
+  - Have the return be the broadcast address (usually don't work anymore)
+  - Have the data be a live stream (lots of data)
+- Like the Smurf attack
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## UDP Ping Pong Attack
+![](http://www.cs.virginia.edu/~asb2t/duimg/n05/image7.png)
+- Some servers send a reply once the UDP packet is received
+  - Prior to any inspection
+- So start a back-and-forth between two servers
+- Good quality software does not do this
+  - But there is lots of bad software out there...
+- Also called a grenade attack
+
+
+
+## UDP Ping Pong Server
+```python
+udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+udp.bind(("0.0.0.0", 9090))
+
+while True:
+    data, (ip, port) = udp.recvfrom(1024)
+    print ("From {}:{}: {}".format(ip, port, 
+                                   str(data, 'utf-8')))
+
+    # Send back a "thank you" note
+    udp.sendto(b'Thank you!\n', (ip, port))
+```
+To start it off:
+```python
+ip   = IP(src="10.9.0.5", dst="10.9.0.6")
+udp  = UDP(sport=9090, dport=9090)
+data = "Let the Ping Pong game start!\n"
+pkt  = ip/udp/data
+send(pkt, verbose=0)
+```
+
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## UDP Amplification Attack
+![](http://www.cs.virginia.edu/~asb2t/duimg/n05/image13.png)
+- Send a spoofed packet such that the response is much larger than the request
+- A 2014 study showed that:
+  - Some servers could magnify the bandwidth by a factor of 4,670
+  - Millions of servers were vulnerable to this
+- Also called a missile attack
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="tcp" class="center"><textarea data-template>
+# TCP & Attacks
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<h2 class="r-fit-text">Transport Control Protocol (TCP)</h2>
+
+- This is the TCP/IP version of the OSI transport layer
+- TCP will ensure any lost packet is re-sent: used for sending files
+[![TCP header](images/networking/tcp-header.webp)](https://commons.wikimedia.org/wiki/File:TCP_header.png)
+
+
+
+
+## TCP client
+```
+tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+tcp.connect(('192.168.100.102', 9090)) # outer2
+tcp.sendall(b"Hello Server!\n")
+tcp.sendall(b"Hello Again!\n")
+tcp.close()
+```
+
+Run a server with `nc -lnv 9090`:
+```
+root@outer2:/# nc -lnv 9090
+Listening on 0.0.0.0 9090
+Connection received on 192.168.100.101 33836
+Hello Server!
+Hello Again!
+root@outer2:/# 
+```
+`nc` terminates when the connection is closed by the client
+
+
+
+## TCP Server
+```
+tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+tcp.bind(("0.0.0.0", 9090))
+
+tcp.listen()               # does not block
+conn, addr = tcp.accept()  # does block
+
+with conn:
+    print('Connected by', addr)
+    while True:
+        data = conn.recv(1024)
+        if not data:
+            break
+        print(data)
+        conn.sendall(b"Got the data!\n")
+```
+Multiple connections are often handled via threading
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## Sequence numbers
+[![TCP header](images/networking/tcp-header.webp)](https://commons.wikimedia.org/wiki/File:TCP_header.png)
+- Initial one set when the SYN flag is true
+- Initial one is *random*
+  - Why?
+
+
+
+
+<!-- .slide: class="right-float-img-800" -->
+## TCP Open Connection
+![](images/graphs/tcp_open.webp)
+
+
+
+<!-- .slide: class="right-float-img-800" -->
+## TCP Close Connection
+![](images/graphs/tcp_close.webp)
+
+
+
+## TCP attacks
+- Imagine Alice is sending something to Bob
+- A host between Alice and Bob, Mallory, can intercept (and potentially discard) these packets
+  - Similar to a man-in-the-middle attack
+- But to modify the packets, the attacker would have to know the TCP state
+  - Starting sequence numbers, port numbers, etc.
+  - These are often easily guessable
+    - Ports are well-known
+    - Sequence numbers are often predictable
+
+
+
+## TCP attacks
+- If Mallory can guess the state, then s/he can impersonate one or the other (or both), thus hijacking the connection
+- Instead of downloading a valid program from a trusted website, instead you are now downloading some type of malware
+- How can we prevent this?
+  - By keeping anybody from figuring out the state of the TCP connection
+  - This state is discernible from the TCP packet headers
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+</div>
+</div>
+<script src="../slides/reveal.js/dist/reveal.js"></script>
+<script src="../slides/reveal.js/plugin/zoom/zoom.js"></script>
+<script src="../slides/reveal.js/plugin/notes/notes.js"></script>
+<script src="../slides/reveal.js/plugin/search/search.js"></script>
+<script src="../slides/reveal.js/plugin/markdown/markdown.js"></script>
+<script src="../slides/reveal.js/plugin/highlight/highlight.js"></script>
+<script src="../slides/reveal.js/plugin/math/math.js"></script>
+<script src="settings.js"></script>
+</body>
+</html>
