@@ -198,6 +198,7 @@ Use `sendall()` for TCP sockets, and `sendto()` for UDP sockets
   - Have the return be the broadcast address (usually don't work anymore)
   - Have the data be a live stream (lots of data)
 - Like the Smurf attack
+- Defense: prevent a non-local machine from sending to the broadcast address
 
 
 
@@ -210,6 +211,7 @@ Use `sendall()` for TCP sockets, and `sendto()` for UDP sockets
 - Good quality software does not do this
   - But there is lots of bad software out there...
 - Also called a grenade attack
+- Defense: better quality software that checks the packet before sending the reply
 
 
 
@@ -237,7 +239,6 @@ send(pkt, verbose=0)
 
 
 
-
 <!-- .slide: class="right-float-img-800 no-border" -->
 ## UDP Amplification Attack
 ![](http://www.cs.virginia.edu/~asb2t/duimg/n05/image13.png)
@@ -246,6 +247,7 @@ send(pkt, verbose=0)
   - Some servers could magnify the bandwidth by a factor of 4,670
   - Millions of servers were vulnerable to this
 - Also called a missile attack
+- Defense: require some verification from the receiver that they sent the request
 </textarea></section>
 
 </section>
@@ -261,14 +263,25 @@ send(pkt, verbose=0)
 <section data-markdown data-separator="^\n\n\n"><textarea data-template>
 <h2 class="r-fit-text">Transport Control Protocol (TCP)</h2>
 
-- This is the TCP/IP version of the OSI transport layer
 - TCP will ensure any lost packet is re-sent: used for sending files
 [![TCP header](images/networking/tcp-header.webp)](https://commons.wikimedia.org/wiki/File:TCP_header.png)
 
 
 
 
-## TCP client
+<!-- .slide: class="right-float-img-500" -->
+## TCP Flags
+[![TCP header](images/networking/tcp-header.webp)](https://commons.wikimedia.org/wiki/File:TCP_header.png)
+- URG: urgent, send with greater priority
+- ACK: acknowledgement is in the appropriate field
+- PSH: push data out immediately, rather than waiting for a full buffer or packet
+- RST: reset connection
+- SYN: synchronize, sequence number field has value
+- FIN: finish (or finalize) the connection
+
+
+
+## TCP Client
 ```
 tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 tcp.connect(('192.168.100.102', 9090)) # outer2
@@ -286,7 +299,8 @@ Hello Server!
 Hello Again!
 root@outer2:/# 
 ```
-`nc` terminates when the connection is closed by the client
+- `nc` exits when the connection is closed by client
+  - `-lnv` options: listen to port, use numeric IPs, be verbose
 
 
 
@@ -312,7 +326,6 @@ Multiple connections are often handled via threading
 
 
 
-<!-- .slide: class="right-float-img-800 no-border" -->
 ## Sequence numbers
 [![TCP header](images/networking/tcp-header.webp)](https://commons.wikimedia.org/wiki/File:TCP_header.png)
 - Initial one set when the SYN flag is true
@@ -329,7 +342,7 @@ Multiple connections are often handled via threading
   - The *random* sequence number is in the sequence field
 - The server responds with SYN and ACK set to true
   - Acknowledges client's sequence number
-  - Gives its own sequence number
+  - Gives its own random sequence number
 - The client acknowledges the server's sequence number
 
 
@@ -338,6 +351,8 @@ Multiple connections are often handled via threading
 ## TCP Close Connection
 ![](images/graphs/tcp_close.webp)
 - Both sides send a FIN (finished or final), followed by an acknowledgement
+- If not sent, the connection will timeout eventually
+  - A "heartbeat" message can be sent to keep a connection open
 
 
 
@@ -377,8 +392,8 @@ while True:
 
 <!-- .slide: class="small-pre" -->
 ## TCP SYN Flood
-- Victim: inner container
-- Attacker: outer1
+- Victim: *inner* container; attacker: *outer1* container
+- `netstat -tna` options: show TCP, numeric ports, all connections
 - Before:
 ```
 root@inner:/# netstat -tna
@@ -392,7 +407,7 @@ root@inner:/#
 ```
 - After:
 ```
-root@inner:/# netstat -tna  | wc -l
+root@inner:/# netstat -tna | wc -l
 134
 root@inner:/# 
 ```
@@ -403,7 +418,7 @@ root@inner:/#
 ## TCP SYN Flood
 - After:
 ```
-root@inner:/# netstat -tna   | head
+root@inner:/# netstat -tna | head
 Active Internet connections (servers and established)
 Proto Recv-Q Send-Q Local Address           Foreign Address         State      
 tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN     
@@ -428,7 +443,24 @@ tcp6       0      0 :::22                   :::*                    LISTEN
 ## TCP SYN Attack Analysis
 - *inner* only reached 130 SYN attack connections
 - Why so few?
-  - Python is slooooooow
+  - Python is slooooooow; C/C++ would be much faster
+  - TCP cache: the kernel remembers machines that previously connected, and may allow them through
+  - TCP retransmission: the SYN-ACK is retransmitted a few times, then it's dropped
+  - SYN queue size: much larger than Python's speed
+  - RST packets: Docker sends back RST (reset) packets
+  - Docker networking is "off"
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## SYN Attack Defenses
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/2ChocolateChipCookies.jpg/1024px-2ChocolateChipCookies.jpg)](https://commons.wikimedia.org/wiki/File:2ChocolateChipCookies.jpg)
+- Easy solution: don't allocate a connection until after the final ACK of the handshake
+- Problem: doing that opens a new attack: ACK flooding
+- Solution: SYN cookies
+  - Have the sequence numbers be *generated* algorithmicly (hash of the packet data)
+  - When a SYN or ACK comes in, regenerate the sequence number, and see if they sent 1 more
+  - Prevents ACK flooding
 
 
 
@@ -450,6 +482,17 @@ tcp6       0      0 :::22                   :::*                    LISTEN
 - How can we prevent this?
   - By keeping anybody from figuring out the state of the TCP connection
   - This state is discernible from the TCP packet headers
+
+
+
+## TCP attack defenses
+- Have the sequence number be a random 32-bit value
+  - Not feasible to guess then
+- Encrypt the packet header
+  - Requires IP-level encryption, such as IPsec
+- Encrypt the data in the TCP packet, likely with TLS
+  - Prevents tampering with the data
+  - Does not prevent a MITM
 </textarea></section>
 
 </section>
