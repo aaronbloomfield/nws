@@ -1,7 +1,7 @@
 # Submission information for the Ping Shell Commands HW
 # https://aaronbloomfield.github.io/pingcmd/arp/
 
-# The filename of this file must be 'arp.py', else the submission verification
+# The filename of this file must be 'pingcmd.py', else the submission verification
 # routines will not work properly.
 
 # You are welcome to have additional variables or fields in this file; you
@@ -43,7 +43,7 @@ sanity_checks = {
 
 	# If you have any debugging output, does it ALL have "debug" somewhere in
 	# that line?
-	'debug_output_has_debug': False,
+	'debug_output_was_removed': False,
 
 }
 

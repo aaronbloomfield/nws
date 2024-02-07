@@ -7,8 +7,6 @@ Ping Shell Commands
 
 In this assignment you will write a simple remote shell using ICMP.  This assignment will use the Scapy Python package.  The client will send messages as the payload (content) in an ICMP ping message.  The server will execute the commands, and return the output to the client.
 
-There is an ever-growing list of simple tasks (usually one liners) contained in the [scapy_howto.py](../../docs/scapy_howto.py.html) ([src](../../docs/scapy_howto.py)) file.
-
 You will be submitting your source code in `ping_shell.py` as well as an edited version of [pingcmd.py](pingcmd.py.html) ([src](pingcmd.py])).
 
 
@@ -21,7 +19,7 @@ Any changes to this page will be put here for easy reference.  Typo fixes and mi
 
 #### The Task
 
-You are going to write a Python program that handles both the client side and the server side of this remote shell.  On the client side, if the user enters any input, it is sent as the payload of an ICMP packet to the server, which executes the command, and then sends the output back to the client, which will display that output.  Both sides will exit if `quit` is entered.
+You are going to write a Python program that handles both the client side and the server side of this remote shell.  On the client side, if the user enters any input, it is sent as the payload of an ICMP packet to the server, which executes the command, and then sends the output back to the client, which will display that output.  Either sides will exit if `quit` is entered (entering it on one side does not quit the other side).
 
 When the program starts, it will be given three command line parameters.  You can assume that the command line parameters will always be correct -- both in how many are present, and in their values.
 
@@ -49,15 +47,17 @@ The other thread (the one not sniffing) should receive input (via `input()`) unt
 
 You don't need to send the replies to the ping!  Let the operating system do that.  The client sends the command to the server in a ping-request (type=8), and the operating system sends the ping-reply (type=0).  Then the server sends the output in a new ping-request, and the operating system sends a ping-reply.
 
+Your server should only capture standard output.  You do not need to worry about capturing standard error.  Nor do you have to worry about commands that might crash -- you can assume the commands will work properly.  Lastly, none of the commands will have output that exceeds the size that can fit into an ICMP packet.
+
 ### Sample output
 
 #### Required output
 
-The only required output is the result of executing the commands on the server; this output is displayed on the client.  The server doesn't output anything.  In the examples below you will also see the input typed to execute the commands as well.
+The only required output is the result of executing the commands on the server; this output is displayed on the client.  The server does not output anything.  In the examples below you will also see the input typed to execute the commands as well.
 
-You are welcome to put an extra line (or two or three) between the output displays on the client to make it more readable.
+You are welcome to put an extra blank line (or two or three) between the output displays on the client to make it more readable.
 
-You can also have debugging output included as well, just make sure the string "debug" is in each line, as shown below.  These are completely optional!  Any line with "debug" will be removed from the output before it is checked for correctness.  None of the tests will have "debug" in the input nor output.
+The first execution run below has debugging output to show the packet flow.  The second execution run has that output removed.  Your program should not have any extra debugging output!
 
 #### Execution run 1
 

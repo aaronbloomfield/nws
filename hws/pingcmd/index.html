@@ -62,13 +62,12 @@
 </div>
 <div id='toverview' class='tabcontent'><h3 id='overview'>Overview</h3>
 <p>In this assignment you will write a simple remote shell using ICMP. This assignment will use the Scapy Python package. The client will send messages as the payload (content) in an ICMP ping message. The server will execute the commands, and return the output to the client.</p>
-<p>There is an ever-growing list of simple tasks (usually one liners) contained in the <a href='../../docs/scapy_howto.py.html'>scapy_howto.py</a> (<a href='../../docs/scapy_howto.py'>src</a>) file.</p>
 <p>You will be submitting your source code in <code>ping_shell.py</code> as well as an edited version of <a href='pingcmd.py.html'>pingcmd.py</a> (<a href='pingcmd.py%5D'>src</a>).</p>
 </div><div id='tchangelog' class='tabcontent'><h3 id='changelog'>Changelog</h3>
 <p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. So far there aren’t any significant changes to report.</p>
 </div><div id='tremote-shell' class='tabcontent'><h3 id='remote-shell'>Remote Shell</h3>
 <h4 id='the-task'>The Task</h4>
-<p>You are going to write a Python program that handles both the client side and the server side of this remote shell. On the client side, if the user enters any input, it is sent as the payload of an ICMP packet to the server, which executes the command, and then sends the output back to the client, which will display that output. Both sides will exit if <code>quit</code> is entered.</p>
+<p>You are going to write a Python program that handles both the client side and the server side of this remote shell. On the client side, if the user enters any input, it is sent as the payload of an ICMP packet to the server, which executes the command, and then sends the output back to the client, which will display that output. Either sides will exit if <code>quit</code> is entered (entering it on one side does not quit the other side).</p>
 <p>When the program starts, it will be given three command line parameters. You can assume that the command line parameters will always be correct – both in how many are present, and in their values.</p>
 <ul>
 <li>An example program invocation is: <code>ping_shell.py server eth1 192.168.100.101</code>
@@ -90,11 +89,12 @@ def start_sniffing(sig = None, frame = None):
 threading.Thread(target=start_sniffing, args=(), daemon=True).start()</code></pre>
 <p>The other thread (the one not sniffing) should receive input (via <code>input()</code>) until the user enters “quit”. Any input received (other than “quit”, which just exits) will be sent to the server as an ping payload. Any response from the server will be displayed to the screen. Note that, since any exit (from the “quit” command) needs to exit <em>both</em> threads, so use <code>os._exit(0)</code>.</p>
 <p>You don’t need to send the replies to the ping! Let the operating system do that. The client sends the command to the server in a ping-request (type=8), and the operating system sends the ping-reply (type=0). Then the server sends the output in a new ping-request, and the operating system sends a ping-reply.</p>
+<p>Your server should only capture standard output. You do not need to worry about capturing standard error. Nor do you have to worry about commands that might crash – you can assume the commands will work properly. Lastly, none of the commands will have output that exceeds the size that can fit into an ICMP packet.</p>
 </div><div id='tsample-output' class='tabcontent'><h3 id='sample-output'>Sample output</h3>
 <h4 id='required-output'>Required output</h4>
-<p>The only required output is the result of executing the commands on the server; this output is displayed on the client. The server doesn’t output anything. In the examples below you will also see the input typed to execute the commands as well.</p>
-<p>You are welcome to put an extra line (or two or three) between the output displays on the client to make it more readable.</p>
-<p>You can also have debugging output included as well, just make sure the string “debug” is in each line, as shown below. These are completely optional! Any line with “debug” will be removed from the output before it is checked for correctness. None of the tests will have “debug” in the input nor output.</p>
+<p>The only required output is the result of executing the commands on the server; this output is displayed on the client. The server does not output anything. In the examples below you will also see the input typed to execute the commands as well.</p>
+<p>You are welcome to put an extra blank line (or two or three) between the output displays on the client to make it more readable.</p>
+<p>The first execution run below has debugging output to show the packet flow. The second execution run has that output removed. Your program should not have any extra debugging output!</p>
 <h4 id='execution-run-1'>Execution run 1</h4>
 <p>The first execution run has a lot of debugging information to help one trace how it works. That debugging output always has the string “debug:” in it, includes time with milliseconds, and prints out a packet summary via <code>pkt.summary()</code>.</p>
 <p>Client side:</p>
