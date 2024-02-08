@@ -53,6 +53,7 @@
 &nbsp;  
 [Packet Sniffing](#/sniffing)  
 [Packet Spoofing](#/spoofing)  
+[Wireshark](#/wshark)  
 </textarea></section>
   
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -332,7 +333,62 @@ packet = ARP(op=2, pdst=target_ip, \
 send(packet, verbose=False)
 ```
 - Repeat sending this every 4 or 5 seconds
+</textarea></section>
 
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="wshark" class="center"><textarea data-template>
+# Wireshark
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## Come back later...
+Come back to this column of slides after going over the firs two columns of the [Transport Layer slide set](transport-layer.html#/)
+
+
+
+<!-- .slide: class="no-border" -->
+## Obtaining Wireshark
+- Download it at [wireshark.org/download.html](https://www.wireshark.org/download.html); the Windows version that runs without a full install is [here](https://2.na.dl.wireshark.org/win64/WiresharkPortable64_4.2.2.paf.exe); it's on the Docker image
+
+<a href='https://commons.wikimedia.org/wiki/File:Wireshark_Network_Analyzer_Screen.png'><img src='https://upload.wikimedia.org/wikipedia/commons/3/34/Wireshark_Network_Analyzer_Screen.png' style="height:450px"></a>
+
+
+
+## "Normal" pcaps
+- Telnet (from [here](https://wiki.wireshark.org/SampleCaptures#telnet)):
+  - In "cooked" (per-line) mode: [telnet-cooked.pcap](pcaps/telnet-cooked.pcap)
+  - In "raw" (per-character) mode: [telnet-raw.pcap](pcaps/telnet-raw.pcap)
+- Example http request: [http.pcap](pcaps/http.pcap) (from [here](https://wiki.wireshark.org/SampleCaptures#hypertext-transport-protocol-http))
+
+
+
+## http webmail login
+- [Google search for: inurl:"http://webmail"](https://www.google.com/search?q=inurl%3A"http%3A%2F%2Fwebmail")
+  - Then find one that allows login via http (many redirect to https)
+- Start up wireshark, set your filter
+  - Example: `ip.src==1.2.3.4 and http`
+  - Use your IP, of course
+- Then try to log in!
+- See [http-webmail.pcap](pcaps/http-webmail.pcap)
+
+
+
+## Malicious pcaps
+- [Teardrop attack](network-layer.html#/teardrop): [teardrop.pcap](pcaps/teardrop.pcap); packets 8 and 9 overlap (from [here](https://wiki.wireshark.org/SampleCaptures#crack-traces))
+- [SYN flood](transport-layer.html#/syn-flood): synflood.pcap (from [here](pcaps/syn-flood.pcap))
+
+
+
+## Obtaining pcaps
+- [Wireshark's sample captures page](https://wiki.wireshark.org/SampleCaptures)
+  - Has both links to other sites (may outdated) and many pcaps
+- https://www.netresec.com/?page=PcapFiles
+  - Mostly lists to other sites, but a large list of other sites
 </textarea></section>
 
 </section>

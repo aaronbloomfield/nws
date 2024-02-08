@@ -353,9 +353,9 @@ Multiple connections are often handled via threading
 - Both sides send a FIN (finished or final), followed by an acknowledgement
 - If not sent, the connection will timeout eventually
   - A "heartbeat" message can be sent to keep a connection open
-
-
-
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n" id='syn-flood'><textarea data-template>
 <!-- .slide: class="right-float-img-1000" -->
 ## TCP SYN Flood
 ![](images/graphs/tcp_syn_attack.webp)
@@ -368,9 +368,9 @@ Multiple connections are often handled via threading
     - Can be as long as 40 seconds
 - Servers have a finite number of connections they can have open
   - This will rapidly fill it up, causing a denial of service attack
-
-
-
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
 ## TCP SYN Flood
 ```
 from scapy.all import IP, TCP, send
