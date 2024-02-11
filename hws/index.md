@@ -11,6 +11,7 @@ You will be bound by the requirements on the [Homeworks policies page](../uva/hw
 These are larger programming homeworks.
 
 - HW P1: [ARP Spoofing and Detection](arp/index.html) ([md](arp/index.md))
+- HW P2: [Ping Commands](pingcmd/index.html) ([md](pingcmd/index.md))
 
 ### Smaller homeworks
 

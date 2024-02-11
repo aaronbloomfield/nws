@@ -68,7 +68,7 @@ The first execution run has a lot of debugging information to help one trace how
 Client side:
 
 ```
-# ./ping_shell.py client eth0 192.168.100.101                
+root@outer2:/mnt# ./ping_shell.py client eth0 192.168.100.101                
 debug: sniffing ICMP...
 pwd
 1707065371.9326015 	 debug: packet sent from client: IP / ICMP 192.168.100.102 > 192.168.100.101 echo-request 0 / Raw
