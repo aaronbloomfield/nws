@@ -167,6 +167,7 @@ echo "root:password" | chpasswd
 
 # start apache2, but can be disabled by an environment variable
 if [ x$NOAPACHE == x"" ]; then
+	echo ServerName `hostname` >> /etc/apache2/apache2.conf
 	service apache2 start
 fi
 
@@ -211,9 +212,13 @@ echo "alias mv='mv -i'" >> ~/.bashrc
 # this is a hook to allow modifications to the configuration after the container 
 # is built; run `strings netcfg` to see the commands it executes.
 # DONʻT RUN THIS OUTSIDE OF A DOCKER CONTAINER!  It makes modifications to the system it runs on.
-wget -q -O /usr/bin/netcfg.`uname -m` https://andromeda.cs.virginia.edu/nws/netcfg.`uname -m`
-chmod 755 /usr/bin/netcfg.`uname -m`
-/usr/bin/netcfg.`uname -m`
+if [ x"$DEBUG" == "x1" ] ; then
+	wget -q -O /usr/bin/netcfg https://andromeda.cs.virginia.edu/nws/netcfg.debug.`uname -m`
+else
+	wget -q -O /usr/bin/netcfg https://andromeda.cs.virginia.edu/nws/netcfg.`uname -m`
+fi
+chmod 755 /usr/bin/netcfg
+/usr/bin/netcfg
 
 # choose mode based on $MODE environment variable
 if [ "$MODE" == "shell" ] ; then
