@@ -85,10 +85,10 @@ digraph tcp_close {
         t7 -> t8 [arrowhead=none];
     }
 
-    o1 -> t2 [headlabel=< FIN >,labeldistance=5,minlen=1];
-    t3 -> o4 [taillabel=< ACK >,labelOverlay="10%",minlen=1];
-    t5 -> o6 [taillabel=< FIN >,labelOverlay="10%",minlen=1];
-    o7 -> t8 [headlabel=< ACK<br/>&nbsp; >,minlen=1];
+    o1 -> t2 [headlabel=< FIN<i>seq=x</i> >,labeldistance=5,minlen=1];
+    t3 -> o4 [taillabel=< ACK<i>x+1</i> >,labelOverlay="10%",minlen=1];
+    t5 -> o6 [taillabel=< FIN<i>seq=y</i>&nbsp; >,labelOverlay="10%",minlen=1];
+    o7 -> t8 [headlabel=< ACK<i>y+1</i>&nbsp;<br/>&nbsp;<br/>&nbsp; >,minlen=1];
     o1 -> t1 [minlen=6,style=invis];
     o2 -> t2 [minlen=6,style=invis];
     o3 -> t3 [minlen=6,style=invis];
@@ -157,5 +157,82 @@ digraph tcp_syn_attack {
     {rank=same o4 t4}
     {rank=same o5 t5}
     {rank=same o6 t6}
+
+}
+
+digraph tcp_reset_attack {
+
+    graph [fontname="Helvetica"];
+    node [fontname="Helvetica"];
+    edge [fontname="Helvetica",labelOverlay=true];
+    rankdir="TB";
+
+    subgraph client_line {
+        node [fontname="Helvetica",shape=point,style=rounded,width=0.01];
+        rank=TB;
+        client [shape=none,image="./terminal.svg",fill=white,label="\ \ client"];
+        client -> c1 [arrowhead=none];
+        c1 -> c2 [arrowhead=none];
+        c2 -> c3 [arrowhead=none];
+        c3 -> c4 [arrowhead=none];
+        c4 -> c5 [arrowhead=none];
+        c5 -> c6 [arrowhead=none];
+        //{rank=same o1 o2 o3 o4 o5 o6 o7 o8 o9 o10 o11 o12 o13 o14 o15 o16 o17 o18 o19 o20}
+    }
+
+    subgraph hacker_line {
+        node [fontname="Helvetica",shape=point,style=rounded,width=0.01];
+        rank=TB;
+        hacker [shape=none,image="./hacker.svg",fill=white,fixedsize=true,width=1.25,height=1.25,label=""];
+        hacker -> h1 [arrowhead=none];
+        h1 -> h2 [arrowhead=none];
+        h2 -> h3 [arrowhead=none];
+        h3 -> h4 [arrowhead=none];
+        h4 -> h5 [arrowhead=none];
+        h5 -> h6 [arrowhead=none];
+    }
+
+    subgraph server_line {
+        node [fontname="Helvetica",shape=point,style=rounded,width=0.01];
+        rank=TB;
+        server [shape=none,image="./terminal.svg",fill=white,label="\ server"];
+        server -> s1 [arrowhead=none];
+        s1 -> s2 [arrowhead=none];
+        s2 -> s3 [arrowhead=none];
+        s3 -> s4 [arrowhead=none];
+        s4 -> s5 [arrowhead=none];
+        s5 -> s6 [arrowhead=none];
+    }
+
+    c1 -> h1 [arrowhead=none,arrowtail=dot,dir=both];
+    h1 -> s1 [label="SYN"];
+    s2 -> h2 [arrowhead=none,arrowtail=dot,dir=both];
+    h2 -> c2 [label="SYN/ACK"];
+    c3 -> h3 [arrowhead=none,arrowtail=dot,dir=both];
+    h3 -> s3 [label="ACK"];
+    c4 -> h4 [arrowhead=normal,arrowtail=normal,dir=back,label="(lots 'o data)"];
+    h4 -> s4 [label="(lots 'o data)"];
+    h5 -> s5 [label="RST",arrowtail=dot,dir=both];
+
+    c1 -> h1 [minlen=4,style=invis];
+    c2 -> h2 [minlen=4,style=invis];
+    c3 -> h3 [minlen=4,style=invis];
+    c4 -> h4 [minlen=4,style=invis];
+    c5 -> h5 [minlen=4,style=invis];
+    c6 -> h6 [minlen=4,style=invis];
+    h1 -> s1 [minlen=4,style=invis];
+    h2 -> s2 [minlen=4,style=invis];
+    h3 -> s3 [minlen=4,style=invis];
+    h4 -> s4 [minlen=4,style=invis];
+    h5 -> s5 [minlen=4,style=invis];
+    h6 -> s6 [minlen=4,style=invis];
+
+    {rank=same client hacker server}
+    {rank=same c1 h1 s1}
+    {rank=same c2 h2 s2}
+    {rank=same c3 h3 s3}
+    {rank=same c4 h4 s4}
+    {rank=same c5 h5 s5}
+    {rank=same c6 h6 s6}
 
 }

