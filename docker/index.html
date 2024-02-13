@@ -8,18 +8,10 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
+    ul.task-list{list-style: none;}
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="../markdown.css" />
@@ -49,6 +41,9 @@
     document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
   }
   </script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body>
 <h1 id="nws-docker-reference">NWS: Docker Reference</h1>
@@ -172,10 +167,10 @@
 <li>Most likely culprits: these seem to be the most common tips to get the GUI working
 <ul>
 <li>You may have to run <code>xhost</code> for your computer’s IP address (again, the one on <code>en0</code>, not localhost), especially if it’s the first time you are doing this, or if your IP address changed. You can run <code>xhost + 1.2.3.4</code>, where 1.2.3.4 is your <code>en0</code> IP address. If it complains that xhost is not found, try entering the command with the full path to xhost: <code>/opt/X11/bin/xhost + 1.2.3.4</code>. You may have to execute this command each time you restart xquartz to run a GUI.</li>
-<li>Make sure the IP address of your computer (on <code>en0</code>, not localhost) is set correctly throughout the docker-compose.yml file. If not, change it and then restart all the containers (<code>docker-compose down</code> followed by <code>docker-compose up</code>).</li>
-<li><code>socat</code> seems to work best when it is running <em>before</em> you start the docker containers. If you have already started the docker containers, and you either start (or restart) socat, you should restart all the containers (<code>docker-compose down</code> followed by <code>docker-compose up</code>).</li>
-<li>In Xquartz, enter <code>echo $DISPLAY</code>. You will likely get something long-winded, like “/private/tmp/com.apple.launchd.NcQwxvwhxe/org.xquartz:0”. Look at the last two characters – in this example, it’s <code>:0</code>. If yours is a different number (such as <code>:1</code>), then you have change that throughout the docker-compose.yml file – change all instances of <code>- DISPLAY=1.2.3.4:0</code> to <code>- DISPLAY=1.2.3.4:1</code>, where “1.2.3.4” is your IP address (for <code>en0</code>, not localhost), and <code>:1</code> is the value you got from the last two characters of <code>echo $DISPLAY</code> in Xquartz. If you modify your docker-compose.yml file, you have to restart all the containers (<code>docker-compose down</code> followed by <code>docker-compose up</code>).</li>
-<li>When connected in the docker container via <code>docker exec</code>, run <code>echo $DISPLAY</code>, and then <code>export DISPLAY=1.2.3.4:0</code> where 1.2.3.4 is the IP of your machine (on your LAN), then try running the GUI program again. This will set the DISPLAY variable for that one container – if it’s different (meaning what you got from the <code>echo</code> command versus what you set with the <code>export</code> command), you should change it throughout docker-compose.yml, and then restart all the containers (<code>docker-compose down</code> followed by <code>docker-compose up</code>).</li>
+<li>Make sure the IP address of your computer (on <code>en0</code>, not localhost) is set correctly throughout the docker-compose.yml file. If not, change it and then restart all the containers (<code>docker compose down</code> followed by <code>docker compose up</code>).</li>
+<li><code>socat</code> seems to work best when it is running <em>before</em> you start the docker containers. If you have already started the docker containers, and you either start (or restart) socat, you should restart all the containers (<code>docker compose down</code> followed by <code>docker compose up</code>).</li>
+<li>In Xquartz, enter <code>echo $DISPLAY</code>. You will likely get something long-winded, like “/private/tmp/com.apple.launchd.NcQwxvwhxe/org.xquartz:0”. Look at the last two characters – in this example, it’s <code>:0</code>. If yours is a different number (such as <code>:1</code>), then you have change that throughout the docker-compose.yml file – change all instances of <code>- DISPLAY=1.2.3.4:0</code> to <code>- DISPLAY=1.2.3.4:1</code>, where “1.2.3.4” is your IP address (for <code>en0</code>, not localhost), and <code>:1</code> is the value you got from the last two characters of <code>echo $DISPLAY</code> in Xquartz. If you modify your docker-compose.yml file, you have to restart all the containers (<code>docker compose down</code> followed by <code>docker compose up</code>).</li>
+<li>When connected in the docker container via <code>docker exec</code>, run <code>echo $DISPLAY</code>, and then <code>export DISPLAY=1.2.3.4:0</code> where 1.2.3.4 is the IP of your machine (on your LAN), then try running the GUI program again. This will set the DISPLAY variable for that one container – if it’s different (meaning what you got from the <code>echo</code> command versus what you set with the <code>export</code> command), you should change it throughout docker-compose.yml, and then restart all the containers (<code>docker compose down</code> followed by <code>docker compose up</code>).</li>
 </ul></li>
 <li>Setup configuration: these are steps that you may have missed in the setup
 <ul>
@@ -189,12 +184,12 @@
 <li>Shut down socat: <code>killall -9 socat</code> and/or <code>killall -9 socat1</code> (this may cause the xquartz window to suddenly appear)</li>
 <li>Shut down xquartz via Command-Q</li>
 <li>Make sure there are no processes listening to port 6000: <code>lsof -i :6000</code>; if there are, kill them (<code>kill -9 &lt;PID&gt;</code>, where <code>&lt;PID&gt;</code> is the process value in the second column)</li>
-<li>Shut down the docker containers: <code>docker-compose down</code></li>
+<li>Shut down the docker containers: <code>docker compose down</code></li>
 <li>Restart the Docker Engine – click on the icon in the title bar, and select “restart” (there is a dialog box that asks you to confirm this, and sometimes that dialog box is hidden)</li>
 <li>Do the next three steps in this exact order:
 <ul>
 <li>Start up socat: <code>socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\"</code></li>
-<li>Start up the docker containers: <code>docker-compose up</code></li>
+<li>Start up the docker containers: <code>docker compose up</code></li>
 <li>Start up xquartz: <code>open -a Xquartz</code></li>
 </ul></li>
 <li>Connect to a docker container: <code>docker exec -it nws-outer1 /bin/bash</code></li>

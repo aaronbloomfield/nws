@@ -8,18 +8,10 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
+    ul.task-list{list-style: none;}
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel='stylesheet' href='../../markdown.css'></link>
@@ -49,6 +41,7 @@
     document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
   }
   </script>
+  
 </head>
 <body>
 <h1 id='docker-setup'>Docker Setup</h1>
@@ -195,21 +188,21 @@ $</code></pre>
 <p>Your hash values (the “IMAGE ID” column), created dates, and sizes may vary. All told, the images are taking up about 6 Gb of disk space.</p>
 </div><div id='tstep-4-learn' class='tabcontent'><h3 id='step-4-learn'>Step 4: Learn</h3>
 <p>We have a <a href='../../docker/index.html'>docker reference</a> (<a href='../../docker/index.md'>md</a>) available; the descriptions below will be using those commands.</p>
-<p>You will be using docker extensively throughout the semester, so you should experiment with these commands. There really isn’t much you can break – if you kill a few containers, just restart the setup via <code>docker-compose down</code> followed by <code>docker-compose up</code>.</p>
+<p>You will be using docker extensively throughout the semester, so you should experiment with these commands. There really isn’t much you can break – if you kill a few containers, just restart the setup via <code>docker compose down</code> followed by <code>docker compose up</code>.</p>
 <h4 id='launch-the-containers'>Launch the containers</h4>
-<p>At this point, you have built the images, but nothing is running. To run the images, you should enter: <code>docker-compose up</code>. This will launch the course setup in a series of 8 docker containers. The setup looks like the following; this looks complicated now, but it will all become clear in time. You can click on the image below for a larger version.</p>
+<p>At this point, you have built the images, but nothing is running. To run the images, you should enter: <code>docker compose up</code>. This will launch the course setup in a series of 8 docker containers. The setup looks like the following; this looks complicated now, but it will all become clear in time. You can click on the image below for a larger version.</p>
 <p><a href='../../docker/network.svg'><img src='../../docker/network.svg' style='width:50%'></img></a></p>
 <p>Each square box represents a container. The bold name is the hostname for that container, and the IP values are fixed for each node on each network. The wide ovals are the three networks that are configured. All the nodes route their Internet traffic through the <em>firewall</em> node. The <em>inner</em> and <em>other</em> nodes route through <em>gateway</em> as well. There are two paths from <em>other</em> to the Internet – the correct route is through <em>gateway</em>, but one of our assignments will hijack that route and send it through <em>outer1</em>, which is why <em>outer1</em> is also connected to the <em>othernet</em> network. Lastly, the <em>metasploit</em> container is the intentionally vulnerable container that we will practice exploits on.</p>
 <h4 id='docker-commands-creation-and-running'>Docker commands: creation and running</h4>
 <p>We have already seen a few commands to create the containers and start them running:</p>
 <ul>
 <li><code>docker build</code> will build the images; this command requires other command-line parameters</li>
-<li><code>docker-compose up</code> will start the containers running</li>
+<li><code>docker compose up</code> will start the containers running</li>
 <li><code>docker pull &lt;image&gt;</code> will download an image, or will update an image if a newer version is available</li>
 </ul>
 <p>The new command is:</p>
 <ul>
-<li><code>docker-compose down</code> will stop the containers that are running. You may be able to use Ctrl-C in your operating system as well, although the full command may do more clean-up than Ctrl-C does. You would want to run this in another command window.</li>
+<li><code>docker compose down</code> will stop the containers that are running. You may be able to use Ctrl-C in your operating system as well, although the full command may do more clean-up than Ctrl-C does. You would want to run this in another command window.</li>
 </ul>
 <h4 id='docker-commands-inspection'>Docker commands: inspection</h4>
 <p>There are a few commands that you can use to see what is running, what images you have, etc. The command we have seen:</p>
@@ -228,7 +221,7 @@ $</code></pre>
 <li><code>docker rmi &lt;id&gt;</code>: this will remove the image (not the container!) from the system. If that image is being used, such as in another image or in a running container, then it cannot be removed. You should not have to run this often – if you remove and image, you will have to re-build or re-pull the image if you want to run it again.</li>
 <li><code>docker system prune</code> will remove all stopped containers and all images that are no longer necessary. Add the <code>-f</code> option if you don’t want to have it prompt you each time.</li>
 </ul>
-<p>If you experimented with these commands, you should re-launch the containers: <code>docker-compose down</code> followed by <code>docker-compose up</code>.</p>
+<p>If you experimented with these commands, you should re-launch the containers: <code>docker compose down</code> followed by <code>docker compose up</code>.</p>
 <h4 id='docker-exec'>docker exec</h4>
 <p>This is what this party is all about! We can manipulate the images, but we haven’t actually used them yet.</p>
 <p>When the containers are running, you can connect to a container via <code>docker exec -it &lt;cid&gt; /bin/bash</code>. This is running a command (here <code>/bin/bash</code>, the shell) on a given image (which is <code>&lt;cid&gt;</code>). The image name is either the left-most value (the hash) or right-most value (the container name) column of <code>docker ps -a</code>. The <code>-it</code> command allows this docker exec command to be both interactive (<code>i</code>) and output to the terminal (<code>t</code>). You can attach to a container in as many shell windows as you would like – there will be times we will have half a dozen shells connected to the same container.</p>
@@ -279,7 +272,7 @@ $</code></pre>
 <li>This is your IP on your local network: enter <code>ifconfig en0</code> to find out what it is</li>
 <li>Be sure to put the <code>:0</code> at the end of the IP address</li>
 <li>Example: <code>DISPLAY=192.168.1.100:0</code> (with a <code>-</code> before it in the docker-compose.yml file); this should have been changed throughout the docker-compose.yml file from the directions above (step 3), although your IP address may have changed</li>
-<li>If you made a change to the docker-compose.yml file, restart the containers via <code>docker-compose down</code> followed by <code>docker-compose up</code></li>
+<li>If you made a change to the docker-compose.yml file, restart the containers via <code>docker compose down</code> followed by <code>docker compose up</code></li>
 </ul></li>
 <li>In xquartz, run <code>xhost + 1.2.3.4:0</code>, where 1.2.3.4 is your computer’s IP address (the one on <code>en0</code>, not localhost). You may have to execute this command each time you restart xquartz to run a GUI.</li>
 <li>Connect to a docker container (any one), and run a GUI program, such as <code>xeyes</code></li>

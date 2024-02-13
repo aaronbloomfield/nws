@@ -60,10 +60,10 @@ Note: this has only been tested on an ARM Mac (M1/M2), and not on an Intel x64 M
 
 - Most likely culprits: these seem to be the most common tips to get the GUI working
 	- You may have to run `xhost` for your computer's IP address (again, the one on `en0`, not localhost), especially if it's the first time you are doing this, or if your IP address changed.  You can run `xhost + 1.2.3.4`, where 1.2.3.4 is your `en0` IP address.  If it complains that xhost is not found, try entering the command with the full path to xhost: `/opt/X11/bin/xhost + 1.2.3.4`.  You may have to execute this command each time you restart xquartz to run a GUI.
-	- Make sure the IP address of your computer (on `en0`, not localhost) is set correctly throughout the docker-compose.yml file.  If not, change it and then restart all the containers (`docker-compose down` followed by `docker-compose up`).
-	- `socat` seems to work best when it is running *before* you start the docker containers.  If you have already started the docker containers, and you either start (or restart) socat, you should restart all the containers (`docker-compose down` followed by `docker-compose up`).
-	- In Xquartz, enter `echo $DISPLAY`.  You will likely get something long-winded, like "/private/tmp/com.apple.launchd.NcQwxvwhxe/org.xquartz:0".  Look at the last two characters -- in this example, it's `:0`.  If yours is a different number (such as `:1`), then you have change that throughout the docker-compose.yml file -- change all instances of `- DISPLAY=1.2.3.4:0` to `- DISPLAY=1.2.3.4:1`, where "1.2.3.4" is your IP address (for `en0`, not localhost), and `:1` is the value you got from the last two characters of `echo $DISPLAY` in Xquartz.  If you modify your docker-compose.yml file, you have to restart all the containers (`docker-compose down` followed by `docker-compose up`).
-	- When connected in the docker container via `docker exec`, run `echo $DISPLAY`, and then `export DISPLAY=1.2.3.4:0` where 1.2.3.4 is the IP of your machine (on your LAN), then try running the GUI program again.  This will set the DISPLAY variable for that one container -- if it's different (meaning what you got from the `echo` command versus what you set with the `export` command), you should change it throughout docker-compose.yml, and then restart all the containers (`docker-compose down` followed by `docker-compose up`).
+	- Make sure the IP address of your computer (on `en0`, not localhost) is set correctly throughout the docker-compose.yml file.  If not, change it and then restart all the containers (`docker compose down` followed by `docker compose up`).
+	- `socat` seems to work best when it is running *before* you start the docker containers.  If you have already started the docker containers, and you either start (or restart) socat, you should restart all the containers (`docker compose down` followed by `docker compose up`).
+	- In Xquartz, enter `echo $DISPLAY`.  You will likely get something long-winded, like "/private/tmp/com.apple.launchd.NcQwxvwhxe/org.xquartz:0".  Look at the last two characters -- in this example, it's `:0`.  If yours is a different number (such as `:1`), then you have change that throughout the docker-compose.yml file -- change all instances of `- DISPLAY=1.2.3.4:0` to `- DISPLAY=1.2.3.4:1`, where "1.2.3.4" is your IP address (for `en0`, not localhost), and `:1` is the value you got from the last two characters of `echo $DISPLAY` in Xquartz.  If you modify your docker-compose.yml file, you have to restart all the containers (`docker compose down` followed by `docker compose up`).
+	- When connected in the docker container via `docker exec`, run `echo $DISPLAY`, and then `export DISPLAY=1.2.3.4:0` where 1.2.3.4 is the IP of your machine (on your LAN), then try running the GUI program again.  This will set the DISPLAY variable for that one container -- if it's different (meaning what you got from the `echo` command versus what you set with the `export` command), you should change it throughout docker-compose.yml, and then restart all the containers (`docker compose down` followed by `docker compose up`).
 - Setup configuration: these are steps that you may have missed in the setup
 	- Did you log out and then log in after installing xquartz?
 	- Does the Mac firewall allow socat (or socat1) to receive incoming network connections?  This is configured in System Settings -> Network -> Firewall -> Options.  You should see 'socat' (or, more likely, 'socat1') with a green 'allow incomming connections' next to it.
@@ -73,11 +73,11 @@ Note: this has only been tested on an ARM Mac (M1/M2), and not on an Intel x64 M
 	- Shut down socat: `killall -9 socat` and/or `killall -9 socat1` (this may cause the xquartz window to suddenly appear)
 	- Shut down xquartz via Command-Q
 	- Make sure there are no processes listening to port 6000:  `lsof -i :6000`; if there are, kill them (`kill -9 <PID>`, where `<PID>` is the process value in the second column)
-	- Shut down the docker containers: `docker-compose down`
+	- Shut down the docker containers: `docker compose down`
 	- Restart the Docker Engine -- click on the icon in the title bar, and select "restart" (there is a dialog box that asks you to confirm this, and sometimes that dialog box is hidden)
 	- Do the next three steps in this exact order:
 		- Start up socat: `socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\"`
-		- Start up the docker containers: `docker-compose up`
+		- Start up the docker containers: `docker compose up`
 		- Start up xquartz: `open -a Xquartz`
 	- Connect to a docker container: `docker exec -it nws-outer1 /bin/bash`
 	- Check the DISPLAY variable: `echo $DISPLAY`

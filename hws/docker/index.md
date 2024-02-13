@@ -193,11 +193,11 @@ Your hash values (the "IMAGE ID" column), created dates, and sizes may vary.  Al
 
 We have a [docker reference](../../docker/index.html) ([md](../../docker/index.md)) available; the descriptions below will be using those commands.
 
-You will be using docker extensively throughout the semester, so you should experiment with these commands.  There really isn't much you can break -- if you kill a few containers, just restart the setup via `docker-compose down` followed by `docker-compose up`.
+You will be using docker extensively throughout the semester, so you should experiment with these commands.  There really isn't much you can break -- if you kill a few containers, just restart the setup via `docker compose down` followed by `docker compose up`.
 
 #### Launch the containers
 
-At this point, you have built the images, but nothing is running.  To run the images, you should enter: `docker-compose up`.  This will launch the course setup in a series of 8 docker containers.  The setup looks like the following; this looks complicated now, but it will all become clear in time.  You can click on the image below for a larger version.
+At this point, you have built the images, but nothing is running.  To run the images, you should enter: `docker compose up`.  This will launch the course setup in a series of 8 docker containers.  The setup looks like the following; this looks complicated now, but it will all become clear in time.  You can click on the image below for a larger version.
 
 [![](../../docker/network.svg){style="width:50%"}](../../docker/network.svg)
 
@@ -208,12 +208,12 @@ Each square box represents a container.  The bold name is the hostname for that 
 We have already seen a few commands to create the containers and start them running:
 
 - `docker build` will build the images; this command requires other command-line parameters
-- `docker-compose up` will start the containers running
+- `docker compose up` will start the containers running
 - `docker pull <image>` will download an image, or will update an image if a newer version is available
 
 The new command is:
 
-- `docker-compose down` will stop the containers that are running.  You may be able to use Ctrl-C in your operating system as well, although the full command may do more clean-up than Ctrl-C does.  You would want to run this in another command window.
+- `docker compose down` will stop the containers that are running.  You may be able to use Ctrl-C in your operating system as well, although the full command may do more clean-up than Ctrl-C does.  You would want to run this in another command window.
 
 #### Docker commands: inspection
 
@@ -233,7 +233,7 @@ The new commands are:
 - `docker rmi <id>`: this will remove the image (not the container!) from the system.  If that image is being used, such as in another image or in a running container, then it cannot be removed.  You should not have to run this often -- if you remove and image, you will have to re-build or re-pull the image if you want to run it again.
 - `docker system prune` will remove all stopped containers and all images that are no longer necessary.  Add the `-f` option if you don't want to have it prompt you each time.
 
-If you experimented with these commands, you should re-launch the containers: `docker-compose down` followed by `docker-compose up`.
+If you experimented with these commands, you should re-launch the containers: `docker compose down` followed by `docker compose up`.
 
 #### docker exec
 
@@ -296,7 +296,7 @@ You will have to log out and then log back in (or restart) after you installed x
 	- This is your IP on your local network: enter `ifconfig en0` to find out what it is
 	- Be sure to put the `:0` at the end of the IP address
 	- Example: `DISPLAY=192.168.1.100:0` (with a `- ` before it in the docker-compose.yml file); this should have been changed throughout the docker-compose.yml file from the directions above (step 3), although your IP address may have changed
-	- If you made a change to the docker-compose.yml file, restart the containers via `docker-compose down` followed by `docker-compose up`
+	- If you made a change to the docker-compose.yml file, restart the containers via `docker compose down` followed by `docker compose up`
 - In xquartz, run `xhost + 1.2.3.4:0`, where 1.2.3.4 is your computer's IP address (the one on `en0`, not localhost).  You may have to execute this command each time you restart xquartz to run a GUI.
 - Connect to a docker container (any one), and run a GUI program, such as `xeyes`
 
