@@ -12,7 +12,9 @@ You will be submitting a [metasploit.py](metasploit.py.html) ([src](metasploit.p
 
 ### Changelog
 
-Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  So far there aren't any significant changes to report.
+Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  <!-- So far there aren't any significant changes to report. -->
+
+- Wed, Feb 14: There was an errant character on line 66 of metasploit.py](metasploit.py.html) ([src](metasploit.py)); that character has to be removed for the metasploit.py file to parse correctly when submitted to Gradescope.
 
 
 ### Investigation
