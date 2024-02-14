@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="GNU source-highlight 3.1.9
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite">
+<title>wireshark.py</title>
+</head>
+<body bgcolor="white">
+<pre><tt><i><font color="#9A1900"># Submission information for the Wireshark HW</font></i>
+<i><font color="#9A1900"># https://aaronbloomfield.github.io/nws/wireshark/</font></i>
+
+<i><font color="#9A1900"># The filename of this file must be 'wireshark.py', else the submission</font></i>
+<i><font color="#9A1900"># verification routines will not work properly.</font></i>
+
+<i><font color="#9A1900"># You are welcome to have additional variables or fields in this file; you</font></i>
+<i><font color="#9A1900"># just can't remove variables or fields.</font></i>
+
+
+<i><font color="#9A1900"># Who are you?  Name and UVA userid.  The name can be in any human-readable</font></i>
+<i><font color="#9A1900"># format.</font></i>
+userid <font color="#990000">=</font> <font color="#FF0000">"mst3k"</font>
+name <font color="#990000">=</font> <font color="#FF0000">"Jane Doe"</font>
+
+
+<i><font color="#9A1900"># This dictionary contains various information that will vary depending on the</font></i>
+<i><font color="#9A1900"># assignment.</font></i>
+other <font color="#990000">=</font> <font color="#990000">{</font>
+	
+	<i><font color="#9A1900"># How comfortable do you feel using Wireshark now that this assignment is</font></i>
+	<i><font color="#9A1900"># completed?  This should be an integer, where 1 is same comfort level, 2</font></i>
+	<i><font color="#9A1900"># is somewhat more comfortable, and 3 is much more comfotable.</font></i>
+	<font color="#FF0000">'wireshark_comfort_level'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># In 250 characters or less, explain what you've found in the live network</font></i>
+	<i><font color="#9A1900"># traffic in the Docker containers. You will have to summarize it as best</font></i>
+	<i><font color="#9A1900"># you can, as the autograder will check the length. This entire comment</font></i>
+	<i><font color="#9A1900"># is about 250 characters in length.</font></i>
+	<font color="#FF0000">'what_you_found_in_docker'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># In 100 characters, what did you include in your capture.pcap?  This</font></i>
+	<i><font color="#9A1900"># comment is 100 characters long.</font></i>
+	<font color="#FF0000">'what_is_in_capture_file'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Any comments about the live capture exercise?  Let us know if things too</font></i>
+	<i><font color="#9A1900"># easy to find, too hard, too annoying, etc.  This value is unlimited in</font></i>
+	<i><font color="#9A1900"># length.  You don't have to enter comments, but you do have to change</font></i>
+	<i><font color="#9A1900"># the value here from None to, say, an empty string if you don't want to</font></i>
+	<i><font color="#9A1900"># leave any comments.</font></i>
+	<font color="#FF0000">'comments_on_live_capture'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># How frustrating was this assignment?  This is an integer on a 1-5 scale,</font></i>
+	<i><font color="#9A1900"># where 1 is not frustrating at all, 2 is a little bit frustrating, 3 is</font></i>
+	<i><font color="#9A1900"># somewhat frustrating, 4 is rather frustrating, and 5 is very</font></i>
+	<i><font color="#9A1900"># frustrating.  A typical, well designed, CS elective homework would</font></i>
+	<i><font color="#9A1900"># probably be around a 1 or 2.</font></i>
+	<font color="#FF0000">'frustration_level'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># How hard did you find this assignment?  This is an integer on a 1-5</font></i>
+	<i><font color="#9A1900"># scale, where 1 is very easy, 2 is somewhat easy, 3 is neutral</font></i>
+	<i><font color="#9A1900"># (neither easy or hard), 4 is somewhat hard, 5 is very hard.  A tyipcal,</font></i>
+	<i><font color="#9A1900"># well designed, CS elective homework would be a 3.</font></i>
+	<font color="#FF0000">'difficulty'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Questions to answer: the first 10 are from the "Basic Analysis" section,</font></i>
+	<i><font color="#9A1900"># and the last three are from the "Advanced Analysis" section.  If you</font></i>
+	<i><font color="#9A1900"># don't know the answer, or have not gotten to that, you still have to</font></i>
+	<i><font color="#9A1900"># put a value of the correct type in.</font></i>
+
+	<i><font color="#9A1900"># Question 1: what is the port number on the client 192.168.100.101)</font></i>
+	<i><font color="#9A1900"># opened for this FTP connection?  This should be an integer.</font></i>
+	<font color="#FF0000">'question_1'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Question 2: what is the username that was used to log in?  This should</font></i>
+	<i><font color="#9A1900"># be a string.</font></i>
+	<font color="#FF0000">'question_2'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Question 3: what was that user's password?  This should be a string.</font></i>
+	<font color="#FF0000">'question_3'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Question 4: what is the password that mst3k entered to log in?  This</font></i>
+	<i><font color="#9A1900"># should be a string.</font></i>
+	<font color="#FF0000">'question_4'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Question 5: what is the URL that was requested?  This should be a string.</font></i>
+	<font color="#FF0000">'question_5'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Question 6: what is the username used to log in?  This should be a string.</font></i>
+	<font color="#FF0000">'question_6'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Question 7: what is the password used to log in?  This should be a string.</font></i>
+	<font color="#FF0000">'question_7'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Question 8: how many SSH packets are present after using the `ssh`</font></i>
+	<i><font color="#9A1900"># filter?  This should be an integer.</font></i>
+	<font color="#FF0000">'question_8'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Question 9: what is the "Encrypted Packet" value for the first SSH</font></i>
+	<i><font color="#9A1900"># packet in the capture?  This should be a string.</font></i>
+	<font color="#FF0000">'question_9'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Question 10: what is the background color (not the font color) of</font></i>
+	<i><font color="#9A1900"># packets that are a bad TCP packet?  This should be a string.</font></i>
+	<font color="#FF0000">'question_10'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Question 11: What is the patient's first name?  This should be a string.</font></i>
+	<font color="#FF0000">'question_11'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Question 12: What is the patient's last name?  This should be a string.</font></i>
+	<font color="#FF0000">'question_12'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Question 13: What is the patient's social security number?  This should</font></i>
+	<i><font color="#9A1900"># be an integer.</font></i>
+	<font color="#FF0000">'question_13'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+<font color="#990000">}</font>
+
+
+<i><font color="#9A1900"># These are various sanity checks, and are meant to help you ensure that you</font></i>
+<i><font color="#9A1900"># submitted everything that you are supposed to submit.  Other than</font></i>
+<i><font color="#9A1900"># submitting the necessary files to Gradescope (which checks for those</font></i>
+<i><font color="#9A1900"># files), all other submission requirements are listed herein.  These values </font></i>
+<i><font color="#9A1900"># need to be changed to True (instead of False).</font></i>
+sanity_checks <font color="#990000">=</font> <font color="#990000">{</font>
+
+	<i><font color="#9A1900"># For your capture.pcap file, did you remove all the extra packets that</font></i>
+	<i><font color="#9A1900"># are not related to what you are showing?</font></i>
+	<font color="#FF0000">'removed_extra_packets_from_pcap'</font><font color="#990000">:</font> False<font color="#990000">,</font>
+
+<font color="#990000">}</font>
+
+
+<i><font color="#9A1900"># While some of these are optional, you still have to replace those optional</font></i>
+<i><font color="#9A1900"># ones with the empty string (instead of None).</font></i>
+comments <font color="#990000">=</font> <font color="#990000">{</font>
+
+	<i><font color="#9A1900"># How long did this assignment take, in hours?  Please format as an</font></i>
+	<i><font color="#9A1900"># integer or float.</font></i>
+	<font color="#FF0000">'time_taken'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Any suggestions for how to improve this assignment?  This part is</font></i>
+	<i><font color="#9A1900"># completely optional.  If none, then you can have the value here be the</font></i>
+	<i><font color="#9A1900"># empty string (but not None).</font></i>
+	<font color="#FF0000">'suggestions'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Any other comments or feedback?  This part is completely optional. If</font></i>
+	<i><font color="#9A1900"># none, then you can have the value here be the empty string (but not</font></i>
+	<i><font color="#9A1900"># None).</font></i>
+	<font color="#FF0000">'comments'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+<font color="#990000">}</font>
+</tt></pre>
+</body>
+</html>
