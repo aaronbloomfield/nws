@@ -110,7 +110,7 @@ digraph timeline {
         s11 -> s12 [arrowhead=none];
         s12 -> s13 [arrowhead=none];
         s13 -> s14 [arrowhead=none];
-        s15 [label=< page sends unrequested, <br/> dynamic web page data >,shape=text];
+        s15 [label=< page sends updated, <br/> dynamic web page data >,shape=text];
         s14 -> s15 [arrowhead=none];
         s15 -> s16 [arrowhead=none];
         s16 -> s17 [arrowhead=none];

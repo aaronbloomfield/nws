@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Network Security slide set</title>
+    <meta name="description" content="A set of slides for a course on Introduction to Cybersecurity">
+    <meta name="author" content="Aaron Bloomfield">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="../slides/nws.css">
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="../slides/reveal.js/plugin/highlight/zenburn.css">
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? '../slides/reveal.js/css/print/pdf.scss' : '../slides/reveal.js/css/print/paper.scss';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+    <!--[if lt IE 9]>
+	<script src="../slides/reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+  </head>
+
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+<section data-markdown id="cover"><script type="text/template">
+# CS 4760
+&nbsp;  
+### Network Security
+
+<p class='titlep'>&nbsp;</p>
+<div class="titlesmall"><p>
+<a href="http://www.cs.virginia.edu/~asb">Aaron Bloomfield</a> (aaron@virginia.edu)<br>
+<a href="http://github.com/aaronbloomfield/nws">@github</a> | <a href="index.html">&uarr;</a> | <a href="?print-pdf"><img class="print" width="20" src="../slides/images/print-icon.webp" style="top:0px;vertical-align:middle"></a>
+</p></div>
+<p class='titlep'>&nbsp;</p>
+
+## Firewalls
+</script></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section data-markdown><textarea data-template>
+# Contents
+&nbsp;  
+[Network Address Translation](#/nat)  
+[Firewalls](#/firewallss)  
+</textarea></section>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="nat" class="center"><textarea data-template>
+# Network Address Translation
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## Network Address Translation
+- Allows one IP address to be shared by many devices
+  - Devices behind the NAT have private IPs
+- Technically, a NAT is on the network level
+- Doesn't have to come with a firewall, but almost always does
+  - If it's a firewall, it is also on the transport level
+
+<a href='https://commons.wikimedia.org/wiki/File:NAT_Concept-en.svg'><img src='https://upload.wikimedia.org/wikipedia/commons/c/c7/NAT_Concept-en.svg' style='height:300px'></a>
+
+
+
+<a href='images/graphs/nat.webp'><img src='images/graphs/nat.webp' style="height:600px"></a>
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="firewallss" class="center"><textarea data-template>
+# Firewalls
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## Firewall types: packet filter
+![](http://www.cs.virginia.edu/~asb2t/duimg/n07/image3.png)
+- Each packet is judged individually based on the packet headers
+- Does not keep *state* (part of a stream, from an open connection, etc.)
+- Called a *stateless* firewall
+- Very fast, very simple
+
+
+
+<h2 class="r-fit-text">Firewall types: stateful firewall</h2>
+
+![](http://www.cs.virginia.edu/~asb2t/duimg/n07/image4.png)
+- Keeps state (open connections, app type by port, etc.)
+- New packets are kept until enough are known to make a decision
+- Outbound: allow any traffic
+- Inbound: allow only existing connections 
+
+
+
+<h2 class="r-fit-text">Firewall types: application/proxy firewall</h2>
+
+![](http://www.cs.virginia.edu/~asb2t/duimg/n07/image5.png)
+- Unlike the previous two, this inspects the application data
+  - Thus, much slower
+- Connection terminates at the firewall, and is re-opened to the server
+  - This is different than NAT
+- Example: image or package proxy server
+
+
+
+## Implementing a firewall
+![](http://www.cs.virginia.edu/~asb2t/duimg/n07/image6.png)
+- Firewalls require kernel modules
+- The Linux kernel has *hooks*, and a kernel module can register a callback function for each hook
+  - That function can modify, discard, etc., each packet
+
+
+
+## iptables
+[![](https://upload.wikimedia.org/wikipedia/commons/9/91/Iptables_diagram.png)](https://commons.wikimedia.org/wiki/File:Iptables_diagram.png)
+- Three *tables*, each with *chains*, each chain has rules:
+  - filter: packet filtering
+  - nat: NAT
+  - mangle: modifying packets (beyond just NAT)
+
+
+
+## Firewall policies
+- Accepted: allowed through
+- Denied: packet dropped
+- Rejected: packet dropped, and the source told
+
+A rejected rule will notify fuzzers that something "interesting" is on that port; unless you have a reason, use deny instead
+
+
+
+<!-- .slide: class="small-pre wide-pre" -->
+```
+$ iptables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain FORWARD (policy DROP)
+target     prot opt source               destination         
+DOCKER-USER  all  --  anywhere             anywhere            
+DOCKER-ISOLATION-STAGE-1  all  --  anywhere             anywhere            
+ACCEPT     all  --  anywhere             anywhere             ctstate RELATED,ESTABLISHED
+DOCKER     all  --  anywhere             anywhere            
+ACCEPT     all  --  anywhere             anywhere            
+ACCEPT     all  --  anywhere             anywhere            
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain DOCKER (1 references)
+target     prot opt source               destination         
+
+Chain DOCKER-ISOLATION-STAGE-1 (1 references)
+target     prot opt source               destination         
+DOCKER-ISOLATION-STAGE-2  all  --  anywhere             anywhere            
+RETURN     all  --  anywhere             anywhere            
+
+Chain DOCKER-ISOLATION-STAGE-2 (1 references)
+target     prot opt source               destination         
+DROP       all  --  anywhere             anywhere            
+RETURN     all  --  anywhere             anywhere            
+
+Chain DOCKER-USER (1 references)
+target     prot opt source               destination         
+RETURN     all  --  anywhere             anywhere            
+$ 
+```
+
+
+
+<!-- .slide: class="small-pre wide-pre" -->
+```
+$ iptables --list-rules
+-P INPUT ACCEPT
+-P FORWARD DROP
+-P OUTPUT ACCEPT
+-N DOCKER
+-N DOCKER-ISOLATION-STAGE-1
+-N DOCKER-ISOLATION-STAGE-2
+-N DOCKER-USER
+-A FORWARD -j DOCKER-USER
+-A FORWARD -j DOCKER-ISOLATION-STAGE-1
+-A FORWARD -o docker0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -o docker0 -j DOCKER
+-A FORWARD -i docker0 ! -o docker0 -j ACCEPT
+-A FORWARD -i docker0 -o docker0 -j ACCEPT
+-A DOCKER-ISOLATION-STAGE-1 -i docker0 ! -o docker0 -j DOCKER-ISOLATION-STAGE-2
+-A DOCKER-ISOLATION-STAGE-1 -j RETURN
+-A DOCKER-ISOLATION-STAGE-2 -o docker0 -j DROP
+-A DOCKER-ISOLATION-STAGE-2 -j RETURN
+-A DOCKER-USER -j RETURN
+$ 
+```
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	
+</div>
+</div>
+<script src="../slides/reveal.js/dist/reveal.js"></script>
+<script src="../slides/reveal.js/plugin/zoom/zoom.js"></script>
+<script src="../slides/reveal.js/plugin/notes/notes.js"></script>
+<script src="../slides/reveal.js/plugin/search/search.js"></script>
+<script src="../slides/reveal.js/plugin/markdown/markdown.js"></script>
+<script src="../slides/reveal.js/plugin/highlight/highlight.js"></script>
+<script src="../slides/reveal.js/plugin/math/math.js"></script>
+<script src="settings.js"></script>
+</body>
+</html>
