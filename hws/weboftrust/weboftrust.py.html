@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="GNU source-highlight 3.1.9
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite">
+<title>weboftrust.py</title>
+</head>
+<body bgcolor="white">
+<pre><tt><i><font color="#9A1900"># Submission information for the Web of Trust HW</font></i>
+<i><font color="#9A1900"># https://aaronbloomfield.github.io/nws/weboftrust/</font></i>
+
+<i><font color="#9A1900"># The filename of this file must be 'weboftrust.py', else the submission</font></i>
+<i><font color="#9A1900"># verification routines will not work properly.</font></i>
+
+<i><font color="#9A1900"># You are welcome to have additional variables or fields in this file; you</font></i>
+<i><font color="#9A1900"># just can't remove variables or fields.</font></i>
+
+
+<i><font color="#9A1900"># Who are you?  Name and UVA userid.  The name can be in any human-readable</font></i>
+<i><font color="#9A1900"># format.</font></i>
+userid <font color="#990000">=</font> <font color="#FF0000">"mst3k"</font>
+name <font color="#990000">=</font> <font color="#FF0000">"Jane Doe"</font>
+
+
+<i><font color="#9A1900"># This dictionary contains various information that will vary depending on the</font></i>
+<i><font color="#9A1900"># assignment.</font></i>
+other <font color="#990000">=</font> <font color="#990000">{</font>
+
+	<i><font color="#9A1900"># How easy and usable is the process of key signing?  This should be an</font></i>
+	<i><font color="#9A1900"># integer on a scale of 1-5, where 1 is very easy to trivial, 2 is</font></i>
+	<i><font color="#9A1900"># somewhat easy, 3 is neutral, 4 is somewhat difficult, and 5 is very</font></i>
+	<i><font color="#9A1900"># difficult.</font></i>
+	<font color="#FF0000">'gpg_usability'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># What are your thoughts on the usability of GPG and key signing?  This</font></i>
+	<i><font color="#9A1900"># doesn't have to be a long comment (although it can be).  This should be</font></i>
+	<i><font color="#9A1900"># a string.</font></i>
+	<font color="#FF0000">'gpg_usability_thoughts'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># How many people did you trick by signing their key with your adversarial</font></i>
+	<i><font color="#9A1900"># key?  We are looking for as close a number as you can think of -- it</font></i>
+	<i><font color="#9A1900"># doesn't have to be exact.  This should be an integer.</font></i>
+	<font color="#FF0000">'number_tricked'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># If you did trick anybody, how did you go about doing it?  This doesn't</font></i>
+	<i><font color="#9A1900"># have to be a long comment (although it can be).  This should be a string.</font></i>
+	<font color="#FF0000">'how_tricked'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># How did you avoid being tricked into having yours signed with an</font></i>
+	<i><font color="#9A1900"># adversarial key?  This doesn't have to be a long comment (although it</font></i>
+	<i><font color="#9A1900"># can be).  This should be a string.</font></i>
+	<font color="#FF0000">'how_avoid_tricked'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># How frustrating did you find this assignment?  This should be an integer</font></i>
+	<i><font color="#9A1900"># on a scale of 1-5, where 1 is not frustrating at all, 2 is a little bit</font></i>
+	<i><font color="#9A1900"># frustrating, 3 is a reasonable level of frustration (for however you</font></i>
+	<i><font color="#9A1900"># define reasonable), 4 is very frustrating, and 5 is extremely</font></i>
+	<i><font color="#9A1900"># frustrating.</font></i>
+	<font color="#FF0000">'weboftrust_frustration_level'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># In part 2, you sent a GPG encrypted email to the course email, and you</font></i>
+	<i><font color="#9A1900"># got a response containing a code specific to you.  Enter that code</font></i>
+	<i><font color="#9A1900"># here, as a string:</font></i>
+	<font color="#FF0000">'specific_code'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+<font color="#990000">}</font>
+
+
+<i><font color="#9A1900"># These are various sanity checks, and are meant to help you ensure that you</font></i>
+<i><font color="#9A1900"># submitted everything that you are supposed to submit.  Other than</font></i>
+<i><font color="#9A1900"># submitting the necessary files to Gradescope (which checks for those</font></i>
+<i><font color="#9A1900"># files), all other submission requirements are listed herein.  These values </font></i>
+<i><font color="#9A1900"># need to be changed to True (instead of False).</font></i>
+sanity_checks <font color="#990000">=</font> <font color="#990000">{</font>
+
+	<i><font color="#9A1900"># Did you sign at least 30 keys of your classmates?  Even if you didn't,</font></i>
+	<i><font color="#9A1900"># answer True here -- it's to remind you that this is part of the</font></i>
+	<i><font color="#9A1900"># assignment.</font></i>
+	<font color="#FF0000">'signed_30_keys'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Did you get your key signed by at least 30 of your classmates?  Even if</font></i>
+	<i><font color="#9A1900"># you didn't, answer True here -- it's to remind you that this is part of</font></i>
+	<i><font color="#9A1900"># the assignment.</font></i>
+	<font color="#FF0000">'got_key_signed_by_30'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+<font color="#990000">}</font>
+
+
+<i><font color="#9A1900"># While some of these are optional, you still have to replace those optional</font></i>
+<i><font color="#9A1900"># ones with the empty string (instead of None).</font></i>
+comments <font color="#990000">=</font> <font color="#990000">{</font>
+
+	<i><font color="#9A1900"># How long did this assignment take, in hours?  Please format as an</font></i>
+	<i><font color="#9A1900"># integer or float.</font></i>
+	<font color="#FF0000">'time_taken'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Any suggestions for how to improve this assignment?  This part is</font></i>
+	<i><font color="#9A1900"># completely optional.  If none, then you can have the value here be the</font></i>
+	<i><font color="#9A1900"># empty string (but not None).</font></i>
+	<font color="#FF0000">'suggestions'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Any other comments or feedback?  This part is completely optional. If</font></i>
+	<i><font color="#9A1900"># none, then you can have the value here be the empty string (but not</font></i>
+	<i><font color="#9A1900"># None).</font></i>
+	<font color="#FF0000">'comments'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+<font color="#990000">}</font>
+</tt></pre>
+</body>
+</html>
