@@ -9,17 +9,17 @@ How do you know who to trust? How do you know they are who they say they are? Yo
 
 1. Create a GPG public/private keypair
 2. Register your public key with the submission server; you will be given a fake key
-3. Get your key signed by 15 of your fellow students in this class
-4. Avoid signing any fake keys (you will need to verify your classmate's identity)
+3. Get your valid key signed by 15 of your fellow students in this class
+4. Avoid signing any fake keys (you will need to verify your classmate's identity), and avoid getting your valid key signed by any fake keys
 5. Try to get people to accept a signature from your fake key
 
-You should read the entire assignment before getting started. You may wish to think about a strategy that will help you convince others to sign your fake key.
+You should read the entire assignment before getting started. You may wish to think about a strategy that will help you convince others to sign your fake key or to sign their valid key with your fake key.
 
 **Important:** Do not upload either of your keys to any public keyserver. It would be unethical for this class assignment to pollute the information on these public resources. We will search the keyservers for your public keys, and if we find them, **you will receive zero points.** If you upload your key to a public key server by accident, you must contact the instructor immediately.
 
 This assignment has *two* due dates:
 
-- Earlier due date: parts 1 through 3 needs to be completed by the earlier due date, which is one week before the later due date.  You will need to submit your GPG public key<!--, and send an email, by this date -->.
+- Earlier due date: parts 1 through 3 needs to be completed by the earlier due date, which is one week before the later due date.  You will need to submit your GPG public key, and send an email, by this date.
 - Later due date: the rest of the assignment is due by the date specified on the Canvas landing page.  You will need to submit your (signed) GPG keys, and the edited [weboftrust.py](weboftrust.py.html) ([src](weboftrust.py)) by this due date.
 
 **Acknowledgements:** This assignment was based, with permission, on [this one](https://people.csc.ncsu.edu/whenck/csc474/f23/ex/wot.html) by [William Enck](https://www.csc.ncsu.edu/people/whenck), who derived his (with permission) from an assignment created by [Adam Doupé](https://adamdoupe.com).
@@ -33,6 +33,8 @@ Any changes to this page will be put here for easy reference.  Typo fixes and mi
 ### Part 1: Generate a GPG Key
 
 You will need to install [GPG](https://gnupg.org), the Gnu Privacy Guard -- this is an RSA client for encrypting emails.  Installation packages can be found toward the bottom of [this page](https://gnupg.org/download/index.html); there are GUI versions for the major operating systems.  If GPG is already installed with your email client, that's fine -- you don't need to install it again.  It is also installed on the course Docker image, but you may not want to use the command-line version.
+
+**You MUST create a 4096 bit RSA key!**  This is what the adversarial key will be (see below for that), and if yours is different (3072 bits, for example), then it will be easy to differentiate them.
 
 Create a public/private GPG keypair specifically for this project with the following requirements:
 
@@ -56,27 +58,27 @@ I cannot stress this enough, due to the nature of the assignment, we **cannot** 
 
 ### Part 2: Upload Your Public Key
 
-Save your public key as a file called `mst3k_new.gpg`, where `mst3k` is your userid, and then upload your public key to GradeScope to the assignment "Web of Trust Upload". The server will then check to see if your public key is valid, and only if it is, the server will sign your public key with the [course's keypair](nws-key.pub), which has a fingerprint of `FDA0 7EF5 8A87 1F57 9D6D  56DA 23AD 0D8A 73E5 7217`. You should download this key, verify the fingerprint, and import it into your GPG keyring.
+Save your public key as a file called `mst3k.gpg`, where `mst3k` is your userid, and then upload your public key to GradeScope to the assignment "Web of Trust Upload". The server will then check to see if your public key is valid, and only if it is, the server will sign your public key with the [course's keypair](nws-key.pub), which has a fingerprint of `FDA0 7EF5 8A87 1F57 9D6D  56DA 23AD 0D8A 73E5 7217`. You should download this key, verify the fingerprint, and import it into your GPG keyring.
 
 The server will also generate an *adversarial* keypair with a random name of **another student in the class** and the **same email as your key**. You will be able to download this adversarial keypair (both the public and private key).
 
 As this is signing your key, you may only upload your key **ONCE**.  The system will not sign a second keypair for you, as that means you lost your original keypair.  Note that a failed submission (wrong files submitted, incorrect format, etc.) will not count as the one time upload.
 
-This part<!-- , along with the next part, are --> is due by the earlier due date.
+This part, along with the next part, are due by the earlier due date.
 
-<!--
+
 ### Part 3: Send an Email
 
-You need to send an RSA encrypted email to the course email address, which is listed on the Canvas landing page.  In it, you should request your secret code.  Include some witty or interesting quote.  Needless to say, both the request and the quote should be encrypted via GPG and the [course's keypair](nws-key.pub).
+You need to send an RSA encrypted email to the course email address, which is listed on the Canvas landing page.  In it, you should request your secret code.  Include some witty or interesting quote.  Both the request and the quote should be encrypted via GPG and the [course's keypair](nws-key.pub).
 
 You need to send this email by the earlier due date (one week before the later due date).
 
 You will receive a response back with a code specific to your userid; this code will need to be included in the [weboftrust.py](weboftrust.py.html) ([src](weboftrust.py)) file that you submit.  Note that this will take us some time to respond!  There are a lot of students in the class.  However, as long as you sent your email by the earlier due date, you will receive your response no later that 24 hours before the later due date.
 
-This part (just your sending of the email), and the previous two parts, are due by the earlier due date.
--->
+This part (just the sending of the email), and the previous part (uploading your key), are due by the earlier due date.
 
-### Part 3: Get Your Key Signed
+
+### Part 4: Get Your Key Signed
 
 Here's where the fun starts. You need to get your key signed by at least 15 of your fellow students' public keys. The signatures must be from a **valid** key in this class: How will you know?
 
@@ -89,7 +91,8 @@ There are lots of resources on the Internet that describe signing public keys. H
 
 That being said, the GUIs for GPG are pretty easy to use, and you probably can figure out how to sign a key by tinkering around.
 
-### Part 4: Sign Other Keys
+
+### Part 5: Sign Other Keys
 
 Using what you learned from the above, you must sign at least 15 of your fellow students' public keys. You are encourage to sign more, but only public keys valid for this class count: *How will you know?*
 
@@ -97,12 +100,13 @@ A big part of this assignment is figuring out how to determine if the key you ar
 
 **Note:** We will only count signatures from your **valid key** on other students' valid keys. That is, signing other students' valid keys with your adversarial key will not count towards your required number if signatures. Similarly, signing someone else's adversarial key with your valid key will not count toward your required number of signatures.
 
+
 ### Grading
 
 - The base grade is determined by:
-	- You have signed 15 other keys; any less, and there will be a deduction 	(your valid signing their valid)
-	- You have 15 *valid* signatures on your keys (either valid or invalid); any less, and there will be a deduction 	(their valid signing your valid)
-- The following will cause deductions, although smaller than the previous part:
+	- You have signed 15 other keys 											(your valid signing their valid)
+	- You have 15 *valid* signatures on your keys (either valid or invalid)		(their valid signing your valid)
+- The following will cause deductions from the base grade:
 	- Number of invalid signatures on your valid key 							(their invalid signing your valid)
 	- Number of invalid keys you signed with your valid key 					(your valid signing their invalid)
 - An extra credit bonus will be awarded for:
@@ -111,6 +115,7 @@ A big part of this assignment is figuring out how to determine if the key you ar
 - A signature of an invalid key with another invalid key cancels out, and no points are awarded or deducted:
 	- Signing another invalid key with your invalid key  						(your invalid signing their invalid)
 	- Getting your invalid key signed with another invalid key 					(their invalid signing your invalid)
+- Not sending the email, or sending it late, will be some sort of deduction
 
 Note that signing one of your keys (either one) with your other key will not affect your grade.  Also note that signing one or two invalid keys with your own will not sink your grade!
 
@@ -122,7 +127,7 @@ There are TWO submissions for this assignment, with different due dates; the sec
 
 #### First submission
 
-The first is to the "Web of Trust Upload" assignment in Gradescope, which is where you upload your key created in part 1, and this submission is described in part 2.  The file should be named `mst3k.pub`, where `mst3k` is your UVA userid.  <!-- You also have to send the GPG encrypted email to the course email address. -->
+The first is to the "Web of Trust Upload" assignment in Gradescope, which is where you upload your key created in part 1, and this submission is described in part 2.  The file should be named `mst3k.pub`, where `mst3k` is your UVA userid.  You also have to send the GPG encrypted email to the course email address.
 
 #### Second submission
 
