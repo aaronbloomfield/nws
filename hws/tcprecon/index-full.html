@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>TCP file re-assembly</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../../markdown.css" />
+  <script>
+  function openTab(evt, tabName) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+
+  function insertCopyLink(text) {
+    document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
+  }
+  </script>
+</head>
+<body>
+<h1 id="tcp-file-re-assembly">TCP file re-assembly</h1>
+<p><a href="../index.html">Go up to the NWS HW page</a> (<a href="../index.md">md</a>)</p>
+<h3 id="overview">Overview</h3>
+<p>In this assignment you will be reconstructing files transferred in TCP streams. Any http:// connection will request a number of files – .html files, images, scripts, and CSS style sheets, to name a few. Given a stream of network data, you will reconstruct the images and save them as files.</p>
+<p>We will be using Python, and Scapy, for this. As Python (and Scapy) are rather slow, it would not be able to keep up with a real-time TCP stream. Thus, we will only be analyzing pcap files.</p>
+<p>You will be submitting your source code in <code>tcp_reconstruction.py</code>, as well as an edited version of <a href="tcprecon.py.html">tcprecon.py</a> (<a href="tcprecon.py">src</a>).</p>
+<h3 id="changelog">Changelog</h3>
+<p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. So far there aren’t any significant changes to report.</p>
+<h3 id="introduction">Introduction</h3>
+<p>You will only be analyzing HTTP streams. Thus, if packet is not to or from port 80 (http’s port), then the packet can be ignored.</p>
+<h4 id="scapy-and-pcap-files">Scapy and pcap files</h4>
+<p>Scapy has an interface to manage pcap files:</p>
+<pre><code>from scapy.all import *
+pcap = rdpcap(sys.argv[1])
+for pkt in pcap:
+    print(pkt.summary())</code></pre>
+<p>Each <code>pkt</code> in the <code>for</code> loop is a regular Scapy packet (TCP in IP in Ether). Although the <code>pcap</code> variable looks like a list, and can be indexed like a list, it’s a slightly different type (<code>scapy.plist.PacketList</code>), and cannot perform some list modification operations. You can create a list out of it (<code>pcapl = list(pcap)</code>) if you want to perform those operations.</p>
+<h4 id="http-via-tcp-streams">HTTP via TCP streams</h4>
+<p>The way an HTTP request works is such:</p>
+<ul>
+<li>A new port is opened up on the client for <em>each</em> individual file transfer
+<ul>
+<li>Yes, this is inefficient, and web server wars between the major manufacturers have erupted over optimizations to this</li>
+<li>Note that the relevant port is the source port from the client to the server</li>
+</ul></li>
+<li>An request, following the HTTP protocol (see below), is sent from the client to the server on port 80
+<ul>
+<li>An example TCP data will be something like this: <code>GET /path/to/filename.ext HTTP/1.1\r\nHost: ...\r\n...\r\n</code></li>
+<li>You would save that file as <code>output/filename.ext</code> once you have downloaded all the parts</li>
+<li>You can identify this because (1) it’s the first TCP packet in the stream for this port that has a payload, and (2) it starts with “GET”</li>
+<li>If there is no filename in the URI (for example: <code>GET / HTTP/1.1</code>), you should add <code>index.html</code> to it</li>
+</ul></li>
+<li>An ACK is sent back from the server to the client, usually without any packet data</li>
+<li>A series of TCP packets are sent containing the data itself
+<ul>
+<li>The relevant port is now the destination port from the server to the client</li>
+<li>The source port is 80</li>
+</ul></li>
+<li>The FIN flag is set in the last packet of the stream</li>
+<li>The downloaded binary blob will have the HTTP headers at the top, and those are not part of the downloaded file. The headers are text, and there is a <code>\r\n\r\n</code> separating the headers from the binary content. See the example below.</li>
+<li>Many files will load other files – an .html document, for example, will load images, css, scripts, etc.; these will each be a separate request (on a separate source port)</li>
+</ul>
+<p>A sample http request (sent from the client to the server) is below. Note that the separators between each line are <code>\r\n</code>, and the ending separator is <code>\r\n\r\n</code>. This was a request made to http://www.virginia.edu. It promptly redirected to https, but the regular http request is still illustrative.</p>
+<pre><code>GET / HTTP/1.1
+Host: www.virginia.edu
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:122.0) Gecko/20100101 Firefox/122.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+DNT: 1
+Sec-GPC: 1</code></pre>
+<p>A response is shown below in <code>hexdump -C</code> format. This is to a different request, that did not redirect to https. This is the start of a PNG file download (which had the filename extension of .jpg). You can see the HTTP headers. The separator is <code>\r\n\r\n</code>, which in hex is <code>0d 0a 0d 0a</code>. You can see that as the last byte of the 0x00000130 line, and the first three bytes of the 0x00000140 line. The PNG data itself starts on the 4th byte of the 0x00000140 line.</p>
+<pre><code>00000000  48 54 54 50 2f 31 2e 31  20 32 30 30 20 4f 4b 0d  |HTTP/1.1 200 OK.|
+00000010  0a 44 61 74 65 3a 20 53  75 6e 2c 20 31 38 20 46  |.Date: Sun, 18 F|
+00000020  65 62 20 32 30 32 34 20  31 34 3a 31 36 3a 30 34  |eb 2024 14:16:04|
+00000030  20 47 4d 54 0d 0a 53 65  72 76 65 72 3a 20 41 70  | GMT..Server: Ap|
+00000040  61 63 68 65 2f 32 2e 34  2e 36 20 28 43 65 6e 74  |ache/2.4.6 (Cent|
+00000050  4f 53 29 0d 0a 4c 61 73  74 2d 4d 6f 64 69 66 69  |OS)..Last-Modifi|
+00000060  65 64 3a 20 54 68 75 2c  20 32 34 20 46 65 62 20  |ed: Thu, 24 Feb |
+00000070  32 30 32 32 20 31 34 3a  35 35 3a 32 36 20 47 4d  |2022 14:55:26 GM|
+00000080  54 0d 0a 45 54 61 67 3a  20 22 31 31 39 66 37 2d  |T..ETag: &quot;119f7-|
+00000090  35 64 38 63 34 63 35 62  39 35 33 38 30 22 0d 0a  |5d8c4c5b95380&quot;..|
+000000a0  41 63 63 65 70 74 2d 52  61 6e 67 65 73 3a 20 62  |Accept-Ranges: b|
+000000b0  79 74 65 73 0d 0a 43 6f  6e 74 65 6e 74 2d 4c 65  |ytes..Content-Le|
+000000c0  6e 67 74 68 3a 20 37 32  31 38 33 0d 0a 58 2d 43  |ngth: 72183..X-C|
+000000d0  6c 61 63 6b 73 2d 4f 76  65 72 68 65 61 64 3a 20  |lacks-Overhead: |
+000000e0  47 4e 55 20 54 65 72 72  79 20 50 72 61 74 63 68  |GNU Terry Pratch|
+000000f0  65 74 74 0d 0a 41 63 63  65 73 73 2d 43 6f 6e 74  |ett..Access-Cont|
+00000100  72 6f 6c 2d 41 6c 6c 6f  77 2d 4f 72 69 67 69 6e  |rol-Allow-Origin|
+00000110  3a 20 2a 0d 0a 43 6f 6e  6e 65 63 74 69 6f 6e 3a  |: *..Connection:|
+00000120  20 63 6c 6f 73 65 0d 0a  43 6f 6e 74 65 6e 74 2d  | close..Content-|
+00000130  54 79 70 65 3a 20 69 6d  61 67 65 2f 70 6e 67 0d  |Type: image/png.|
+00000140  0a 0d 0a 89 50 4e 47 0d  0a 1a 0a 00 00 00 0d 49  |....PNG........I|
+00000150  48 44 52 00 00 03 aa 00  00 04 7a 08 06 00 00 00  |HDR.......z.....|
+00000160  42 e5 8a bf 00 00 00 04  73 42 49 54 08 08 08 08  |B.......sBIT....|
+00000170  7c 08 64 88 00 00 00 09  70 48 59 73 00 00 5c 46  ||.d.....pHYs..\F|
+00000180  00 00 5c 46 01 14 94 43  41 00 00 00 19 74 45 58  |..\F...CA....tEX|
+00000190  74 53 6f 66 74 77 61 72  65 00 77 77 77 2e 69 6e  |tSoftware.www.in|
+000001a0  6b 73 63 61 70 65 2e 6f  72 67 9b ee 3c 1a 00 00  |kscape.org..&lt;...|
+000001b0  20 00 49 44 41 54 78 9c  ec dd 77 98 65 55 95 b0  | .IDATx...w.eU..|
+000001c0  f1 75 3a 40 03 0d dd 34  39 23 41 32 22 8a 82 08  |.u:@...49#A2&quot;...|
+000001d0  28 41 30 47 18 47 31 ce  a8 a0 62 0e a3 a3 0e 86  |(A0G.G1...b.....|</code></pre>
+<h3 id="your-task">Your Task</h3>
+<p>Your task is to write a program called <code>tcp_reconstruction.py</code>. Given a pcap file as a command-line parameter, it will read through the file and save any files transferred via the HTTP protocol. All files should be saved in an <code>output/</code> sub-directory; you can create it via <code>os.system("mkdir -p output")</code>. Files with long path names (“/path/to/file/foo.txt”) should just be saved as the filename (i.e., “output/foo.txt”).</p>
+<p>You may make a number of assumptions about the data for this assignment:</p>
+<ul>
+<li>The files provided will be valid pcap files, and your program will always be given one (and only one) existing pcap file when run.</li>
+<li>All the pcap files will easily fit into memory – we are not going to test this with very large pcap files.</li>
+<li>All of the files saved to disk will be relatively small – no more than, say, 10 Mb per pcap file, so you do not have to worry about disk space issues.</li>
+<li>You can assume that all the TCP packets for a given file will be present – this is a reasonable assumption, since TCP will re-send any packets that get lost.</li>
+<li>You may assume that all the TCP packets for a given file will be in order in the pcap file. However, the TCP packets for different files may be interleaved with each other.</li>
+<li>You may assume that none of the IP packets have options – in other words, all IP packet headers are 20 bytes. This is not something you can assume for the TCP headers, though.</li>
+</ul>
+<h4 id="testing">Testing</h4>
+<p>We provide a number of pcap files on the Canvas landing page, and the expected output.</p>
+<h4 id="output">Output</h4>
+<p>For each file written to the output/ directory, you should print one line:</p>
+<pre><code>Wrote index.html of length 39350</code></pre>
+<p>Please check that the formatting is correct, as the auto-grader is going to look for that exact output! If you have the file name in <code>filename</code>, and the size in <code>size</code>, the following print statement will produce the correct output:</p>
+<pre><code>print(f&quot;Wrote {filename} of length {size}&quot;)</code></pre>
+<p>An example execution run is as follows:</p>
+<pre><code>$ python3 tcp_reconstruction.py andromeda-img.pcap
+Wrote Andromeda_IAU.png of length 259492
+$</code></pre>
+<p>If there were more files than that one, each file would print out on a separate line.</p>
+<h4 id="scapy-and-tcp-payloads">Scapy and TCP payloads</h4>
+<p>It is surprisingly annoying in Scapy to determine if a TCP packet has a payload, as if it does not, trying to access <code>packet[TCP].load</code> will thrown an exception. The following function may make this easier:</p>
+<pre><code>def pkt_has_tcp_load(pkt):
+    try:
+        x = pkt[TCP].load
+        return True
+    except:
+        return False</code></pre>
+<h3 id="submission">Submission</h3>
+<p>You will be submitting your source code in <code>tcp_reconstruction.py</code>, as well as an edited version of <a href="tcprecon.py.html">tcprecon.py</a> (<a href="tcprecon.py">src</a>).</p>
+</body>
+</html>
