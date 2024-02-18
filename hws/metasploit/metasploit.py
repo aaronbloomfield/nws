@@ -1,5 +1,5 @@
 # Submission information for the Metasploitable2 Exploration HW
-# https://aaronbloomfield.github.io/nws/metasploit/
+# https://aaronbloomfield.github.io/nws/hws/metasploit/
 
 # The filename of this file must be 'metasploit.py', else the submission
 # verification routines will not work properly.

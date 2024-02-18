@@ -1,5 +1,5 @@
 # Submission information for the Wireshark HW
-# https://aaronbloomfield.github.io/nws/wireshark/
+# https://aaronbloomfield.github.io/nws/hws/wireshark/
 
 # The filename of this file must be 'wireshark.py', else the submission
 # verification routines will not work properly.

@@ -1,5 +1,5 @@
 # Submission information for the Network Commands Introduction HW
-# https://aaronbloomfield.github.io/nws/netcmds/
+# https://aaronbloomfield.github.io/nws/hws/netcmds/
 
 # The filename of this file must be 'netcmds.py', else the submission
 # verification routines will not work properly.

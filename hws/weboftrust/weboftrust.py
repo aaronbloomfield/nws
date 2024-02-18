@@ -1,5 +1,5 @@
 # Submission information for the Web of Trust HW
-# https://aaronbloomfield.github.io/nws/weboftrust/
+# https://aaronbloomfield.github.io/nws/hws/weboftrust/
 
 # The filename of this file must be 'weboftrust.py', else the submission
 # verification routines will not work properly.

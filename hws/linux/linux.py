@@ -1,5 +1,5 @@
 # Submission information for the Linux Tutorial HW
-# https://aaronbloomfield.github.io/nws/linux/
+# https://aaronbloomfield.github.io/nws/hws/linux/
 
 # The filename of this file must be 'linux.py', else the submission
 # verification routines will not work properly.

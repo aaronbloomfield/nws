@@ -87,7 +87,7 @@ root@outer2:/mnt#
 The server side:
 
 ```
-root@outer1:/mnt# clear;./ping_shell.py server eth1 192.168.100.101^C
+root@outer1:/mnt# clear;./ping_shell.py server eth1 192.168.100.101
 debug: sniffing ICMP...
 1707065371.9186223 	 debug: server received packet: Ether / IP / ICMP 192.168.100.102 > 192.168.100.101 echo-request 0 / Raw 8 pwd
 debug: server executing command: pwd

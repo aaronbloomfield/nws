@@ -1,5 +1,5 @@
 # Submission information for the ARP Spoof Detector HW
-# https://aaronbloomfield.github.io/nws/arp/
+# https://aaronbloomfield.github.io/nws/hws/arp/
 
 # The filename of this file must be 'arp.py', else the submission verification
 # routines will not work properly.

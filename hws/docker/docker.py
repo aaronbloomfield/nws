@@ -1,5 +1,5 @@
 # Submission information for the Docker Configuration HW
-# https://aaronbloomfield.github.io/nws/docker/
+# https://aaronbloomfield.github.io/nws/hws/docker/
 
 # The filename of this file must be 'docker.py', else the submission
 # verification routines will not work properly.

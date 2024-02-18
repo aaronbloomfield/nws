@@ -1,8 +1,8 @@
 # Submission information for the Ping Shell Commands HW
-# https://aaronbloomfield.github.io/pingcmd/arp/
+# https://aaronbloomfield.github.io/nws/hws/pingcmd/
 
-# The filename of this file must be 'pingcmd.py', else the submission verification
-# routines will not work properly.
+# The filename of this file must be 'pingcmd.py', else the submission
+# verification routines will not work properly.
 
 # You are welcome to have additional variables or fields in this file; you
 # just can't remove variables or fields.
