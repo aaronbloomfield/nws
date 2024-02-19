@@ -23,3 +23,4 @@ These are smaller homeworks that take less time.  They are typically readings or
 - HW S3: [Linux tutorial](linux/index.html) ([md](linux/index.md))
 - HW S4: [Network commands tutorial](netcmds/index.html) ([md](netcmds/index.md))
 - HW S5: [Metasploitable2 Exploration](metasploit/index.html) ([md](metasploit/index.md))
+- HW S6: [Web of Trust](weboftrust/index.html) ([md](weboftrust/index.md))
