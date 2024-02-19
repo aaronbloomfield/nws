@@ -1,0 +1,25 @@
+graph proxy {
+
+	www1 [shape=none,label="",image="./webserver.svg",fill=white];
+	www2 [shape=none,label="",image="./webserver.svg",fill=white];
+	www3 [shape=none,label="",image="./webserver.svg",fill=white];
+	www4 [shape=none,label="",image="./webserver.svg",fill=white];
+
+    router [shape=none,label="",image="./home-router.svg",fill=white];
+    proxy [shape=none,label="",image="./proxyserver.svg",fill=white];
+
+    terminal1 [shape=none,image="./terminal.svg",fill=white,label=""];
+    terminal2 [shape=none,image="./terminal.svg",fill=white,label=""];
+    terminal3 [shape=none,image="./terminal.svg",fill=white,label=""];
+    terminal4 [shape=none,image="./terminal.svg",fill=white,label=""];
+
+    www1 -- router;
+    www2 -- router;
+    www3 -- router;
+    www4 -- router;
+    router -- proxy;
+    proxy -- terminal1;
+    proxy -- terminal2;
+    proxy -- terminal3;
+    proxy -- terminal4;
+}

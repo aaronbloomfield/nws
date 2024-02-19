@@ -52,7 +52,10 @@
 # Contents
 &nbsp;  
 [Network Address Translation](#/nat)  
-[Firewalls](#/firewallss)  
+[Firewalls Overview](#/firewallss)  
+[Packet Filtering Firewalls](#/pfilters)  
+[Stateful Firewalls](#/stateful)  
+[Application Firewalls](#/application)  
 </textarea></section>
   
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -85,7 +88,7 @@
 <section>
 
 <section data-markdown id="firewallss" class="center"><textarea data-template>
-# Firewalls
+# Firewalls Overview
 </textarea></section>
     
 <section data-markdown data-separator="^\n\n\n"><textarea data-template>
@@ -124,6 +127,27 @@
 - Firewalls require kernel modules
 - The Linux kernel has *hooks*, and a kernel module can register a callback function for each hook
   - That function can modify, discard, etc., each packet
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="pfilters" class="center"><textarea data-template>
+# Packet Filtering Firewalls
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<!-- .slide: class="right-float-img-600" -->
+## Packet Filtering
+[![](http://www.cs.virginia.edu/~asb2t/duimg/n07/image3.png)](http://www.cs.virginia.edu/~asb2t/duimg/n07/image3.png)
+- Does not keep *state*
+- Generally only looks at the IP packet headers
+- Very quick
+- Can do NAT as well
+- Common example: `iptables` on Linux
 
 
 
@@ -207,6 +231,139 @@ $ iptables --list-rules
 -A DOCKER-USER -j RETURN
 $ 
 ```
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="stateful" class="center"><textarea data-template>
+# Stateful Firewalls
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<!-- .slide: class="right-float-img-600" -->
+## Stateful Firewall
+[![](http://www.cs.virginia.edu/~asb2t/duimg/n07/image4.png)](http://www.cs.virginia.edu/~asb2t/duimg/n07/image4.png)
+- Keeps track of the *state* of the connections
+- Typically allows a response when there has been a network request
+- Slower than packet filters, but faster than the next category
+- Most common type
+
+
+
+<!-- .slide: class="right-float-img-1000" -->
+## Stateful Firewall
+[![](images/graphs/nat.webp)](images/graphs/nat.webp)
+- This NAT example was a stateful firewall
+
+
+
+## Connection Tracking
+- TCP: analyze the SYN-ACK/SYN-ACK, and consider that an open connection
+  - Allows the ACK/SYN response as the initial SYN requested it
+- UDP: the protocol is not connection oriented
+  - If data comes from a server because of a request, consider it a connection
+- ICMP: upon a request, consider the response as opening a connection
+
+
+
+<!-- .slide: class="small-pre wide-pre" -->
+## `conntrack`
+Shows the open connections
+```
+root@outer1:/# conntrack -L
+tcp      6 115 TIME_WAIT src=192.168.100.101 dst=185.125.190.36 sport=35876 dport=80 src=185.125.190.36 dst=192.168.100.101 sport=80 dport=35876 [ASSURED] mark=0 use=1
+udp      17 25 src=192.168.100.101 dst=8.8.8.8 sport=53427 dport=53 src=8.8.8.8 dst=192.168.100.101 sport=53 dport=53427 mark=0 use=1
+udp      17 5 src=192.168.100.101 dst=192.168.65.7 sport=53548 dport=53 src=192.168.65.7 dst=192.168.100.101 sport=53 dport=53548 mark=0 use=1
+udp      17 5 src=127.0.0.1 dst=127.0.0.11 sport=58457 dport=53 src=127.0.0.11 dst=127.0.0.1 sport=53974 dport=58457 mark=0 use=1
+udp      17 25 src=192.168.100.101 dst=8.8.8.8 sport=57031 dport=53 src=8.8.8.8 dst=192.168.100.101 sport=53 dport=57031 mark=0 use=1
+udp      17 5 src=192.168.100.101 dst=192.168.65.7 sport=57152 dport=53 src=192.168.65.7 dst=192.168.100.101 sport=53 dport=57152 mark=0 use=1
+udp      17 25 src=192.168.100.3 dst=192.168.100.255 sport=137 dport=137 [UNREPLIED] src=192.168.100.255 dst=192.168.100.3 sport=137 dport=137 mark=0 use=1
+udp      17 21 src=192.168.100.3 dst=192.168.100.255 sport=138 dport=138 [UNREPLIED] src=192.168.100.255 dst=192.168.100.3 sport=138 dport=138 mark=0 use=1
+tcp      6 99 TIME_WAIT src=192.168.100.3 dst=192.168.100.101 sport=54958 dport=22 src=192.168.100.101 dst=192.168.100.3 sport=22 dport=54958 [ASSURED] mark=0 use=1
+conntrack v1.4.6 (conntrack-tools): 9 flow entries have been shown.
+root@outer1:/# 
+```
+
+
+
+## Connection Tracking
+- Connection tracking is not a firewall
+  - But a firewall can pay attention to connection tracking
+- Instead of:
+```
+iptables -A FORWARD -p tcp -i eth0 ...
+```
+- Uses `-m conntrack`:
+```
+iptables -A FORWARD -p tcp -i eth0 -m conntrack ...
+```
+- This turns `iptables` into a stateful firewall
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="application" class="center"><textarea data-template>
+# Application Firewalls
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<!-- .slide: class="right-float-img-600" -->
+## Application Firewall
+![](http://www.cs.virginia.edu/~asb2t/duimg/n07/image5.png)
+- Analyzes the data in the application layer
+  - Meaning the *contents* of the TCP packets
+- Very slow
+- Useful for proxies
+  - Or to filter out content
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## Proxy Servers
+![](images/graphs/proxy.webp)
+- Caches web pages (or any other application)
+- Multiple users accessing the same web page do not need multiple GETs to the web server
+  - The proxy must look in the HTTP request to see what page is being accessed
+- Problem: how often to update the copy in the proxy?
+  - Rapidly changing pages have issues
+  - Or pages that depend on cookies or logins
+
+
+
+## Proxy Pros and Cons
+- Pro: less use of external Internet connection
+- Pro: can limit website content
+- Con: can limit website content
+- Con: how often to update?
+- Con: need a lot of storage to be useful
+- Con: web browsers don't re-download cached images anyway
+
+
+
+## More Useful Proxy Servers
+- When building (and constantly re-building) Docker images...
+  - You have to `apt install` many packages
+  - Download them each time will take a while, especially on a slow connection
+- One can run an apt-cache proxy
+  - Then only the newer packages have to be downloaded
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## Socket Secure (SOCKS)
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Socken_farbig.jpeg/906px-Socken_farbig.jpeg)](https://commons.wikimedia.org/wiki/File:Socken_farbig.jpeg)
+- Often implemented via a *shim* layer between the application and transport layers
+  - This would be the session layer in the OSI model
+- SOCKS (Socket Secure) is an Internet protocol that "exchanges network packets between a client and server through a proxy server"
+- The client needs to have SOCKS support
 </textarea></section>
 
 </section>

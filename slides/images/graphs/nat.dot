@@ -74,11 +74,11 @@ digraph timeline {
         f6 -> f7 [arrowhead=none];
         f7 -> f8 [arrowhead=none];
         f8 -> f9 [arrowhead=none];
-        f10 [label=< opens port 65,444 <br/> maps .102:51,333 to 65,444 >,shape=text];
+        f10 [label=< opens port 65,444 <br/> maps .101:51,333 to 65,444 >,shape=text];
         f9 -> f10 [arrowhead=none];
         f10 -> f11 [arrowhead=none];
         f11 -> f12 [arrowhead=none];
-        f13 [label=< receives on port 65,444 <br/> fowards to .102:51,333 >,shape=text];
+        f13 [label=< receives on port 65,444 <br/> fowards to .101:51,333 >,shape=text];
         f12 -> f13 [arrowhead=none];
         f13 -> f14 [arrowhead=none];
         f14 -> f15 [arrowhead=none];
@@ -123,7 +123,7 @@ digraph timeline {
 subgraph hacker_line {
         node [fontname="Helvetica",shape=point,style=rounded,width=0.01];
         rank=TB;
-        hacker [shape=none,image="./virus.svg",fill=white,label=""];
+        hacker [shape=none,image="./hacker.svg",fill=white,label="",fixedsize=true,width=1.5,height=1.5];
         hacker -> h1 [arrowhead=none];
         h1 -> h2 [arrowhead=none];
         h2 -> h3 [arrowhead=none];
