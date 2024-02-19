@@ -8,18 +8,10 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
+    ul.task-list{list-style: none;}
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel='stylesheet' href='../../markdown.css'></link>
@@ -49,10 +41,22 @@
     document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
   }
   </script>
+  
 </head>
 <body>
 <h1 id='web-of-trust'>Web of Trust</h1>
 <p><a href='../index.html'>Go up to the NWS HW page</a> (<a href='../index.md'>md</a>) | <a href='index-full.html'>view one-page version</a></p><div class='tab'>
+<button class='tablinks' onclick='openTab(event,'toverview')' id='defaultOpen'>Overview</button>
+<button class='tablinks' onclick='openTab(event,'tchangelog')'>Changelog</button>
+<button class='tablinks' onclick='openTab(event,'tpart-1-generate-a-gpg-key')'>Generate A GPG Key</button>
+<button class='tablinks' onclick='openTab(event,'tpart-2-upload-your-public-key')'>Upload Your Public Key</button>
+<button class='tablinks' onclick='openTab(event,'tpart-3-send-an-email')'>Send An Email</button>
+<button class='tablinks' onclick='openTab(event,'tpart-4-get-your-key-signed')'>Get Your Key Signed</button>
+<button class='tablinks' onclick='openTab(event,'tpart-5-sign-other-keys')'>Sign Other Keys</button>
+<button class='tablinks' onclick='openTab(event,'tgrading')'>Grading</button>
+<button class='tablinks' onclick='openTab(event,'tsubmission')'>Submission</button>
+</div>
+<div id='toverview' class='tabconte | <a href='index-full.html'>view one-page version</a></p><div class='tab'>
 <button class='tablinks' onclick="openTab(event,'toverview')" id='defaultOpen'>Overview</button>
 <button class='tablinks' onclick="openTab(event,'tchangelog')">Changelog</button>
 <button class='tablinks' onclick="openTab(event,'tpart-1-generate-a-gpg-key')">Generate A GPG Key</button>
@@ -80,9 +84,9 @@
 <li>Later due date: the rest of the assignment is due by the date specified on the Canvas landing page. You will need to submit your (signed) GPG keys, and the edited <a href='weboftrust.py.html'>weboftrust.py</a> (<a href='weboftrust.py'>src</a>) by this due date.</li>
 </ul>
 <p><strong>Acknowledgements:</strong> This assignment was based, with permission, on <a href='https://people.csc.ncsu.edu/whenck/csc474/f23/ex/wot.html'>this one</a> by <a href='https://www.csc.ncsu.edu/people/whenck'>William Enck</a>, who derived his (with permission) from an assignment created by <a href='https://adamdoupe.com'>Adam Doupé</a>.</p>
-</div><div id='tchangelog' class='tabcontent'><h3 id='changelog'>Changelog</h3>
+</div><div id='tchangelog' class='tabcontent'></div><div id='tchangelog' class='tabcontent'><h3 id='changelog'>Changelog</h3>
 <p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. So far there aren’t any significant changes to report.</p>
-</div><div id='tpart-1-generate-a-gpg-key' class='tabcontent'><h3 id='part-1-generate-a-gpg-key'>Part 1: Generate a GPG Key</h3>
+</div><div id='tpart-1-generate-a-gpg-key' class='tabcontent'></div><div id='tpart-1-generate-a-gpg-key' class='tabcontent'><h3 id='part-1-generate-a-gpg-key'>Part 1: Generate a GPG Key</h3>
 <p>You will need to install <a href='https://gnupg.org'>GPG</a>, the Gnu Privacy Guard – this is an RSA client for encrypting emails. Installation packages can be found toward the bottom of <a href='https://gnupg.org/download/index.html'>this page</a>; there are GUI versions for the major operating systems. If GPG is already installed with your email client, that’s fine – you don’t need to install it again. It is also installed on the course Docker image, but you may not want to use the command-line version.</p>
 <p><strong>You MUST create a 4096 bit RSA key!</strong> This is what the adversarial key will be (see below for that), and if yours is different (3072 bits, for example), then it will be easy to differentiate them.</p>
 <p>Create a public/private GPG keypair specifically for this project with the following requirements:</p>
@@ -97,17 +101,18 @@
 <h4 id='do-not-lose-your-keypair'>– DO NOT LOSE YOUR KEYPAIR –</h4>
 <p>I cannot stress this enough, due to the nature of the assignment, we <strong>cannot</strong> and <strong>will not</strong> sign multiple keys for you. This may result in you getting <strong>a zero</strong> on the assignment. <a href='https://www.phildev.net/pgp/gpg_moving_keys.html'>Backup your keypair</a>. Because the keypair is being used for only this assignment, it is not as critical to keep it safe as if it were your normal RSA key – thus, you can just email the keys (both public and private) to yourself. If you lose the key once you’ve uploaded it to the server, then you will not be able to finish the assignment. Every UVA student has storage in Box, and you can use that as well – or any other mechanism to backup your keypair (including your secret key). Once your key is generated, backup your public and private key. Seriously, you’ve been warned.</p>
 <h4 id='do-not-lose-your-keypair-1'>– DO NOT LOSE YOUR KEYPAIR –</h4>
-</div><div id='tpart-2-upload-your-public-key' class='tabcontent'><h3 id='part-2-upload-your-public-key'>Part 2: Upload Your Public Key</h3>
+</div><div id='tpart-2-upload-your-public-key' class='tabcontent'></div><div id='tpart-2-upload-your-public-key' class='tabcontent'><h3 id='part-2-upload-your-public-key'>Part 2: Upload Your Public Key</h3>
 <p>Save your public key as a file called <code>mst3k.gpg</code>, where <code>mst3k</code> is your userid, and then upload your public key to GradeScope to the assignment “Web of Trust Upload”. The server will then check to see if your public key is valid, and only if it is, the server will sign your public key with the <a href='nws-key.pub'>course’s keypair</a>, which has a fingerprint of <code>FDA0 7EF5 8A87 1F57 9D6D  56DA 23AD 0D8A 73E5 7217</code>. You should download this key, verify the fingerprint, and import it into your GPG keyring.</p>
 <p>The server will also generate an <em>adversarial</em> keypair with a random name of <strong>another student in the class</strong> and the <strong>same email as your key</strong>. You will be able to download this adversarial keypair (both the public and private key).</p>
 <p>As this is signing your key, you may only upload your key <strong>ONCE</strong>. The system will not sign a second keypair for you, as that means you lost your original keypair. Note that a failed submission (wrong files submitted, incorrect format, etc.) will not count as the one time upload.</p>
 <p>This part, along with the next part, are due by the earlier due date.</p>
-</div><div id='tpart-3-send-an-email' class='tabcontent'><h3 id='part-3-send-an-email'>Part 3: Send an Email</h3>
+</div><div id='tpart-3-send-an-email' class='tabcontent'></div><div id='tpart-3-send-an-email' class='tabcontent'><h3 id='part-3-send-an-email'>Part 3: Send an Email</h3>
 <p>You need to send an RSA encrypted email to the course email address, which is listed on the Canvas landing page. In it, you should request your secret code. Include some witty or interesting quote. Both the request and the quote should be encrypted via GPG and the <a href='nws-key.pub'>course’s keypair</a>.</p>
+<p><strong>Note:</strong> If you have the ability to choose the file name of the encrypted file, such as if you are doing it as an attachment, please name it <code>mst3k.txt.gpg</code>. If you don’t have the option to name it (it’s cut-and-pasted), that’s fine.</p>
 <p>You need to send this email by the earlier due date (one week before the later due date).</p>
 <p>You will receive a response back with a code specific to your userid; this code will need to be included in the <a href='weboftrust.py.html'>weboftrust.py</a> (<a href='weboftrust.py'>src</a>) file that you submit. Note that this will take us some time to respond! There are a lot of students in the class. However, as long as you sent your email by the earlier due date, you will receive your response no later that 24 hours before the later due date.</p>
 <p>This part (just the sending of the email), and the previous part (uploading your key), are due by the earlier due date.</p>
-</div><div id='tpart-4-get-your-key-signed' class='tabcontent'><h3 id='part-4-get-your-key-signed'>Part 4: Get Your Key Signed</h3>
+</div><div id='tpart-4-get-your-key-signed' class='tabcontent'></div><div id='tpart-4-get-your-key-signed' class='tabcontent'><h3 id='part-4-get-your-key-signed'>Part 4: Get Your Key Signed</h3>
 <p>Here’s where the fun starts. You need to get your key signed by at least 15 of your fellow students’ public keys. The signatures must be from a <strong>valid</strong> key in this class: How will you know?</p>
 <p><strong>Note:</strong> For the purposes of this assignment, a “valid” key is a key created by one of your classmates and signed by the class signing key. The adversarial keys created by GradeScope are <strong>not</strong> “valid” keys. Signatures from invalid keys do not count toward the 15 total</p>
 <p>There are lots of resources on the Internet that describe signing public keys. Here are two that focus on the command line versions:</p>
@@ -116,11 +121,11 @@
 <li><a href='http://www.phillylinux.org/keys/terminal.html'>Another guide</a></li>
 </ul>
 <p>That being said, the GUIs for GPG are pretty easy to use, and you probably can figure out how to sign a key by tinkering around.</p>
-</div><div id='tpart-5-sign-other-keys' class='tabcontent'><h3 id='part-5-sign-other-keys'>Part 5: Sign Other Keys</h3>
+</div><div id='tpart-5-sign-other-keys' class='tabcontent'></div><div id='tpart-5-sign-other-keys' class='tabcontent'><h3 id='part-5-sign-other-keys'>Part 5: Sign Other Keys</h3>
 <p>Using what you learned from the above, you must sign at least 15 of your fellow students’ public keys. You are encourage to sign more, but only public keys valid for this class count: <em>How will you know?</em></p>
 <p>A big part of this assignment is figuring out how to determine if the key you are signing is actually the correct key for the person you think it is.</p>
 <p><strong>Note:</strong> We will only count signatures from your <strong>valid key</strong> on other students’ valid keys. That is, signing other students’ valid keys with your adversarial key will not count towards your required number if signatures. Similarly, signing someone else’s adversarial key with your valid key will not count toward your required number of signatures.</p>
-</div><div id='tgrading' class='tabcontent'><h3 id='grading'>Grading</h3>
+</div><div id='tgrading' class='tabcontent'></div><div id='tgrading' class='tabcontent'><h3 id='grading'>Grading</h3>
 <ul>
 <li>The base grade is determined by:
 <ul>
@@ -146,13 +151,14 @@
 </ul>
 <p>Note that signing one of your keys (either one) with your other key will not affect your grade. Also note that signing one or two invalid keys with your own will not sink your grade!</p>
 <p>The exact amount of points will be determined at the end, once we see the results. This is for both the deductions and the extra credit bonus.</p>
-</div><div id='tsubmission' class='tabcontent'><h3 id='submission'>Submission</h3>
+</div><div id='tsubmission' class='tabcontent'></div><div id='tsubmission' class='tabcontent'><h3 id='submission'>Submission</h3>
 <p>There are TWO submissions for this assignment, with different due dates; the second one is due a week after the first one.</p>
 <h4 id='first-submission'>First submission</h4>
 <p>The first is to the “Web of Trust Upload” assignment in Gradescope, which is where you upload your key created in part 1, and this submission is described in part 2. The file should be named <code>mst3k.pub</code>, where <code>mst3k</code> is your UVA userid. You also have to send the GPG encrypted email to the course email address.</p>
 <h4 id='second-submission'>Second submission</h4>
 <p>The second is to the “Web of Trust Submission” assignment in Gradescope, where you are submitting your public key (with the 15 signatures), which you will need to export into a <code>mst3k_signed.pub</code> file. Also submit your public adversarial key (whether you tricked people into signing with your adversarial key or not) into a <code>mst3k_fake.pub</code> file.</p>
 <p>You will also need to submit an edited version of <a href='weboftrust.py.html'>weboftrust.py</a> (<a href='weboftrust.py'>src</a>); that file explains what to fill in and where.</p>
-</div><script>document.getElementById('defaultOpen').click();</script></body>
+</div><script>document.getElementById('defaultOpen').click();</script></div><script>document.getElementById('defaultOpen').click();</script></body>
 </html>
+
 

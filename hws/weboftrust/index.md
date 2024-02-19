@@ -71,6 +71,8 @@ This part, along with the next part, are due by the earlier due date.
 
 You need to send an RSA encrypted email to the course email address, which is listed on the Canvas landing page.  In it, you should request your secret code.  Include some witty or interesting quote.  Both the request and the quote should be encrypted via GPG and the [course's keypair](nws-key.pub).
 
+**Note:** If you have the ability to choose the file name of the encrypted file, such as if you are doing it as an attachment, please name it `mst3k.txt.gpg`.  If you don't have the option to name it (it's cut-and-pasted), that's fine.
+
 You need to send this email by the earlier due date (one week before the later due date).
 
 You will receive a response back with a code specific to your userid; this code will need to be included in the [weboftrust.py](weboftrust.py.html) ([src](weboftrust.py)) file that you submit.  Note that this will take us some time to respond!  There are a lot of students in the class.  However, as long as you sent your email by the earlier due date, you will receive your response no later that 24 hours before the later due date.
