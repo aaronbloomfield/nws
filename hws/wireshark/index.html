@@ -8,18 +8,10 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
+    ul.task-list{list-style: none;}
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel='stylesheet' href='../../markdown.css'></link>
@@ -49,6 +41,7 @@
     document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
   }
   </script>
+  
 </head>
 <body>
 <h1 id='wireshark'>Wireshark</h1>
@@ -95,7 +88,7 @@
 <li>We also want to look at the SSH traffic. You can use that filter (<code>ssh</code>) to show only the SSH packets. It may be that, in the “SSH Protocol” drop-down, that the data in each packet is encrypted, and is shown in hex. Otherwise, right-click on the “SSH Protocol”, select Copy, then “as Hex stream” to get the encrypted hex data.
 <ul>
 <li>Question 8: how many SSH packets are present after using the <code>ssh</code> filter?</li>
-<li>Question 9: what is the “Encrypted Packet” value for the first SSH packet in the capture?</li>
+<li>Question 9: what is the “Encrypted Packet” value for the first SSH packet in the capture? This is for the first packet that has “Encrypted packet” in the “Info” column – the packets before this are showing the key exchange.</li>
 </ul></li>
 <li>Lastly, notice that the packets have a coloring scheme. You can see that scheme via View -&gt; Coloring Rules. You don’t have to have these all memorized, just know that the different colors indicate some of the properties of the packets.
 <ul>

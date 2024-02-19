@@ -43,7 +43,7 @@ To start this analysis, we are going to analyze a few separate network connectio
 	- Question 7: what is the password used to attempt to log in?
 - We also want to look at the SSH traffic.  You can use that filter (`ssh`) to show only the SSH packets.  It may be that, in the "SSH Protocol" drop-down, that the data in each packet is encrypted, and is shown in hex.  Otherwise, right-click on the "SSH Protocol", select Copy, then "as Hex stream" to get the encrypted hex data.
 	- Question 8: how many SSH packets are present after using the `ssh` filter?
-	- Question 9: what is the "Encrypted Packet" value for the first SSH packet in the capture?
+	- Question 9: what is the "Encrypted Packet" value for the first SSH packet in the capture?  This is for the first packet that has "Encrypted packet" in the "Info" column -- the packets before this are showing the key exchange.
 - Lastly, notice that the packets have a coloring scheme.  You can see that scheme via View -> Coloring Rules.  You don't have to have these all memorized, just know that the different colors indicate some of the properties of the packets.
 	- Question 10: what is the background color (not the font color) of packets that are a bad TCP packet?
 
