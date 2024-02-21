@@ -56,6 +56,7 @@
 [Packet Filtering Firewalls](#/pfilters)  
 [Stateful Firewalls](#/stateful)  
 [Application Firewalls](#/application)  
+[Tunneling and Evasion](#/evasion)  
 </textarea></section>
   
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -364,6 +365,172 @@ iptables -A FORWARD -p tcp -i eth0 -m conntrack ...
   - This would be the session layer in the OSI model
 - SOCKS (Socket Secure) is an Internet protocol that "exchanges network packets between a client and server through a proxy server"
 - The client needs to have SOCKS support
+- More on this shortly...
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="evasion" class="center"><textarea data-template>
+# Tunneling and Evasion
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## Already seen: IPsec VPN
+
+<img src="http://www.cs.virginia.edu/~asb2t/duimg/n08/image-a.png" style="height:300px">
+
+- Implemented at the IP level using IPsec
+- Because the TCP packet is encrypted, the firewall can't be a stateful (port-aware) firewall
+  - IPsec on home gateways is often disabled by default
+
+
+
+## Already seen: Application VPN
+
+<img src="http://www.cs.virginia.edu/~asb2t/duimg/n08/image-b.png" style="height:300px">
+
+- Implemented at the *application* level using TLS/SSL, DTLS, or even SSH
+- Network packets are "intercepted" by the application, sent over the link, and then re-sent from the other side
+
+
+
+## Already seen: SSH "VPN"
+- ssh can redirect a port through an ssh connection; usage:
+```
+$ ssh -L 8080:server:80 user@server
+```
+- Connecting to port 8080 on the localhost machine will connect, through the ssh tunnel, to port 80 on the remote server
+- Pro: easy for anybody to setup and use
+- Pro: does not need a VPN application
+- Pro: application level, so less kernel complexity
+- Con: does not redirect all traffic
+- Con: slower than other methods
+
+
+
+## Ingress versus Egress
+- Ingress filtering
+  - "Normal" firewall: blocks all ports except for requested data
+  - One can "poke a hole" in this to allow a single port through
+  - Blocks incoming connections
+- Egress filtering
+  - Blocks data from outside, such as certain websites
+  - Example: the Great Firewall of China
+  - Blocks data from outgoing requests
+
+
+
+<h2 class="r-fit-text">SSH to bypass ingress firewalls</h2>
+
+- To get access to another network behind a firewall
+```
+ssh -w 0:0 root@server.com \
+  -o "PermitLocalCommand=yes" \
+  -o "LocalCommand= ip addr add 192.168.47.0/24 dev tun0 && \
+                    ip link set tun0 up" \
+  -o "RemoteCommand=ip addr add 192.168.60.0/24 dev tun0 && \
+                    ip link set tun0 up"
+```
+- This assumes 192.168.47.0/24 is the *remote* (work) network
+  - And 192.168.60.0/24 is the *local* (home) network
+- The local command is creating a route to the remote machines
+  - The remote command creating a route to the local machines
+- But the *routing* is not yet configured
+
+
+
+## More configuration
+- Recall that 192.168.47.0/24 is the remote network
+  - And 192.168.60.0.24 is the local network
+- Local machine:
+```
+ip route replace 192.168.60.0/24 dev tun0
+ip route add <vpn_server_ip>/32 via <gateway_ip>
+```
+- This sets the default route for the remote network to the tun0 interface
+  - Unless you are trying to contact the VPN server -- then go through the normal gateway
+- Lastly, we need to set up NAT on the remote machine
+
+
+
+<h2 class="r-fit-text">SSH to bypass egress firewalls</h2>
+
+- Let's say that [example.com](http://example.com) is blocked
+  - IP address is 93.184.216.34
+- Step 1: set up SSH as in the past two slides
+- Step 2: enter this one rule:
+```
+ip route add 93.184.216.34/24 dev tun0
+```
+- Now all requests to that site will go through the ssh tunnel
+
+
+
+<!-- .slide: class="right-float-img-1000 no-border" -->
+## Bypassing Geo-Restriction
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Map_tack_inserted.jpg/768px-Map_tack_inserted.jpg)](https://commons.wikimedia.org/wiki/File:Map_tack_inserted.jpg)
+- Any VPN will work, as long as the "other side" is within the Geo-restricted area
+- UVA states you should never, ever, use their VPN to stream videos
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## More Better Tunneling
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Tunnel_of_the_Stadium_of_Nemea%2C_Exit%2C_201983.jpg/1024px-Tunnel_of_the_Stadium_of_Nemea%2C_Exit%2C_201983.jpg)](https://commons.wikimedia.org/wiki/File:Tunnel_of_the_Stadium_of_Nemea,_Exit,_201983.jpg)
+- So far, we have only seen *static* tunnels
+  - Meaning the tunnel forwards to just one location
+- What if we want multiple locations?  And for it to change dynamically?
+- Solution: SOCKS (Socket Secure)
+
+
+
+## SOCKS (Socket Secure)
+- A "shim" layer between the application and transport layers; in Python:
+```
+import socks
+s = socks.socksocket()
+s.set_proxy(socks.SOCKS5, "localhost", 4760)
+s.connect((dest_ip, 8080))
+s.sendall(b'...')
+print(s.recv(4096))
+```
+- This assumes the proxy is running on port 4760 of localhost
+- This program is using SOCKS to connect to the dest_ip on port 8080
+  - SOCKS will handle the port forwarding
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## SOCKS (Socket Secure)
+[![](https://upload.wikimedia.org/wikipedia/commons/f/fd/Villased_sokid%2C_STM_1998.jpg)](https://commons.wikimedia.org/wiki/File:Villased_sokid,_STM_1998.jpg)
+- The proxy was running on port 4760 of localhost
+  - This is likely through some type of tunnel, perhaps an SSH port forward
+- The Python program picked the destination IP and port to connect to
+- The SOCKS proxy handled redirecting that one port through the tunnel and to it's final destination
+
+
+
+## VPNs versus SOCKS proxies
+- VPNs are transparent to applications, SOCKS proxies are not
+- Setting up a VPN is more complicated
+- Any application can use a VPN; only the program that knows how to use SOCKS can use the proxy
+- VPN always encrypts your traffic
+- SOCKS proxies *may* encrypt your traffic -- it depends on what the tunnel is
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## Other tunneling methods
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Tunnels_Beaches_-_The_main_tunnel_-_geograph.org.uk_-_4149495.jpg/1024px-Tunnels_Beaches_-_The_main_tunnel_-_geograph.org.uk_-_4149495.jpg)](https://commons.wikimedia.org/wiki/File:Tunnels_Beaches_-_The_main_tunnel_-_geograph.org.uk_-_4149495.jpg)
+- ICMP: like in the [Ping Shell Commands](../hws/pingcmd/index.html)
+  - We could send network data (packets) in the payload rather than shell commands and responses
+- HTTPS: all firewalls allow this traffic through
+  - You need a program or plugin to route everything via HTTPS
+  - And a receiving server
 </textarea></section>
 
 </section>
