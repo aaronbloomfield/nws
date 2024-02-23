@@ -134,11 +134,13 @@
 </section>
 
     <section data-markdown data-separator="^\n\n\n"><textarea data-template>
-## Private key cryptography
+## Secret key cryptography
 - The function and/or key to encrypt/decrypt is a secret
  - (Hopefully) only known to the sender and recipient
 - The same key encrypts and decrypts
 - How do you get the key to the recipient?
+- Also called symmetric cryptography
+  - As it's the same key that both encrypts and decrypts
 - Example algorithms: AES, DES
 
 
@@ -159,6 +161,18 @@
   - With the right key!
 - Cracking should be very hard (exponential time)
 - Mathematical concepts need to used where the operations to do the first three are "easy" and the operation to perform the last one is "hard"
+
+
+
+## Hard versus Easy Math
+- Integer factorization
+  - Generating a prime number is (relatively) easy
+  - Factoring an integer, when there are not small prime factors, is hard
+- Discrete logs
+  - Computing $x = a^b\text{ mod }c$ is (relatively) easy
+  - Computing $a$ when given $x$, $b$, and $c$, and you know $x = a^b\text{ mod }c$, is hard
+- Elliptic curves
+  - More on this next...
 
 
 
