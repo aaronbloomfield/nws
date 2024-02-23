@@ -14,6 +14,8 @@ The slides used in this course are adapted from the slides for the textbook, [In
 - [Network Layer and Attacks](network-layer.html#/)
 - [Packet sniffing and spoofing](packets.html#/)]
 - [Transport layer](transport-layer.html#/)
+- [Firewalls](firewalls.html#/)
+- [Encryption](encryption.html#/)
 
 <!--
 - [Network Security Basics](https://www.handsonsecurity.net/files/slides/N01_Network_Basics.pptx)

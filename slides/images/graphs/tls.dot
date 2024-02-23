@@ -1,0 +1,144 @@
+digraph tls_1_2 {
+    labelloc="t";
+    label="TLS 1.2";
+
+    graph [fontname="Helvetica"];
+    node [fontname="Helvetica"];
+    edge [fontname="Helvetica",labelOverlay=true,minlen=5];
+    rankdir="TB";
+
+    subgraph other_line {
+        node [fontname="Helvetica",shape=point,style=rounded,width=0.01];
+        edge [minlen=1];
+        rank=TB;
+        client [shape=none,image="./terminal.svg",fill=white,label="\ \ client"];
+        client -> c1 [arrowhead=none];
+        c1 -> c2 [arrowhead=none];
+        c2 -> c3 [arrowhead=none];
+        c3 -> c4 [arrowhead=none];
+        c4 -> c5 [arrowhead=none];
+        c5 -> c6 [arrowhead=none];
+        c6 -> c7 [arrowhead=none];
+        //{rank=same o1 o2 o3 o4 o5 o6 o7 o8 o9 o10 o11 o12 o13 o14 o15 o16 o17 o18 o19 o20}
+    }
+
+    subgraph message_line {
+        node [fontname="Helvetica",shape=box,style=rounded,width=2.25];
+        edge [minlen=1];
+        rank=TB;
+        m1 [label=< <i>(plaintext:)</i><br/>client hello<br/>random number<br/>supported ciphers >];
+        m2 [label=< <i>(encrypted:)</i><br/>server hello<br/>chosen ciphers<br/>random number<br/>server cert (key share)<br/>get client cert >];
+        m3 [label=< <i>(encrypted:)</i><br/>client cert (key share)<br/>PMS<br/>hash of msgs (signature)<br/>change to AES<br/>finished >]
+        m4 [label=< <i>(encrypted:)</i><br/>changing to AES<br/>finished >]
+        m5 [label=< HTTPS GET >]
+        m6 [label=< HTTPS answer >]
+        m1 -> m2 [arrowhead=none,style=invis];
+        m2 -> m3 [arrowhead=none,style=invis];
+        m3 -> m4 [arrowhead=none,style=invis];
+        m4 -> m5 [arrowhead=none,style=invis];
+        m5 -> m6 [arrowhead=none,style=invis];
+        //m6 -> m7 [arrowhead=none,style=invis];
+    }
+
+    subgraph terminal_line {
+        node [fontname="Helvetica",shape=point,style=rounded,width=0.01];
+        edge [minlen=1];
+        rank=TB;
+        server [shape=none,image="./terminal.svg",fill=white,label="\ server"];
+        server -> s1 [arrowhead=none];
+        s1 -> s2 [arrowhead=none];
+        s2 -> s3 [arrowhead=none];
+        s3 -> s4 [arrowhead=none];
+        s4 -> s5 [arrowhead=none];
+        s5 -> s6 [arrowhead=none];
+        s6 -> s7 [arrowhead=none];
+    }
+
+    c1 -> m1 [arrowhead=none];
+    m1 -> s1 [];
+    c2 -> m2 [arrowhead=none,arrowtail=normal,dir=both];
+    m2 -> s2 [arrowhead=none];
+    c3 -> m3 [arrowhead=none];
+    m3 -> s3 [];
+    c4 -> m4 [arrowhead=none,arrowtail=normal,dir=both];
+    m4 -> s4 [arrowhead=none];
+    c5 -> m5 [arrowhead=none];
+    m5 -> s5 [];
+    c6 -> m6 [arrowhead=none,arrowtail=normal,dir=both];
+    m6 -> s6 [arrowhead=none];
+
+    {rank=same c1 m1 s1}
+    {rank=same c2 m2 s2}
+    {rank=same c3 m3 s3}
+    {rank=same c4 m4 s4}
+    {rank=same c5 m5 s5}
+    {rank=same c6 m6 s6}
+    {rank=same c7 s7}
+
+}
+
+
+digraph tls_1_3 {
+    labelloc="t";
+    label="TLS 1.3";
+
+    graph [fontname="Helvetica"];
+    node [fontname="Helvetica"];
+    edge [fontname="Helvetica",labelOverlay=true,minlen=5];
+    rankdir="TB";
+
+    subgraph other_line {
+        node [fontname="Helvetica",shape=point,style=rounded,width=0.01];
+        edge [minlen=1];
+        rank=TB;
+        client [shape=none,image="./terminal.svg",fill=white,label="\ \ client"];
+        client -> c1 [arrowhead=none];
+        c1 -> c2 [arrowhead=none];
+        c2 -> c3 [arrowhead=none];
+        c3 -> c4 [arrowhead=none];
+        c4 -> c5 [arrowhead=none];
+        //{rank=same o1 o2 o3 o4 o5 o6 o7 o8 o9 o10 o11 o12 o13 o14 o15 o16 o17 o18 o19 o20}
+    }
+
+    subgraph message_line {
+        node [fontname="Helvetica",shape=box,style=rounded,width=2.25];
+        edge [minlen=1];
+        rank=TB;
+        m1 [label=< client hello<br/>supported ciphers<br/>key share >];
+        m2 [label=< server hello<br/>chosen cipher<br/>key share<br/>certificate<br/>signature<br/>finished >];
+        m3 [label=< finished<br/>HTTPS GET >]
+        m4 [label=< HTTPS answer >]
+        m1 -> m2 [arrowhead=none,style=invis];
+        m2 -> m3 [arrowhead=none,style=invis];
+        m3 -> m4 [arrowhead=none,style=invis];
+        //m6 -> m7 [arrowhead=none,style=invis];
+    }
+
+    subgraph terminal_line {
+        node [fontname="Helvetica",shape=point,style=rounded,width=0.01];
+        edge [minlen=1];
+        rank=TB;
+        server [shape=none,image="./terminal.svg",fill=white,label="\ server"];
+        server -> s1 [arrowhead=none];
+        s1 -> s2 [arrowhead=none];
+        s2 -> s3 [arrowhead=none];
+        s3 -> s4 [arrowhead=none];
+        s4 -> s5 [arrowhead=none];
+    }
+
+    c1 -> m1 [arrowhead=none];
+    m1 -> s1 [];
+    c2 -> m2 [arrowhead=none,arrowtail=normal,dir=both];
+    m2 -> s2 [arrowhead=none];
+    c3 -> m3 [arrowhead=none];
+    m3 -> s3 [];
+    c4 -> m4 [arrowhead=none,arrowtail=normal,dir=both];
+    m4 -> s4 [arrowhead=none];
+
+    {rank=same c1 m1 s1}
+    {rank=same c2 m2 s2}
+    {rank=same c3 m3 s3}
+    {rank=same c4 m4 s4}
+    {rank=same c5 s5}
+
+}

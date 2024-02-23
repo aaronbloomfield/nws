@@ -19,6 +19,15 @@ graph:
 	@/bin/rm -f *.sedbak
 
 
+tls:
+	@dot -Tsvg -O tls.dot
+	@/bin/mv tls.dot.svg tls-1.2.svg
+	@/bin/mv tls.dot.2.svg tls-1.3.svg
+	@$(SEDI) s_href=\"./_href=\"`pwd`/_g tls*.svg
+	@for x in `ls tls*.svg | sed s/.svg//g`; do convert $$x.svg $$x.png; done
+	@for x in `ls tls*.svg | sed s/.svg//g`; do cwebp -quiet -lossless -o $$x.webp $$x.png; done
+	@/bin/rm -f *.sedbak
+
 proxy:
 	dot -Tsvg -O proxy.dot
 	/bin/mv -f proxy.dot.svg proxy.svg

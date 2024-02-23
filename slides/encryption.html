@@ -52,10 +52,10 @@
 # Contents
 &nbsp;  
 [Encryption Review](#/review)  
-[Private key "symmetric" ciphers](#/private)  
 [Key Exchange](#/keyexch)  
 [Certificates](#/certificates)  
 [SSL & TLS](#/ssltls)  
+[Symmetric ciphers](#/symmetric)  
 </textarea></section>
 
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -139,6 +139,7 @@
  - (Hopefully) only known to the sender and recipient
 - The same key encrypts and decrypts
 - How do you get the key to the recipient?
+- Example algorithms: AES, DES
 
 
 
@@ -147,6 +148,7 @@
  - They are not interchangable!
 - The encryption key is made public
 - The decryption key is kept private
+- Example algorithms: RSA, ECDSA
 
 
 
@@ -219,19 +221,7 @@
 
 
 
-<!-- .slide: class="right-float-img-600 no-border" -->
-## Review: Randomness
-[![](https://upload.wikimedia.org/wikipedia/commons/1/1c/6sided_dice_%28cropped%29.jpg)](https://commons.wikimedia.org/wiki/File:6sided_dice_(cropped).jpg)
-- To create secure keys, we need a good random number generator
-  - Cryptographically Secure Pseudo Random Number Generator (CSPRNG)
-- It requires:
-  - A good algorithm
-  - A good source of randomness (entropy): environmental sensors, timings, etc.
-
-
-
-
-## Review: LCG
+## Review: Randomness: LCG
 - The [linear congruential generator (LCG)](https://en.wikipedia.org/wiki/Linear_congruential_generator)
 - $X_{n+1}=(a*X_n+c) \text{ mod } m$
   - $m$ is the modulus, and must be positive
@@ -245,152 +235,18 @@
   - $X_1 = (4*1+7) \text{ mod } 9 = 2$
   - $X_2 = (4*2+7) \text{ mod } 9 = 6$
   - Rest of the sequence: 4, 5, 0, 7, 8, 3, and then back to 1
+
+
+
+<!-- .slide: class="right-float-img-600 no-border" -->
+## Review: Randomness
+[![](https://upload.wikimedia.org/wikipedia/commons/1/1c/6sided_dice_%28cropped%29.jpg)](https://commons.wikimedia.org/wiki/File:6sided_dice_(cropped).jpg)
+- To create secure keys, we need a good random number generator
+  - Cryptographically Secure Pseudo Random Number Generator (CSPRNG)
+- It requires:
+  - A good algorithm
+  - A good source of randomness (entropy): environmental sensors, timings, etc.
       </textarea></section>
-
-	</section>
-
-<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-	<section>
-      
-	  <section data-markdown id="private" class="center"><textarea data-template>
-# Private key "symmetric" ciphers
-	  </textarea></section>
-	  
-	  <section data-markdown data-separator="^\n$"><textarea data-template>
-## Data Encryption Standard ([DES](http://en.wikipedia.org/wiki/Data_Encryption_Standard))
-- Adopted in 1976, it's a private-key encryption/decryption block cipher
-- Briefly, it does a lot of (invertible) bit-shifting in rounds to encrypt/decrypt a message
-- How to crack?
-  - It is susceptible to brute force attacks ($2^{56} = 7 * 10^{16}$ keys)
-- Solution: use DES three times => "Triple DES"
-  - Use a 56*3 = 168 bit key, and encrypt the message three times, once with each key
-
-
-## Cracking Triple DES encryption
-- Brute-force attacks:
-  - $2^{168}$ keys, but due to various mathematical properties, this ends up being $2^{112}$ different keys
-- "The best attack known on 3-key TDES requires around $2^{32}$ known plaintexts, $2^{113}$ steps, $2^{90}$ single DES encryptions, and $2^{88}$ memory"
-- NIST (National Institute of Standards and Technology) considers it secure through 2030
-
-
-## DES conspiracy theories
-- NSA was involved with DES' creation
-  - They convinced IBM to lower the key length from 128 to 64, and then to 56
-  - And kept many of the details secret
-  - Many well-respected people criticized the NSA for "improper interference" with the algorithm
-- In 1977, Diffie and Hellman (major names in cryptography) proposed a $20 million machine that could crack a DES message in a single day
-- It's known that the NSA had the budget for such a machine.  But did they build it?
-
-
-## Advanced Encryption Standard (AES)
-- The successor to DES
-- Has three possible key lengths: 128, 192, and 256
-- NSA approved this standard, and kept the process open
-- Like DES, it's a series of (invertible) bit-shifting in rounds to encrypt/decrypt a message
-- Many worry about the security of the standard
-  - ... that somebody may figure a way to crack it mathematically, in particular
-- [Reference](http://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
-
-
-
-## AES encryption modes
-- Lots of them!
-- Ones allowed in TLS 1.3:
-  - AES-CBC (Cipher block chaining): provides confidentiality only
-  - AES-GCM (Galois/counter mode): provides AEAD
-
-
-
-## AES-CBC encryption
-![AES-CBC encryption](https://upload.wikimedia.org/wikipedia/commons/8/80/CBC_encryption.svg)
-- Formulaicly:
-  - $c_0 = AES_e(IV \oplus m_0)$
-  - $c_1 = AES_e(c_0 \oplus m_1)$
-  - $c_2 = AES_e(c_1 \oplus m_2)$
-
-
-
-## AES-CBC decryption
-![AES-CBC decryption](https://upload.wikimedia.org/wikipedia/commons/2/2a/CBC_decryption.svg)
-- Formulaicly:
-  - $m_0 = IV \oplus AES_d(c_0)$
-  - $m_1 = c_0 \oplus AES_d(c_1)$
-  - $m_2 = c_1 \oplus AES_d(c_2)$
-
-
-
-## AEC-CBC pros and cons
-- Provides only confidentiality, not integrity or authenticity
-- Not parallelizeable
-  - Each block depends on the previous one
-
-
-
-## Encryption & Hashing Goals
-- *Integrity:* the message canʻt be changed, maliciously or accidentally
-  - Formally, a change is always detectable
-- *Confidentiality:* the message can't be read by somebody else
-  - In other words, itʻs encrypted
-- *Authenticity:* the message came from who you think it came from
-  - Formally, from an entity that has the appropriate key
-
-
-
-## Message Authentication Code (MAC)
-- Like a digital signature, but with a symmetric key
-- Provides the *integrity* and *authenticity* but not *confidentiality*
-- $MAC(k,m)$ will produce a short bit string that can only be created with the key $k$ and message $m$
-  - Hash-based (HMAC) example: 
-    - $HMAC(k,m) = SHA256(k \cdot m)$
-    - Named for the algorithm used: HMAC-MD5, HMAC-SHA1, etc.
-  - Cipher-based (CMAC) example: 
-    - $CMAC(k,m) = AES(k,m).truncate(256)$
-    - Also named for the cipher used: CMAC-AES, etc.
-  - GMAC uses Galois algorithm from AES-GCM
-
-
-
-## Why MACs?
-- Provides *integrity*
-  - An adversary can change the ciphertext; this change would be detected
-- Provides *authenticity*
-  - A chosen-message attack cannot succeed (canʻt create the MAC)
-- Earlier implementations, with just hashes...
-  - Were difficult to get right
-  - Very error prone and subject to attacks
-
-
-
-## Types of authenticated encryption
-- Comparisons: [this paper](https://link.springer.com/content/pdf/10.1007/3-540-44448-3_41.pdf) and [this stackexchange.com posting that summarizes it](https://crypto.stackexchange.com/questions/202/should-we-mac-then-encrypt-or-encrypt-then-mac)
-
-
-
-
-<!-- .slide: class="right-float-img-600" -->
-## Encrypt-then-MAC (EtM)
-![EtM](https://upload.wikimedia.org/wikipedia/commons/b/b9/Authenticated_Encryption_EtM.png)
-- Provides integrity of the cipher text (and thus the plain text)
-  - Thus, if the cipher text is modified, the message is ignored, and prevents any potential attacks on the implementation
-- MAC can not be used to infer anything about the plaintext
-
-
-
-<!-- .slide: class="right-float-img-600" -->
-## MAC-then-Encrypt (MtE)
-![MtE](https://upload.wikimedia.org/wikipedia/commons/a/ac/Authenticated_Encryption_MtE.png)
-- No integrity check of the cipher text, but does for the plain text
-- MAC can not be used to infer anything about the plaintext
-
-
-
-<!-- .slide: class="right-float-img-600" -->
-## Encrypt-and-MAC (E&M)
-![E&M](https://upload.wikimedia.org/wikipedia/commons/a/a5/Authenticated_Encryption_EaM.png)
-- Also no integrity of the cipher text, but yes on the plain text
-- MAC can be used to infer information about the plaintext
-	</textarea></section>
 
 	</section>
 
@@ -410,7 +266,7 @@
 - If you want to communicate with another party, how do you create a private key?
   - One solution: Key stores, but only if you both have generated public/private key sets
     - Not always practical for all security protocols
-- One solution: [Diffie–Hellman key exchange](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange)
+- Another solution: [Diffie–Hellman key exchange](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange)
   - This version uses discrete logs
   - A variant called [ECDH](https://en.wikipedia.org/wiki/Elliptic-curve_Diffie%E2%80%93Hellman) uses elliptic curves
 
@@ -517,6 +373,7 @@ If that doesn't work, try the [direct Youtube link](http://youtu.be/YEBfamv-_do?
 [![https certificate](https://upload.wikimedia.org/wikipedia/commons/4/4b/ServerCertificate.png)](https://commons.wikimedia.org/wiki/File:ServerCertificate.png)
 - All websites that support https provide such a certificate to any client
 - Browsers can display certificate information, such as shown here
+- We can view one via our web browser
 
 
 
@@ -536,6 +393,8 @@ An entity (such as virginia.edu) can hold an *intermediate* certificate, which a
 
 
 ## Certificate Authorities (CAs)
+- By definition, they have a so-called *root* certificate
+  - Although it may not be trusted by anybody else
 - Any CA can "vouch" (i.e., sign) for *any* certificate
   - For any website or any (likely new) CA
 - Thus, the security is based on the weakest CA
@@ -551,6 +410,54 @@ An entity (such as virginia.edu) can hold an *intermediate* certificate, which a
   - The 23,000 certificates Trustico sold were "compromised"
     - They still had the private keys (a big no-no)
   - They were sold under the umbrella of Symantec, so Symantec was party at fault as well
+
+
+
+## Trusting Trust
+- A server's certificate is signed by a Certificate Authority
+  - Perhaps through an intermediary certificate
+- So we trust the server's certificate because the CA vouches for it
+- And we trust the CA because...
+
+
+
+<h2 class="r-fit-text">Root CA hack: DigiNotar (Sept 3, 2011)</h2>
+
+- Dutch certificate authority [DigiNotar](https://en.wikipedia.org/wiki/DigiNotar) suffered a security breach
+- Result: ~500 fraudulent certificates issues
+- Target: 300k Iranian gmail users
+  - Gmail users then compromised via MITM attack
+- Whodunit?
+  - Dutch government's investigation stated the Iranian gov't was behind it
+  - [Bruce Schneier](https://en.wikipedia.org/wiki/Bruce_Schneier) claims it was  "either the work of the NSA, or exploited by the NSA" ([ref](https://www.schneier.com/blog/archives/2013/09/new_nsa_leak_sh.html)); others dispute this
+- Result: all DigiNotar certs were blacklisted; company closed a week later
+
+
+
+## Root CA Abuse: CNNIC (Apr 2015)
+- [China Internet Network Information Center (CNNIC)](https://en.wikipedia.org/wiki/China_Internet_Network_Information_Center) handles domain registry and certificates in China
+  - Applied for a trusted root cert to Mozilla in 2009; later to Microsoft
+- In 2015, an intermediate CA issued by CNNIC was found to have issued fraudulent certs for Google domains
+  - An Egypt-based firm used it to impersonate some Google domains
+- Google revoked CNNIC's root certificate
+- April 2015: Google & Mozilla announced they were no longer trusting CNNIC's root cert
+
+
+
+## Root CA Misuse: WoSign and StartCom (2016/2017)
+- WoSign was (is?) China's largest certificaute issuer, owned by [Qihao 360](https://en.wikipedia.org/wiki/Qihoo_360)
+  - [StartCom](https://en.wikipedia.org/wiki/StartCom), an Israeli certificate authority, was acquired in secret by WoSign
+- WoSign and SmartCom issued "hundreds of certificates with the same serial number in just five days"
+  - Including one for GitHub
+- Chrome and Mozilla revoked their root certificate recognition in 2017
+
+
+
+## Trusted root cert count
+- For [Apple devices](https://support.apple.com/en-us/105116): 159 as of Feb 21, 2024
+- For [Mozilla / Firefox](https://wiki.mozilla.org/CA/Included_Certificates): 170 as of Feb 21, 2024
+- For [Microsoft](https://ccadb.my.salesforce-sites.com/microsoft/IncludedCACertificateReportForMSFT): 487 as of Feb 21, 2024
+- Other platforms (Chrome, Android, etc.) only seem to list how to find it on the browser (Chrome) or device (Android)
   </textarea>
 </section>
 
@@ -646,10 +553,21 @@ An entity (such as virginia.edu) can hold an *intermediate* certificate, which a
 
 
 ## TLS 1.3
-- Main improvement:
-  - Only allow public enryption protocols that are forward-secret (meaning: they use DHE)
-- Other imrpovements:
+- Cryptographic improvement:
+  - Only allow public encryption protocols that are forward-secret (meaning: they use DHE)
+- Other improvements:
   - Send more of the information as a single message, so there is less back-and-forth to the handshake
+- Speed improvements:
+  - Requires less messages
+
+
+
+<h2>TLS 1.2 versus TLS 1.3</h2>
+<a href='images/graphs/tls-1.2.webp'><img src="images/graphs/tls-1.2.webp" style="float:left;width:300px;margin-right:60px"></a>
+<a href='images/graphs/tls-1.3.webp'><img src="images/graphs/tls-1.3.webp" style="float:right;width:300px;margin-left:40px"></a>
+
+- Fewer msgs
+- Speed diff: perhaps 200 ms instead of 300 ms
 
 
 
@@ -737,6 +655,10 @@ An entity (such as virginia.edu) can hold an *intermediate* certificate, which a
 - MACs do not *encrypt* the data, and we want to do so
 - If we combine encryption and a MAC, we get an AEAD
   - Assuming a few properties about the quality of the encryption and MAC function
+- The "associated data" is non-encrypted data
+- Usage: network packets
+  - The payload is encrypted (via authenticated encryption)
+  - The packet headers, which cannot always be encrypted, are the "associated data"
 
 
 
@@ -749,7 +671,156 @@ Note that even if the MAC doesn't support encryption (in the first 3 rows), the 
 </section>
 
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-	
+
+  <section>
+      
+    <section data-markdown id="symmetric" class="center"><textarea data-template>
+# Symmetric ciphers
+    </textarea></section>
+    
+    <section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## Data Encryption Standard ([DES](http://en.wikipedia.org/wiki/Data_Encryption_Standard))
+- Adopted in 1976, it's a private-key encryption/decryption block cipher
+- Briefly, it does a lot of (invertible) bit-shifting in rounds to encrypt/decrypt a message
+- How to crack?
+  - It is susceptible to brute force attacks ($2^{56} = 7 * 10^{16}$ keys)
+- Solution: use DES three times => "Triple DES"
+  - Use a 56*3 = 168 bit key, and encrypt the message three times, once with each key
+
+
+
+## Cracking Triple DES encryption
+- Brute-force attacks:
+  - $2^{168}$ keys, but due to various mathematical properties, this ends up being $2^{112}$ different keys
+- "The best attack known on 3-key TDES requires around $2^{32}$ known plaintexts, $2^{113}$ steps, $2^{90}$ single DES encryptions, and $2^{88}$ memory"
+- NIST (National Institute of Standards and Technology) considers it secure through 2030
+
+
+
+## DES conspiracy theories
+- NSA was involved with DES' creation
+  - They convinced IBM to lower the key length from 128 to 64, and then to 56
+  - And kept many of the details secret
+  - Many well-respected people criticized the NSA for "improper interference" with the algorithm
+- In 1977, Diffie and Hellman (major names in cryptography) proposed a $20 million machine that could crack a DES message in a single day
+- It's known that the NSA had the budget for such a machine.  But did they build it?
+
+
+
+<h2 class="r-fit-text">Advanced Encryption Standard (AES)</h2>
+
+- The successor to DES
+- Has three possible key lengths: 128, 192, and 256
+- NSA approved this standard, and kept the process open
+- Like DES, it's a series of (invertible) bit-shifting in rounds to encrypt/decrypt a message
+- Many worry about the security of the standard
+  - ... that somebody may figure a way to crack it mathematically, in particular
+- [Reference](http://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
+
+
+
+## AES encryption modes
+- Lots of them!
+- Ones allowed in TLS 1.3:
+  - AES-CBC (Cipher block chaining): provides confidentiality only
+  - AES-GCM (Galois/counter mode): provides AEAD
+
+
+
+## AES-CBC encryption
+![AES-CBC encryption](https://upload.wikimedia.org/wikipedia/commons/8/80/CBC_encryption.svg)
+- Formulaicly:
+  - $c_0 = AES_e(IV \oplus m_0)$
+  - $c_1 = AES_e(c_0 \oplus m_1)$
+  - $c_2 = AES_e(c_1 \oplus m_2)$
+
+
+
+## AES-CBC decryption
+![AES-CBC decryption](https://upload.wikimedia.org/wikipedia/commons/2/2a/CBC_decryption.svg)
+- Formulaicly:
+  - $m_0 = IV \oplus AES_d(c_0)$
+  - $m_1 = c_0 \oplus AES_d(c_1)$
+  - $m_2 = c_1 \oplus AES_d(c_2)$
+
+
+
+## AEC-CBC pros and cons
+- Provides only confidentiality, not integrity or authenticity
+- Not parallelizeable
+  - Each block depends on the previous one
+
+
+
+## Encryption & Hashing Goals
+- *Integrity:* the message canʻt be changed, maliciously or accidentally
+  - Formally, a change is always detectable
+- *Confidentiality:* the message can't be read by somebody else
+  - In other words, itʻs encrypted
+- *Authenticity:* the message came from who you think it came from
+  - Formally, from an entity that has the appropriate key
+
+
+
+## Message Authentication Code (MAC)
+- Like a digital signature, but with a symmetric key
+- Provides the *integrity* and *authenticity* but not *confidentiality*
+- $MAC(k,m)$ will produce a short bit string that can only be created with the key $k$ and message $m$
+  - Hash-based (HMAC) example: 
+    - $HMAC(k,m) = SHA256(k \cdot m)$
+    - Named for the algorithm used: HMAC-MD5, HMAC-SHA1, etc.
+  - Cipher-based (CMAC) example: 
+    - $CMAC(k,m) = AES(k,m).truncate(256)$
+    - Also named for the cipher used: CMAC-AES, etc.
+  - GMAC uses Galois algorithm from AES-GCM
+
+
+
+## Why MACs?
+- Provides *integrity*
+  - An adversary can change the ciphertext; this change would be detected
+- Provides *authenticity*
+  - A chosen-message attack cannot succeed (canʻt create the MAC)
+- Earlier implementations, with just hashes...
+  - Were difficult to get right
+  - Very error prone and subject to attacks
+
+
+
+## Types of authenticated encryption
+- Comparisons: [this paper](https://link.springer.com/content/pdf/10.1007/3-540-44448-3_41.pdf) and [this stackexchange.com posting that summarizes it](https://crypto.stackexchange.com/questions/202/should-we-mac-then-encrypt-or-encrypt-then-mac)
+
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## Encrypt-then-MAC (EtM)
+![EtM](https://upload.wikimedia.org/wikipedia/commons/b/b9/Authenticated_Encryption_EtM.png)
+- Provides integrity of the cipher text (and thus the plain text)
+  - Thus, if the cipher text is modified, the message is ignored, and prevents any potential attacks on the implementation
+- MAC can not be used to infer anything about the plaintext
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## MAC-then-Encrypt (MtE)
+![MtE](https://upload.wikimedia.org/wikipedia/commons/a/ac/Authenticated_Encryption_MtE.png)
+- No integrity check of the cipher text, but does for the plain text
+- MAC can not be used to infer anything about the plaintext
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## Encrypt-and-MAC (E&M)
+![E&M](https://upload.wikimedia.org/wikipedia/commons/a/a5/Authenticated_Encryption_EaM.png)
+- Also no integrity of the cipher text, but yes on the plain text
+- MAC can be used to infer information about the plaintext
+  </textarea></section>
+
+  </section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 </div>
 </div>
 <script src="../slides/reveal.js/dist/reveal.js"></script>
