@@ -221,10 +221,12 @@
 
 
 
+<!-- .slide: class="right-float-img-500 no-border" -->
 ## Review: Randomness: LCG
-- The [linear congruential generator (LCG)](https://en.wikipedia.org/wiki/Linear_congruential_generator)
+[![](https://upload.wikimedia.org/wikipedia/commons/1/1c/6sided_dice_%28cropped%29.jpg)](https://commons.wikimedia.org/wiki/File:6sided_dice_(cropped).jpg)
+- [Linear congruential generator (LCG)](https://en.wikipedia.org/wiki/Linear_congruential_generator)
 - $X_{n+1}=(a*X_n+c) \text{ mod } m$
-  - $m$ is the modulus, and must be positive
+  - $m$ is the modulus; must be positive
   - $a$ is the multiplier: $0 < a < m$
   - $c$ is the increment: $0 < c < m$
   - $X_0$ is the seed value
@@ -240,7 +242,7 @@
 
 <!-- .slide: class="right-float-img-600 no-border" -->
 ## Review: Randomness
-[![](https://upload.wikimedia.org/wikipedia/commons/1/1c/6sided_dice_%28cropped%29.jpg)](https://commons.wikimedia.org/wiki/File:6sided_dice_(cropped).jpg)
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Black_Polyhedral_Game_Dice.jpg/1024px-Black_Polyhedral_Game_Dice.jpg)](https://commons.wikimedia.org/wiki/File:Black_Polyhedral_Game_Dice.jpg)
 - To create secure keys, we need a good random number generator
   - Cryptographically Secure Pseudo Random Number Generator (CSPRNG)
 - It requires:
@@ -256,13 +258,15 @@
 
 <section data-markdown id="keyexch" class="center">
   <textarea data-template>
-# Key Exchange
+# Key Exchange & DHE
   </textarea>
 </section>
     
 <section data-markdown data-separator="^\n\n\n">
   <textarea data-template>
+<!-- .slide: class="right-float-img-600 no-border" -->
 ## Key Exchange
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Keys_%284602593426%29.jpg/1024px-Keys_%284602593426%29.jpg)](https://commons.wikimedia.org/wiki/File:Keys_(4602593426).jpg)
 - If you want to communicate with another party, how do you create a private key?
   - One solution: Key stores, but only if you both have generated public/private key sets
     - Not always practical for all security protocols
@@ -272,16 +276,15 @@
 
 
 
-## DH key exchange
+<!-- .slide: class="right-float-img-500 no-border" -->
+## [Diffie Hellman key exchange](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange)
+[![](https://upload.wikimedia.org/wikipedia/commons/8/88/Diffie_and_Hellman.jpg)](https://commons.wikimedia.org/wiki/File:Diffie_and_Hellman.jpg)
 - Alice and Bob agree on public values *g* (generator) and *p* (prime or modulus)
 - Alice picks a private *a* and sends to Bob $A=g^a \mod p$
 - Bob picks a private *b* and sends to Alice $B=g^b \mod p$
 - Because $g^{ab} \mod p = g^{ba} \mod p$, both can compute the secret key
   - Alice received $g^b \mod p$ and computes $(g^b \mod p)^a \mod p = g^{ab} \mod p$
   - Similarly for Bob
-<span class="green">
-<span class="pink">
-</span>
 
 
 
@@ -315,7 +318,8 @@ If that doesn't work, try the [direct Youtube link](http://youtu.be/YEBfamv-_do?
 
 
 
-## DH key exchange in practical use
+<h2 class="r-fit-text">DH key exchange in practical use</h2>
+
 - Used in many cryptographic protocols
   - Including ones we will see shortly
 - Uses *very* large numbers created with a very good pseudo-random number generator
@@ -328,13 +332,22 @@ If that doesn't work, try the [direct Youtube link](http://youtu.be/YEBfamv-_do?
 - How to avoid an active compromiser:
   - Post on a public forum
   - Use communication methods s/he can't compromise, such as shortwave radio
+- Recap:
+  - It is secure against an *eavesdropper*
+    - Even if transmitted in plaintext
+  - But *not* against somebody who can modify the messages
 
 
 
-## DH Key Exchange Uses
-- It is secure against an *eavesdropper*
-  - Even if transmitted in plaintext
-- But *not* against somebody who can modify the messages
+## Forward Secrecy (FS)
+- Also known as perfect forward secrecy (PFS)
+- The concept that a future compromise of keys...
+  - ... including the server's private keys...
+- Will *not* allow decryption of past sessions
+- Solution: generate a unique *session key* for each encrypted connection
+  - And discard once done
+- Communicating the session key via public key cryptography is *not* forward secret
+- But DHE, even in plaintext, is
   </textarea>
 </section>
 
@@ -373,7 +386,7 @@ If that doesn't work, try the [direct Youtube link](http://youtu.be/YEBfamv-_do?
 [![https certificate](https://upload.wikimedia.org/wikipedia/commons/4/4b/ServerCertificate.png)](https://commons.wikimedia.org/wiki/File:ServerCertificate.png)
 - All websites that support https provide such a certificate to any client
 - Browsers can display certificate information, such as shown here
-- We can view one via our web browser
+- We can view one via our web browser, such as [www.cs.virginia.edu](https://www.cs.virginia.edu/computing)
 
 
 
@@ -387,7 +400,9 @@ If that doesn't work, try the [direct Youtube link](http://youtu.be/YEBfamv-_do?
 
 
 ## Certificate Chains
-[![certificate chain](images/encryption/Chain_of_trust.svg)](https://commons.wikimedia.org/wiki/File:Chain_of_trust.svg)
+
+<a href='https://commons.wikimedia.org/wiki/File:Chain_of_trust_v2.svg'><img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Chain_of_trust_v2.svg/1024px-Chain_of_trust_v2.svg.png' style='width:80%'></a>
+
 An entity (such as virginia.edu) can hold an *intermediate* certificate, which allows it to sign for entities in its division (such as news.virginia.edu)
 
 
@@ -417,7 +432,8 @@ An entity (such as virginia.edu) can hold an *intermediate* certificate, which a
 - A server's certificate is signed by a Certificate Authority
   - Perhaps through an intermediary certificate
 - So we trust the server's certificate because the CA vouches for it
-- And we trust the CA because...
+- And we trust the CA because... everybody else does?
+- At some point, we have to trust that the system is well designed and that it works
 
 
 
@@ -494,17 +510,6 @@ An entity (such as virginia.edu) can hold an *intermediate* certificate, which a
 - Most common use: when implemented on top of HTTP, that yields HTTPS
 - Also used for encrypting mail (SMTP)
 - A programmer can use it for any other purpose
-
-
-
-## Forward Secrecy (FS)
-- Also known as perfect forward secrecy (PFS)
-- The concept that a compromise of keys...
-  - ... including the server's private keys...
-- Will *not* allow decryption of past sessions
-- Solution: generate a unique *session key* for each encrypted connection
-  - And discard once done
-- That session key can be communicated via public key cryptography
 
 
 
