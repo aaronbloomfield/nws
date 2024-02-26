@@ -56,6 +56,8 @@
 [Certificates](#/certificates)  
 [SSL & TLS](#/ssltls)  
 [Symmetric ciphers](#/symmetric)  
+[AES](#/aes)  
+[More symmetric ciphers](#/moresymmetric)  
 </textarea></section>
 
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -212,7 +214,7 @@
   - Put into blocks, padding as necessary
   - Encryption formula is $c = m^e\text{ mod }n$
 - Decryption
-  - Decryption formula is $p = m^d\text{ mod }n$
+  - Decryption formula is $m = c^d\text{ mod }n$
 
 
 
@@ -684,8 +686,7 @@ An entity (such as virginia.edu) can hold an *intermediate* certificate, which a
 ## [TLS MAC protocols](https://en.wikipedia.org/wiki/Transport_Layer_Security#Key_exchange_or_key_agreement)
 ![TLS MAC protocols](images/encryption/tls-protocols-3.webp)
 Note that even if the MAC doesn't support encryption (in the first 3 rows), the cipher (likely AES) still does
-</textarea>
-</section>
+</textarea></section>
 
 </section>
 
@@ -726,6 +727,28 @@ Note that even if the MAC doesn't support encryption (in the first 3 rows), the 
 
 
 
+## [Confusion and Diffusion](https://en.wikipedia.org/wiki/Confusion_and_diffusion)
+- Two properties of ciphers (Shannon, 1945)
+- *Confusion* obscures the relationship between the plaintexxt input and the ciphertext output
+  - Each ciphertext bit should depends on several parts of the key
+  - Some are confusion only: substitution, OTP
+- *Diffusion* is "hiding the plaintext statistics by spreading it over a larger area of ciphertext"
+  - Changing one bit in the plaintext should change about half the bits in the cipher text, and visa-versa
+  - Some are diffusion only: transposition cipher
+- Any "reasonable" block cipher has both 
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <section>
+      
+    <section data-markdown id="aes" class="center"><textarea data-template>
+# Advanced Encryption Standard (AES)
+    </textarea></section>
+    
+    <section data-markdown data-separator="^\n\n\n"><textarea data-template>
 <h2 class="r-fit-text">Advanced Encryption Standard (AES)</h2>
 
 - The successor to DES
@@ -735,6 +758,82 @@ Note that even if the MAC doesn't support encryption (in the first 3 rows), the 
 - Many worry about the security of the standard
   - ... that somebody may figure a way to crack it mathematically, in particular
 - [Reference](http://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
+
+
+
+## AES Overview
+1. Determine number of rounds, $r$:
+   - 10, 12, or 14 rounds for 128-bit, 192-bit, and 256-bit keys
+1. KeyExpansion: derive round keys from the AES Key Round Schedule
+2. Round 1: AddRoundKey: XOR with round key
+3. Rounds 2 through $r-1$:
+   1. SubBytes: replace bytes as per lookup table
+   2. ShiftRows: transpose bytes
+   3. MixColumns: matrix operation on the columns
+   4. AddRoundKey
+4. Final round $r$:
+   1. SubBytes
+   2. ShiftRows
+   3. AddRoundKey
+
+
+
+<!-- .slide: class="right-float-img-800" -->
+## Key Round Schedule
+[![](https://upload.wikimedia.org/wikipedia/commons/b/be/AES-Key_Schedule_128-bit_key.svg)](https://commons.wikimedia.org/wiki/File:AES-Key_Schedule_128-bit_key.svg)
+- Let:
+  - $N$: key length in 32-bit words (4, 6, or 8)
+  - $K_0, K_1, \ldots K_{N-1}$: 32-bit words of the key
+  - `RotWord` is a left rotation by 1
+  - `SubWord` is a lookup
+  - $R_{con}$ is a fixed round constant
+- Then repeat the image many times
+- It's fixed for that one key, so only has to be computed once
+
+
+
+## AES: SubBytes step
+
+<a href='https://commons.wikimedia.org/wiki/File:AES-SubBytes.svg'><img src='https://upload.wikimedia.org/wikipedia/commons/a/a4/AES-SubBytes.svg' style="width:70%"></a>
+
+- Input is mapped to its mult. inverse in a finite field
+- Bytes are replaced based on a fixed substitution table
+  - Fixed for all of AES
+- Called the [Rijndael S-box](https://en.wikipedia.org/wiki/Rijndael_S-box)
+
+
+
+## AES: ShiftRows step
+[![](https://upload.wikimedia.org/wikipedia/commons/6/66/AES-ShiftRows.svg)](https://commons.wikimedia.org/wiki/File:AES-ShiftRows.svg)
+- Rows are shifted cyclically to the left
+- This provides *diffusion*
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## AES: MixColumns step
+[![](https://upload.wikimedia.org/wikipedia/commons/7/76/AES-MixColumns.svg)](https://commons.wikimedia.org/wiki/File:AES-MixColumns.svg)
+- The values are transformed according to the following matrix operation
+- This also provides *diffusion*
+
+<br clear='all'>
+<div style="font-size:0.75em">
+
+$\begin{bmatrix} b_{0,j} \\\ b_{1,j} \\\ b_{2,j} \\\ b_{3,j} \end{bmatrix} =
+\begin{bmatrix} 2&3&1&1 \\\ 1&2&3&1 \\\ 1&1&2&3 \\\ 3&1&1&2 \end{bmatrix}
+\begin{bmatrix} a_{0,j} \\\ a_{1,j} \\\ a_{2,j} \\\ a_{3,j} \end{bmatrix}
+\text{ for }0 \le j \le 3
+$
+
+</div>
+
+
+
+<!-- .slide: class="right-float-img-800" -->
+## AES: AddRoundKey step
+[![](https://upload.wikimedia.org/wikipedia/commons/a/ad/AES-AddRoundKey.svg)](https://commons.wikimedia.org/wiki/File:AES-AddRoundKey.svg)
+- Derive a subkey from the main key via the AES key schedule
+- Subkey is then XOR'ed with the state
 
 
 
@@ -768,9 +867,19 @@ Note that even if the MAC doesn't support encryption (in the first 3 rows), the 
 - Provides only confidentiality, not integrity or authenticity
 - Not parallelizeable
   - Each block depends on the previous one
+</textarea></section>
 
+</section>
 
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+  <section>
+      
+    <section data-markdown id="moresymmetric" class="center"><textarea data-template>
+# More symmetric ciphers
+    </textarea></section>
+    
+    <section data-markdown data-separator="^\n\n\n"><textarea data-template>
 ## Encryption & Hashing Goals
 - *Integrity:* the message canʻt be changed, maliciously or accidentally
   - Formally, a change is always detectable
