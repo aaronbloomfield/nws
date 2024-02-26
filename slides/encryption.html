@@ -560,6 +560,21 @@ An entity (such as virginia.edu) can hold an *intermediate* certificate, which a
 
 <section data-markdown data-separator="^\n\n\n">
   <textarea data-template>
+<a href='images/graphs/tls-1.2.webp'><img src="images/graphs/tls-1.2.webp" style="float:left;height:650px;margin-right:60px"></a>
+
+## TLS 1.2 pcap
+- See [https.pcap](pcaps/https.pcap)
+- It was a request to https://www.cs.virginia.edu/ computing
+- Packets:
+    - Client Hello is packet 8
+    - Server Hello is packet 10
+    - Server certificates in 12
+    - Client certs and change to AES in 14
+    - Server switch to AES is 15
+    - HTTPS GET in 16
+
+
+
 ## Is TLS 1.2 forward-secret?
 
 
