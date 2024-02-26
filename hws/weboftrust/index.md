@@ -27,7 +27,9 @@ This assignment has *two* due dates:
 
 ### Changelog
 
-Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  So far there aren't any significant changes to report.
+Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  <!-- So far there aren't any significant changes to report. -->
+
+- Sun, Feb 25: Updated weboftrust.py](weboftrust.py.html) ([src](weboftrust.py)), specifically the fields in the `other` and `sanity_check` dictionaries.  If you downloaded the previous version, then: change the number 30 in the `sanity_checks` dictionary to 15 (4 occurrences), and add the 2nd to last field in the new version in the `other` dictionary.
 
 
 ### Part 1: Generate a GPG Key

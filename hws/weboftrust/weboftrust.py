@@ -50,6 +50,11 @@ other = {
 	# frustrating.
 	'weboftrust_frustration_level': None,
 
+	# Did you enjoy this assignment?  If so, why?  If not, why not?  We are
+	# interested in honest answers here, not sycophantic ones.  This should
+	# be a string.
+	'enjoyed_assignment': None,
+
 	# In part 2, you sent a GPG encrypted email to the course email, and you
 	# got a response containing a code specific to you.  Enter that code
 	# here, as a string:
@@ -65,15 +70,15 @@ other = {
 # need to be changed to True (instead of False).
 sanity_checks = {
 
-	# Did you sign at least 30 keys of your classmates?  Even if you didn't,
+	# Did you sign at least 15 keys of your classmates?  Even if you didn't,
 	# answer True here -- it's to remind you that this is part of the
-	# assignment.
-	'signed_30_keys': None,
+	# assignment.  The submission system will be able to count how many.
+	'signed_15_keys': None,
 
-	# Did you get your key signed by at least 30 of your classmates?  Even if
+	# Did you get your key signed by at least 15 of your classmates?  Even if
 	# you didn't, answer True here -- it's to remind you that this is part of
-	# the assignment.
-	'got_key_signed_by_30': None,
+	# the assignment.  The submission system will be able to count how many.
+	'got_key_signed_by_15': None,
 
 }
 
