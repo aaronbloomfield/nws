@@ -335,7 +335,7 @@ root@outer1:/mnt# cat arp-settings.txt
 root@outer1:/mnt# python3 ./arpDetector.py eth1
 New mapping: 02:42:c0:a8:64:01 -> 192.168.100.1
 New mapping: 02:42:c0:a8:64:65 -> 192.168.100.101
-Possible ARP attack detected: 192.168.100.1 may be pretending to be 192.168.100.102 for MAC 02:42:c0:a8:64:66
+Possible ARP attack detected: 192.168.100.102 may be pretending to be 192.168.100.1 for MAC 02:42:c0:a8:64:66
 New mapping: 02:42:c0:a8:64:66 -> 192.168.100.102
 ^C
 

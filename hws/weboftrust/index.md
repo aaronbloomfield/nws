@@ -107,6 +107,8 @@ A big part of this assignment is figuring out how to determine if the key you ar
 
 ### Grading
 
+**Note:** The goal of this assignment is to (1) have you send and receive a PGP encrypted email, and (2) get a feel for how hard it is to know who and what to trust.  The goal is not to have you feel annoyed or angry at your fellow students if you end up being fooled.  So the deductions for that are going to be quite small.  I want people to come away from this assignment having learned something, uncomfortable though it may be to learn how hard it is to know who to trust.  Having you come away bitter and angry at myself, this assignment, or your fellow students does not help achieve that goal.  So don't stress to much about the point deductions.
+
 - The base grade is determined by:
 	- You have signed 15 other keys 											(your valid signing their valid)
 	- You have 15 *valid* signatures on your keys (either valid or invalid)		(their valid signing your valid)
