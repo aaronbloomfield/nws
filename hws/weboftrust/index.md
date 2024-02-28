@@ -137,6 +137,6 @@ The first is to the "Web of Trust Upload" assignment in Gradescope, which is whe
 
 #### Second submission
 
-The second is to the "Web of Trust Submission" assignment in Gradescope, where you are submitting your public key (with the 15 signatures), which you will need to export into a `mst3k_signed.pub` file.  Also submit your public adversarial key (whether you tricked people into signing with your adversarial key or not) into a `mst3k_fake.pub` file.
+The second is to the "Web of Trust Submission" assignment in Gradescope, where you are submitting your public key (with the 15 signatures), which you will need to export into a `mst3k.pub` file.
 
 You will also need to submit an edited version of [weboftrust.py](weboftrust.py.html) ([src](weboftrust.py)); that file explains what to fill in and where.
