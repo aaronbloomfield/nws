@@ -6,4 +6,4 @@ Network Security: Exams
 
 These are the past exams in the course.  I do not have (nor do I make) answer keys.
 
-- none yet!
+- Spring 2024: [midterm](midterm-s24.pdf)

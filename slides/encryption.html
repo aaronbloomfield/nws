@@ -355,7 +355,9 @@ If that doesn't work, try the [direct Youtube link](http://youtu.be/YEBfamv-_do?
 
 
 
+<!-- .slide: class="right-float-img-600 no-border" -->
 ## Forward Secrecy (FS)
+[![](https://upload.wikimedia.org/wikipedia/commons/4/43/Das_Geheimnis_-_Le_secret.jpg)](https://commons.wikimedia.org/wiki/File:Das_Geheimnis_-_Le_secret.jpg)
 - Also known as perfect forward secrecy (PFS)
 - The concept that a future compromise of keys...
   - ... including the server's private keys...
@@ -624,18 +626,19 @@ An entity (such as virginia.edu) can hold an *intermediate* certificate, which a
 ## [TLS session protocols](https://en.wikipedia.org/wiki/Transport_Layer_Security#Key_exchange_or_key_agreement)
 
 <img alt="TLS session protocols" src="images/encryption/tls-protocols-2.webp" class="stretch">
-</textarea>
-</section>
 
-<section>
-  <h2>Initialization Vectors (IVs)</h2>
+
+
+## End of prepared slides
+
+
+
+<h2>Initialization Vectors (IVs)</h2>
   <p>Each successive encrypted block depends on the previous one, so that two encrypted blocks that are the same plaintext will have different ciphertext</p>
 <img class="stretch" alt="IVs" src="images/encryption/IVs.svg"></p>
-</section>
 
 
-<section data-markdown data-separator="^\n\n\n">
-  <textarea data-template>
+
 ## Message authentication code (MAC)
 - It's "a short piece of information used to authenticate a message" ([Wikipedia](https://en.wikipedia.org/wiki/Message_authentication_code))
 - Like a digital signature, but:
