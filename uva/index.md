@@ -70,13 +70,13 @@ The smaller ("S") homeworks are usually due Friday, unless otherwise noted.  The
 | 4 | Feb 5 | M,W,F | ARP | Metasploitable hacks, part 1 | Du, chap 5 (transport layer), sections 6.1-6.3 of chapter 6 (TCP attacks); 25 pp | [Packet capture & analysis](../slides/packets.html#/); [Transport layer](../slides/transport-layer.html#/) | Mon: finished network layer, packets to 4.4; Wed: packets to 5.2, transport-layer to 5.3; Fri: ... |
 | 5 | Feb 12 | M,W,F | Routing | Metasploitable hacks, part 2 | | [Transport layer](../slides/transport-layer.html#/); [Firewalls & evasion](../slides/firewalls.html#/) | Mon: finished packets; transport-layer to 7.11; Wed: transport layer to 9.4; Fri: finished transport layer, firewalls to 3.3 |
 | 6 | Feb 19 | M,W,F | Wireshark | Web of trust, week 1 | | [Encryption](../slides/encryption.html#/) | Mon: firewalls to 7.6; Wed: finished firewalls, encryption to 3.8; Fri: encryption to 4.4 |
-| 7 | Feb 26 | M,W,F | (midterm on Wed) | Web of trust, week 2 | | [Encryption](../slides/encryption.html#/) | Mon: encryption to 5.13; Wed: midterm  |
+| 7 | Feb 26 | M,W,F | (midterm on Wed) | Web of trust, week 2 | | [Encryption](../slides/encryption.html#/) | Mon: encryption to 5.13; Wed: midterm; Fri: [WoT](../hws/weboftrust/index.html) work day |
 | 8 | Mar 4 |  |  |  | Spring break (no classes) |  |  |
-| 9 | Mar 11 | M,W,F | TCP reconstruction | Firewall configuration | Du, chap 8 (VPN); 32 pp | Presentation layer; Application layer |  |
-| 10 | Mar 18 | M,W,F | Xmas scans | TBD | Du, chap 9 (tunneling); 18 pp | TCP shells & botnets; WWW exploits |  |
-| 11 | Mar 25 | M,W,F | Protocol | TBD | parts of Du, chapter 10 (DNS), parts of Du, chap 11 (DNSSEC); ~30 pp | WWW exploits; Network monitoring |  |
-| 12 | Apr 1 | M,W,F | TCP shell | TBD | parts of Du, chap 12 (BGP); ~30 pp | Obtaining and using access; BGP |  |
-| 13 | Apr 8 | M,W,F | Network monitoring | TBD | Du, chap 14 (reverse shell); 14 pp | Network attacks |  |
+| 9 | Mar 11 | M,W,F | TCP reconstruction | Firewall configuration |  | Presentation layer; Application layer |  |
+| 10 | Mar 18 | M,W,F | Xmas scans | TBD |  | TCP shells & botnets; WWW exploits |  |
+| 11 | Mar 25 | M,W,F | Protocol | TBD |  | WWW exploits; Network monitoring |  |
+| 12 | Apr 1 | M,W,F | TCP shell | TBD |  | Obtaining and using access; BGP |  |
+| 13 | Apr 8 | M,W,F | Network monitoring | TBD |  | Network attacks |  |
 | 14 | Apr 15 | M,W,F | BGP | TBD | TBD | DNS; Heartbleed |  |
 | 15 | Apr 22 | M,W,F | DNS | TBD | TBD | Trojans, rootkits, ransomware; Scanning & fuzzing; Social Engineering |  |
 | 16 | Apr 29 | M | SSH MITM | (none) | (none) | Conclusion |  |
