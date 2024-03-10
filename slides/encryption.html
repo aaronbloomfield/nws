@@ -562,18 +562,18 @@ An entity (such as virginia.edu) can hold an *intermediate* certificate, which a
 
 <section data-markdown data-separator="^\n\n\n">
   <textarea data-template>
-<a href='images/graphs/tls-1.2.webp'><img src="images/graphs/tls-1.2.webp" style="float:left;height:650px;margin-right:60px"></a>
+<a href='images/graphs/tls-1.2.webp'><img src="images/graphs/tls-1.2.webp" style="float:left;width:400px;margin-right:60px"></a>
 
 ## TLS 1.2 pcap
-- See [https.pcap](pcaps/https.pcap)
-- It was a request to https://www.cs.virginia.edu/ computing
+- See [https-tls-1.2.pcap](pcaps/https-tls-1.2.pcap)
+- It was a request to [https://www.cs.virginia.edu/ computing](https://www.cs.virginia.edu/computing)
 - Packets:
     - Client Hello is packet 8
     - Server Hello is packet 10
-    - Server certificates in 12
-    - Client certs and change to AES in 14
-    - Server switch to AES is 15
-    - HTTPS GET in 16
+    - Server certificates in packet 12
+    - Client certs and change to AES in packet 14
+    - Server switch to AES is packet 15
+    - HTTPS GET in packet 16
 
 
 
@@ -609,6 +609,20 @@ An entity (such as virginia.edu) can hold an *intermediate* certificate, which a
 
 
 
+<a href='images/graphs/tls-1.3.webp'><img src="images/graphs/tls-1.3.webp" style="float:left;width:400px;margin-right:60px"></a>
+
+## TLS 1.3 pcap
+- See [https-tls-1.3.pcap](pcaps/https-tls-1.3.pcap)
+- It was a request to [https://google.com/ computing](https://google.com/)
+- Packets:
+    - Client Hello is packet 8
+    - Server Hello is packet 10
+    - "Finished" and HTTPS GET in packet 12
+    - HTTPS response in packet 14
+- Note that the *handshake* was TLS 1.3, but the server choose TLS 1.2 as the protocol
+
+
+
 ## TLS Ciphers Supported
 - In version 1.3, for key exchange, only forward-secret public key systems are supported
   - Mostly RSA variants with a secure DH key exchange
@@ -629,23 +643,24 @@ An entity (such as virginia.edu) can hold an *intermediate* certificate, which a
 
 
 
-## End of prepared slides
+<h2 class="r-fit-text">Message authentication code (MAC)</h2>
 
-
-
-<h2>Initialization Vectors (IVs)</h2>
-  <p>Each successive encrypted block depends on the previous one, so that two encrypted blocks that are the same plaintext will have different ciphertext</p>
-<img class="stretch" alt="IVs" src="images/encryption/IVs.svg"></p>
-
-
-
-## Message authentication code (MAC)
 - It's "a short piece of information used to authenticate a message" ([Wikipedia](https://en.wikipedia.org/wiki/Message_authentication_code))
 - Like a digital signature, but:
   - uses a shared *secret* key, so it is faster
 - Like a hash, but:
   - provides authentication, not just a message digest
   - includes the secret key, so two different connections' MAC of the same text will be different due to different secret keys
+- We'll see these in detail later in this slide set
+
+
+
+## MAC uses
+- Prevents replay attacks
+  - A MAC includes a signature (hash, etc.), and combined with a sequence number, will prevent replaying an encrypted packet
+  - But why does the sequence number alone not work?
+- Used for non-encrypted verification
+  - To verify a large downloaded ISO file was correct
 
 
 
@@ -669,24 +684,6 @@ An entity (such as virginia.edu) can hold an *intermediate* certificate, which a
 - It is "unforgeable under chosen-message attacks"
   - Even if Eve can get Bob to send chosen text attacks, she needs the (unknown to her) secret key to generate a valid MAC
 - Provides authentication (since only the other party has the secret key)
-
-
-
-## HMAC
-- A MAC is a general term for a message authentication code
-- A HMAC uses a hash as its algorithm
-- Not all MACs use hashes
-  - A CMAC uses a cipher (AES, DES, etc.) to create the code
-    - Likely truncating it to the first $x$ bits
-- The example algorithm a few slides back was an HMAC
-- Named by their hash algorithm:
-  - HMAC-MD5, HMAC-SHA1, etc.
-
-
-
-<table class="transparent"><tr><td style="vertical-align:middle"><h2>HMAC<br>with<br>SHA1</h2></td><td><a href="https://commons.wikimedia.org/wiki/File:SHAhmac.svg"><img alt="hmac-sha1" src="images/encryption/SHAhmac.svg"></a></td></tr></table>
-
-*i_pad* and *o_pad* have known and non-secret values
 
 
 
@@ -727,7 +724,8 @@ Note that even if the MAC doesn't support encryption (in the first 3 rows), the 
 
 
 
-## Cracking Triple DES encryption
+<h2 class="r-fit-text">Cracking Triple DES encryption</h2>
+
 - Brute-force attacks:
   - $2^{168}$ keys, but due to various mathematical properties, this ends up being $2^{112}$ different keys
 - "The best attack known on 3-key TDES requires around $2^{32}$ known plaintexts, $2^{113}$ steps, $2^{90}$ single DES encryptions, and $2^{88}$ memory"
@@ -745,6 +743,19 @@ Note that even if the MAC doesn't support encryption (in the first 3 rows), the 
 
 
 
+<h2 class="r-fit-text">Advanced Encryption Standard (AES)</h2>
+
+- The successor to DES
+- Has three possible key lengths: 128, 192, and 256
+- NSA approved this standard, and kept the process open
+- Like DES, it's a series of (invertible) bit-shifting in rounds to encrypt/decrypt a message
+- Many worry about the security of the standard
+  - ... that somebody may figure a way to crack it mathematically, in particular
+- [Reference](http://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
+- More details in the next slide column
+
+
+
 ## [Confusion and Diffusion](https://en.wikipedia.org/wiki/Confusion_and_diffusion)
 - Two properties of ciphers (Shannon, 1945)
 - *Confusion* obscures the relationship between the plaintexxt input and the ciphertext output
@@ -754,6 +765,160 @@ Note that even if the MAC doesn't support encryption (in the first 3 rows), the 
   - Changing one bit in the plaintext should change about half the bits in the cipher text, and visa-versa
   - Some are diffusion only: transposition cipher
 - Any "reasonable" block cipher has both 
+
+
+
+<!-- .slide: class="right-float-img-1000" -->
+## Initialization Vectors (IVs)
+
+[![AES-CBC encryption](https://upload.wikimedia.org/wikipedia/commons/8/80/CBC_encryption.svg)](https://en.wikipedia.org/wiki/File:CBC_encryption.svg)
+- Each successive encrypted block depends on the previous one, so that two encrypted blocks that are the same plaintext will have different ciphertext
+- IVs are typically random, and sometimes transmitted in plaintext
+- But how to incorporate that into the encryption?  So many ways...
+
+
+
+## Symmetric ECB encryption
+[![AES-ECB encryption](https://upload.wikimedia.org/wikipedia/commons/d/d6/ECB_encryption.svg)](https://commons.wikimedia.org/wiki/File:ECB_encryption.svg)
+- ECB = electronic codebook
+- Formally: $c_x = AES_e(m_x)$
+- With no initialization vector, the same plaintext encrypts the same each time
+  - No diffusion!  And susceptible to replay attacks.
+
+
+
+## ECB Encryption Issues
+
+<table class='transparent'>
+  <tr><td>
+<a href='https://en.wikipedia.org/wiki/File:Tux.svg'><img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/202px-Tux.svg.png' style='' class='no-border'></a>
+  </td><td>
+<a href='https://en.wikipedia.org/wiki/File:Tux_ECB.png'><img src='https://upload.wikimedia.org/wikipedia/commons/c/c0/Tux_ECB.png' style='' class='no-border'></a>
+  </td><td>
+<a href='https://en.wikipedia.org/wiki/File:Tux_secure.png'><img src='https://upload.wikimedia.org/wikipedia/commons/5/58/Tux_secure.png' style='' class='no-border'></a>
+</td></tr></table>
+
+- With small block sizes, and large areas of uniform color:
+  - The original image (left)
+  - Can be viewed as the middle image
+  - Whereas other modes make it look more random like the right image
+
+
+
+## Cipher block chaining (CBC) mode encryption
+[![AES-CBC encryption](https://upload.wikimedia.org/wikipedia/commons/8/80/CBC_encryption.svg)](https://en.wikipedia.org/wiki/File:CBC_encryption.svg)
+- CBC = Cipher Block Chaining
+- Formally:
+  - $c_0 = AES_e(IV \oplus m_0)$
+  - $c_1 = AES_e(c_0 \oplus m_1)$
+  - $c_2 = AES_e(c_1 \oplus m_2)$
+
+
+
+## Cipher block chaining (CBC) mode decryption
+[![AES-CBC decryption](https://upload.wikimedia.org/wikipedia/commons/2/2a/CBC_decryption.svg)](https://en.wikipedia.org/wiki/File:CBC_decryption.svg)
+- CBC = Cipher Block Chaining
+- Formally:
+  - $m_0 = IV \oplus AES_d(c_0)$
+  - $m_1 = c_0 \oplus AES_d(c_1)$
+  - $m_2 = c_1 \oplus AES_d(c_2)$
+
+
+
+## Cipher block chaining (CBC) mode details
+- Encryption cannot be parallelized
+  - Each block depends on the previous one
+- But decryption can
+  - As each block only depends on the previous one
+- Provides only confidentiality, not integrity or authenticity
+  - Confidentiality: because it's encrypted
+  - No integrity: there is no hash or checksum
+  - No authenticity: a replay attack could occur
+    - The plaintext would be scrambled (different counter) but that might not make it "invalid"
+
+
+
+## Counter (CTR) mode encryption
+[![AES-CTR encryption](https://upload.wikimedia.org/wikipedia/commons/4/4d/CTR_encryption_2.svg)](https://en.wikipedia.org/wiki/File:CTR_encryption_2.svg)
+- CTR = Counter
+- Nonce is the same as the IV
+- Formally: $c_x = AES_e(IV \cdot counter) \oplus m_x$
+- This is now essentially a *stream cipher*
+  - As the encryption is on the *key*, and the result is xor'ed with the plaintext
+
+
+
+## Counter (CTR) mode decryption
+[![AES-CTR encryption](https://upload.wikimedia.org/wikipedia/commons/3/3c/CTR_decryption_2.svg)](https://en.wikipedia.org/wiki/File:CTR_decryption_2.svg)
+- CTR = Counter
+- Nonce is the same as the IV
+- Formally: $m_x = c_x \oplus AES_d(IV \cdot counter)$
+
+
+
+## Counter (CTR) mode details
+- Both encryption and decryption can be parallelized
+- Provides only confidentiality, not integrity or authenticity
+  - Confidentiality: because it's encrypted
+  - No integrity: there is no hash or checksum
+  - No authenticity: a replay attack could occur
+    - The plaintext would be scrambled (different counter) but that might not make it "invalid"
+- This mode is also known as integer counter mode (ICM) and segmented integer counter (SIC) mode
+
+
+
+<!-- .slide: class="right-float-img-1000" -->
+## Galois/Counter (GCM) mode
+[![](https://upload.wikimedia.org/wikipedia/commons/2/25/GCM-Galois_Counter_Mode_with_IV.svg)](https://commons.wikimedia.org/wiki/File:GCM-Galois_Counter_Mode_with_IV.svg)
+- Pronounced gal-wa
+- Based on the Counter (CTR) mode
+- "Counter x" includes the IV as well as the counter
+- This is also essentially a stream cipher
+- The "len(A) || len(C)" is essentially a hash
+
+
+
+<!-- .slide: class="right-float-img-1000" -->
+<h2 class="r-fit-text">Galois/Counter (GCM) mode details</h2>
+
+[![](https://upload.wikimedia.org/wikipedia/commons/2/25/GCM-Galois_Counter_Mode_with_IV.svg)](https://commons.wikimedia.org/wiki/File:GCM-Galois_Counter_Mode_with_IV.svg)
+- Provides confidentiality: because it's encrypted
+- Provides integrity: there is a hash involved
+  - The "len(A) || len(C)" part
+- Provides authentication: "Auth Data 1" is authentication data
+  - If it's incorrect, the hash will not match
+
+
+
+
+## CCM mode
+- CCM = counter with cipher block chaining message authentication code
+- A merging of the counter (CTR) and cipher block chaining (CBC) modes
+- Provides the same assurances as GCM: confidentiality, integrity, authentication
+
+
+
+## [TLS session protocols](https://en.wikipedia.org/wiki/Transport_Layer_Security#Key_exchange_or_key_agreement)
+- Notice the two allowed AES modes for TLS 1.3: GCM and CCM
+- And the one that was allowed previously: CBC
+
+<img alt="TLS session protocols" src="images/encryption/tls-protocols-2.webp" width="1000px">
+
+
+
+## List of encryption modes
+- Confidentiality-only modes
+  - [Propagating cipher block chaining (PCBC)](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Propagating_cipher_block_chaining_(PCBC))
+  - Electronic codebook (ECB)
+  - Cipher block chaining (CBC)
+  - Cipher feedback (CFB): [Full-block CFB](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Full-block_CFB) and [CFB-1, CFB-8, CFB-64, CFB-128, etc.](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#CFB-1,_CFB-8,_CFB-64,_CFB-128,_etc.)
+  - [Output feedback (OFB)](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Output_feedback_(OFB))
+  - Counter (CTR)
+- Authenticated encryption with additional data (AEAD) modes
+  - Galois/counter (GCM)
+  - Counter with cipher block chaining message authentication code (CCM)
+  - [Synthetic initialization vector (SIV)](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Synthetic_initialization_vector_(SIV))
+  - [AES-GCM-SIV](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#AES-GCM-SIV)
 </textarea></section>
 
 </section>
@@ -842,7 +1007,6 @@ $\begin{bmatrix} b_{0,j} \\\ b_{1,j} \\\ b_{2,j} \\\ b_{3,j} \end{bmatrix} =
 \begin{bmatrix} a_{0,j} \\\ a_{1,j} \\\ a_{2,j} \\\ a_{3,j} \end{bmatrix}
 \text{ for }0 \le j \le 3
 $
-
 </div>
 
 
@@ -855,37 +1019,23 @@ $
 
 
 
-## AES encryption modes
-- Lots of them!
-- Ones allowed in TLS 1.3:
-  - AES-CBC (Cipher block chaining): provides confidentiality only
-  - AES-GCM (Galois/counter mode): provides AEAD
 
 
-
-## AES-CBC encryption
-![AES-CBC encryption](https://upload.wikimedia.org/wikipedia/commons/8/80/CBC_encryption.svg)
-- Formulaicly:
-  - $c_0 = AES_e(IV \oplus m_0)$
-  - $c_1 = AES_e(c_0 \oplus m_1)$
-  - $c_2 = AES_e(c_1 \oplus m_2)$
-
-
-
-## AES-CBC decryption
-![AES-CBC decryption](https://upload.wikimedia.org/wikipedia/commons/2/2a/CBC_decryption.svg)
-- Formulaicly:
-  - $m_0 = IV \oplus AES_d(c_0)$
-  - $m_1 = c_0 \oplus AES_d(c_1)$
-  - $m_2 = c_1 \oplus AES_d(c_2)$
-
-
-
-## AEC-CBC pros and cons
-- Provides only confidentiality, not integrity or authenticity
-- Not parallelizeable
-  - Each block depends on the previous one
-</textarea></section>
+## AES Overview
+1. Determine number of rounds, $r$:
+   - 10, 12, or 14 rounds for 128-bit, 192-bit, and 256-bit keys
+1. KeyExpansion: derive round keys from the AES Key Round Schedule
+2. Round 1: AddRoundKey: XOR with round key
+3. Rounds 2 through $r-1$:
+   1. SubBytes: replace bytes as per lookup table
+   2. ShiftRows: transpose bytes
+   3. MixColumns: matrix operation on the columns
+   4. AddRoundKey
+4. Final round $r$:
+   1. SubBytes
+   2. ShiftRows
+   3. AddRoundKey
+ </textarea></section>
 
 </section>
 
@@ -894,10 +1044,54 @@ $
   <section>
       
     <section data-markdown id="moresymmetric" class="center"><textarea data-template>
-# More symmetric ciphers
+# MACs
     </textarea></section>
     
     <section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<h2 class="r-fit-text">Message authentication code (MAC)</h2>
+
+- It's "a short piece of information used to authenticate a message" ([Wikipedia](https://en.wikipedia.org/wiki/Message_authentication_code))
+- Like a digital signature, but:
+  - uses a shared *secret* key, so it is faster
+- Like a hash, but:
+  - provides authentication, not just a message digest
+  - includes the secret key, so two different connections' MAC of the same text will be different due to different secret keys
+- We'll see these in detail later in this slide set
+
+
+
+## MAC uses
+- Prevents replay attacks
+  - A MAC includes a signature (hash, etc.), and combined with a sequence number, will prevent replaying an encrypted packet
+  - But why does the sequence number alone not work?
+- Used for non-encrypted verification
+  - To verify a large downloaded ISO file was correct
+
+
+
+## A possible MAC
+- Given a message $m$ and a secret key $k$:
+  - Create a new value $x = m \cdot k$
+  - That's string concatenation
+  - Hash that message: $h = hash(x)$
+  - Use a good hash function!
+  - Encrypt that hash with $k$: $mac = encrypt(h,k)$
+    - Likely AES (or similar) with the shared secret key
+- In one line: $mac = encrypt(hash(m \cdot k),k)$
+
+
+
+## MAC properties
+- Does not encrypt the message!
+  - If the connection is not encrypted, then the message is eavesdroppable
+- Cannot be forged without the secret key
+  - Any eavesdropper must know the secret key in order to create a valid MAC
+- It is "unforgeable under chosen-message attacks"
+  - Even if Eve can get Bob to send chosen text attacks, she needs the (unknown to her) secret key to generate a valid MAC
+- Provides authentication (since only the other party has the secret key)
+
+
+
 ## Encryption & Hashing Goals
 - *Integrity:* the message canʻt be changed, maliciously or accidentally
   - Formally, a change is always detectable
@@ -930,6 +1124,24 @@ $
 - Earlier implementations, with just hashes...
   - Were difficult to get right
   - Very error prone and subject to attacks
+
+
+
+## HMAC
+- A MAC is a general term for a message authentication code
+- A HMAC uses a hash as its algorithm
+- Not all MACs use hashes
+  - A CMAC uses a cipher (AES, DES, etc.) to create the code
+    - Likely truncating it to the first $x$ bits
+- The example algorithm a few slides back was an HMAC
+- Named by their hash algorithm:
+  - HMAC-MD5, HMAC-SHA1, etc.
+
+
+
+<table class="transparent"><tr><td style="vertical-align:middle"><h2>HMAC<br>with<br>SHA1</h2></td><td><a href="https://commons.wikimedia.org/wiki/File:SHAhmac.svg"><img alt="hmac-sha1" src="images/encryption/SHAhmac.svg"></a></td></tr></table>
+
+*i_pad* and *o_pad* have known and non-secret values
 
 
 
