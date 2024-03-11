@@ -23,11 +23,11 @@ digraph tls_1_2 {
     }
 
     subgraph message_line {
-        node [fontname="Helvetica",shape=box,style=rounded,width=2.25];
+        node [fontname="Helvetica",shape=box,style=rounded,width=2.75];
         edge [minlen=1];
         rank=TB;
         m1 [label=< <i>(plaintext:)</i><br/>client hello<br/>random number<br/>supported ciphers >];
-        m2 [label=< <i>(encrypted:)</i><br/>server hello<br/>chosen ciphers<br/>random number<br/>server cert (key share)<br/>get client cert >];
+        m2 [label=< <i>(plaintext:)</i><br/>server hello<br/>chosen ciphers<br/>random number<br/>server cert (key share)<br/>get client cert >];
         m3 [label=< <i>(encrypted:)</i><br/>client cert (key share)<br/>PMS<br/>hash of msgs (signature)<br/>change to AES<br/>finished >]
         m4 [label=< <i>(encrypted:)</i><br/>changing to AES<br/>finished >]
         m5 [label=< HTTPS GET >]
@@ -104,9 +104,9 @@ digraph tls_1_3 {
         node [fontname="Helvetica",shape=box,style=rounded,width=2.25];
         edge [minlen=1];
         rank=TB;
-        m1 [label=< client hello<br/>supported ciphers<br/>key share >];
-        m2 [label=< server hello<br/>chosen cipher<br/>key share<br/>certificate<br/>signature<br/>finished >];
-        m3 [label=< finished<br/>HTTPS GET >]
+        m1 [label=< client hello<br/>random number<br/>supported ciphers<br/>key share >];
+        m2 [label=< server hello<br/>random number<br/>chosen cipher<br/>key share<br/>signature<br/>change cipher<br/>finished >];
+        m3 [label=< change cipher<br/>HTTPS GET >]
         m4 [label=< HTTPS answer >]
         m1 -> m2 [arrowhead=none,style=invis];
         m2 -> m3 [arrowhead=none,style=invis];
