@@ -41,7 +41,12 @@ other = {
 # need to be changed to True (instead of False).
 sanity_checks = {
 
-	# Have you removed all other output other than the one line per saved file?
+	# Does your program create an output directory on each run via:
+	# `os.system("mkdir -p output")`?
+	'creates_output_directory': False,
+
+	# Have you removed all other printed output other than the one line
+	# printed per saved file?
 	'removed_extra_output': False,
 
 }

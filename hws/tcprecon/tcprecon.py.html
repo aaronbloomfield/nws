@@ -52,7 +52,12 @@ other <font color="#990000">=</font> <font color="#990000">{</font>
 <i><font color="#9A1900"># need to be changed to True (instead of False).</font></i>
 sanity_checks <font color="#990000">=</font> <font color="#990000">{</font>
 
-	<i><font color="#9A1900"># Have you removed all other output other than the one line per saved file?</font></i>
+	<i><font color="#9A1900"># Does your program create an output directory on each run via:</font></i>
+	<i><font color="#9A1900"># `os.system("mkdir -p output")`?</font></i>
+	<font color="#FF0000">'creates_output_directory'</font><font color="#990000">:</font> False<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Have you removed all other printed output other than the one line</font></i>
+	<i><font color="#9A1900"># printed per saved file?</font></i>
 	<font color="#FF0000">'removed_extra_output'</font><font color="#990000">:</font> False<font color="#990000">,</font>
 
 <font color="#990000">}</font>

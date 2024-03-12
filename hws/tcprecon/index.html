@@ -56,12 +56,15 @@
 <button class='tablinks' onclick="openTab(event,'toverview')" id='defaultOpen'>Overview</button>
 <button class='tablinks' onclick="openTab(event,'tchangelog')">Changelog</button>
 <button class='tablinks' onclick="openTab(event,'tintroduction')">Introduction</button>
+<button class='tablinks' onclick="openTab(event,'tresponse-codes')">Response Codes</button>
 <button class='tablinks' onclick="openTab(event,'tyour-task')">Your Task</button>
+<button class='tablinks' onclick="openTab(event,'toutput')">Output</button>
+<button class='tablinks' onclick="openTab(event,'ttesting')">Testing</button>
 <button class='tablinks' onclick="openTab(event,'tsubmission')">Submission</button>
 </div>
 <div id='toverview' class='tabcontent'><h3 id='overview'>Overview</h3>
 <p>In this assignment you will be reconstructing files transferred in TCP streams. Any http:// connection will request a number of files – .html files, images, scripts, and CSS style sheets, to name a few. Given a stream of network data, you will reconstruct the images and save them as files.</p>
-<p>We will be using Python, and Scapy, for this. As Python (and Scapy) are rather slow, it would not be able to keep up with a real-time TCP stream. Thus, we will only be analyzing pcap files.</p>
+<p>We will be using Python, and Scapy, for this. As Python (and Scapy) are rather slow, it may not be able to keep up with a real-time TCP stream. Thus, we will only be analyzing pcap files.</p>
 <p>You will be submitting your source code in <code>tcp_reconstruction.py</code>, as well as an edited version of <a href='tcprecon.py.html'>tcprecon.py</a> (<a href='tcprecon.py'>src</a>).</p>
 </div><div id='tchangelog' class='tabcontent'><h3 id='changelog'>Changelog</h3>
 <p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. So far there aren’t any significant changes to report.</p>
@@ -80,26 +83,35 @@ for pkt in pcap:
 <li>A new port is opened up on the client for <em>each</em> individual file transfer
 <ul>
 <li>Yes, this is inefficient, and web server wars between the major manufacturers have erupted over optimizations to this</li>
-<li>Note that the relevant port is the source port from the client to the server</li>
+<li>Note that the relevant port is the client’s source (the server’s destination port)</li>
 </ul></li>
-<li>An request, following the HTTP protocol (see below), is sent from the client to the server on port 80
+<li>An request, following the HTTP protocol (see below), is sent from the client to the server’s port 80
 <ul>
-<li>An example TCP data will be something like this: <code>GET /path/to/filename.ext HTTP/1.1\r\nHost: ...\r\n...\r\n</code></li>
-<li>You would save that file as <code>output/filename.ext</code> once you have downloaded all the parts</li>
-<li>You can identify this because (1) it’s the first TCP packet in the stream for this port that has a payload, and (2) it starts with “GET”</li>
-<li>If there is no filename in the URI (for example: <code>GET / HTTP/1.1</code>), you should add <code>index.html</code> to it</li>
+<li>An example TCP <em>request</em> data will be something like this: <code>GET /path/to/filename.ext HTTP/1.1\r\nHost: ...\r\n...\r\n</code>
+<ul>
+<li>This looks like a response (it starts with “GET”), but because it goes <em>to</em> port 80, it’s a request, and we are ignoring it for this assignment</li>
+</ul></li>
+<li>You would save that file as <code>output/filename.ext</code> once you have downloaded all the parts
+<ul>
+<li>To ensure that the output/ directory is present, call <code>os.system("mkdir -p output")</code>; this will not cause an error if the output/ directory already exists</li>
+</ul></li>
+<li>You can identify this “request” packet because (1) it’s the first TCP packet in the stream for the relevant port (the client’s port) that has a payload, and (2) it starts with “GET”</li>
+<li>If there is just a slash in the URL, or ends in a slash (for example: <code>GET / HTTP/1.1</code> or <code>GET /subdir/ HTTP/1.1</code>), you should append <code>index.html</code> to it (<code>/index.html</code> or <code>/subdir/index.html</code>, respectively)
+<ul>
+<li>If one requests <code>subdir/index.html</code> via just <code>subdir</code>, there is a redirect – how to handle these are described below</li>
+</ul></li>
 </ul></li>
 <li>An ACK is sent back from the server to the client, usually without any packet data</li>
 <li>A series of TCP packets are sent containing the data itself
 <ul>
-<li>The relevant port is now the destination port from the server to the client</li>
-<li>The source port is 80</li>
+<li>The relevant port is still the client’s source port (the server’s destination port)</li>
+<li>The source source port is 80</li>
 </ul></li>
 <li>The FIN flag is set in the last packet of the stream</li>
 <li>The downloaded binary blob will have the HTTP headers at the top, and those are not part of the downloaded file. The headers are text, and there is a <code>\r\n\r\n</code> separating the headers from the binary content. See the example below.</li>
 <li>Many files will load other files – an .html document, for example, will load images, css, scripts, etc.; these will each be a separate request (on a separate source port)</li>
 </ul>
-<p>A sample http request (sent from the client to the server) is below. Note that the separators between each line are <code>\r\n</code>, and the ending separator is <code>\r\n\r\n</code>. This was a request made to http://www.virginia.edu. It promptly redirected to https, but the regular http request is still illustrative.</p>
+<p>A sample http request (sent from the client to the server) is below. Note that the separators between each line are <code>\r\n</code>, and the ending separator is <code>\r\n\r\n</code>. This was a request made to <a href='http://www.virginia.edu'>http://www.virginia.edu</a>. It promptly redirected to https, but the regular http request is still illustrative.</p>
 <pre><code>GET / HTTP/1.1
 Host: www.virginia.edu
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:122.0) Gecko/20100101 Firefox/122.0
@@ -110,7 +122,18 @@ Connection: keep-alive
 Upgrade-Insecure-Requests: 1
 DNT: 1
 Sec-GPC: 1</code></pre>
-<p>A response is shown below in <code>hexdump -C</code> format. This is to a different request, that did not redirect to https. This is the start of a PNG file download (which had the filename extension of .jpg). You can see the HTTP headers. The separator is <code>\r\n\r\n</code>, which in hex is <code>0d 0a 0d 0a</code>. You can see that as the last byte of the 0x00000130 line, and the first three bytes of the 0x00000140 line. The PNG data itself starts on the 4th byte of the 0x00000140 line.</p>
+<p>A HTTP response is shown below. This is to a different request, that did not redirect to https. This for a PNG file download (which had the filename extension of .jpg for some unknown reason). You can see the HTTP headers in a very readable form. The separator is <code>\r\n\r\n</code>, which just appears as a newline below.</p>
+<pre><code>HTTP/1.1 200 OK
+Date: Sun, 18 Feb 2024 14:16:04 GMT
+Server: Apache/2.4.6 (CentOS)
+Last-Modified: Thu, 24 Feb 2022 14:55:26 GMT
+ETag: "119f7-5d8c4c5b95380"..Accept-Ranges: bytes
+Content-Length: 72183
+X-Clacks-Overhead: GNU Terry Pratchett
+Access-Control-Allow-Origin: *
+Connection: close
+Content-Type: image/png</code></pre>
+<p>The response is shown below in <code>hexdump -C</code> format. You can see the start of the PNG file after the headers. The separator (<code>\r\n</code> between lines, and <code>\r\n\r\n</code> to end the header) in hex, which is <code>0d 0a 0d 0a</code>. The end-of-header separator is the last byte of the 0x00000130 line, and the first three bytes of the 0x00000140 line. The PNG data itself starts on the 4th byte of the 0x00000140 line.</p>
 <pre><code>00000000  48 54 54 50 2f 31 2e 31  20 32 30 30 20 4f 4b 0d  |HTTP/1.1 200 OK.|
 00000010  0a 44 61 74 65 3a 20 53  75 6e 2c 20 31 38 20 46  |.Date: Sun, 18 F|
 00000020  65 62 20 32 30 32 34 20  31 34 3a 31 36 3a 30 34  |eb 2024 14:16:04|
@@ -141,29 +164,53 @@ Sec-GPC: 1</code></pre>
 000001b0  20 00 49 44 41 54 78 9c  ec dd 77 98 65 55 95 b0  | .IDATx...w.eU..|
 000001c0  f1 75 3a 40 03 0d dd 34  39 23 41 32 22 8a 82 08  |.u:@...49#A2"...|
 000001d0  28 41 30 47 18 47 31 ce  a8 a0 62 0e a3 a3 0e 86  |(A0G.G1...b.....|</code></pre>
+</div><div id='tresponse-codes' class='tabcontent'><h3 id='response-codes'>Response Codes</h3>
+<p>Every HTTP request has a <em>response code</em> in the reply. You can see a <a href='https://en.wikipedia.org/wiki/List_of_HTTP_status_codes'>list of all the http response codes</a>.</p>
+<p>Response code 200 (“OK”) means that the request was valid, and the data for the file follows the header. These are the ONLY response codes that we will be considering. Any other response code should be ignored.</p>
+<p>A redirect is a different type of response code. If you were to request the URI <code>/subdir</code> or <code>/subdir/</code>, the web server would likely redirect the browser to <code>/subdir/index.html</code> via a 302 (“found” or “moved temporarily”) response code. As this is not a 200 response code, we can ignore that response. HOWEVER, not all web browsers do this.</p>
+<p>Assuming that the response is a 200 – the only ones we are considering – if the URI ends in a slash, then append <code>index.html</code> to it. If the URI is a directory, but there is no redirect (for example, the request is for <code>/subdir</code>, and the response is a 200 (“OK”) with data, but does not redirect), then you should save the file as ‘subdir’.</p>
+<p>The response code is in the HTTP response header. From the example above, the first few lines of the response header is:</p>
+<pre><code>HTTP/1.1 200 OK
+Date: Sun, 18 Feb 2024 14:16:04 GMT
+Server: Apache/2.4.6 (CentOS)
+...</code></pre>
+<p>The “200” in the first line is the response code. Note that the HTTP version can vary, but will always be a number (possibly an integer). A space separates the <code>HTTP/&lt;ver&gt;</code> and the response code.</p>
 </div><div id='tyour-task' class='tabcontent'><h3 id='your-task'>Your Task</h3>
-<p>Your task is to write a program called <code>tcp_reconstruction.py</code>. Given a pcap file as a command-line parameter, it will read through the file and save any files transferred via the HTTP protocol. All files should be saved in an <code>output/</code> sub-directory; you can create it via <code>os.system("mkdir -p output")</code>. Files with long path names (“/path/to/file/foo.txt”) should just be saved as the filename (i.e., “output/foo.txt”).</p>
+<p>Your task is to write a program called <code>tcp_reconstruction.py</code>. Given a pcap file as a command-line parameter, it will read through the file and save any files transferred via the HTTP protocol. Some requirements:</p>
+<ul>
+<li>You are only considering responses with HTTP response code 200 (“OK”)</li>
+<li>All files should be saved in an <code>output/</code> sub-directory; you can create it via <code>os.system("mkdir -p output")</code></li>
+<li>The file name should be the same as what it is in the HTTP header</li>
+<li>Files with long path names (<code>/long/winded/path/to/file/named/foo.txt</code>) should just be saved as the filename (<code>output/foo.txt</code>) – you should not try to reconstruct the directory structure in our <code>output/</code> directory</li>
+<li>If you reach the end of the pcap file, and not all of the packets are present (it got cut off before finishing transmission, for example), then don’t write the file to disk
+<ul>
+<li>Rephrased: you should only write a file to disk when you see the FIN packet</li>
+</ul></li>
+<li>If a file already exists in the <code>output/</code> directory, either from a previous run or because two files downloaded have the same name, you should just overwrite the existing file with the new one</li>
+<li>You should output exactly one line for each file extracted; that line should be of the form: <code>Wrote index.html of length 39350</code>
+<ul>
+<li>If you have the file name in <code>filename</code>, and the size in <code>size</code>, the following print statement will produce the correct output: <code>print(f"Wrote {filename} of length {size}")</code></li>
+<li>If there are multiple files in a given pcap, it does not matter the order that you print out these lines</li>
+</ul></li>
+</ul>
+<p>A few clarifications:</p>
+<ul>
+<li>The URI (and thus the filename) are only in the HTTP <em>request</em>, which goes <em>to</em> port 80 and comes from the client’s open port</li>
+<li>The response code is in the first packet of the HTTP <em>response</em>, which comes <em>from</em> port 80 and goes to the client’s open port</li>
+<li>You can match these up by the client’s port number</li>
+</ul>
 <p>You may make a number of assumptions about the data for this assignment:</p>
 <ul>
-<li>The files provided will be valid pcap files, and your program will always be given one (and only one) existing pcap file when run.</li>
-<li>All the pcap files will easily fit into memory – we are not going to test this with very large pcap files.</li>
-<li>All of the files saved to disk will be relatively small – no more than, say, 10 Mb per pcap file, so you do not have to worry about disk space issues.</li>
-<li>You can assume that all the TCP packets for a given file will be present – this is a reasonable assumption, since TCP will re-send any packets that get lost.</li>
-<li>You may assume that all the TCP packets for a given file will be in order in the pcap file. However, the TCP packets for different files may be interleaved with each other.</li>
-<li>You may assume that none of the IP packets have options – in other words, all IP packet headers are 20 bytes. This is not something you can assume for the TCP headers, though.</li>
+<li>The files provided will be valid pcap files, and your program will always be given one (and only one) existing pcap file when run, as a command line parameter</li>
+<li>We are going to test your code on various pcap files, but we are not going to try to purposely create malicious packets. All the packets will be following the HTTP protocol</li>
+<li>All the pcap files will easily fit into memory – we are not going to test this with very large pcap files</li>
+<li>All of the files saved to disk will be relatively small – no more than, say, 10 Mb per pcap file, so you do not have to worry about disk space issues</li>
+<li>You may assume that all the TCP packets for a given file will be in order in the pcap file; however, the TCP packets for different files may be interleaved with each other
+<ul>
+<li>While this is not a reasonable assumption in practice (that the packets are in order), it makes our assignment much easier to implement while still teaching the same concepts</li>
+</ul></li>
+<li>You may assume that none of the IP packet headers have options – in other words, all IP packet headers are exactly 20 bytes; this is not something you can assume for the TCP headers, though</li>
 </ul>
-<h4 id='testing'>Testing</h4>
-<p>We provide a number of pcap files on the Canvas landing page, and the expected output.</p>
-<h4 id='output'>Output</h4>
-<p>For each file written to the output/ directory, you should print one line:</p>
-<pre><code>Wrote index.html of length 39350</code></pre>
-<p>Please check that the formatting is correct, as the auto-grader is going to look for that exact output! If you have the file name in <code>filename</code>, and the size in <code>size</code>, the following print statement will produce the correct output:</p>
-<pre><code>print(f"Wrote {filename} of length {size}")</code></pre>
-<p>An example execution run is as follows:</p>
-<pre><code>$ python3 tcp_reconstruction.py andromeda-img.pcap
-Wrote Andromeda_IAU.png of length 259492
-$</code></pre>
-<p>If there were more files than that one, each file would print out on a separate line.</p>
 <h4 id='scapy-and-tcp-payloads'>Scapy and TCP payloads</h4>
 <p>It is surprisingly annoying in Scapy to determine if a TCP packet has a payload, as if it does not, trying to access <code>packet[TCP].load</code> will thrown an exception. The following function may make this easier:</p>
 <pre><code>def pkt_has_tcp_load(pkt):
@@ -172,6 +219,47 @@ $</code></pre>
         return True
     except:
         return False</code></pre>
+<h4 id='live-traffic'>Live Traffic</h4>
+<p>This assignment is dealing with pcap files. To have your program process live TCP data, you would have Scapy call your function via the <code>sniff()</code> functionality, as shown <a href='slides/packets.html#/2/8'>here</a>. This is not required for this assignment, though – we are only using pcap files.</p>
+</div><div id='toutput' class='tabcontent'><h3 id='output'>Output</h3>
+<p>For each file written to the output/ directory, you should print one line:</p>
+<pre><code>Wrote index.html of length 39350</code></pre>
+<p>Please check that the formatting is correct, as the auto-grader is going to look for that exact output! If you have the file name in <code>filename</code>, and the size in <code>size</code>, the following print statement will produce the correct output:</p>
+<pre><code>print(f"Wrote {filename} of length {size}")</code></pre>
+<p>An example execution run is as follows:</p>
+<pre><code>$ python3 tcp_reconstruction.py andromeda-img.pcap
+Wrote Andromeda_IAU.png of length 259492
+$</code></pre>
+<p>If there were more files in the pcap file than that one, each file would print out a separate line of output.</p>
+</div><div id='ttesting' class='tabcontent'><h3 id='testing'>Testing</h3>
+<p>There are two (at least) pcap files provided for testing. Due to their size, they are in Canvas’ files, and not in the repo.</p>
+<p>The first, andromeda-img.pcap, will yield exactly one image (<a href='https://commons.wikimedia.org/wiki/File:Andromeda_IAU.svg'>this one</a>, in fact). The file’s name is <code>Andromeda_IAU.png</code>, the file size is 259,492 bytes, and it’s resolution is 1000x871 pixels (not the size of the original).</p>
+<p>The second, www.phys.virginia.edu.pcap, is from an http request to <a href='http://www.phys.virginia.edu'>http://www.phys.virginia.edu</a>. It yields 25 files, which are shown below. The output below is sorted alphabetically for ease of finding the files therein, and your output order is expected to be different.</p>
+<pre><code>Wrote ats2mk.300x200.png of length 345726
+Wrote bss2d.300x200.png of length 332306
+Wrote cas8m.300x200.png of length 312153
+Wrote condmat_sem_committee_event.png of length 209480
+Wrote favicon.ico of length 1150
+Wrote favicon.ico of length 1150
+Wrote font-awesome.css of length 28713
+Wrote grav_sem_committee_event.png of length 116846
+Wrote hep_sem_committee_event.png of length 518964
+Wrote IMGS0244-1400x800.jpg of length 1305475
+Wrote index.html of length 39350
+Wrote ky5t.300x200.png of length 316928
+Wrote leaflet.css of length 14268
+Wrote leaflet.fullscreen.css of length 994
+Wrote Leaflet.fullscreen.min.js of length 3677
+Wrote leaflet.js of length 142601
+Wrote physics-inherited.css of length 60040
+Wrote physics-large-newbox.svg of length 3550
+Wrote physics-logo-blue-orange-white-clean-square-300x200.png of length 34579
+Wrote physics-logo-white.png of length 72183
+Wrote physics.css of length 10841
+Wrote ps5nw.300x200.png of length 327774
+Wrote speakers_committee_event.png of length 25795
+Wrote uva-large-newbox.svg of length 7304
+Wrote yfo7rax.css of length 9373</code></pre>
 </div><div id='tsubmission' class='tabcontent'><h3 id='submission'>Submission</h3>
 <p>You will be submitting your source code in <code>tcp_reconstruction.py</code>, as well as an edited version of <a href='tcprecon.py.html'>tcprecon.py</a> (<a href='tcprecon.py'>src</a>).</p>
 </div><script>document.getElementById('defaultOpen').click();</script></body>
