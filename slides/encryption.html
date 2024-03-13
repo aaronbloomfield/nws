@@ -659,6 +659,7 @@ An entity (such as virginia.edu) can hold an *intermediate* certificate, which a
 - Prevents replay attacks
   - A MAC includes a signature (hash, etc.), and combined with a sequence number, will prevent replaying an encrypted packet
   - But why does the sequence number alone not work?
+  - Replay attacks may not be possible, depending on the IV method used
 - Used for non-encrypted verification
   - To verify a large downloaded ISO file was correct
 
@@ -714,7 +715,8 @@ Note that even if the MAC doesn't support encryption (in the first 3 rows), the 
     </textarea></section>
     
     <section data-markdown data-separator="^\n\n\n"><textarea data-template>
-## Data Encryption Standard ([DES](http://en.wikipedia.org/wiki/Data_Encryption_Standard))
+<h2 class="r-fit-text">Data Encryption Standard (<a href='http://en.wikipedia.org/wiki/Data_Encryption_Standard'>DES</a>)</h2>
+
 - Adopted in 1976, it's a private-key encryption/decryption block cipher
 - Briefly, it does a lot of (invertible) bit-shifting in rounds to encrypt/decrypt a message
 - How to crack?
@@ -871,6 +873,7 @@ Note that even if the MAC doesn't support encryption (in the first 3 rows), the 
 ## Galois/Counter (GCM) mode
 [![](https://upload.wikimedia.org/wikipedia/commons/2/25/GCM-Galois_Counter_Mode_with_IV.svg)](https://commons.wikimedia.org/wiki/File:GCM-Galois_Counter_Mode_with_IV.svg)
 - Pronounced gal-wa
+- A Galois field is a finite field
 - Based on the Counter (CTR) mode
 - "Counter x" includes the IV as well as the counter
 - This is also essentially a stream cipher
