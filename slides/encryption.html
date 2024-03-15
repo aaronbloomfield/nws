@@ -760,13 +760,26 @@ Note that even if the MAC doesn't support encryption (in the first 3 rows), the 
 
 ## [Confusion and Diffusion](https://en.wikipedia.org/wiki/Confusion_and_diffusion)
 - Two properties of ciphers (Shannon, 1945)
-- *Confusion* obscures the relationship between the plaintext input and the ciphertext output
-  - Each ciphertext bit should depends on several parts of the key
-  - Some are confusion only: substitution, OTP
-- *Diffusion* is "hiding the plaintext statistics by spreading it over a larger area of ciphertext"
+- *Confusion* hides the relationship between the plaintext and the ciphertext
+  - Ideally it makes the ciphertext appear random or uniform
+  - Confusion only ciphers: OTP (high confusion), Caesar cipher (low confusion)
+- *Diffusion* means a small change in the plaintext has a large change in the ciphertext
   - Changing one bit in the plaintext should change about half the bits in the cipher text, and visa-versa
-  - Some are diffusion only: transposition cipher
-- Any "reasonable" block cipher has both 
+  - Diffusion only ciphers: transposition cipher
+- Any "reasonable" block cipher has both
+
+
+
+## Confusion and diffusion
+- One time pad, stream ciphers: high confusion, no diffusion
+  - High confusion: the pad makes it impossible to crack the plaintext
+  - No diffusion: Changing one bit in the plaintext changes only one bit in the ciphertext
+- Transposition cipher: no confusion, moderate diffusion
+  - No confusion: the bytes are the same in the plaintext and ciphertext, just out of order
+  - Moderate diffusion: this cipher moves things around
+- Caesar cipher: moderate confusion, no diffusion
+  - Moderate confusion: each letter is obscured
+  - No diffusion: a change to one letter in the plaintext changes only one letter in the ciphertext
 
 
 
@@ -1105,7 +1118,8 @@ $
 
 
 
-## Message Authentication Code (MAC)
+<h2 class="r-fit-text">Message Authentication Code (MAC)</h2>
+
 - Like a digital signature, but with a symmetric key
 - Provides the *integrity* and *authenticity* but not *confidentiality*
 - $MAC(k,m)$ will produce a short bit string that can only be created with the key $k$ and message $m$
@@ -1142,15 +1156,29 @@ $
 
 
 
-<table class="transparent"><tr><td style="vertical-align:middle"><h2>HMAC<br>with<br>SHA1</h2></td><td><a href="https://commons.wikimedia.org/wiki/File:SHAhmac.svg"><img alt="hmac-sha1" src="images/encryption/SHAhmac.svg"></a></td></tr></table>
+<!-- .slide: class="right-float-img-600" -->
+## MAC-then-Encrypt (MtE)
+![MtE](https://upload.wikimedia.org/wikipedia/commons/a/ac/Authenticated_Encryption_MtE.png)
+- No integrity check of the cipher text, but does for the plain text
+- MAC can not be used to infer anything about the plaintext
+- This is what TLS does
+- Does not provide integrity on the *ciphertext*
+  - We have to decrypt to check the integrity of the *plaintext*
+- Sources: [ref1](https://link.springer.com/content/pdf/10.1007/3-540-44448-3_41.pdf) and especially [ref2](https://crypto.stackexchange.com/questions/202/should-we-mac-then-encrypt-or-encrypt-then-mac)
 
-*i_pad* and *o_pad* have known and non-secret values
 
 
-
-## Types of authenticated encryption
-- Comparisons: [this paper](https://link.springer.com/content/pdf/10.1007/3-540-44448-3_41.pdf) and [this stackexchange.com posting that summarizes it](https://crypto.stackexchange.com/questions/202/should-we-mac-then-encrypt-or-encrypt-then-mac)
-
+<!-- .slide: class="right-float-img-600" -->
+## Encrypt-and-MAC (E&M)
+![E&M](https://upload.wikimedia.org/wikipedia/commons/a/a5/Authenticated_Encryption_EaM.png)
+- Also no integrity of the cipher text, but yes on the plain text
+- MAC can be used to infer information about the plaintext
+- This is what ssh does
+- Also no integrity on the ciphertext
+- Vulnerable to a few types of attacks:
+  - Chosen plaintext attacks
+  - Malleable cipher attacks
+- Sources: [ref1](https://link.springer.com/content/pdf/10.1007/3-540-44448-3_41.pdf) and especially [ref2](https://crypto.stackexchange.com/questions/202/should-we-mac-then-encrypt-or-encrypt-then-mac)
 
 
 
@@ -1160,22 +1188,10 @@ $
 - Provides integrity of the cipher text (and thus the plain text)
   - Thus, if the cipher text is modified, the message is ignored, and prevents any potential attacks on the implementation
 - MAC can not be used to infer anything about the plaintext
-
-
-
-<!-- .slide: class="right-float-img-600" -->
-## MAC-then-Encrypt (MtE)
-![MtE](https://upload.wikimedia.org/wikipedia/commons/a/ac/Authenticated_Encryption_MtE.png)
-- No integrity check of the cipher text, but does for the plain text
-- MAC can not be used to infer anything about the plaintext
-
-
-
-<!-- .slide: class="right-float-img-600" -->
-## Encrypt-and-MAC (E&M)
-![E&M](https://upload.wikimedia.org/wikipedia/commons/a/a5/Authenticated_Encryption_EaM.png)
-- Also no integrity of the cipher text, but yes on the plain text
-- MAC can be used to infer information about the plaintext
+- Ideal situation:
+  - Ciphertext integrity is provided
+  - Not vulnerable to the attacks like E&M
+- Sources: [ref1](https://link.springer.com/content/pdf/10.1007/3-540-44448-3_41.pdf) and especially [ref2](https://crypto.stackexchange.com/questions/202/should-we-mac-then-encrypt-or-encrypt-then-mac)
   </textarea></section>
 
   </section>
