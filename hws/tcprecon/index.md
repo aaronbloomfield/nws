@@ -224,14 +224,13 @@ There are two (at least) pcap files provided for testing.  Due to their size, th
 
 The first, andromeda-img.pcap, will yield exactly one image ([this one](https://commons.wikimedia.org/wiki/File:Andromeda_IAU.svg), in fact).  The file's name is `Andromeda_IAU.png`, the file size is 259,492 bytes, and it's resolution is 1000x871 pixels (not the size of the original).
 
-The second, www.phys.virginia.edu.pcap, is from an http request to [http://www.phys.virginia.edu](http://www.phys.virginia.edu).  It yields 25 files, which are shown below.  The output below is sorted alphabetically for ease of finding the files therein, and your output order is expected to be different.
+The second, www.phys.virginia.edu.pcap, is from an http request to [http://www.phys.virginia.edu](http://www.phys.virginia.edu).  It yields 24 files, which are shown below.  The output below is sorted alphabetically for ease of finding the files therein, and your output order is expected to be different.
 
 ```
 Wrote ats2mk.300x200.png of length 345726
 Wrote bss2d.300x200.png of length 332306
 Wrote cas8m.300x200.png of length 312153
 Wrote condmat_sem_committee_event.png of length 209480
-Wrote favicon.ico of length 1150
 Wrote favicon.ico of length 1150
 Wrote font-awesome.css of length 28713
 Wrote grav_sem_committee_event.png of length 116846
