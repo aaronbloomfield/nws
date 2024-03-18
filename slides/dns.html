@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Network Security slide set</title>
+    <meta name="description" content="A set of slides for a course on Introduction to Cybersecurity">
+    <meta name="author" content="Aaron Bloomfield">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="../slides/nws.css">
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="../slides/reveal.js/plugin/highlight/zenburn.css">
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? '../slides/reveal.js/css/print/pdf.scss' : '../slides/reveal.js/css/print/paper.scss';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+    <!--[if lt IE 9]>
+	<script src="../slides/reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+  </head>
+
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+<section data-markdown id="cover"><script type="text/template">
+# CS 4760
+&nbsp;  
+### Network Security
+
+<p class='titlep'>&nbsp;</p>
+<div class="titlesmall"><p>
+<a href="http://www.cs.virginia.edu/~asb">Aaron Bloomfield</a> (aaron@virginia.edu)<br>
+<a href="http://github.com/aaronbloomfield/nws">@github</a> | <a href="index.html">&uarr;</a> | <a href="?print-pdf"><img class="print" width="20" src="../slides/images/print-icon.webp" style="top:0px;vertical-align:middle"></a>
+</p></div>
+<p class='titlep'>&nbsp;</p>
+
+## Domain Name System (DNS)
+</script></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section data-markdown><textarea data-template>
+# Contents
+&nbsp;  
+[Domain Name System](#/dnscol)  
+[DNS Attacks](#/attacks)  
+[DNSSEC](#/dnssec)  
+</textarea></section>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="dnscol" class="center"><textarea data-template>
+# Domain Name System (DNS) 
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<!-- .slide: class="right-float-img-600" -->
+## The DNS Process
+[![](https://upload.wikimedia.org/wikipedia/commons/d/d2/DNS_schema.svg)](https://commons.wikimedia.org/wiki/File:DNS_schema.svg)
+- The DNS Resolver is a process on the DNS server that is trying to map a name to an IP
+- The root nameserver directs traffic to a TLD *registry*
+  - [Verisign](https://www.verisign.com) for .com and .net
+  - [EDUCAUSE](https://www.educause.edu) for .edu
+- TLDs direct traffic to the specific domain's nameserver
+  - That may direct traffic to a sub-domain (zone) nameserver
+- That final "authoritative" nameserver will resolve the URL
+
+
+
+## Well known DNS IPv4 servers
+- 1.1.1.1 and 1.0.0.1: Cloudflare's public DNS servers
+- 8.8.8.8 and 8.8.4.4: Google's public DNS servers
+  - 8.8.8.8 is what our Docker containers use
+- 94.140.14.14 and 94.140.15.15: [AdGuard DNS](https://adguard-dns.io/en/welcome.html)
+
+
+
+## DNS Root Servers
+[![](https://upload.wikimedia.org/wikipedia/commons/e/ee/Root-current.svg)](https://commons.wikimedia.org/wiki/File:Root-current.svg)
+- Named after letters a-m
+- Originally all in the US, now half are distributed
+- Their IPs are hard-coded in the OS, or via OS updates
+
+
+
+## DNS Root Servers
+![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image3.png)
+
+
+
+## Top Level Domain (TLD)
+[![](https://upload.wikimedia.org/wikipedia/commons/3/34/Root_Zone_Responsibility.jpg)](https://commons.wikimedia.org/wiki/File:Root_Zone_Responsibility.jpg)
+
+
+
+
+<!-- .slide: class="right-float-img-500" -->
+## Terminology
+![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image1.png)
+- Root name server: resolves the IPs of the TLD nameservers
+- Top-level domain (TLD) nameserver: resolves 2nd level domains
+- Second-level domain: the "main" part of the URL address
+- Authoritative nameserver: the NS that has the answer
+- DNS resolver (resolving nameserver): the DNS server your machine contacts that is trying to find the answer
+
+
+
+## DNS Information Tools 
+- `dig`: DNS lookup utility; shows the info a DNS server returns
+- `nslookup`: really the same thing as `dig`
+  - `nslookup` uses it's own libraries, whereas `dig` uses the OS ones
+- `whois`: lookup registry information for a domain
+- `rndc`: name server control utility; we'll use it for viewing and flushing the DNS cache
+
+
+
+<!-- .slide: class="smaller-pre" -->
+## `dig` and `whois`
+```text
+$ dig virginia.edu
+
+; <<>> DiG 9.10.6 <<>> virginia.edu
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 43545
+;; flags: qr rd ra; QUERY: 1, ANSWER: 4, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+;; QUESTION SECTION:
+;virginia.edu.      IN  A
+
+;; ANSWER SECTION:
+virginia.edu.   365 IN  A 128.143.33.150
+virginia.edu.   365 IN  A 54.197.224.147
+virginia.edu.   365 IN  A 128.143.33.137
+virginia.edu.   365 IN  A 128.143.33.144
+
+;; Query time: 37 msec
+;; SERVER: 192.168.14.5#53(192.168.14.5)
+;; WHEN: Sun Mar 17 19:11:33 EDT 2024
+;; MSG SIZE  rcvd: 105
+
+$ nslookup 54.197.224.147
+Server:   192.168.14.5
+Address:  192.168.14.5#53
+
+Non-authoritative answer:
+147.224.197.54.in-addr.arpa name = ec2-54-197-224-147.compute-1.amazonaws.com.
+
+Authoritative answers can be found from:
+
+$ 
+```
+
+
+
+<!-- .slide: class="smaller-pre" -->
+## `whois virginia.edu`
+
+```text
+% IANA WHOIS server
+% for more information on IANA, visit http://www.iana.org
+% This query returned 1 object
+
+refer:        whois.educause.edu
+
+domain:       EDU
+
+organisation: EDUCAUSE
+address:      282 Century Place, Suite 5000
+address:      Louisville CO 80027
+address:      United States of America (the)
+
+contact:      administrative
+name:         Information Services Administration
+organisation: EDUCAUSE
+address:      4772 Walnut Street, Suite 206
+address:      Boulder CO 80301
+address:      United States of America (the)
+phone:        +1-303-449-4430
+fax-no:       +1-303-440-0461
+e-mail:       netadmin@educause.edu
+
+contact:      technical
+name:         Registry Customer Service
+organisation: VeriSign Global Registry
+address:      12061 Bluemont Way
+address:      Reston VA 20190
+address:      United States of America (the)
+phone:        +1-703-925-6999
+fax-no:       +1-703-948-3978
+e-mail:       info@verisign-grs.com
+
+nserver:      A.EDU-SERVERS.NET 192.5.6.30 2001:503:a83e:0:0:0:2:30
+nserver:      B.EDU-SERVERS.NET 192.33.14.30 2001:503:231d:0:0:0:2:30
+nserver:      C.EDU-SERVERS.NET 192.26.92.30 2001:503:83eb:0:0:0:0:30
+nserver:      D.EDU-SERVERS.NET 192.31.80.30 2001:500:856e:0:0:0:0:30
+nserver:      E.EDU-SERVERS.NET 192.12.94.30 2001:502:1ca1:0:0:0:0:30
+nserver:      F.EDU-SERVERS.NET 192.35.51.30 2001:503:d414:0:0:0:0:30
+nserver:      G.EDU-SERVERS.NET 192.42.93.30 2001:503:eea3:0:0:0:0:30
+nserver:      H.EDU-SERVERS.NET 192.54.112.30 2001:502:8cc:0:0:0:0:30
+nserver:      I.EDU-SERVERS.NET 192.43.172.30 2001:503:39c1:0:0:0:0:30
+nserver:      J.EDU-SERVERS.NET 192.48.79.30 2001:502:7094:0:0:0:0:30
+nserver:      K.EDU-SERVERS.NET 192.52.178.30 2001:503:d2d:0:0:0:0:30
+nserver:      L.EDU-SERVERS.NET 192.41.162.30 2001:500:d937:0:0:0:0:30
+nserver:      M.EDU-SERVERS.NET 192.55.83.30 2001:501:b1f9:0:0:0:0:30
+ds-rdata:     35663 13 2 a2e1614291831a4746b5ac52b4b345357687271e85353082741f1cf3d06a4c1d
+
+whois:        whois.educause.edu
+
+status:       ACTIVE
+remarks:      Registration information:
+remarks:      http://www.educause.edu/edudomain
+
+created:      1985-01-01
+changed:      2023-09-12
+source:       IANA
+
+# whois.educause.edu
+
+This Registry database contains ONLY .EDU domains.
+The data in the EDUCAUSE Whois database is provided
+by EDUCAUSE for information purposes in order to
+assist in the process of obtaining information about
+or related to .edu domain registration records.
+
+The EDUCAUSE Whois database is authoritative for the
+.EDU domain.
+
+A Web interface for the .EDU EDUCAUSE Whois Server is
+available at: http://whois.educause.edu
+
+By submitting a Whois query, you agree that this information
+will not be used to allow, enable, or otherwise support
+the transmission of unsolicited commercial advertising or
+solicitations via e-mail.  The use of electronic processes to
+harvest information from this server is generally prohibited
+except as reasonably necessary to register or modify .edu
+domain names.
+
+-------------------------------------------------------------
+
+Domain Name: VIRGINIA.EDU
+
+Registrant:
+  University of Virginia
+  ITC, Carruthers Hall
+  P.O. Box 400198
+  Charlottesville, VA 22904-4198
+  USA
+
+Administrative Contact:
+  Domain Admin
+  University of Virginia
+  ITC, Carruthers Hall
+  P.O. Box 400198
+  Charlottesville, VA 22904-4198
+  USA
+  +1.4349240621
+  networks@virginia.edu
+
+Technical Contact:
+  Domain Admin
+  University of Virginia
+  ITC, Carruthers Hall
+  P.O. Box 400198
+  Charlottesville, VA 22904-4198
+  USA
+  +1.4349240621
+  networks@virginia.edu
+
+Name Servers:
+  UVAARPA.VIRGINIA.EDU
+  EIP-01-AWS.NET.VIRGINIA.EDU
+  NOM.VIRGINIA.EDU
+
+Domain record activated:    19-Mar-1986
+Domain record last updated: 23-Aug-2022
+Domain expires:             31-Jul-2025
+```
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## DNS Zones
+![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image2.png)
+- How DNS servers organize information
+- Any DNS server:
+  - Is the author- itative resolver for domains in its zone
+  - Will forward requests on to (authoritative) sub-domain zones as necessary
+- A DNS server can have many zones it manages
+
+
+
+## DNS Resolution
+A query is made to the DNS resolver, which:
+1. Contacts the .edu root nameserver for www.cs.virginia.edu
+   - Response: contact the .edu TLD nameserver at 192.33.14.30
+2. Contacts the .edu TLD nameserver for www.cs.virginia.edu
+   - Response: contact virginia.edu's nameservers at 128.143.107.117
+3. Contacts virginia.edu's nameserver for www.cs.virginia.edu
+   - Response: contact cs.virginia.edu's nameservers at 128.143.67.64
+4. Contacts cs.virginia.edu's nameserver for www.cs.virginia.edu
+   - Response: the authoritative answer is 128.143.67.11
+
+
+
+
+<!-- .slide: class="smaller-pre" -->
+## DNS Resolution step 1
+```text
+$ dig @a.root-servers.net www.cs.virginia.edu
+
+; <<>> DiG 9.10.6 <<>> @a.root-servers.net www.cs.virginia.edu
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 18521
+;; flags: qr rd; QUERY: 1, ANSWER: 0, AUTHORITY: 13, ADDITIONAL: 27
+;; WARNING: recursion requested but not available
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;www.cs.virginia.edu.   IN  A
+
+;; AUTHORITY SECTION:
+edu.      172800  IN  NS  b.edu-servers.net.
+edu.      172800  IN  NS  f.edu-servers.net.
+edu.      172800  IN  NS  i.edu-servers.net.
+edu.      172800  IN  NS  a.edu-servers.net.
+edu.      172800  IN  NS  g.edu-servers.net.
+edu.      172800  IN  NS  j.edu-servers.net.
+edu.      172800  IN  NS  k.edu-servers.net.
+edu.      172800  IN  NS  m.edu-servers.net.
+edu.      172800  IN  NS  l.edu-servers.net.
+edu.      172800  IN  NS  h.edu-servers.net.
+edu.      172800  IN  NS  c.edu-servers.net.
+edu.      172800  IN  NS  e.edu-servers.net.
+edu.      172800  IN  NS  d.edu-servers.net.
+
+;; ADDITIONAL SECTION:
+b.edu-servers.net.  172800  IN  A 192.33.14.30
+b.edu-servers.net.  172800  IN  AAAA  2001:503:231d::2:30
+f.edu-servers.net.  172800  IN  A 192.35.51.30
+f.edu-servers.net.  172800  IN  AAAA  2001:503:d414::30
+i.edu-servers.net.  172800  IN  A 192.43.172.30
+i.edu-servers.net.  172800  IN  AAAA  2001:503:39c1::30
+a.edu-servers.net.  172800  IN  A 192.5.6.30
+a.edu-servers.net.  172800  IN  AAAA  2001:503:a83e::2:30
+g.edu-servers.net.  172800  IN  A 192.42.93.30
+g.edu-servers.net.  172800  IN  AAAA  2001:503:eea3::30
+j.edu-servers.net.  172800  IN  A 192.48.79.30
+j.edu-servers.net.  172800  IN  AAAA  2001:502:7094::30
+k.edu-servers.net.  172800  IN  A 192.52.178.30
+k.edu-servers.net.  172800  IN  AAAA  2001:503:d2d::30
+m.edu-servers.net.  172800  IN  A 192.55.83.30
+m.edu-servers.net.  172800  IN  AAAA  2001:501:b1f9::30
+l.edu-servers.net.  172800  IN  A 192.41.162.30
+l.edu-servers.net.  172800  IN  AAAA  2001:500:d937::30
+h.edu-servers.net.  172800  IN  A 192.54.112.30
+h.edu-servers.net.  172800  IN  AAAA  2001:502:8cc::30
+c.edu-servers.net.  172800  IN  A 192.26.92.30
+c.edu-servers.net.  172800  IN  AAAA  2001:503:83eb::30
+e.edu-servers.net.  172800  IN  A 192.12.94.30
+e.edu-servers.net.  172800  IN  AAAA  2001:502:1ca1::30
+d.edu-servers.net.  172800  IN  A 192.31.80.30
+d.edu-servers.net.  172800  IN  AAAA  2001:500:856e::30
+
+;; Query time: 12 msec
+;; SERVER: 198.41.0.4#53(198.41.0.4)
+;; WHEN: Sun Mar 17 21:32:38 EDT 2024
+;; MSG SIZE  rcvd: 843
+
+$
+```
+
+
+
+## `dig` Response
+- There are at most four different sections in a `dig` response
+- **Question:** what is being asked (the DNS query)
+- If this is the authoritative nameserver for the domain:
+  - **Answer:** the IP that the domain resolves to
+- If this is *not* the authoritative nameserver for the domain:
+  - **Authority:** the DNS (one level down) to ask
+- **Additional:** additional information, such as the IPs of the (one level down) DNSes
+
+
+
+<!-- .slide: class="smaller-pre" -->
+## DNS Resolution step 2
+```text
+$ dig @b.edu-servers.net www.cs.virginia.edu
+
+; <<>> DiG 9.10.6 <<>> @b.edu-servers.net www.cs.virginia.edu
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 64912
+;; flags: qr rd; QUERY: 1, ANSWER: 0, AUTHORITY: 3, ADDITIONAL: 4
+;; WARNING: recursion requested but not available
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;www.cs.virginia.edu.   IN  A
+
+;; AUTHORITY SECTION:
+virginia.edu.   172800  IN  NS  nom.virginia.edu.
+virginia.edu.   172800  IN  NS  uvaarpa.virginia.edu.
+virginia.edu.   172800  IN  NS  eip-01-aws.net.virginia.edu.
+
+;; ADDITIONAL SECTION:
+nom.virginia.edu. 172800  IN  A 128.143.107.101
+uvaarpa.virginia.edu. 172800  IN  A 128.143.107.117
+eip-01-aws.net.virginia.edu. 172800 IN  A 44.234.207.10
+
+;; Query time: 109 msec
+;; SERVER: 192.33.14.30#53(192.33.14.30)
+;; WHEN: Sun Mar 17 21:35:22 EDT 2024
+;; MSG SIZE  rcvd: 165
+
+$
+```
+
+
+
+<!-- .slide: class="smaller-pre" -->
+## DNS Resolution step 3
+```text
+$ dig @uvaarpa.virginia.edu www.cs.virginia.edu
+
+; <<>> DiG 9.10.6 <<>> @uvaarpa.virginia.edu www.cs.virginia.edu
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 14099
+;; flags: qr rd; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 2
+;; WARNING: recursion requested but not available
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;www.cs.virginia.edu.   IN  A
+
+;; AUTHORITY SECTION:
+cs.virginia.edu.  3600  IN  NS  coresrv01a.cs.virginia.edu.
+
+;; ADDITIONAL SECTION:
+coresrv01a.cs.virginia.edu. 3600 IN A 128.143.67.64
+
+;; Query time: 13 msec
+;; SERVER: 128.143.107.117#53(128.143.107.117)
+;; WHEN: Sun Mar 17 21:37:14 EDT 2024
+;; MSG SIZE  rcvd: 89
+
+$
+```
+
+
+
+<!-- .slide: class="smaller-pre" -->
+## DNS Resolution step 4
+```text
+$ dig @coresrv01a.cs.virginia.edu www.cs.virginia.edu
+
+; <<>> DiG 9.10.6 <<>> @coresrv01a.cs.virginia.edu www.cs.virginia.edu
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 45286
+;; flags: qr aa rd; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+;; WARNING: recursion requested but not available
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+;; QUESTION SECTION:
+;www.cs.virginia.edu.   IN  A
+
+;; ANSWER SECTION:
+www.cs.Virginia.EDU.  172800  IN  A 128.143.67.11
+
+;; Query time: 27 msec
+;; SERVER: 128.143.67.64#53(128.143.67.64)
+;; WHEN: Sun Mar 17 21:38:17 EDT 2024
+;; MSG SIZE  rcvd: 83
+
+$
+```
+
+
+
+## DNS Cache
+- To speed up the queries, DNS entries are cached for a limited amount of time
+  - Typically 24 hours
+- Then they are requested again again
+- To view the DNS cache (on Linux):
+  - `rndc dumpdb -cache`
+  - Then view /var/cache/bind/named_dump.db
+- To flush the cache: `rndc flush`
+
+
+
+## DNS Packet Header
+![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image34.png)
+
+
+
+## DNS Header Flags
+Just the relevant ones are shown here
+
+- qr: whether a query (0) or response (1)
+- aa: whether answer is authoritative (1) or not (0)
+- rd: for queries, is recursion desired (1) or not (0)
+
+
+
+<!-- .slide: class="smaller-pre" -->
+## DNS Packet Header
+```
+$ python3
+>>> from scapy.all import *
+>>> ls(DNS)
+length     : ShortField (Cond)                   = ('None')
+id         : ShortField                          = ('0')
+qr         : BitField  (1 bit)                   = ('0')
+opcode     : BitEnumField                        = ('0')
+aa         : BitField  (1 bit)                   = ('0')
+tc         : BitField  (1 bit)                   = ('0')
+rd         : BitField  (1 bit)                   = ('1')
+ra         : BitField  (1 bit)                   = ('0')
+z          : BitField  (1 bit)                   = ('0')
+ad         : BitField  (1 bit)                   = ('0')
+cd         : BitField  (1 bit)                   = ('0')
+rcode      : BitEnumField                        = ('0')
+qdcount    : DNSRRCountField                     = ('None')
+ancount    : DNSRRCountField                     = ('None')
+nscount    : DNSRRCountField                     = ('None')
+arcount    : DNSRRCountField                     = ('None')
+qd         : DNSQRField                          = ('<DNSQR  |>')
+an         : DNSRRField                          = ('None')
+ns         : DNSRRField                          = ('None')
+ar         : DNSRRField                          = ('None')
+>>> 
+```
+
+
+
+## DNS Packet Data (Records)
+![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image26.png)
+
+
+
+<!-- .slide: class="wide-pre" -->
+## DNS Packet Header
+```
+$ python3
+>>> from scapy.all import *
+>>>
+>>> ls(DNSQR) # for question records
+qname      : DNSStrField                         = ("b'www.example.com.'")
+qtype      : ShortEnumField                      = ('1')
+qclass     : ShortEnumField                      = ('1')
+>>>
+>>> ls(DNSRR) # for answer and authority records
+rrname     : DNSStrField                         = ("b'.'")
+type       : ShortEnumField                      = ('1')
+rclass     : ShortEnumField                      = ('1')
+ttl        : IntField                            = ('0')
+rdlen      : FieldLenField                       = ('None')
+rdata      : MultipleTypeField (IPField, IP6Field, DNSStrField, DNSTextField, StrLenField) = ("b''")
+>>>
+```
+
+
+
+## Sending a DNS query
+```python
+#!/usr/bin/env python3
+from scapy.all import *
+
+IPpkt  = IP(dst='8.8.8.8') # Google's DNS
+UDPpkt = UDP(dport=53)
+
+Qdsec    = DNSQR(qname='www.virginia.edu') 
+DNSpkt   = DNS(id=100, qr=0, qdcount=1, qd=Qdsec)
+Querypkt = IPpkt/UDPpkt/DNSpkt
+Replypkt = sr1(Querypkt)
+reply = Replypkt[DNS]
+print(repr(reply))
+```
+
+
+
+<!-- .slide: class="smaller-pre" -->
+## Output:
+```
+>>> ls(reply)
+length     : ShortField (Cond)                   = None            ('None')
+id         : ShortField                          = 100             ('0')
+qr         : BitField  (1 bit)                   = 1               ('0')
+opcode     : BitEnumField                        = 0               ('0')
+aa         : BitField  (1 bit)                   = 0               ('0')
+tc         : BitField  (1 bit)                   = 0               ('0')
+rd         : BitField  (1 bit)                   = 1               ('1')
+ra         : BitField  (1 bit)                   = 1               ('0')
+z          : BitField  (1 bit)                   = 0               ('0')
+ad         : BitField  (1 bit)                   = 0               ('0')
+cd         : BitField  (1 bit)                   = 0               ('0')
+rcode      : BitEnumField                        = 0               ('0')
+qdcount    : DNSRRCountField                     = 1               ('None')
+ancount    : DNSRRCountField                     = 4               ('None')
+nscount    : DNSRRCountField                     = 0               ('None')
+arcount    : DNSRRCountField                     = 0               ('None')
+qd         : DNSQRField                          = <DNSQR  qname='www.virginia.edu.' qtype=A qclass=IN |> ('<DNSQR  |>')
+an         : DNSRRField                          = <DNSRR  rrname='www.virginia.edu.' type=CNAME rclass=IN ttl=16597 rdlen=31 rdata='uvahome.prod.acquia-sites.com.' |<DNSRR  rrname='uvahome.prod.acquia-sites.com.' type=CNAME rclass=IN ttl=60 rdata='mc-16290-1066158619.us-east-1.elb.amazonaws.com.' |<DNSRR  rrname='mc-16290-1066158619.us-east-1.elb.amazonaws.com.' type=A rclass=IN ttl=60 rdlen=4 rdata=54.227.148.53 |<DNSRR  rrname='mc-16290-1066158619.us-east-1.elb.amazonaws.com.' type=A rclass=IN ttl=60 rdlen=4 rdata=54.174.200.221 |>>>> ('None')
+ns         : DNSRRField                          = None            ('None')
+ar         : DNSRRField                          = None            ('None')
+>>> 
+```
+The `qd` and `an` fields are on the next slide
+
+
+
+<!-- .slide: class="wide-pre" -->
+## Output
+`qd` field:
+```
+<DNSQR  qname='www.virginia.edu.' qtype=A qclass=IN |> ('<DNSQR  |>')
+```
+`an` field:
+```
+<DNSRR  rrname='www.virginia.edu.' type=CNAME rclass=IN ttl=16597 rdlen=31 
+rdata='uvahome.prod.acquia-sites.com.' |<DNSRR  
+rrname='uvahome.prod.acquia-sites.com.' type=CNAME rclass=IN ttl=60 
+rdata='mc-16290-1066158619.us-east-1.elb.amazonaws.com.' |<DNSRR  
+rrname='mc-16290-1066158619.us-east-1.elb.amazonaws.com.' type=A rclass=IN 
+ttl=60 rdlen=4 rdata=54.227.148.53 |<DNSRR  
+rrname='mc-16290-1066158619.us-east-1.elb.amazonaws.com.' type=A rclass=IN 
+ttl=60 rdlen=4 rdata=54.174.200.221 |>>>> ('None')
+```
+The very last line has the IP: 54.174.200.221
+
+
+
+<!-- .slide: class="small-pre" -->
+## A simple DNS server
+```
+#!/usr/bin/env python3
+from scapy.all import *
+from socket import AF_INET, SOCK_DGRAM, socket
+
+sock = socket(AF_INET, SOCK_DGRAM)
+# port 53 may be taken, so we listen on port 1053
+sock.bind(('0.0.0.0', 1053))
+
+while True:
+  request, addr = sock.recvfrom(4096)
+  DNSreq = DNS(request)
+  query = DNSreq.qd.qname
+  print(query.decode('ascii'))
+
+  # construct the sections of the dig response
+
+  # answer section: we always return 10.2.3.6
+  Anssec = DNSRR(rrname=DNSreq.qd.qname, type='A',
+                 rdata='10.2.3.6', ttl=259200)
+
+  # two authority sections: other NS to ask
+  NSsec1 = DNSRR(rrname="example.com", type='NS',
+                 rdata='ns1.example.com', ttl=259200)
+  NSsec2 = DNSRR(rrname="example.com", type='NS',
+                 rdata='ns2.example.com', ttl=259200)
+
+  ## additional sections: more info, such as the NS IPs
+  Addsec1 = DNSRR(rrname='ns1.example.com', type='A',
+                 rdata='10.2.3.1', ttl=259200) 
+  Addsec2 = DNSRR(rrname='ns2.example.com', type='A',
+                 rdata='10.2.3.2', ttl=259200) 
+
+  # combine all these into a single DNS packet
+  DNSpkt = DNS(id=DNSreq.id, aa=1, rd=0, qr=1,
+               qdcount=1, ancount=1, nscount=2, arcount=2,
+               qd=DNSreq.qd, an=Anssec, 
+               ns=NSsec1/NSsec2, ar=Addsec1/Addsec2)
+
+  # print the packet and then send it back
+  print(repr(DNSpkt))
+  sock.sendto(bytes(DNSpkt), addr)
+```
+
+
+
+<!-- .slide: class="small-pre" -->
+## Simple DNS Server Usage
+```text
+$ dig @localhost -p 1053 www.example.com
+
+; <<>> DiG 9.10.6 <<>> @localhost -p 1053 www.example.com
+; (2 servers found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 14967
+;; flags: qr aa; QUERY: 1, ANSWER: 1, AUTHORITY: 2, ADDITIONAL: 2
+
+;; QUESTION SECTION:
+;www.example.com.   IN  A
+
+;; ANSWER SECTION:
+www.example.com.  259200  IN  A 10.2.3.6
+
+;; AUTHORITY SECTION:
+example.com.    259200  IN  NS  ns1.example.com.
+example.com.    259200  IN  NS  ns2.example.com.
+
+;; ADDITIONAL SECTION:
+ns1.example.com.  259200  IN  A 10.2.3.1
+ns2.example.com.  259200  IN  A 10.2.3.2
+
+;; Query time: 4 msec
+;; SERVER: 127.0.0.1#1053(127.0.0.1)
+;; WHEN: Sun Mar 17 22:36:21 EDT 2024
+;; MSG SIZE  rcvd: 206
+
+$
+```
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="attacks" class="center"><textarea data-template>
+# DNS Attacks
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## ...
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="dnssec" class="center"><textarea data-template>
+# DNSSEC
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## ...
+</textarea></section>
+
+</section>
+	
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	
+</div>
+</div>
+<script src="../slides/reveal.js/dist/reveal.js"></script>
+<script src="../slides/reveal.js/plugin/zoom/zoom.js"></script>
+<script src="../slides/reveal.js/plugin/notes/notes.js"></script>
+<script src="../slides/reveal.js/plugin/search/search.js"></script>
+<script src="../slides/reveal.js/plugin/markdown/markdown.js"></script>
+<script src="../slides/reveal.js/plugin/highlight/highlight.js"></script>
+<script src="../slides/reveal.js/plugin/math/math.js"></script>
+<script src="settings.js"></script>
+</body>
+</html>
