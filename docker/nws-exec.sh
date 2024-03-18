@@ -232,8 +232,8 @@ elif [ "$MODE" == "sleep" ] ; then
 elif [ "$MODE" == "firewall" ] ; then
 	/sleep # FIX ME
 else
-	echo "You must specify a mode"
-	exit
+	echo "YNo mode specified, so defaulting to shell mode"
+	/bin/bash
 fi
 
 # todos
