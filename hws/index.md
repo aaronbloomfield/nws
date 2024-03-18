@@ -13,6 +13,7 @@ These are larger programming homeworks.
 - HW P1: [ARP Spoofing and Detection](arp/index.html) ([md](arp/index.md))
 - HW P2: [Ping Commands](pingcmd/index.html) ([md](pingcmd/index.md))
 - HW P3: [Wireshark](wireshark/index.html) ([md](wireshark/index.md))
+- HW P4: [TCP Reconstruction](tcprecon/index.html) ([md](tcprecon/index.md))
 
 ### Smaller homeworks
 
