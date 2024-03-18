@@ -14,7 +14,9 @@ You will be submitting your source code in `tcp_reconstruction.py`, as well as a
 
 ### Changelog
 
-Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  So far there aren't any significant changes to report.
+Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  <!-- So far there aren't any significant changes to report. -->
+
+- Mon, 3/18: Clarified that the size of index.html in one of the test files can vary by 10 bytes in either direction
 
 
 ### Introduction
@@ -225,6 +227,8 @@ There are two (at least) pcap files provided for testing.  Due to their size, th
 The first, andromeda-img.pcap, will yield exactly one image ([this one](https://commons.wikimedia.org/wiki/File:Andromeda_IAU.svg), in fact).  The file's name is `Andromeda_IAU.png`, the file size is 259,492 bytes, and it's resolution is 1000x871 pixels (not the size of the original).
 
 The second, www.phys.virginia.edu.pcap, is from an http request to [http://www.phys.virginia.edu](http://www.phys.virginia.edu).  It yields 24 files, which are shown below.  The output below is sorted alphabetically for ease of finding the files therein, and your output order is expected to be different.
+
+Note that the index.html size may vary by a bit depending on your implementation (say, 10 bytes in either direction).  Fixing this will make the homework much more complicated, so we are going to just allow index.html sizes within 10 of what is stated below.
 
 ```
 Wrote ats2mk.300x200.png of length 345726

@@ -84,6 +84,8 @@
   - 8.8.8.8 is what our Docker containers use
 - 94.140.14.14 and 94.140.15.15: [AdGuard DNS](https://adguard-dns.io/en/welcome.html)
 
+See more [here](https://adguard-dns.io/kb/general/dns-providers/)
+
 
 
 ## DNS Root Servers
@@ -301,6 +303,28 @@ Domain expires:             31-Jul-2025
   - Is the author- itative resolver for domains in its zone
   - Will forward requests on to (authoritative) sub-domain zones as necessary
 - A DNS server can have many zones it manages
+
+
+
+## DNS Resolution
+- The host first checks /etc/hosts:
+```
+127.0.0.1       localhost coolservername
+127.0.1.1       othercoolservername
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+
+128.143.69.114 portal portal.cs.virginia.edu
+```
+- If not found, it then contacts the DNS resolver in /etc/resolv.conf:
+```
+nameserver 8.8.8.8
+```
 
 
 

@@ -8,18 +8,10 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
+    ul.task-list{list-style: none;}
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="../../markdown.css" />
@@ -49,6 +41,9 @@
     document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
   }
   </script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body>
 <h1 id="tcp-file-re-assembly">TCP file re-assembly</h1>
@@ -58,7 +53,10 @@
 <p>We will be using Python, and Scapy, for this. As Python (and Scapy) are rather slow, it may not be able to keep up with a real-time TCP stream. Thus, we will only be analyzing pcap files.</p>
 <p>You will be submitting your source code in <code>tcp_reconstruction.py</code>, as well as an edited version of <a href="tcprecon.py.html">tcprecon.py</a> (<a href="tcprecon.py">src</a>).</p>
 <h3 id="changelog">Changelog</h3>
-<p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. So far there aren’t any significant changes to report.</p>
+<p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. <!-- So far there aren't any significant changes to report. --></p>
+<ul>
+<li>Mon, 3/18: Clarified that the size of index.html in one of the test files can vary by 10 bytes in either direction</li>
+</ul>
 <h3 id="introduction">Introduction</h3>
 <p>You will only be analyzing HTTP streams. Thus, if packet is not to or from port 80 (http’s port), then the packet can be ignored.</p>
 <h4 id="scapy-and-pcap-files">Scapy and pcap files</h4>
@@ -226,6 +224,7 @@ $</code></pre>
 <p>There are two (at least) pcap files provided for testing. Due to their size, they are in Canvas’ files, and not in the repo.</p>
 <p>The first, andromeda-img.pcap, will yield exactly one image (<a href="https://commons.wikimedia.org/wiki/File:Andromeda_IAU.svg">this one</a>, in fact). The file’s name is <code>Andromeda_IAU.png</code>, the file size is 259,492 bytes, and it’s resolution is 1000x871 pixels (not the size of the original).</p>
 <p>The second, www.phys.virginia.edu.pcap, is from an http request to <a href="http://www.phys.virginia.edu">http://www.phys.virginia.edu</a>. It yields 24 files, which are shown below. The output below is sorted alphabetically for ease of finding the files therein, and your output order is expected to be different.</p>
+<p>Note that the index.html size may vary by a bit depending on your implementation (say, 10 bytes in either direction). Fixing this will make the homework much more complicated, so we are going to just allow index.html sizes within 10 of what is stated below.</p>
 <pre><code>Wrote ats2mk.300x200.png of length 345726
 Wrote bss2d.300x200.png of length 332306
 Wrote cas8m.300x200.png of length 312153
