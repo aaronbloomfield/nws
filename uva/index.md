@@ -73,7 +73,7 @@ The smaller ("S") homeworks are usually due Friday, unless otherwise noted.  The
 | 7 | Feb 26 | M,W,F | (midterm on Wed) | Web of trust, week 2 | | [Encryption](../slides/encryption.html#/) | Mon: encryption to 5.13; Wed: midterm; Fri: [WoT](../hws/weboftrust/index.html) work day |
 | 8 | Mar 4 |  |  |  | Spring break (no classes) |  |  |
 | 9 | Mar 11 | M,W,F | TCP reconstruction | Firewall configuration |  | Presentation layer; Application layer | Mon: encryption to 6.16; Wed: encryption to 7.15; Fri: finished encryption |
-| 10 | Mar 18 | M,W,F | Xmas scans | TBD |  | TCP shells & botnets; WWW exploits |  |
+| 10 | Mar 18 | M,W,F | Xmas scans | TBD |  | TCP shells & botnets; WWW exploits | Mon: DNS to 3.19 |
 | 11 | Mar 25 | M,W,F | Protocol | TBD |  | WWW exploits; Network monitoring |  |
 | 12 | Apr 1 | M,W,F | TCP shell | TBD |  | Obtaining and using access; BGP |  |
 | 13 | Apr 8 | M,W,F | Network monitoring | TBD |  | Network attacks |  |

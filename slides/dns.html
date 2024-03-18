@@ -330,13 +330,13 @@ nameserver 8.8.8.8
 
 ## DNS Resolution
 A query is made to the DNS resolver, which:
-1. Contacts the .edu root nameserver for www.cs.virginia.edu
+1. Contacts a root NS, asking for www.cs.virginia.edu
    - Response: contact the .edu TLD nameserver at 192.33.14.30
-2. Contacts the .edu TLD nameserver for www.cs.virginia.edu
+2. Contacts the .edu TLD NS, asking for www.cs.virginia.edu
    - Response: contact virginia.edu's nameservers at 128.143.107.117
-3. Contacts virginia.edu's nameserver for www.cs.virginia.edu
+3. Contacts virginia.edu's NS, asking for www.cs.virginia.edu
    - Response: contact cs.virginia.edu's nameservers at 128.143.67.64
-4. Contacts cs.virginia.edu's nameserver for www.cs.virginia.edu
+4. Contacts cs.virginia.edu's NS, asking for www.cs.virginia.edu
    - Response: the authoritative answer is 128.143.67.11
 
 
