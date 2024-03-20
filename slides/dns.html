@@ -585,7 +585,7 @@ ar         : DNSRRField                          = ('None')
 
 ## DNS Packet Data (Records)
 ![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image26.png)
-
+Answer and Authority records are the same, other than type.  Additional records are just like Answer records.
 
 
 <!-- .slide: class="wide-pre" -->
@@ -848,8 +848,7 @@ Address:  192.168.100.1#53
 
 Non-authoritative answer:
 Name: example.com
-Address: 192.168.100.103
-** server can't find example.com: SERVFAIL
+Address: 1.2.3.4
 
 root@outer1:/# 
 ```
@@ -874,7 +873,7 @@ root@outer1:/# dig example.com
 ;example.com.     IN  A
 
 ;; ANSWER SECTION:
-example.com.    259140  IN  A 192.168.100.103
+example.com.    259140  IN  A 1.2.3.4
 
 ;; Query time: 1 msec
 ;; SERVER: 192.168.100.1#53(192.168.100.1) (UDP)
