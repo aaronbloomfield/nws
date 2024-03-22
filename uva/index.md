@@ -68,16 +68,16 @@ The smaller ("S") homeworks are usually due Friday, unless otherwise noted.  The
 | 2 | Jan 22 | M,W,F | (none) | Survey (due Tue), [Docker](../hws/docker/index.html) ([md](../hws/docker/index.md)) (due Fri) | (none) | [Data link layer](../slides/link-layer.html#/) | Mon: link layer to 5.5; Wed: link layer to 8.5; Fri: finished link layer |
 | 3 | Jan 29 | M,W,F | (none) | [Linux tutorial](../hws/linux/index.html) ([md](../hws/linux/index.md)) (due Tue), [Network commands](../hws/netcmds/) (due Fri) | Du, chap 3 (IP); 22 pp | [Network layer](../slides/network-layer.html#/) | Mon: network layer to 5.3; Wed: network layer to 6.3; Fri: transport layer to 5.15, packets to 5.4 |
 | 4 | Feb 5 | M,W,F | ARP | Metasploitable hacks, part 1 | Du, chap 5 (transport layer), sections 6.1-6.3 of chapter 6 (TCP attacks); 25 pp | [Packet capture & analysis](../slides/packets.html#/); [Transport layer](../slides/transport-layer.html#/) | Mon: finished network layer, packets to 4.4; Wed: packets to 5.2, transport-layer to 5.3; Fri: ... |
-| 5 | Feb 12 | M,W,F | Routing | Metasploitable hacks, part 2 | | [Transport layer](../slides/transport-layer.html#/); [Firewalls & evasion](../slides/firewalls.html#/) | Mon: finished packets; transport-layer to 7.11; Wed: transport layer to 9.4; Fri: finished transport layer, firewalls to 3.3 |
-| 6 | Feb 19 | M,W,F | Wireshark | Web of trust, week 1 | | [Encryption](../slides/encryption.html#/) | Mon: firewalls to 7.6; Wed: finished firewalls, encryption to 3.8; Fri: encryption to 4.4 |
-| 7 | Feb 26 | M,W,F | (midterm on Wed) | Web of trust, week 2 | | [Encryption](../slides/encryption.html#/) | Mon: encryption to 5.13; Wed: midterm; Fri: [WoT](../hws/weboftrust/index.html) work day |
+| 5 | Feb 12 | M,W,F | Routing | Metasploitable hacks, part 2 |  | [Transport layer](../slides/transport-layer.html#/), [Firewalls & evasion](../slides/firewalls.html#/) | Mon: finished packets; transport-layer to 7.11; Wed: transport layer to 9.4; Fri: finished transport layer, firewalls to 3.3 |
+| 6 | Feb 19 | M,W,F | Wireshark | Web of trust, week 1 |  | [Firewalls & evasion](../slides/firewalls.html#/), [Encryption](../slides/encryption.html#/) | Mon: firewalls to 7.6; Wed: finished firewalls, encryption to 3.8; Fri: encryption to 4.4 |
+| 7 | Feb 26 | M,W,F | (midterm on Wed) | Web of trust, week 2 |  | [Encryption](../slides/encryption.html#/) | Mon: encryption to 5.13; Wed: midterm; Fri: [WoT](../hws/weboftrust/index.html) work day |
 | 8 | Mar 4 |  |  |  | Spring break (no classes) |  |  |
-| 9 | Mar 11 | M,W,F | TCP reconstruction | Firewall configuration |  | Presentation layer; Application layer | Mon: encryption to 6.16; Wed: encryption to 7.15; Fri: finished encryption |
-| 10 | Mar 18 | M,W,F | Xmas scans | TBD |  | TCP shells & botnets; WWW exploits | Mon: DNS to 3.19; Wed: DNS to 4.7 |
-| 11 | Mar 25 | M,W,F | Protocol | TBD |  | WWW exploits; Network monitoring |  |
-| 12 | Apr 1 | M,W,F | TCP shell | TBD |  | Obtaining and using access; BGP |  |
-| 13 | Apr 8 | M,W,F | Network monitoring | TBD |  | Network attacks |  |
-| 14 | Apr 15 | M,W,F | BGP | TBD | TBD | DNS; Heartbleed |  |
+| 9 | Mar 11 | M,W,F | TCP reconstruction |  |  | [Encryption](../slides/encryption.html#/) | Mon: encryption to 6.16; Wed: encryption to 7.15; Fri: finished encryption |
+| 10 | Mar 18 | M,W,F | (Xmas scans) | TBD | Du, chapter 10 (sections 10.1 – 10.4) and chapter 11; total of 28 pages | [DNS](../slides/dns.html#/) | Mon: DNS to 3.19; Wed: DNS to 4.7 |
+| 11 | Mar 25 | M,W,F | (Protocol) | TBD |  | WWW exploits; Network monitoring |  |
+| 12 | Apr 1 | M,W,F | (TCP shell) | TBD |  | Obtaining and using access; BGP |  |
+| 13 | Apr 8 | M,W,F | (Network monitoring) | TBD |  | Network attacks |  |
+| 14 | Apr 15 | M,W,F | BGP | TBD | TBD | Heartbleed |  |
 | 15 | Apr 22 | M,W,F | DNS | TBD | TBD | Trojans, rootkits, ransomware; Scanning & fuzzing; Social Engineering |  |
 | 16 | Apr 29 | M | SSH MITM | (none) | (none) | Conclusion |  |
 

@@ -8,10 +8,18 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="../markdown.css" />
@@ -41,9 +49,6 @@
     document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
   }
   </script>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
 </head>
 <body>
 <h1 id="network-security-uva-specific-material-spring-2024">Network Security: UVA specific material, spring 2024</h1>
@@ -143,7 +148,7 @@
 <td>Routing</td>
 <td>Metasploitable hacks, part 2</td>
 <td></td>
-<td><a href="../slides/transport-layer.html#/">Transport layer</a>; <a href="../slides/firewalls.html#/">Firewalls &amp; evasion</a></td>
+<td><a href="../slides/transport-layer.html#/">Transport layer</a>, <a href="../slides/firewalls.html#/">Firewalls &amp; evasion</a></td>
 <td>Mon: finished packets; transport-layer to 7.11; Wed: transport layer to 9.4; Fri: finished transport layer, firewalls to 3.3</td>
 </tr>
 <tr class="even">
@@ -153,7 +158,7 @@
 <td>Wireshark</td>
 <td>Web of trust, week 1</td>
 <td></td>
-<td><a href="../slides/encryption.html#/">Encryption</a></td>
+<td><a href="../slides/firewalls.html#/">Firewalls &amp; evasion</a>, <a href="../slides/encryption.html#/">Encryption</a></td>
 <td>Mon: firewalls to 7.6; Wed: finished firewalls, encryption to 3.8; Fri: encryption to 4.4</td>
 </tr>
 <tr class="odd">
@@ -181,26 +186,26 @@
 <td>Mar 11</td>
 <td>M,W,F</td>
 <td>TCP reconstruction</td>
-<td>Firewall configuration</td>
 <td></td>
-<td>Presentation layer; Application layer</td>
+<td></td>
+<td><a href="../slides/encryption.html#/">Encryption</a></td>
 <td>Mon: encryption to 6.16; Wed: encryption to 7.15; Fri: finished encryption</td>
 </tr>
 <tr class="even">
 <td>10</td>
 <td>Mar 18</td>
 <td>M,W,F</td>
-<td>Xmas scans</td>
+<td>(Xmas scans)</td>
 <td>TBD</td>
-<td></td>
-<td>TCP shells &amp; botnets; WWW exploits</td>
+<td>Du, chapter 10 (sections 10.1 – 10.4) and chapter 11; total of 28 pages</td>
+<td><a href="../slides/dns.html#/">DNS</a></td>
 <td>Mon: DNS to 3.19; Wed: DNS to 4.7</td>
 </tr>
 <tr class="odd">
 <td>11</td>
 <td>Mar 25</td>
 <td>M,W,F</td>
-<td>Protocol</td>
+<td>(Protocol)</td>
 <td>TBD</td>
 <td></td>
 <td>WWW exploits; Network monitoring</td>
@@ -210,7 +215,7 @@
 <td>12</td>
 <td>Apr 1</td>
 <td>M,W,F</td>
-<td>TCP shell</td>
+<td>(TCP shell)</td>
 <td>TBD</td>
 <td></td>
 <td>Obtaining and using access; BGP</td>
@@ -220,7 +225,7 @@
 <td>13</td>
 <td>Apr 8</td>
 <td>M,W,F</td>
-<td>Network monitoring</td>
+<td>(Network monitoring)</td>
 <td>TBD</td>
 <td></td>
 <td>Network attacks</td>
@@ -233,7 +238,7 @@
 <td>BGP</td>
 <td>TBD</td>
 <td>TBD</td>
-<td>DNS; Heartbleed</td>
+<td>Heartbleed</td>
 <td></td>
 </tr>
 <tr class="odd">
