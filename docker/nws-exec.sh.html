@@ -243,8 +243,8 @@ chmod <font color="#993399">755</font> /usr/bin/netcfg
 <b><font color="#0000FF">elif</font></b> <font color="#990000">[</font> <font color="#FF0000">"$MODE"</font> <font color="#990000">==</font> <font color="#FF0000">"firewall"</font> <font color="#990000">]</font> <font color="#990000">;</font> <b><font color="#0000FF">then</font></b>
 	/sleep <i><font color="#9A1900"># FIX ME</font></i>
 <b><font color="#0000FF">else</font></b>
-	echo <font color="#FF0000">"You must specify a mode"</font>
-	<b><font color="#0000FF">exit</font></b>
+	echo <font color="#FF0000">"YNo mode specified, so defaulting to shell mode"</font>
+	/bin/bash
 <b><font color="#0000FF">fi</font></b>
 
 <i><font color="#9A1900"># todos</font></i>

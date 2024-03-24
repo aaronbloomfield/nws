@@ -17,6 +17,8 @@ graph:
 	convert network_compact_for_arp_normal_outer2.svg network_compact_for_arp_normal_outer2.png
 	mv network.dot.6.svg network_compact_for_arp_normal_metasploit.svg
 	convert network_compact_for_arp_normal_metasploit.svg network_compact_for_arp_normal_metasploit.png
+	mv network.dot.7.svg network_compact_for_dns.svg
+	convert network_compact_for_dns.svg network_compact_for_dns.png
 
 clean:
 	/bin/rm -f network*.svg network*.png

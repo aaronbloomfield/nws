@@ -161,3 +161,43 @@ digraph network_compact_for_arp_spoofed_metasploit {
     {rank=same firewall internet}
     {rank=same outer1 metasploit}
 }
+
+graph network_compact_for_dns {
+    graph [fontname="Helvetica"];
+    node [fontname="Helvetica",shape=rect,style=rounded];
+    edge [fontname="Helvetica"];
+    rank=LR;
+
+    outer_network [shape=box,label="outernet network: 192.168.100.x",shape=oval];
+    inner_network [shape=box,label="innernet network: 192.168.200.x",shape=oval];
+    other_network [shape=box,label="othernet network: 192.168.150.x",shape=oval];
+
+    internet [label=< <b>Internet</b> >,shape=plaintext,fontsize=20];
+    firewall [label=< &lt;bridge IP&gt; (eth0)<br/><b>firewall</b><br/>192.168.100.1 (eth1) >];
+    outer1 [label=< 192.168.100.101 (eth1)<br/><b>outer1</b><br/>192.168.150.3 (eth0) >];
+    outer2 [label=< 192.168.100.102 (eth0)<br/><b>outer2</b><br/>  >];
+    outer3 [label=< 192.168.100.103 (eth0)<br/><b>outer3</b><br/>  >];
+    gateway [label=< 192.168.100.2 (eth2)<br/><b>gateway</b><br/>192.168.200.1 (eth0)<br/>192.168.150.1 (eth1) >];
+    metasploit [label=< 192.168.100.3 (eth1)<br/><b>metasploit</b><br/>192.168.200.2 (eth0) >];
+    inner [label=< 192.168.200.3 (eth0)<br/><b>inner</b><br/>  >];
+    other [label=< 192.168.150.2 (eth0)<br/><b>other</b><br/>  >];
+
+    internet -- firewall [color=red,penwidth=4];
+    firewall -- outer_network;
+    outer_network -- outer1;
+    outer_network -- outer2;
+    outer_network -- outer3;
+    outer_network -- metasploit;
+    metasploit -- inner_network;
+    outer_network -- gateway [color=blue,penwidth=4];
+    gateway -- inner_network [color=green,penwidth=4];
+    inner_network -- inner;
+    other_network -- gateway [color=purple,penwidth=4];
+    other_network -- other;
+    outer1 -- other_network;
+
+    {rank=same firewall internet}
+    {rank=same outer1 outer2 outer3 gateway metasploit}
+    {rank=same other other_network inner inner_network}
+
+}
