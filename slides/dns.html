@@ -1609,8 +1609,56 @@ $ dig @uvaarpa.virginia.edu -x 128.143.69.114
 
 
 
-## End of prepared slides
-<!-- through section 10.8.5 of the textbook; sections 10.9+ left -->
+<h2 class="r-fit-text">Background: same origin policy (SOP)</h2>
+
+- Web browsers only allow one script to access data from another script if the scripts:
+  - Are on the same domain
+  - Use the same protocol
+  - Use the same port
+- This prevents a malicious script from accessing the data from another script
+
+
+
+## DNS Rebinding Attack
+- Imagine you wanted to attack a machine behind a firewall
+  - The firewall prevents direct connections
+- You could have a script in a web page that attacks the server
+  - But the same origin policy prevents this (actually just the replies)
+- We assume the DNS server used by the machine for this particular host is malicious
+  - Set via any of the methods above
+- This attack used against IoT devices
+
+
+
+## DNS Rebinding Attack
+- Have the DNS TTL set to 0
+- The user pulls up a web page from www.sketchydomain.com
+  - The malicious DNS server returns the correct IP mapping
+- The JS code attempts a connection to "www.sketchydomain.com"
+  - The DNS mapping, no longer in cache, is requested again
+  - The malicious DNS now maps to the local server (re-bound)
+- Possibly, once the attack is done, and info has to go back to the attacker
+  - The JS code attempts another connection to "www.sketchydomain.com"
+  - This time the malicious DNS server gives the correct IP
+  - Information is then exfiltrated
+
+
+
+<h2 class="r-fit-text">Rebinding Attack Countermeasures</h2>
+
+- Use DNSSEC
+- Have the browsers can implement DNS pinning: the domain -> IP mapping is fixed for the "life" of the web page viewing
+- DNS servers (or processes on the computer) can filter out private IP addresses or the loopback address
+  - Can be done in the firewall also
+- Browser extensions (NoScript) block this
+
+
+
+## Denial of Service attacks
+- If we can bring down a DNS server, a lot of damage can be caused
+- The root and TLD nameservers:
+  - Are highly distributed, and carefully configured against these types of attacks
+- Not so much of individual domain nameservers
 </textarea></section>
 
 </section>
@@ -1624,7 +1672,127 @@ $ dig @uvaarpa.virginia.edu -x 128.143.69.114
 </textarea></section>
     
 <section data-markdown data-separator="^\n\n\n"><textarea data-template>
-## ...
+<!-- .slide: class="right-float-img-600 no-border" -->
+## High Level Idea
+![](https://blog.cloudflare.com/content/images/2018/09/DNSSEC.png)
+- Each DNSSEC server has a public key
+  - And signs all it's responses with that key
+  - Algorithms used for signing: RSA & ECDSA (and maybe others)
+- A server's public key is vouched for by one level up
+- DNS already has a hierarchical structure
+  - So that can be used for the signatures, rather than the TLD certificate authorities
+
+
+
+## New Fields
+- Fields:
+  - RRSIG: contains the signatures for the records in the response
+  - DNSKEY: the public key that creates said signature
+  - DS: the hash of the key one level down
+- The root DNS key:
+  - Can ship with the OS or updates
+  - Can be gotten through a TLS / website certificate authority, such as Verisign
+
+
+
+## Diagram
+![](http://www.cs.virginia.edu/~asb2t/duimg/n11/image1.png)
+
+
+
+## Slow Adoption
+- Adoption of DNSSEC has been slow because:
+  - It has to be backwards-compatible with DNS, and scale to the size of the Internet
+  - Difficulties preventing zone enumeration (aka zone walking)
+  - Lots of DNS resolvers, with different implementations, have to implement DNSSEC
+  - Who should own the TLD and root keys?
+  - Complexity of DNSSEC deployment
+  - Messy evolution of the protocol
+- How slow?  See a 2018 graph [here](https://blog.cloudflare.com/automatically-provision-and-maintain-dnssec/)
+  - Another on the next slide
+
+
+
+## Adoption graph
+[![](https://blog.apnic.net/wp-content/uploads/2023/10/Figure-1—-Internet-total-for-uptake-of-DNSSEC-validation.png)](https://blog.apnic.net/2023/10/31/how-we-measure-dnssec-validation/)
+
+
+
+<!-- .slide: class="right-float-img-600 no-border" -->
+## SOPA & PIPA
+![](https://p7.hiclipart.com/preview/638/38/393/protests-against-sopa-and-pipa-stop-online-piracy-act-protect-ip-act-bill-trans-pacific-partnership-open-images.jpg)
+- SOPA = Stop Online Piracy Act (House bill 3261)
+- PIPA = Protect IP Act (Senate Bill 968)
+- Both were promoted in early 2012
+- This presentation focuses on SOPA, but they are pretty similar
+- Much of the content of this presentation (and all the images) comes from [the Wikipedia article](http://en.wikipedia.org/wiki/Stop_Online_Piracy_Act), as well as the pages linked to from there
+- Massive protests led to public awareness and these were pulled
+
+
+
+<h2 class="r-fit-text">SOPA & PIPA: Hosting user content</h2>
+
+- Sites that host user content are not *liable* for an illegal posting ...
+  - Here 'illegal' means posting of copyrighted material
+- *AS LONG AS* the site takes the content down when notified in due course
+- Under SOPA, any such site could be taken down for hosting illegal content *without giving them the chance to take it down themselves*
+  - But upon an accusation only; no need for proof!
+  - This is *contrary* to the whole concept of innocent-until-proven-guilty!
+- So one user post could take down an entire *domain*
+- Many sites would no longer be able to exist: etsy, flickr, vimeo, etc.
+
+
+
+<!-- .slide: class="right-float-img-600 no-border" -->
+<h2 class="r-fit-text">SOPA & PIPA: How this would work</h2>
+
+![](https://media.nj.com/njv_guest_blog/photo/10460904-large.jpg)
+- The solution is to remove the DNS entry
+- Let's say you go to amazon.com...
+  - They do have user content (reviews) after all!
+- ... and you don't get there because of either:
+  - The domain was removed pursuant to SOPA
+  - There was DNS cache poisoning
+    - i.e., somebody inserted an imposter site for amazon.com
+- How could you tell the difference?
+- Answer: you can't.  They are indistinguishable.
+
+
+
+## SOPA & PIPA & DNSSEC
+- DNSSEC requires browsers (really, application-level software) must continue searching DNS servers until it finds one -- possibly overseas -- that provides untampered results
+- But this would be *illegal* under SOPA & PIPA
+- The attorney general can sue "any entity that knowingly and willfully provides ... a product ... for the circumvention or bypassing of" removed websites
+  - Meaning nobody in the US could provide DNSSEC or use it
+
+
+
+## Other SOPA & PIPA issues
+- Deep packet inspection would be required of all ISPs to check for pirated content
+  - Thus making TLS and HTTPS illegal
+- Users could be criminally liable if a video they posted inadvertently had a commercial logo in it
+  - Like a Pepsi can in the background
+- Knowledgeable uses would be able to bypass this with various tools
+- The US gov't supports these tools for others in non-free countries
+  - But would prevent them in the US
+
+
+
+<!-- .slide: class="right-float-img-400 no-border" -->
+## Key signing ceremony
+![](https://www.iana.org/_img/2015.1/iana-logo-homepage.svg)
+- Who signs the root key?
+  - The one that signs the DNSSEC keys of the TLDs?
+- [IANA](https://iana.org), the Internet Assigned Numbers Authority
+  - In a [key signing ceremony](https://www.cloudflare.com/dns/dnssec/root-signing-ceremony/) that is streamed live
+- When? Every 3 months
+- Where?  It alternates between:
+  - El Segundo, CA (part of LA)
+  - Culpeper, VA (!), 40 miles north of Charlottesville
+- Ceremonies:
+  - Last one was [Feb 14, 2024](https://www.iana.org/dnssec/ceremonies/52)
+  - Next one is [April 25, 2024](https://www.iana.org/dnssec/ceremonies/53-1)
+  - See the list of all of them [here](https://www.iana.org/dnssec/ceremonies)
 </textarea></section>
 
 </section>
