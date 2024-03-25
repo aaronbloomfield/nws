@@ -74,7 +74,7 @@ The smaller ("S") homeworks are usually due Friday, unless otherwise noted.  The
 | 8 | Mar 4 |  |  |  | Spring break (no classes) |  |  |
 | 9 | Mar 11 | M,W,F | TCP reconstruction |  |  | [Encryption](../slides/encryption.html#/) | Mon: encryption to 6.16; Wed: encryption to 7.15; Fri: finished encryption |
 | 10 | Mar 18 | M,W,F | (Xmas scans) | TBD | Du, chapter 10 (sections 10.1 – 10.4) and chapter 11; total of 28 pages | [DNS](../slides/dns.html#/) | Mon: DNS to 3.19; Wed: DNS to 4.7; Fri: DNS to 4.34 |
-| 11 | Mar 25 | M,W,F | (Protocol) | TBD |  | WWW exploits; Network monitoring |  |
+| 11 | Mar 25 | M,W,F | (Protocol) | TBD |  | WWW exploits; Network monitoring | Mon: dns to 5.11 |
 | 12 | Apr 1 | M,W,F | (TCP shell) | TBD |  | Obtaining and using access; BGP |  |
 | 13 | Apr 8 | M,W,F | (Network monitoring) | TBD |  | Network attacks |  |
 | 14 | Apr 15 | M,W,F | BGP | TBD | TBD | Heartbleed |  |
