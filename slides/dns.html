@@ -1424,6 +1424,11 @@ instagram.com       86400     IN A   1.2.3.6
 
 
 
+## Homework diagram
+[![](../docker/network_compact_for_dns.svg)](../docker/network_compact_for_dns.svg)
+
+
+
 ## Reverse DNS Lookup
 Consider:
 ```text
@@ -1689,6 +1694,8 @@ $ dig @uvaarpa.virginia.edu -x 128.143.69.114
   - RRSIG: contains the signatures for the records in the response
   - DNSKEY: the public key that creates said signature
   - DS: the hash of the key one level down
+  - NSEC: next record name in the zone
+  - NSEC3: next record name in the zone, but with a cryptographic hash
 - The root DNS key:
   - Can ship with the OS or updates
   - Can be gotten through a TLS / website certificate authority, such as Verisign
@@ -1704,6 +1711,7 @@ $ dig @uvaarpa.virginia.edu -x 128.143.69.114
 - Adoption of DNSSEC has been slow because:
   - It has to be backwards-compatible with DNS, and scale to the size of the Internet
   - Difficulties preventing zone enumeration (aka zone walking)
+    - If using NSEC, one can "walk" through the zones, enumerating the hostnames
   - Lots of DNS resolvers, with different implementations, have to implement DNSSEC
   - Who should own the TLD and root keys?
   - Complexity of DNSSEC deployment
