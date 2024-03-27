@@ -260,7 +260,7 @@
 
 
 
-<!-- .slide: class="wide-pre" -->
+<!-- .slide: class="wider-pre" -->
 ## Network Interface Card (NIC)
 
 - The hardware device that reads and writes from/to the network cable
@@ -293,7 +293,7 @@ root@inner:/#
 
 
 
-<!-- .slide: class="wide-pre" -->
+<!-- .slide: class="wider-pre" -->
 ## ifconfig
 ```
 root@inner:/# ifconfig
@@ -349,7 +349,7 @@ root@inner:/#
 
 
 
-<!-- .slide: class="wide-pre" -->
+<!-- .slide: class="wider-pre" -->
 ## ARP via tcpdump
 In another window, `ping -c 1 outer1` was executed on outer2; below are the packets sent and received (see [docker network diagram](../docker/network.svg))
 ```
@@ -925,7 +925,7 @@ echo 1 > /proc/sys/net/ipv4/ip_forward
   <pre><code>wget -q http://google.com</code></pre>
 </textarea></section>
 
-<section data-markdown data-separator="^\n\n\n" class="pre-wide"><textarea data-template>
+<section data-markdown data-separator="^\n\n\n" class="wide-pre"><textarea data-template>
 ## How to do it
 - When running `wget` from outer2, any `http://` address will appear in the `urlsnarf` output
   - There is often a few seconds of delay
@@ -1064,7 +1064,7 @@ pkt = sniff(iface='eth1', filter=filter, prn=spoof_pkt)
 
 
 
-<!-- .slide: class="small-pre wide-pre" -->
+<!-- .slide: class="small-pre wider-pre" -->
 ## The effect
 ```
 root@firewall:/# telnet metasploit

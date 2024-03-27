@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Network Security slide set</title>
+    <meta name="description" content="A set of slides for a course on Introduction to Cybersecurity">
+    <meta name="author" content="Aaron Bloomfield">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="../slides/nws.css">
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="../slides/reveal.js/plugin/highlight/zenburn.css">
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? '../slides/reveal.js/css/print/pdf.scss' : '../slides/reveal.js/css/print/paper.scss';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+    <!--[if lt IE 9]>
+	<script src="../slides/reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+  </head>
+
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+<section data-markdown id="cover"><script type="text/template">
+# CS 4760
+&nbsp;  
+### Network Security
+
+<p class='titlep'>&nbsp;</p>
+<div class="titlesmall"><p>
+<a href="http://www.cs.virginia.edu/~asb">Aaron Bloomfield</a> (aaron@virginia.edu)<br>
+<a href="http://github.com/aaronbloomfield/nws">@github</a> | <a href="index.html">&uarr;</a> | <a href="?print-pdf"><img class="print" width="20" src="../slides/images/print-icon.webp" style="top:0px;vertical-align:middle"></a>
+</p></div>
+<p class='titlep'>&nbsp;</p>
+
+## Web Security
+</script></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section data-markdown><textarea data-template>
+# Contents
+&nbsp;  
+[Basics](#/basics)  
+</textarea></section>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="basics" class="center"><textarea data-template>
+# Basics
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## HTML & CSS
+
+
+```
+<!doctype html>
+<html>
+  <head>
+    <title>Basic page</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="scripts.js"></script>
+  </head>
+  <body>
+    <p>Hello world!</p>
+  </body>
+</html>
+```
+
+```
+body {
+  background-color: rgb(80,130,190);
+}
+p { 
+  text-align: justify;
+  text-decoration: underline;
+}
+```
+
+
+
+## Javascript
+- Code that can run at any time
+  - When a page is loaded, a widget is pressed, based on a timer, etc.
+- And can load *dynamic content*
+  - Via the `XMLHttpRequest()` function:
+    - Can load data from server, send data back, etc.
+
+
+
+## Web Servers
+<img src='http://www.cs.virginia.edu/~asb2t/duimg/n21/image5.png' height='300px'>
+
+```
+<VirtualHost *:80>
+    DocumentRoot /var/www/html/
+</VirtualHost>
+<VirtualHost *:80>
+    ServerName example.com
+    DocumentRoot /var/www/example.com/
+</VirtualHost>
+```
+
+
+
+## Web Applications
+- The web *server* (not the client) has to run programs
+  - In a sandbox, of course
+- Three methods:
+  - CGI: older standard, creates (and destroys) a process for *each* web page view; slow
+  - FastCGI: upgrade to CGI, re-uses processes
+  - Modules: a library loaded into Apache2
+    - mod_php: PHP code support
+    - mod_wsgi or mod_asgi: for Python, including Django support
+    - mod_passenger: for Ruby (and Ruby on Rails)
+    - Others exist for perl, C/C++, Fortran (!), etc.
+
+
+
+## HTTP Protocol
+[![](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages/httpmsgstructure2.png)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages)
+- We've seen this in the [TCP Reconstruction homework](../hws/tcprecon/index.html)
+
+
+
+## GET versus POST
+- GET:
+```
+GET /path/to/index.php?userid=mst3k&which=1&value=no  HTTP/1.1
+Host: www.example.com
+...
+```
+- POST:
+```
+POST /path/to/index.php HTTP/1.1
+Host: www.example.com
+...
+userid=mst3k & which=1 & value=no
+```
+
+
+
+## Cookies & Sessions
+
+
+
+## Sandboxing Javascript
+
+
+
+## Ajax
+
+
+
+## Same Origin Policy
+
+
+
+## WebSocket
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="topic2" class="center"><textarea data-template>
+# Topic 2
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## ...
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="topic3" class="center"><textarea data-template>
+# Topic 3
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## ...
+</textarea></section>
+
+</section>
+	
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	
+</div>
+</div>
+<script src="../slides/reveal.js/dist/reveal.js"></script>
+<script src="../slides/reveal.js/plugin/zoom/zoom.js"></script>
+<script src="../slides/reveal.js/plugin/notes/notes.js"></script>
+<script src="../slides/reveal.js/plugin/search/search.js"></script>
+<script src="../slides/reveal.js/plugin/markdown/markdown.js"></script>
+<script src="../slides/reveal.js/plugin/highlight/highlight.js"></script>
+<script src="../slides/reveal.js/plugin/math/math.js"></script>
+<script src="settings.js"></script>
+</body>
+</html>

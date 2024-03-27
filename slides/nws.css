@@ -614,7 +614,12 @@ div.wikitablediv {
 }
 
 /* wide pre */
-.wide-pre pre, .pre-wide pre {
+.wide-pre pre {
+  margin-left:-30px;
+  width:100%;
+}
+/* wide pre */
+.wider-pre pre {
   margin-left:-100px;
   width:120%;
 }

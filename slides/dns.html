@@ -54,6 +54,7 @@
 [Domain Name System](#/dnscol)  
 [DNS Attacks](#/attacks)  
 [DNSSEC](#/dnssec)  
+[Removing Ads via DNS](#/rmads)  
 </textarea></section>
   
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -588,7 +589,7 @@ ar         : DNSRRField                          = ('None')
 Answer and Authority records are the same, other than type.  Additional records are just like Answer records.
 
 
-<!-- .slide: class="wide-pre" -->
+<!-- .slide: class="wider-pre" -->
 ## DNS Packet Header
 ```
 $ python3
@@ -659,7 +660,7 @@ The `qd` and `an` fields are on the next slide
 
 
 
-<!-- .slide: class="wide-pre" -->
+<!-- .slide: class="wider-pre" -->
 ## Output
 `qd` field:
 ```
@@ -1323,7 +1324,7 @@ instagram.com       86400     IN A   1.2.3.6
 
 
 
-<!-- .slide: class="wide-pre small-pre" -->
+<!-- .slide: class="wider-pre small-pre" -->
 <h2 class="r-fit-text">Scapy code to fake the Additional section</h2>
 
 ```python
@@ -1372,7 +1373,7 @@ instagram.com       86400     IN NS  ns.example.com
 
 
 
-<!-- .slide: class="wide-pre small-pre" -->
+<!-- .slide: class="wider-pre small-pre" -->
 <h2 class="r-fit-text">Scapy code to fake the Authority section</h2>
 
 ```python
@@ -1460,7 +1461,7 @@ $
 
 
 
-<!-- .slide: class="wide-pre" -->
+<!-- .slide: class="wider-pre" -->
 ## Reverse DNS Lookup
 ```text
 $ dig @a.root-servers.net -x 128.143.69.114
@@ -1508,7 +1509,7 @@ a.in-addr-servers.arpa. 172800  IN  AAAA  2620:37:e000::53
 
 
 
-<!-- .slide: class="wide-pre" -->
+<!-- .slide: class="wider-pre" -->
 ## Reverse DNS Lookup
 ```text
 $ dig @a.in-addr-servers.arpa -x 128.143.69.114
@@ -1543,7 +1544,7 @@ $ dig @a.in-addr-servers.arpa -x 128.143.69.114
 
 
 
-<!-- .slide: class="wide-pre" -->
+<!-- .slide: class="wider-pre" -->
 ## Reverse DNS Lookup
 ```text
 $ dig @r.arin.net -x 128.143.69.114
@@ -1575,7 +1576,7 @@ $ dig @r.arin.net -x 128.143.69.114
 
 
 
-<!-- .slide: class="wide-pre" -->
+<!-- .slide: class="wider-pre" -->
 ## Reverse DNS Lookup
 ```text
 $ dig @uvaarpa.virginia.edu -x 128.143.69.114
@@ -1804,7 +1805,81 @@ $ dig @uvaarpa.virginia.edu -x 128.143.69.114
 </textarea></section>
 
 </section>
-	
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="rmads" class="center"><textarea data-template>
+# Removing Ads<br>via DNS
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## How ads work
+- It's not feasible for each website to contract out with each advertiser
+- Enter the middle-men: ad purveyors that:
+  - Contact out with those advertising
+  - Pay those displaying the advertisements
+- One of the largest: [Google Marketing Platform](https://en.wikipedia.org/wiki/Google_Marketing_Platform) via [Google Ad Manager](https://en.wikipedia.org/wiki/Google_Ad_Manager)
+
+
+
+## Bidding Advertisement Model
+- Each advertiser creates a series of parameters to determine a bid
+- When a web page is served, the info available...
+  - IP, location, identity, browser, OS, what-not
+- ... is passed to each of the bidders
+- Whomever offers the highest price will have their ad displayed
+  - This price is likely well under 1 cent
+
+
+
+<h2 class="r-fit-text">Pay-per-click Advertisement Model</h2>
+
+- Given a search for something that provides ads
+- The links provided appear to go to the advertiser
+- But likely redirect to the search engine that redirects to the advertiser
+  - Thus, the search engine (or ad purveyor) knows which links were clicked on
+  - Sometimes this is obvious, other times it's handled via Javascript and more hidden
+- Cost per click: typically `$`0.50 to `$`2.50, but can be `$`50-`$`100 for certain keywords
+
+
+
+## How to remove ads
+- In addition to ad blockers...
+- Both models have certain URL servers that manage the display of ads
+- So we can have the DNS server not resolve the hostnames of the ad servers
+
+
+
+
+## Ad Removal Technique 1
+- Use a DNS server that does this blocking
+- Of the [list of public DNS servers](https://adguard-dns.io/kb/general/dns-providers/):
+  - 94.140.14.14 and 94.140.15.15: [AdGuard DNS](https://adguard-dns.io/en/welcome.html)
+- You can hard-code this DNS server on your computer
+  - Or modify your home gateway's DHCP settings to use this DNS server
+    - Doing it this way removes ads from your TV, phones, etc.
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## Ad Removal Technique 2
+![](https://upload.wikimedia.org/wikipedia/en/1/15/Pi-hole_vector_logo.svg)
+- Install your own DNS server
+- Most common example: [Pi-Hole](https://pi-hole.net)
+  - Originally designed to run on a Raspberry Pi, but can run on any machine
+- You can hard-code this DNS server on your computer
+  - Or modify your home gateway's DHCP settings to use this DNS server
+    - Doing it this way removes ads from your TV, phones, etc.
+
+
+
+<img src='https://upload.wikimedia.org/wikipedia/commons/5/5e/Pi-hole_Screenshot.png' class="no-border stretch">
+</textarea></section>
+
+</section>
+
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 	
 </div>

