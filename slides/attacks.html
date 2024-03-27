@@ -43,7 +43,7 @@
 </p></div>
 <p class='titlep'>&nbsp;</p>
 
-## Network Attacks
+## Attack Examples
 </script></section>
 
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -67,9 +67,10 @@
 <section data-markdown data-separator="^\n\n\n"><textarea data-template>
 ## Heartbleed (2012)
 <!-- .slide: class="right-float-img-800" -->
-![heartbleed icon](images/attacks/Heartbleed.svg)
+![heartbleed icon](images/attacks/heartbleed.svg)
 - A problem in *one* implementation of the TLS protocol
-  - Specifically the OpenSSL library implementation
+  - Specifically the [OpenSSL library](https://www.openssl.org/) implementation
+    - Source code on [github](https://github.com/openssl/openssl)
 - Affected about one sixth of all websites
 - Well known because:
   - A serious attack
@@ -194,8 +195,10 @@ if (1 + 2 + payload + 16 > s->s3->rrec.length) return 0;
 
 ## What was compromised?
 - Server private keys
+  - Many certificates were revoked and re-issued
 - Passwords
 - Social insurance numbers (Canadian SSNs)
+- "Anti-malware researchers also exploited Heartbleed to their own advantage in order to access secret forums used by cybercriminals" (Wikipedia)
 
 
 
@@ -354,7 +357,8 @@ child$
 
 
 <!-- .slide: class="small-pre" -->
-## Shellshock exploit on *metasploit*
+<h2 class="r-fit-text">Shellshock exploit on <i>metasploit</i></h2>
+
 ```bash
 $ whoami
 user
@@ -392,7 +396,7 @@ sh-3.2#
 - Also:
   - The initial '4' digit is the set-uid bit
   - Meaning it runs as if it were the owner (root)
-- Many programs have this setuid bit set, including, at the time ping:
+- Many programs have this setuid bit set, including, at the time, ping:
 ```bash
 root@metasploit:~# ls -l /bin/ping
 -rwsr-xr-x 1 root root 30856 Dec 10  2007 /bin/ping
@@ -405,7 +409,7 @@ root@metasploit:~#
 - Many processes, when running another command, invoke it via a shell
   - Python: `os.system()`
   - C/C++: `system()`
-- This is often /bin/bash
+- This is often /bin/bash (although not always)
 
 
 

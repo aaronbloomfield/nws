@@ -16,6 +16,8 @@ The slides used in this course are adapted from the slides for the textbook, [In
 - [Transport layer](transport-layer.html#/)
 - [Firewalls](firewalls.html#/)
 - [Encryption](encryption.html#/)
+- [Domain Name System](dns.html#/)
+- [Attack Examples](attacks.html#/)
 
 <!--
 - [Network Security Basics](https://www.handsonsecurity.net/files/slides/N01_Network_Basics.pptx)
