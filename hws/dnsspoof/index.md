@@ -6,9 +6,9 @@ DNS Spoofing
 
 ### Overview
 
-In this assignment you will be writing a number of DNS spoofs using Scapy.
+In this assignment you will be writing a number of DNS spoofs using Scapy.  You will need to be familiar with the [DNS section of the slides](../../slides/dns.html#/attacks).
 
-You will be submitting your source code code file as well as an edited version of [dnsspoof.py](dnsspoof.py.html) ([src](dnsspoof.py)).
+You will be submitting your three source code code file as well as an edited version of [dnsspoof.py](dnsspoof.py.html) ([src](dnsspoof.py)).
 
 
 ### Changelog
