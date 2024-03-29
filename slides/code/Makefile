@@ -1,3 +1,3 @@
 code:
-	source-highlight -d *.py
+	source-highlight -d *.py *.c
 	
