@@ -16,6 +16,10 @@ You will be submitting three source code files as well as an edited version of [
 Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  So far there aren't any significant changes to report.
 
 
+### Troubleshooting
+
+This section will be filled out later today (Friday, March 29th)...
+
 ### Docker setup
 
 This assignment is intended to be run in the course Docker setup.
@@ -488,19 +492,19 @@ Those lines are listing the nameservers for that domain, and also the correct IP
 
 You can also view these four lines via the command `grep -A 3 ^example.com /var/cache/bind/named_dump.db` (note the carat (`^`) before "example.com" -- this ensures that "example.com" is at the very start of the line).  The `-A 3` also shows the three lines *after* the found item.
 
-To test this, flush the cache, then run `dns_poison.py`.  Make a request from *outer1* for example.com.  If your dns_poison.py program works correctly, you should get these results:
+To test this, flush the cache, then run `dns_poison.py`.  Make a request from *inner* for example.com.  If your dns_poison.py program works correctly, you should get these results:
 
 ```
-root@gateway:/# rndc dumpdb -cache
-root@gateway:/# grep -A 3 ^example.com /var/cache/bind/named_dump.db
+root@inner:/# rndc dumpdb -cache
+root@inner:/# grep -A 3 ^example.com /var/cache/bind/named_dump.db
 example.com.      172714   NS a.iana-servers.net.
          172714   NS b.iana-servers.net.
 ; authanswer
-         259114   A  192.168.100.103
-root@gateway:/#
+         259114   A  192.168.100.101
+root@inner:/#
 ```
 
-Now the incorrect IP address is in the DNS cache of *gateway*.  To show this, stop your dns_poison.py program, and run `nslookup example.com` from *outer1* -- unlike the previous section, you should still get the IP address of *outer3* (192.168.100.103).
+Now the incorrect IP address is in the DNS cache of *gateway*.  To show this, stop your dns_poison.py program, and run `nslookup example.com` from *gateway*, and you should get the IP address for *outer1* (192.168.100.101).
 
 #### Hints
 
