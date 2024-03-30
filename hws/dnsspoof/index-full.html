@@ -8,12 +8,22 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span { line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -24,7 +34,7 @@
     }
     @media print {
     pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
     }
     pre.numberSource code
       { counter-reset: source-line 0; }
@@ -50,7 +60,7 @@
     code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
     code span.at { color: #7d9029; } /* Attribute */
     code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
+    code span.bu { color: #008000; } /* BuiltIn */
     code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
     code span.ch { color: #4070a0; } /* Char */
     code span.cn { color: #880000; } /* Constant */
@@ -63,7 +73,7 @@
     code span.ex { } /* Extension */
     code span.fl { color: #40a070; } /* Float */
     code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
     code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
     code span.kw { color: #007020; font-weight: bold; } /* Keyword */
     code span.op { color: #666666; } /* Operator */
@@ -75,7 +85,6 @@
     code span.va { color: #19177c; } /* Variable */
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="../../markdown.css" />
   <script>
@@ -104,9 +113,6 @@
     document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
   }
   </script>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
 </head>
 <body>
 <h1 id="dns-spoofing">DNS Spoofing</h1>
@@ -115,9 +121,33 @@
 <p>In this assignment you will be writing a number of DNS spoofs using Scapy. You will need to be familiar with the <a href="../../slides/dns.html#/attacks">DNS section of the slides</a>. Your code will be based on the examples in the <a href="https://www.amazon.com/dp/1733003967">text book</a> starting at Listing 10.3 on pages 240-241. If your text book is “unavailable”, you can see that code online <a href="https://github.com/kevin-w-du/BookCode/blob/master/DNS/">here</a> as well as the <a href="../../slides/dns.html#/attacks">DNS section of the slides</a>.</p>
 <p>You will be submitting three source code files as well as an edited version of <a href="dnsspoof.py.html">dnsspoof.py</a> (<a href="dnsspoof.py">src</a>).</p>
 <h3 id="changelog">Changelog</h3>
-<p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. So far there aren’t any significant changes to report.</p>
+<p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. <!-- So far there aren't any significant changes to report. --></p>
+<ul>
+<li>Fri, 3/29: Added the Troubleshooting tab</li>
+</ul>
 <h3 id="troubleshooting">Troubleshooting</h3>
-<p>This section will be filled out later today (Friday, March 29th)…</p>
+<p>There are two main areas where people are having issues.</p>
+<h4 id="wsl-users">WSL Users</h4>
+<p>If your host operating system is Windows, and you are running Docker through WSL, the <code>tc</code> command, described below, does not work. There is another command for you to use, also described below.</p>
+<h4 id="network-access">Network access</h4>
+<p>The Docker containers pull a configuration program from the Internet when they start up – you can see this toward the end of the <code>nws-exec.sh</code> script that is used to initialize the Docker containers. If your host is not connected to the Internet, or there is a connection blip when the containers are starting, this configuration file will not download properly. This is uncommon, but we’ve seen it a few times. Restart your containers, once connected to the Internet, to fix this.</p>
+<h4 id="docker-network-issues">Docker network issues</h4>
+<p>Docker does not always bring up the networks correctly. This seems like an intermittent problem, and it is unclear why it has started happening lately when we have not changed our configuration since the start of the semester.. The best solution we have found is to restart the containers; run <code>docker system prune -f</code> before you bring them up again.</p>
+<p>There are a number of signs that the networks have not been brought up correctly (other than your program not working, but ideally you will determine the network issues before you get to that point).</p>
+<p>If you bring up the Docker containers with <code>docker compose up</code> (or <code>docker-compose up</code>) – specifically without the <code>-d</code> parameter – you will see status output. Seeing any of the following messages, in the <code>docker compose up</code> output, indicates that the networks were not brought up correctly</p>
+<ul>
+<li>SIOCADDRT: Network is unreachable</li>
+<li>Cannot find device “eth1” (or any other NIC)</li>
+<li>connect (`outer1’): Network is unreachable (or any other host name)</li>
+</ul>
+<p>In all cases we have seen so far, at least one of these error messages was displayed when <code>docker compose up</code> was run.</p>
+<p>A few other things to check once you get a shell on a container, since we realize you don’t want to always read those error messages line-by-line.</p>
+<ul>
+<li>Ensure that the DNS server is running on <em>gateway</em>: <code>nmap -p 53 gateway</code>, and if doesn’t say the port is open, then it’s not running</li>
+<li>Ensure you can resolve a domain from any machine: <code>nslookup asdfasdfasdf.com</code> (a real domain). If this works, then we know that (1) the DNS server on <em>gateway</em> is working, and (2) that the connection to the Internet is working.</li>
+<li>Ensure that <em>gateway</em> has all three NICs (eth0, eth1, and eth2) via running <code>ifconfig</code> (note you’ll also see <code>lo</code> as NIC as well in that list)</li>
+</ul>
+<p>Lastly, we’ve found that occasionally the DNS would randomly decide to stop working. Restarting the Docker containers fixed this issue.</p>
 <h3 id="docker-setup">Docker setup</h3>
 <p>This assignment is intended to be run in the course Docker setup.</p>
 <h4 id="container-roles">Container roles</h4>
@@ -340,14 +370,20 @@ Name: example.com
 Address: 192.168.100.101
 
 root@outer1:~# </code></pre>
+<p>You may get a few additional lines indicating an error:</p>
+<pre><code>;; communications error to 192.168.200.1#53: timed out
+** server can&#39;t find example.com: SERVFAIL</code></pre>
+<p>As long as you get the <code>Address: 192.168.100.101</code> line, you don’t have to worry about those error lines (it has to do with how we are causing the network delay on some of the platforms).</p>
 <h4 id="the-spoof-doesnt-work">The spoof doesn’t work</h4>
 <p>There are two reasons for this – the first is that you may not be sending the correct packet. You can see the DNS traffic (requests and such) via the <code>tcpdump</code> command. But note that the spoof packet you send will NOT appear via <code>tcpdump</code> – you will have to print it out in your program (via <code>ls(pkt)</code>).</p>
 <p>The other problem is that the actual DNS response comes back very fast – faster than Scapy can send a spoof. In order to solve this, we are going to do is slow down the speed which <em>firewall</em> sends out the request to the upstream DNS server (recall that all connections from <em>gateway</em> go through <em>firewall</em>). Actually, we are going to slow down <em>all</em> Internet bound traffic leaving from <em>firewall</em>. This part only has to be run once.</p>
-<p>To fix this, we will run the following command on <em>firewall</em>:</p>
+<p>To fix this, we will enable a delay on <em>firewall</em>. If your host operating system is either Mac OS X or Linux, you should run on <em>firewall</em>:</p>
 <pre><code>tc qdisc add dev eth0 root netem delay 500ms</code></pre>
+<p>If your host operating system is Windows, you should run on <em>firewall</em>:</p>
+<pre><code>enable_outbound_dns_delay</code></pre>
 <p>This adds a 500 millisecond (0.5 second) delay on any packet going out eth0 from <em>firewall</em> (the path to the Internet) – this is the red link in the diagram above. This will allow Scapy to respond successive DNS responses, as it will now take longer to obtain the correct answer.</p>
-<p>Although this setting was only on <em>firewall</em>, as that is the connection to the Internet, all responses are delayed. This delay is reset the next time you start your containers. You can also remove it via: <code>tc qdisc del dev eth0 root netem</code>.</p>
-<p>Lastly, you can view the existing delay via <code>tc qdisc show dev eth0</code>:</p>
+<p>Although this setting was only on <em>firewall</em>, as that is the connection to the Internet, all responses are delayed. This delay is reset the next time you start your containers. You can also remove it via: <code>tc qdisc del dev eth0 root netem</code> on Mac OS X and Linux hosts, and <code>disble_outbound_dns_delay</code> on Windows hosts.</p>
+<p>Lastly, you can view the existing delay via <code>tc qdisc show dev eth0</code> on Mac OS X and Linux hosts; there is no equivalent command on Windows hosts at this time.</p>
 <pre><code>root@gateway:~# tc qdisc show dev eth0
 qdisc netem 8005: root refcnt 13 limit 1000 delay 500ms
 root@gateway:~# </code></pre>

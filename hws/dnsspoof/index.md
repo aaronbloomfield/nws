@@ -13,12 +13,44 @@ You will be submitting three source code files as well as an edited version of [
 
 ### Changelog
 
-Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  So far there aren't any significant changes to report.
+Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  <!-- So far there aren't any significant changes to report. -->
+
+- Fri, 3/29: Added the Troubleshooting tab
 
 
 ### Troubleshooting
 
-This section will be filled out later today (Friday, March 29th)...
+There are two main areas where people are having issues.
+
+#### WSL Users
+
+If your host operating system is Windows, and you are running Docker through WSL, the `tc` command, described below, does not work.  There is another command for you to use, also described below.
+
+#### Network access
+
+The Docker containers pull a configuration program from the Internet when they start up -- you can see this toward the end of the `nws-exec.sh` script that is used to initialize the Docker containers.  If your host is not connected to the Internet, or there is a connection blip when the containers are starting, this configuration file will not download properly.  This is uncommon, but we've seen it a few times.  Restart your containers, once connected to the Internet, to fix this.
+
+#### Docker network issues
+
+Docker does not always bring up the networks correctly.  This seems like an intermittent problem, and it is unclear why it has started happening lately when we have not changed our configuration since the start of the semester..  The best solution we have found is to restart the containers; run `docker system prune -f` before you bring them up again.
+
+There are a number of signs that the networks have not been brought up correctly (other than your program not working, but ideally you will determine the network issues before you get to that point).
+
+If you bring up the Docker containers with `docker compose up` (or `docker-compose up`) -- specifically without the `-d` parameter -- you will see status output.  Seeing any of the following messages, in the `docker compose up` output, indicates that the networks were not brought up correctly
+
+- SIOCADDRT: Network is unreachable
+- Cannot find device "eth1" (or any other NIC)
+- connect (`outer1'): Network is unreachable (or any other host name)
+
+In all cases we have seen so far, at least one of these error messages was displayed when `docker compose up` was run.
+
+A few other things to check once you get a shell on a container, since we realize you don't want to always read those error messages line-by-line.
+
+- Ensure that the DNS server is running on *gateway*: `nmap -p 53 gateway`, and if doesn't say the port is open, then it's not running
+- Ensure you can resolve a domain from any machine: `nslookup asdfasdfasdf.com` (a real domain).  If this works, then we know that (1) the DNS server on *gateway* is working, and (2) that the connection to the Internet is working.
+- Ensure that *gateway* has all three NICs (eth0, eth1, and eth2) via running `ifconfig` (note you'll also see `lo` as  NIC as well in that list)
+
+Lastly, we've found that occasionally the DNS would randomly decide to stop working.  Restarting the Docker containers fixed this issue.
 
 ### Docker setup
 
@@ -321,23 +353,38 @@ Address: 192.168.100.101
 root@outer1:~# 
 ```
 
+You may get a few additional lines indicating an error:
+
+```
+;; communications error to 192.168.200.1#53: timed out
+** server can't find example.com: SERVFAIL
+```
+
+As long as you get the `Address: 192.168.100.101` line, you don't have to worry about those error lines (it has to do with how we are causing the network delay on some of the platforms).
+
 #### The spoof doesn't work
 
 There are two reasons for this -- the first is that you may not be sending the correct packet.  You can see the DNS traffic (requests and such) via the `tcpdump` command.  But note that the spoof packet you send will NOT appear via `tcpdump` -- you will have to print it out in your program (via `ls(pkt)`).
 
 The other problem is that the actual DNS response comes back very fast -- faster than Scapy can send a spoof.  In order to solve this, we are going to do is slow down the speed which *firewall* sends out the request to the upstream DNS server (recall that all connections from *gateway* go through *firewall*).  Actually, we are going to slow down *all* Internet bound traffic leaving from *firewall*.  This part only has to be run once.
 
-To fix this, we will run the following command on *firewall*:
+To fix this, we will enable a delay on *firewall*.  If your host operating system is either Mac OS X or Linux, you should run on *firewall*:
 
 ```
 tc qdisc add dev eth0 root netem delay 500ms
 ```
 
+If your host operating system is Windows, you should run on *firewall*:
+
+```
+enable_outbound_dns_delay
+```
+
 This adds a 500 millisecond (0.5 second) delay on any packet going out eth0 from *firewall* (the path to the Internet) -- this is the red link in the diagram above.  This will allow Scapy to respond successive DNS responses, as it will now take longer to obtain the correct answer.  
 
-Although this setting was only on *firewall*, as that is the connection to the Internet, all responses are delayed.  This delay is reset the next time you start your containers.  You can also remove it via: `tc qdisc del dev eth0 root netem`.
+Although this setting was only on *firewall*, as that is the connection to the Internet, all responses are delayed.  This delay is reset the next time you start your containers.  You can also remove it via: `tc qdisc del dev eth0 root netem` on Mac OS X and Linux hosts, and `disble_outbound_dns_delay` on Windows hosts.
 
-Lastly, you can view the existing delay via `tc qdisc show dev eth0`:
+Lastly, you can view the existing delay via `tc qdisc show dev eth0` on Mac OS X and Linux hosts; there is no equivalent command on Windows hosts at this time.
 
 ```
 root@gateway:~# tc qdisc show dev eth0
