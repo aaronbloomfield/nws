@@ -8,22 +8,12 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
-    /* CSS for syntax highlighting */
+    ul.task-list{list-style: none;}
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -34,7 +24,7 @@
     }
     @media print {
     pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
     }
     pre.numberSource code
       { counter-reset: source-line 0; }
@@ -60,7 +50,7 @@
     code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
     code span.at { color: #7d9029; } /* Attribute */
     code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { color: #008000; } /* BuiltIn */
+    code span.bu { } /* BuiltIn */
     code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
     code span.ch { color: #4070a0; } /* Char */
     code span.cn { color: #880000; } /* Constant */
@@ -73,7 +63,7 @@
     code span.ex { } /* Extension */
     code span.fl { color: #40a070; } /* Float */
     code span.fu { color: #06287e; } /* Function */
-    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.im { } /* Import */
     code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
     code span.kw { color: #007020; font-weight: bold; } /* Keyword */
     code span.op { color: #666666; } /* Operator */
@@ -85,6 +75,7 @@
     code span.va { color: #19177c; } /* Variable */
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel='stylesheet' href='../../markdown.css'></link>
   <script>
@@ -113,6 +104,7 @@
     document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
   }
   </script>
+  
 </head>
 <body>
 <h1 id='dns-spoofing'>DNS Spoofing</h1>
@@ -133,6 +125,11 @@
 </div><div id='tchangelog' class='tabcontent'><h3 id='changelog'>Changelog</h3>
 <p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. </p>
 <ul>
+<li>Mon, 4/1: Clarifications:
+<ul>
+<li>In part 3 (DNS poisoning with nameserver), use the actual IP address of <em>outer1</em> (192.168.100.101) for the Authority record for example.com’s nameserver.</li>
+<li>If resolving mail.example.com doesn’t work, we’ve found that for that part (DNS poisoning with nameserver), some Docker guests are using the NS entry in <em>gateway</em>’s cache to resolve mail.example.com, and some are not – it seems to depend on the host. As long as you have the spoofed nameserver in the NS line in <em>gateway</em>’s DNS cache, you are fine for that part (you don’t have to actually have to get mail.example.com to resolve).</li>
+</ul></li>
 <li>Fri, 3/29: Added the Troubleshooting tab</li>
 </ul>
 </div><div id='ttroubleshooting' class='tabcontent'><h3 id='troubleshooting'>Troubleshooting</h3>
@@ -358,7 +355,7 @@ rdata      : MultipleTypeField (IPField, IP6Field, DNSStrField, DNSTextField, St
 <p>Your DNS spoofing programs – both for this part and all future parts – will run on <em>gateway</em>. This part is spoofing the IP address of example.com by listening on the eth0 interface, which is colored green in the image.</p>
 
 <p>Without the DNS spoof program running, resolving example.com yields the following:</p>
-<pre><code>root@outer1:~# nslookup example.com
+<pre><code>root@inner:~# nslookup example.com
 Server:     192.168.100.1
 Address: 192.168.100.1#53
 
@@ -368,9 +365,9 @@ Address: 93.184.216.34
 Name: example.com
 Address: 2606:2800:220:1:248:1893:25c8:1946
 
-root@outer1:~#</code></pre>
+root@inner:~#</code></pre>
 <p>With it running, it will yield the IP address for <em>outer1</em>:</p>
-<pre><code>root@outer1:~# nslookup example.com
+<pre><code>root@inner:~# nslookup example.com
 Server:     192.168.100.1
 Address: 192.168.100.1#53
 
@@ -379,7 +376,7 @@ Address: 192.168.100.101
 Name: example.com
 Address: 192.168.100.101
 
-root@outer1:~# </code></pre>
+root@inner:~# </code></pre>
 <p>You may get a few additional lines indicating an error:</p>
 <pre><code>;; communications error to 192.168.200.1#53: timed out
 ** server can't find example.com: SERVFAIL</code></pre>
@@ -399,7 +396,7 @@ qdisc netem 8005: root refcnt 13 limit 1000 delay 500ms
 root@gateway:~# </code></pre>
 <h4 id='but-it-only-works-the-first-time'>But it only works the first time</h4>
 <p>You may find that your spoof only works for the first query after you run <code>dns_spoof.py</code>:</p>
-<pre><code>root@outer1:~# nslookup example.com
+<pre><code>root@inner:~# nslookup example.com
 Server:     192.168.100.1
 Address: 192.168.100.1#53
 
@@ -408,7 +405,7 @@ Address: 192.168.100.101
 Name: example.com
 Address: 192.168.100.101
 
-root@outer1:~# nslookup example.com
+root@inner:~# nslookup example.com
 Server:     192.168.100.1
 Address: 192.168.100.1#53
 
@@ -418,7 +415,7 @@ Address: 93.184.216.34
 Name: example.com
 Address: 2606:2800:220:1:248:1893:25c8:1946
 
-root@outer1:~# </code></pre>
+root@inner:~# </code></pre>
 <p>This has to do with caching issues that are beyond our ability to control. Although we are able to tell <em>inner</em> that it’s a different IP address, the real reply comes in (usually) a bit later to the <em>gateway</em> DNS server, so the gateway DNS server now has the real cached value. For the second request, when the next request for resolving example.com is sent to the <em>gateway</em> DNS server, since it’s in cache, the response is faster than Scapy can send the spoof. If we were to have implemented this in C, we could have beat the DNS response.</p>
 <p>To solve this, we will flush the DNS cache on <em>gateway</em>. This will force the next DNS request for example.com to be sent out to the Internet, rather than the answer being in cache. And that request will be slowed down by the <code>tc</code> command run on <em>firewall</em>, above. Note that you will have to do this flush command <em>each time</em> you are going to re-run your test. The command to do that is <code>rndc flush</code>.</p>
 <h4 id='web-server-output'>Web server output</h4>

@@ -15,6 +15,9 @@ You will be submitting three source code files as well as an edited version of [
 
 Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  <!-- So far there aren't any significant changes to report. -->
 
+- Mon, 4/1: Clarifications:
+   - In part 3 (DNS poisoning with nameserver), use the actual IP address of *outer1* (192.168.100.101) for the Authority record for example.com's nameserver.
+   - If resolving mail.example.com doesn't work, we've found that for that part (DNS poisoning with nameserver), some Docker guests are using the NS entry in *gateway*'s cache to resolve mail.example.com, and some are not -- it seems to depend on the host.  As long as you have the spoofed nameserver in the NS line in *gateway*'s DNS cache, you are fine for that part (you don't have to actually have to get mail.example.com to resolve).
 - Fri, 3/29: Added the Troubleshooting tab
 
 
@@ -325,7 +328,7 @@ Your DNS spoofing programs -- both for this part and all future parts -- will ru
 Without the DNS spoof program running, resolving example.com yields the following:
 
 ```
-root@outer1:~# nslookup example.com
+root@inner:~# nslookup example.com
 Server:     192.168.100.1
 Address: 192.168.100.1#53
 
@@ -335,13 +338,13 @@ Address: 93.184.216.34
 Name: example.com
 Address: 2606:2800:220:1:248:1893:25c8:1946
 
-root@outer1:~#
+root@inner:~#
 ```
 
 With it running, it will yield the IP address for *outer1*:
 
 ```
-root@outer1:~# nslookup example.com
+root@inner:~# nslookup example.com
 Server:     192.168.100.1
 Address: 192.168.100.1#53
 
@@ -350,7 +353,7 @@ Address: 192.168.100.101
 Name: example.com
 Address: 192.168.100.101
 
-root@outer1:~# 
+root@inner:~# 
 ```
 
 You may get a few additional lines indicating an error:
@@ -397,7 +400,7 @@ root@gateway:~#
 You may find that your spoof only works for the first query after you run `dns_spoof.py`:
 
 ```
-root@outer1:~# nslookup example.com
+root@inner:~# nslookup example.com
 Server:     192.168.100.1
 Address: 192.168.100.1#53
 
@@ -406,7 +409,7 @@ Address: 192.168.100.101
 Name: example.com
 Address: 192.168.100.101
 
-root@outer1:~# nslookup example.com
+root@inner:~# nslookup example.com
 Server:     192.168.100.1
 Address: 192.168.100.1#53
 
@@ -416,7 +419,7 @@ Address: 93.184.216.34
 Name: example.com
 Address: 2606:2800:220:1:248:1893:25c8:1946
 
-root@outer1:~# 
+root@inner:~# 
 ```
 
 This has to do with caching issues that are beyond our ability to control.  Although we are able to tell *inner* that it's a different IP address, the real reply comes in (usually) a bit later to the *gateway* DNS server, so the gateway DNS server now has the real cached value.  For the second request, when the next request for resolving example.com is sent to the *gateway* DNS server, since it's in cache, the response is faster than Scapy can send the spoof.  If we were to have implemented this in C, we could have beat the DNS response.
