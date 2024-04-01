@@ -322,7 +322,7 @@ This works on the *metasploit* container
 ```bash
 $ foo='() { echo "hello world"; }; pwd;'
 $ echo $foo
-() { echo "hello world"; }; date;
+() { echo "hello world"; }; pwd;
 $ export foo
 $ /bin/bash
 /root
@@ -443,6 +443,16 @@ root@metasploit:~#
 </textarea></section>
     
 <section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## Reverse Shell
+- A normal remote shell, such as telnet or ssh, has the client connecting to the server
+- In a *reverse* shell, the roles are reversed
+  - The server, usually through an exploit, initiates a connection to the client (attacker)
+  - The attacker can then execute commands on the server
+- Here is a [list of some reverse shells](https://www.acunetix.com/blog/web-security-zone/what-is-reverse-shell/)
+- Here is a [list of even more reverse shells](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md)
+
+
+
 ## File Descriptors
 - An integer that the OS maps to an open file
 - All programs start with three:
