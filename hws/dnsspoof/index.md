@@ -329,8 +329,8 @@ Without the DNS spoof program running, resolving example.com yields the followin
 
 ```
 root@inner:~# nslookup example.com
-Server:     192.168.100.1
-Address: 192.168.100.1#53
+Server:     192.168.200.1
+Address: 192.168.200.1#53
 
 Non-authoritative answer:
 Name: example.com
@@ -345,8 +345,8 @@ With it running, it will yield the IP address for *outer1*:
 
 ```
 root@inner:~# nslookup example.com
-Server:     192.168.100.1
-Address: 192.168.100.1#53
+Server:     192.168.200.1
+Address: 192.168.200.1#53
 
 Name: example.com
 Address: 192.168.100.101
@@ -401,8 +401,8 @@ You may find that your spoof only works for the first query after you run `dns_s
 
 ```
 root@inner:~# nslookup example.com
-Server:     192.168.100.1
-Address: 192.168.100.1#53
+Server:     192.168.200.1
+Address: 192.168.200.1#53
 
 Name: example.com
 Address: 192.168.100.101
@@ -410,8 +410,8 @@ Name: example.com
 Address: 192.168.100.101
 
 root@inner:~# nslookup example.com
-Server:     192.168.100.1
-Address: 192.168.100.1#53
+Server:     192.168.200.1
+Address: 192.168.200.1#53
 
 Non-authoritative answer:
 Name: example.com
@@ -486,8 +486,8 @@ The expected output from the *inner* container should be:
 
 ```
 root@inner:/# nslookup example.com
-Server:         192.168.100.1
-Address:        192.168.100.1#53
+Server:         192.168.200.1
+Address:        192.168.200.1#53
 
 Name:   example.com
 Address: 192.168.100.101
@@ -545,13 +545,13 @@ You can also view these four lines via the command `grep -A 3 ^example.com /var/
 To test this, flush the cache, then run `dns_poison.py`.  Make a request from *inner* for example.com.  If your dns_poison.py program works correctly, you should get these results:
 
 ```
-root@inner:/# rndc dumpdb -cache
-root@inner:/# grep -A 3 ^example.com /var/cache/bind/named_dump.db
+root@gateway:/# rndc dumpdb -cache
+root@gateway:/# grep -A 3 ^example.com /var/cache/bind/named_dump.db
 example.com.      172714   NS a.iana-servers.net.
          172714   NS b.iana-servers.net.
 ; authanswer
          259114   A  192.168.100.101
-root@inner:/#
+root@gateway:/#
 ```
 
 Now the incorrect IP address is in the DNS cache of *gateway*.  To show this, stop your dns_poison.py program, and run `nslookup example.com` from *gateway*, and you should get the IP address for *outer1* (192.168.100.101).

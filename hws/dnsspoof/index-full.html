@@ -348,8 +348,8 @@ rdata      : MultipleTypeField (IPField, IP6Field, DNSStrField, DNSTextField, St
 <!-- **IMPORTANT NOTE:** You ***MUST*** clear the DNS cache before ***EACH*** time you run these tests, otherwise your query will just use what is in the DNS cache, completely bypassing the spoofing program.  You do this via `rndc flush`. -->
 <p>Without the DNS spoof program running, resolving example.com yields the following:</p>
 <pre><code>root@inner:~# nslookup example.com
-Server:     192.168.100.1
-Address: 192.168.100.1#53
+Server:     192.168.200.1
+Address: 192.168.200.1#53
 
 Non-authoritative answer:
 Name: example.com
@@ -360,8 +360,8 @@ Address: 2606:2800:220:1:248:1893:25c8:1946
 root@inner:~#</code></pre>
 <p>With it running, it will yield the IP address for <em>outer1</em>:</p>
 <pre><code>root@inner:~# nslookup example.com
-Server:     192.168.100.1
-Address: 192.168.100.1#53
+Server:     192.168.200.1
+Address: 192.168.200.1#53
 
 Name: example.com
 Address: 192.168.100.101
@@ -389,8 +389,8 @@ root@gateway:~# </code></pre>
 <h4 id="but-it-only-works-the-first-time">But it only works the first time</h4>
 <p>You may find that your spoof only works for the first query after you run <code>dns_spoof.py</code>:</p>
 <pre><code>root@inner:~# nslookup example.com
-Server:     192.168.100.1
-Address: 192.168.100.1#53
+Server:     192.168.200.1
+Address: 192.168.200.1#53
 
 Name: example.com
 Address: 192.168.100.101
@@ -398,8 +398,8 @@ Name: example.com
 Address: 192.168.100.101
 
 root@inner:~# nslookup example.com
-Server:     192.168.100.1
-Address: 192.168.100.1#53
+Server:     192.168.200.1
+Address: 192.168.200.1#53
 
 Non-authoritative answer:
 Name: example.com
@@ -454,8 +454,8 @@ root@inner:~# </code></pre>
 <pre><code>DNS: 192.168.100.101 --&gt; 192.168.100.1: 25339</code></pre>
 <p>The expected output from the <em>inner</em> container should be:</p>
 <pre><code>root@inner:/# nslookup example.com
-Server:         192.168.100.1
-Address:        192.168.100.1#53
+Server:         192.168.200.1
+Address:        192.168.200.1#53
 
 Name:   example.com
 Address: 192.168.100.101
@@ -487,13 +487,13 @@ root@inner:/# </code></pre>
 <p>Those lines are listing the nameservers for that domain, and also the correct IP address.</p>
 <p>You can also view these four lines via the command <code>grep -A 3 ^example.com /var/cache/bind/named_dump.db</code> (note the carat (<code>^</code>) before “example.com” – this ensures that “example.com” is at the very start of the line). The <code>-A 3</code> also shows the three lines <em>after</em> the found item.</p>
 <p>To test this, flush the cache, then run <code>dns_poison.py</code>. Make a request from <em>inner</em> for example.com. If your dns_poison.py program works correctly, you should get these results:</p>
-<pre><code>root@inner:/# rndc dumpdb -cache
-root@inner:/# grep -A 3 ^example.com /var/cache/bind/named_dump.db
+<pre><code>root@gateway:/# rndc dumpdb -cache
+root@gateway:/# grep -A 3 ^example.com /var/cache/bind/named_dump.db
 example.com.      172714   NS a.iana-servers.net.
          172714   NS b.iana-servers.net.
 ; authanswer
          259114   A  192.168.100.101
-root@inner:/#</code></pre>
+root@gateway:/#</code></pre>
 <p>Now the incorrect IP address is in the DNS cache of <em>gateway</em>. To show this, stop your dns_poison.py program, and run <code>nslookup example.com</code> from <em>gateway</em>, and you should get the IP address for <em>outer1</em> (192.168.100.101).</p>
 <h4 id="hints">Hints</h4>
 <p>Recall that if you want to view DNS packets, you can run <code>tcpdump -i eth0 -n "dst port 53"</code> on <em>gateway</em>.</p>
