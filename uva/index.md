@@ -73,9 +73,9 @@ The smaller ("S") homeworks are usually due Friday, unless otherwise noted.  The
 | 7 | Feb 26 | M,W,F | (midterm on Wed) | Web of trust, week 2 |  | [Encryption](../slides/encryption.html#/) | Mon: encryption to 5.13; Wed: midterm; Fri: [WoT](../hws/weboftrust/index.html) work day |
 | 8 | Mar 4 |  |  |  | Spring break (no classes) |  |  |
 | 9 | Mar 11 | M,W,F | TCP reconstruction |  |  | [Encryption](../slides/encryption.html#/) | Mon: encryption to 6.16; Wed: encryption to 7.15; Fri: finished encryption |
-| 10 | Mar 18 | M,W,F | (Xmas scans) | TBD | Du, chapter 10 (sections 10.1 – 10.4) and chapter 11; total of 28 pages | [DNS](../slides/dns.html#/) | Mon: DNS to 3.19; Wed: DNS to 4.7; Fri: DNS to 4.34 |
-| 11 | Mar 25 | M,W,F | (Protocol) | TBD |  | WWW exploits; Network monitoring | Mon: dns to 5.11; Wed: finished dns, attacks to 4.1 |
-| 12 | Apr 1 | M,W,F | (TCP shell) | TBD |  | Obtaining and using access; BGP |  |
+| 10 | Mar 18 | M,W,F | (Xmas scans) | TBD | Du, chapter 10 (sections 10.1 – 10.4) and chapter 11; total of 28 pages | [DNS](../slides/dns.html#/) | Mon: dns to 3.19; Wed: DNS to 4.7; Fri: DNS to 4.34 |
+| 11 | Mar 25 | M,W,F | (Protocol) | TBD | Du, chapter 12 (BGP): sections 12.1-12.7, but not 12.4 | [DNS](../slides/dns.html#/), [Attacks](../slides/attacks.html#/) | Mon: dns to 5.11; Wed: finished dns, attacks to 4.1; Fri: attacks to 5.1 |
+| 12 | Apr 1 | M,W,F | (TCP shell) | TBD | watch [Last Week Tonight with John Oliver: Data Brokers](https://www.youtube.com/watch?v=wqn3gR1WTcA) from Apr 11, 2022; 25 minutes | [Attacks](../slides/attacks.html#/), [BGP](../slides/bgp.html#/) | Mon: finished attacks, bgp to 3.5  |
 | 13 | Apr 8 | M,W,F | (Network monitoring) | TBD |  | Network attacks |  |
 | 14 | Apr 15 | M,W,F | BGP | TBD | TBD | Heartbleed |  |
 | 15 | Apr 22 | M,W,F | DNS | TBD | TBD | Trojans, rootkits, ransomware; Scanning & fuzzing; Social Engineering |  |

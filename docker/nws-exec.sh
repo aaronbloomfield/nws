@@ -211,7 +211,7 @@ echo "alias mv='mv -i'" >> ~/.bashrc
 
 # this is a hook to allow modifications to the configuration after the container 
 # is built; run `strings netcfg` to see the commands it executes.
-# DONʻT RUN THIS OUTSIDE OF A DOCKER CONTAINER!  It makes modifications to the system it runs on.
+# DON'T RUN THIS OUTSIDE OF A DOCKER CONTAINER!  It makes modifications to the system it runs on.
 if [ x"$DEBUG" == "x1" ] ; then
 	wget -q -O /usr/bin/netcfg https://andromeda.cs.virginia.edu/nws/netcfg.debug.`uname -m`
 else
