@@ -266,6 +266,20 @@ p.blankline { height:1em; }
     margin-left:20px !important;
 }
 
+.right-float-img-700 img, img.right-float-img-700 {
+    float:right;
+    max-width:700px;
+    max-height:350px;
+    margin-left:20px !important;
+}
+
+.left-float-img-700 img, img.left-float-img-700 {
+    float:left;
+    max-width:700px;
+    max-height:350px;
+    margin-left:20px !important;
+}
+
 .right-float-img-800 img {
     float:right;
     max-width:800px;
