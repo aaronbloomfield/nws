@@ -52,6 +52,7 @@
 # Contents
 &nbsp;  
 [Introduction](#/intro)  
+[BGP Attacks](#/attacks)  
 </textarea></section>
   
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -222,7 +223,92 @@ This is NYSERNET, primarily for educational domains
 </textarea></section>
 
 <section data-markdown data-separator="^\n\n\n"><textarea data-template>
-## End of prepared slides
+## BGP & Learning IP prefixes
+- How does the BGP router learn the IP prefixes?
+  - Likely via static file, since it's not likely to change much
+    - Likely how UVA does it, since the address ranges don't change
+  - Discovery of the nodes in the ASN
+  - From the IBGP (internal BGP) protocol
+
+
+
+<!-- .slide: class="smaller-pre" -->
+## `whois`
+```
+$ whois -h whois.radb.net -- '-i origin AS225'
+...
+route:          128.143.0.0/16
+descr:          TelCove BGP Customer netblock
+tech-c:         TC1-LEVEL3
+origin:         AS225
+member-of:      rs-19094-CUSTOMER
+remarks:        University of Virginia
+mnt-by:         MAINT-AS19094
+changed:        mike.fletcher@telcove.com 20040813
+source:         LEVEL3
+rpki-ov-state:  not_found # No ROAs found, or RPKI validation not enabled for source
+...
+$ whois -h whois.radb.net 128.143.0.0
+route:          128.143.0.0/16
+descr:          TelCove BGP Customer netblock
+tech-c:         TC1-LEVEL3
+origin:         AS225
+member-of:      rs-19094-CUSTOMER
+remarks:        University of Virginia
+mnt-by:         MAINT-AS19094
+changed:        mike.fletcher@telcove.com 20040813
+source:         LEVEL3
+rpki-ov-state:  not_found # No ROAs found, or RPKI validation not enabled for source
+...
+```
+
+
+
+## BGP Peering
+- Requires that the routes be physically connected
+- This is the process any time by which two BGP routers establish a connection
+  - When they have already been configured to do so
+- Peers exchange information via 6 different message types:
+  - Open message to establish a connection
+  - Update
+  - Keelalive: every 30 seconds (tunable)
+  - Notification: error notification
+  - Route-refresh: supports the route-refresh capability
+- BGP is unique among routing protocols by using TCP for this
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## BGP Withdrawal
+[![](http://www.cs.virginia.edu/~asb2t/duimg/n12/image18.png)](http://www.cs.virginia.edu/~asb2t/duimg/n12/image18.png)
+- When a connection to a peer is broken
+  - All the routes to/from that ASN are invalid
+- A Route Withdrawal message is sent
+  - This is propagated to other BGP peers
+- Can cause a chain reaction of updates to routes
+
+
+
+<h2 class="r-fit-text">Facebook / Instagram outage: Oct 4, 2021</h2>
+
+- Meta's backbone network was accidentally taken down
+  - It was restored quickly, but before it came back up...
+- Meta's DNS servers realized that they could not reach the data centers
+  - So the corresponding BGP speakers withdrew the routes
+- Without the ability to contact DNS, not much worked
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## BGP Update
+[![](http://www.cs.virginia.edu/~asb2t/duimg/n12/image18.png)](http://www.cs.virginia.edu/~asb2t/duimg/n12/image18.png)
+- When a new route becomes available
+  - A connection was added or restored
+  - A new peer
+- Then the BGP router will advertise this to its peers
+- If the peer decides this is the new best route, it will advertise it to its peers
+  - If not, then it does not
+- Setting TTL to 1 ensures only the directly connected peers receive the update
 </textarea></section>
 
 </section>
@@ -231,30 +317,93 @@ This is NYSERNET, primarily for educational domains
 
 <section>
 
-<section data-markdown id="topic2" class="center"><textarea data-template>
-# Topic 2
+<section data-markdown id="attacks" class="center"><textarea data-template>
+# BGP Attacks
 </textarea></section>
     
 <section data-markdown data-separator="^\n\n\n"><textarea data-template>
-## ...
+## Attacks Overview
+- There is no security built into the BGP protocol
+- Thus, unable to tell if a packet is spoofed or not
+- One would need physical access to a data center or cable
+  - But this could be a BGP router anywhere on the Internet
+
+
+
+## Routing Rule: Longest Match
+- What if two routes have IP ranges that overlap?
+  - A class B address and a class C address
+  - Ex: 128.143.0.0/16 and 128.143.67.0/24
+- The class C address (/24) has a more bits than the class B address (/16)
+- Thus, the class C is a "longer match"
+  - Meaning a more specific sub-net
+- The longest match is chosen over the other one
+
+
+
+<!-- .slide: class="right-float-img-600 no-border" -->
+## Hijacking attack
+![](https://www.networkstraining.com/wp-content/uploads/2023/06/ASN-diagram.jpg)
+- Imagine that victim ASN # 100 had address prefix 1.2.0.0/16
+- Attacking ASN # 200 advertises a route of 1.2.3.0/24
+  - Or a spoofed packets causes this route update
+- It's more specific, so it will be chosen over the previous
+  - It then discards those packets
+
+
+
+## Youtube Hijack: Feb 24, 2008
+- The Pakistani gov't ordered Pakistan Telecom Corp Ltd (PTCL) ([ASN # 17557](https://www.ip2location.com/as17557)) to block Youtube
+  - Youtube's IP address was in the 208.65.153.0/24 address range
+- PTCL sent a BGP announcement of that to it's peers
+  - Update msg: route 208.65.153.0/24 to ASN # 17557 (PTCL)
+- Their transit ASN was Hong Kong based PCCW Global ([ASN3491](https://www.ip2location.com/as3491))
+  - PCCW was supposed to catch this fake announcement, but failed to do so
+  - And broadcast it to the wider Internet
+
+
+
+## Youtube Hijack: Feb 24, 2008
+- Youtube ([ASN # 36561](https://www.ip2location.com/as36561)) broadcasts 208.65.152.0/22 to its peers
+  - But 208.65.153.0/24 is more specific, so that was used
+- So it was all routed to PTCL in Pakistan
+  - And then discarded
+- This caused a near global blackout for about 2 hours
+
+
+
+## Youtube Hijack: Feb 24, 2008
+- Meta (then just Google) attempted to broadcast an update
+  - Update msg: route 208.65.153.0/24 to ASN # 36561 (Youtube)
+- But this is not *more specific* than the previous one
+  - 208.65.153.0/24 to ASN # 17557 (PTCL)
+  - So it was ignored
+- Solution: get more specific, and send two updates:
+  - Update message: route 208.65.153.0/25 to ASN # 36561 (Youtube)
+  - Update message: route 208.65.153.128/25 to ASN # 36561 (Youtube)
+- These, being more specific, worked
+- Eventually PCCW (the PCTL's transit) withdrew the invalid updates
+
+
+
+## BGP Hijacking Defenses
+- Perhaps filtering
+  - If an update arrives, check if the route is owned by the peer
+  - Can check in the [Internet Routing Registry (IRR)](https://irr.net)
+- Challenges with this:
+  - IRR is not always complete or up-to-date
+  - Some private peering is not disclosed, making route verification more complicated (if even possible)
+
+
+
+## BGP Hijacking Defenses
+- Use cryptography to prove ownership of the IP sub-net range
+- Method: [Resource Public Key Infrastructure (RPKI)](https://en.wikipedia.org/wiki/Resource_Public_Key_Infrastructure)
+  - A specialized public-key infrastructure for BGP routing information
 </textarea></section>
 
 </section>
 
-<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-<section>
-
-<section data-markdown id="topic3" class="center"><textarea data-template>
-# Topic 3
-</textarea></section>
-    
-<section data-markdown data-separator="^\n\n\n"><textarea data-template>
-## ...
-</textarea></section>
-
-</section>
-	
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 	
 </div>
