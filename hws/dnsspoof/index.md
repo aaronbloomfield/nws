@@ -521,7 +521,7 @@ Consider our Docker network setup:
 
 Previously our spoof on *gateway* listed to eth0, which is the green link in the image above.  We are now going to listen to eth2, which is the blue link in the image above.
 
-You are going to copy your program from the previous section (`dns_spoof.py`) to `dns_poison.py`, and modify that program to perform DNS cache poisoning.  The only change is to change the interface.  Previously we spoofed a packet on eth1, which is how *gateway* communicates with *outer1*.  Now we are going to spoof a packet on *eth0*, as that is how a DNS response from the Internet comes back to the DNS server on *gateway*.
+You are going to copy your program from the previous section (`dns_spoof.py`) to `dns_poison.py`, and modify that program to perform DNS cache poisoning.  The only change is to change the interface.  Previously we spoofed a packet on eth0, which is how *gateway* communicates with *inner*.  Now we are going to spoof a packet on *eth2*, as that is how a DNS response from the Internet comes back to the DNS server on *gateway*.
 
 #### DNS Cache
 
