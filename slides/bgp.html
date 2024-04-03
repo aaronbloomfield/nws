@@ -268,10 +268,10 @@ rpki-ov-state:  not_found # No ROAs found, or RPKI validation not enabled for so
 - Requires that the routes be physically connected
 - This is the process any time by which two BGP routers establish a connection
   - When they have already been configured to do so
-- Peers exchange information via 6 different message types:
+- Peers exchange information via 5 different message types:
   - Open message to establish a connection
   - Update
-  - Keelalive: every 30 seconds (tunable)
+  - Keepalive: every 30 seconds (tunable)
   - Notification: error notification
   - Route-refresh: supports the route-refresh capability
 - BGP is unique among routing protocols by using TCP for this
