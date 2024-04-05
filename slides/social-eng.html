@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Network Security slide set</title>
+    <meta name="description" content="A set of slides for a course on Introduction to Cybersecurity">
+    <meta name="author" content="Aaron Bloomfield">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="../slides/nws.css">
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="../slides/reveal.js/plugin/highlight/zenburn.css">
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? '../slides/reveal.js/css/print/pdf.scss' : '../slides/reveal.js/css/print/paper.scss';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+    <!--[if lt IE 9]>
+	<script src="../slides/reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+  </head>
+
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+<section data-markdown id="cover"><script type="text/template">
+# CS 4760
+&nbsp;  
+### Network Security
+
+<p class='titlep'>&nbsp;</p>
+<div class="titlesmall"><p>
+<a href="http://www.cs.virginia.edu/~asb">Aaron Bloomfield</a> (aaron@virginia.edu)<br>
+<a href="http://github.com/aaronbloomfield/nws">@github</a> | <a href="index.html">&uarr;</a> | <a href="?print-pdf"><img class="print" width="20" src="../slides/images/print-icon.webp" style="top:0px;vertical-align:middle"></a>
+</p></div>
+<p class='titlep'>&nbsp;</p>
+
+## Social Engineering
+</script></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section data-markdown><textarea data-template>
+# Contents
+&nbsp;  
+[Introduction](#/intro)  
+[Attacks](#/attacks)  
+[Defenses](#/defenses)  
+</textarea></section>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="intro" class="center"><textarea data-template>
+# Introduction
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## Social Engineering
+> the psychological manipulation of people into performing actions or divulging confidential information. A type of confidence trick for the purpose of information gathering, fraud, or system access
+>
+> \- Wikipedia
+
+
+
+## Why social engineering works
+- Posing as a trusted brand
+- Posing as a government agency or authority figure
+- Inducing fear or a sense of urgency
+- Appealing to greed
+- Appealing to helpfulness or curiosity
+- Emotional manipulation
+
+
+
+<!-- .slide: style="font-size:0.8em" -->
+## Some Statistics for 2023 ([source](https://firewalltimes.com/social-engineering-statistics/))
+1. 98% of cyber attacks involve some form of social engineering
+3. 84% of organizations fell victim to a phishing attack in 2022
+4. The avg org is targeted by 700+ social engineering attacks/year
+5. Social engineering attacks cost companies $130,000 on average
+6. 36% of all data breaches involve phishing
+7. Men are 225% more likely to fall for phishing attacks than women
+8. Facebook is the most impersonated (18% of phishing URLs)
+9. Amazon is the most impersonated in emails
+10. In 86% of orgs, at least one person has clicked a phishing link
+12. Small business employees are subject to 350% more social engineering attacks than enterprises
+15. Google delisted over 2.1 million phishing sites in 2020
+16. 84% of phishing sites have SSL certificates
+19. 69% of public administration breaches involve social engineering
+22. Only 53% of employees can correctly define phishing
+24. Just 56% of companies provide security awareness training
+25. 95% of enterprise network attacks relied on spear phishing to gain entry
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="attacks" class="center"><textarea data-template>
+# Attacks
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## Exploiting password re-use
+- If one system is compromised, and the passwords revealed
+- Then they may be the same passwords elsewhere
+
+
+
+## How Hacking Works ([xkcd 2176](https://xkcd.com/2176/))
+
+<img src="https://imgs.xkcd.com/comics/how_hacking_works.png" title="If only somebody had warned them that the world would roll them like this." alt="How Hacking Works" srcset="https://imgs.xkcd.com/comics/how_hacking_works_2x.png 2x" style="image-orientation:none" class='stretch'>
+
+
+
+## Phishing
+- A digital (or voice) message to get the victim to do something
+  - Install software, reveal sensitive information, transferring money or assets, etc.
+- Messages (generally) look like they are coming from a reputable source
+  - With generative AI, these are becoming much harder to spot!
+
+
+
+## Phishing types
+- Bulk phishing emails: send out a million emails, hope a few click on the link
+  - The information is often generic
+- Voice phishing (or vishing): done through phone calls
+- SMS phishing (or smishing): done through SMS text messages
+- Search engine phishing: manipulate a search engine so that a malicious website appears high in the rankings
+- Angler phishing: uses fake social media accounts to pose as individuals, companies, etc.
+- Spear fishing: next slide
+
+
+
+<!-- .slide: class="right-float-img-600 no-border" -->
+## Spear fishing
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Spear_Fishing_%2815828004706%29.jpg/1024px-Spear_Fishing_%2815828004706%29.jpg)](https://commons.wikimedia.org/wiki/File:Spear_Fishing_(15828004706).jpg)
+- Spear phishing: targets a specific individual
+  - Perhaps the attackers research this individual
+  - Or perhaps they email all faculty in a department's online listing
+  - Whale phishing: when the person targetted is a high-profile individual
+- A 2021 study:
+  -  43% of youth 18-25 and 58% of older users clicked on simulated phishing links in daily emails over 21 days
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+<h2 class="r-fit-text">Phishing ex: 2015-2016 DNC attack</h2>
+
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/John_Podesta_February_2024_%281%29.jpg/448px-John_Podesta_February_2024_%281%29.jpg)](https://commons.wikimedia.org/wiki/File:John_Podesta_February_2024_(1).jpg)
+- March 2016: John Podesta (pictured), chair of Hillary Clinton's campaign, received a (spear-)phishing email
+  - Posing as a "Google security alert"
+  - He asks IT if it's valid
+  - They respond that it's "legitimate"
+    - Claimed later that they *meant* to say "illegitimate"
+- Podesta gets phished
+  - The attackers have his email login info
+- Attackers: Russian intelligence via the [Fancy Bear group](https://en.wikipedia.org/wiki/Fancy_Bear)
+
+
+
+<!-- .slide: class="right-float-img-800" -->
+<h2 class="r-fit-text">Phishing ex: 2015-2016 DNC attack</h2>
+
+[![](https://upload.wikimedia.org/wikipedia/commons/e/e7/Wikileaks_logo.svg)](https://commons.wikimedia.org/wiki/File:Wikileaks_logo.svg)
+- Emails are leaked to [Wikileaks](https://wikileaks.org) and [Julian Assange](https://en.wikipedia.org/wiki/Julian_Assange)
+- Who then posts them in the fall of 2016 in the most embarassingly way possible
+  - Assange is currently about to be extradited to the US
+- This significantly impacted Clinton's popularity
+  - And may well have decided the campaign
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## Baiting
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Rapala_lures_1.jpg/1024px-Rapala_lures_1.jpg)](https://commons.wikimedia.org/wiki/File:Rapala_lures_1.jpg)
+- Lures people into giving up sensitive information
+  - .. or downloading malicious code ...
+  - By offering something valuable
+- Examples
+  - 419 scam
+  - Malware-infected games, cryptocurrency miners, etc.
+  - Free USB drives lying around
+
+
+
+<!-- .slide: class="right-float-img-800" -->
+## Nigerian Prince (aka 419) Scam
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Location_Nigeria_AU_Africa.svg/500px-Location_Nigeria_AU_Africa.svg.png)](https://en.wikipedia.org/wiki/Nigeria)
+- Aka a 419 scam, as section 419 of the Nigerian criminal code deals with fraud
+  - And a majority of these seem to come from Nigeria
+- Promises of lots of money if the victim will help financially at first
+  - Money transfer costs
+  - Prince expatriation costs
+- Common elements:
+  - Irreversible money transfers
+  - Anonymous communication
+  - Invitation to visit the country
+
+
+
+## Nigerian Prince Scam Stats
+- Many people do not report it due to embarrassment, but...
+- This used to be *millions* lost per year
+  - Some individuals lost millions
+  - This was once one of the top grossing industries in Nigeria!
+- There have been significant efforts:
+  - More awareness
+  - Digital filtering
+  - Better enforcement in Nigeria
+  - Money transfer entities being more aware of this
+- But still $700k lost in 2018
+
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## Tailgating
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Precision_parking_or_extreme_tailgating%3F.jpg/1024px-Precision_parking_or_extreme_tailgating%3F.jpg)](https://commons.wikimedia.org/wiki/File:Precision_parking_or_extreme_tailgating%3F.jpg)
+- Following a person into a locked area
+  - That person opens the door, you also go through
+- Digital: when a person leaves his/her computer without logging out
+  - Someone can sit down and use it
+- UVA example: Rice Hall during football games
+  - Somebody has access, and when they leave, other attendees go into the building
+
+
+
+## Pretexting
+- Attacker creates a fake situation for the victim
+  - And then is just the person to solve it, but needs some sensitive information
+- Example: security breach!  Send me your account userid and password to fix
+- All social engineering scams have some amount of pretexting
+
+
+
+## Quid pro quo
+- Provide a desired "thing" in exchange for sensitive information
+- Examples:
+  - Fake contest winnings
+  - Loyalty rewards
+  - "A gift for your purchase"
+
+
+
+## Scareware
+- Some type of software...
+  - ... either installed or a convincing website ...
+  - ... that obtains sensitive information
+- Examples
+  - Fake law enforcement notice accusing you of a crime
+  - Fake tech support message stating malware is on your device
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## Watering hole attack
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Watering_hole_at_Graig_Lwyd_-_geograph.org.uk_-_3010579.jpg/949px-Watering_hole_at_Graig_Lwyd_-_geograph.org.uk_-_3010579.jpg)](https://commons.wikimedia.org/wiki/File:Watering_hole_at_Graig_Lwyd_-_geograph.org.uk_-_3010579.jpg)
+- Attackers inject malicious code into a webpage visited by the victims
+  - From the phrase "somebody poisoned the watering hole"
+- Can have a lot of payloads: stolen credentials, installing ransomware, etc.
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="defenses" class="center"><textarea data-template>
+# Defenses
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<!-- .slide: class="right-float-img-800 no-border" -->
+## 1. Password management
+[![](https://www.cs.virginia.edu/~asb2t/nws-img/password-mug.jpg)](https://www.amazon.com/dp/B078QSQSD9)
+- Longer passwords are harder to crack
+- Passwords with numbers, letters, punctuation are not susceptible to dictionary attacks
+- Use different passwords for each site
+  - Likely managed with a password manager
+
+
+
+<!-- .slide: class="right-float-img-800" -->
+## 2. Multi-factor identification
+[![](https://images.g2crowd.com/uploads/product/image/large_detail/large_detail_445b18a93ca42b2e20710d8fd8646a00/cisco-duo.png)](https://duo.com)
+- Requiring a second means of authentication means a compromised password will not allow access to the system
+- UVA uses Duo, of course
+- Other sites use SMS text messages
+  - Insecure!  Some celluar providers are inserting messages into these texts
+- aka Two Factor Authentication, aka 2FA
+
+
+
+<!-- .slide: class="right-float-img-1000" -->
+## 2FA: A UVA hack (2016)
+[![](images/social-eng/uva-phishing-hack.webp)](https://www.washingtonpost.com/news/grade-point/wp/2016/01/22/phishing-hack-at-the-university-of-virginia-compromises-employee-computer-records/)
+- About 1k employee's records were accessed, including SSNs
+- This attack prompted UVA to initiate the multi-factor authentication for everybody
+
+
+
+## 2FA: DUO Exhaustion Attack
+- If the attackers have your password
+  - Then they can try to log in.  Often.  Forever.
+  - Eventually you get "exhausted" from always hitting deny that you then hit "approve" to silence it
+- This happened at UVA a year (or so) ago
+  - [UVA ITS: What is Duo Fatigue? Why is It Dangerous?](https://security.virginia.edu/what-is-duo-fatigue)
+- Many 2FA providers now lock accounts that are getting too many denied requests
+
+
+
+## 2FA: Bypassing
+- Password reset
+  - Often 2FA is not implemented in the password reset page
+- Using OAuth, which acts as the second authentication factor
+- Brute force: if it's a code, just keep trying
+- Use pre-generated keys
+- They set up 2FA before you do
+
+
+
+## 2FA: Bypassing
+- Create a fake impersonation website, and get someone to connect to it via a phishing scam
+- When they try to log in, ask for their 2FA
+- The site is also trying to log into the *real* version
+- When the user provides their 2FA, the fake site uses it to log into the real site
+  - 2FA bypassed!
+- The fake site can provide the content of the real site
+  - The user may be none the wiser
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+<h2 class="r-fit-text">3. Email with anti-phishing defenses</h2>
+
+![](images/social-eng/outlook-phishing-protection.webp)
+- Many (most? all?) email clients have this
+- Advantage: it can prevent phishing attacks for all users
+- Disadvantage: you can't see the link when you hover over it
+- Disadvantage: this can be over-relied upon, and they may not be able to update their database quickly for new attacks
+
+
+
+## 4. Security awareness training
+- Even for the technically savvy!
+- But especially for the non-technical users
+
+
+
+## 5. Knowing the warning signs
+- Strange messages
+- Most bad English
+- Urgent requests
+- Emotional manipulation
+- Invokes fear or panic
+- Feels too good to be true
+- Unsolicited help
+- False or unproven identity
+
+
+
+## References
+- [IBM: What is social engineering?](https://www.ibm.com/topics/social-engineering)
+- [Norton: What is Social Engineering?](https://us.norton.com/blog/emerging-threats/what-is-social-engineering)
+</textarea></section>
+
+</section>
+	
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	
+</div>
+</div>
+<script src="../slides/reveal.js/dist/reveal.js"></script>
+<script src="../slides/reveal.js/plugin/zoom/zoom.js"></script>
+<script src="../slides/reveal.js/plugin/notes/notes.js"></script>
+<script src="../slides/reveal.js/plugin/search/search.js"></script>
+<script src="../slides/reveal.js/plugin/markdown/markdown.js"></script>
+<script src="../slides/reveal.js/plugin/highlight/highlight.js"></script>
+<script src="../slides/reveal.js/plugin/math/math.js"></script>
+<script src="settings.js"></script>
+</body>
+</html>
