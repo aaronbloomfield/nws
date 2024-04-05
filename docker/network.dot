@@ -201,3 +201,22 @@ graph network_compact_for_dns {
     {rank=same other other_network inner inner_network}
 
 }
+
+
+digraph network_digram_for_sshmitm {
+    graph [fontname="Helvetica"];
+    node [fontname="Helvetica",shape=rect,style=rounded];
+    edge [fontname="Helvetica"];
+    rank=LR;
+
+    outer2 [label=< 192.168.100.102 (eth0)<br/><b>outer2</b><br/>(client)  >];
+    outer1 [label=< 192.168.100.101 (eth1)<br/><b>outer1 | outer3mitm</b><br/>192.168.150.3 (eth0)  >];
+    outer3 [label=< 192.168.100.103 (eth0)<br/><b>outer3</b><br/>(server) >];
+
+    outer1 -> outer3 [color=black,fontcolor=black,penwidth=2,label=" MITM"];
+    outer2 -> outer3 [color=green,fontcolor=green,penwidth=2,label=" normal"];
+    outer2 -> outer1 [color=red,fontcolor=red,penwidth=2,label="spoofed"];
+
+    #{rank=same firewall internet}
+    #{rank=same outer1 outer2}
+}

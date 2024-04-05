@@ -19,6 +19,13 @@ graph:
 	convert network_compact_for_arp_normal_metasploit.svg network_compact_for_arp_normal_metasploit.png
 	mv network.dot.7.svg network_compact_for_dns.svg
 	convert network_compact_for_dns.svg network_compact_for_dns.png
+	mv network.dot.8.svg network_for_sshmitm.svg
+	convert network_for_sshmitm.svg network_for_sshmitm.png
+
+sshmitm:
+	dot -Tsvg -O network.dot
+	mv network.dot.8.svg network_digram_for_sshmitm.svg
+	convert network_digram_for_sshmitm.svg network_digram_for_sshmitm.png
 
 clean:
 	/bin/rm -f network*.svg network*.png

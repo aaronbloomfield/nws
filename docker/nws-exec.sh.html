@@ -222,7 +222,7 @@ echo <font color="#FF0000">"alias mv='mv -i'"</font> <font color="#990000">&gt;&
 
 <i><font color="#9A1900"># this is a hook to allow modifications to the configuration after the container </font></i>
 <i><font color="#9A1900"># is built; run `strings netcfg` to see the commands it executes.</font></i>
-<i><font color="#9A1900"># DONʻT RUN THIS OUTSIDE OF A DOCKER CONTAINER!  It makes modifications to the system it runs on.</font></i>
+<i><font color="#9A1900"># DON'T RUN THIS OUTSIDE OF A DOCKER CONTAINER!  It makes modifications to the system it runs on.</font></i>
 <b><font color="#0000FF">if</font></b> <font color="#990000">[</font> x<font color="#FF0000">"$DEBUG"</font> <font color="#990000">==</font> <font color="#FF0000">"x1"</font> <font color="#990000">]</font> <font color="#990000">;</font> <b><font color="#0000FF">then</font></b>
 	wget -q -O /usr/bin/netcfg https<font color="#990000">:</font>//andromeda<font color="#990000">.</font>cs<font color="#990000">.</font>virginia<font color="#990000">.</font>edu/nws/netcfg<font color="#990000">.</font>debug<font color="#990000">.</font>`uname -m`
 <b><font color="#0000FF">else</font></b>
