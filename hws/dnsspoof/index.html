@@ -527,11 +527,11 @@ root@gateway:/#</code></pre>
 <p>So far we have spoofed a single domain – example.com. It is often the case that, once a person visits a website, they often go to a subdomain – mail.example.com, docs.example.com, api.example.com, and so on (none of those sub-domains actually exist). Having to spoof each of those is a chore, but it turns out there is another way to do it.</p>
 <p>When the DNS record was returned in the previous example, it included the answer for the query (example.com). We can also include an <em>authority</em> section, which is the nameserver to be used for any sub-domain. If we can return the IP address of a malicious nameserver, then we can continue to provide incorrect IPs for any successive sub-domain DNS query.</p>
 <p>Without any spoof programs running, we can view the actual mail.example.com website:</p>
-<pre><code>root@outer3:/# lynx --dump --nolist mail.example.com
+<pre><code>root@inner:/# lynx --dump --nolist mail.example.com
                             www.mail.example.com.com
 
    Coming soon.
-root@outer3:/# </code></pre>
+root@inner:/# </code></pre>
 <p>Our attack is going to cause the above command (<code>lynx --dump --nolist mail.example.com</code>) to view a malicious website.</p>
 <h4 id='malicious-nameserver'>Malicious nameserver</h4>
 <p>It turns out that there is also a DNS server running on <em>outer3</em>. This is a “malicious” DNS server, and will resolve mail.example.com to <em>outer1</em>:</p>

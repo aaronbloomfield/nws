@@ -584,11 +584,11 @@ When the DNS record was returned in the previous example, it included the answer
 Without any spoof programs running, we can view the actual mail.example.com website:
 
 ```
-root@outer3:/# lynx --dump --nolist mail.example.com
+root@inner:/# lynx --dump --nolist mail.example.com
                             www.mail.example.com.com
 
    Coming soon.
-root@outer3:/# 
+root@inner:/# 
 ```
 
 Our attack is going to cause the above command (`lynx --dump --nolist mail.example.com`) to view a malicious website.
