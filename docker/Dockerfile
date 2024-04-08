@@ -20,7 +20,8 @@ RUN apt install -y -q \
 		dsniff git lynx apache2 libapache2-mod-php software-properties-common \
 		netcat ncat apt-transport-https libpci-dev python3-pip arp-scan lsof \
 		libssl-dev snort tor kmod astyle source-highlight zip unzip sharutils \
-		telnet ftp bind9-utils bind9-host bind9-dnsutils whois tcpdump fcrackzip
+		telnet ftp bind9-utils bind9-host bind9-dnsutils whois tcpdump fcrackzip \
+		sudo
 
 RUN curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > /tmp/msfinstall && \
 	chmod 755 /tmp/msfinstall && \
@@ -90,3 +91,5 @@ CMD '/nws-exec.sh'
 # whois: whois directory service
 # tcpdump: tcpdump
 # fcrackzip: to crack passwords
+# sudo: some installation scripts (msfinstall) need this
+

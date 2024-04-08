@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="GNU source-highlight 3.1.9
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite">
+<title>services.sh</title>
+</head>
+<body bgcolor="white">
+<pre><tt><i><font color="#9A1900">#!/bin/sh</font></i>
+<i><font color="#9A1900">#Start up script for metasploitable2 docker/gns3 image tleemcjr/metasploitable2</font></i>
+
+service apache2 start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+service atd start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+<i><font color="#9A1900">#service bind9 start</font></i>
+service cron start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+service distcc start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+<i><font color="#9A1900">#service klogd start</font></i>
+service mysql start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+service mysql-ndb start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+service mysql-ndb-mgm start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+service networking start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+<i><font color="#9A1900">#service nfs-common start</font></i>
+<i><font color="#9A1900">#service nfs-kernel-server start</font></i>
+service openbsd-inetd start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+service portmap start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+service postfix start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+service postgresql-<font color="#993399">8.3</font> start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+service proftpd start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+service rmnologin start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+service rsync start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+service samba start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+service snmpd start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+service ssh start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+service sysklogd start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+service tomcat5<font color="#990000">.</font><font color="#993399">5</font> start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+service xinetd start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+service x11-common start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+service xserver-xorg-input-wacom start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+
+/etc/init<font color="#990000">.</font>d/rc<font color="#990000">.</font><b><font color="#0000FF">local</font></b> start <font color="#990000">&gt;</font> /dev/null <font color="#993399">2</font><font color="#990000">&gt;&amp;</font><font color="#993399">1</font>
+</tt></pre>
+</body>
+</html>

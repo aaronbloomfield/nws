@@ -20,7 +20,8 @@ RUN apt-get update -y -q -q && \
 	sed -i s/"#PermitRootLogin"/PermitRootLogin/g /etc/ssh/sshd_config 
 
 COPY nws-exec.sh /nws-exec.sh
-RUN chmod 755 /nws-exec.sh
+COPY services.sh /bin/services.sh
+RUN chmod 755 /nws-exec.sh /bin/services.sh
 CMD '/nws-exec.sh'
 
 # emacs nano vim: editors

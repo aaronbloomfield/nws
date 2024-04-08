@@ -168,17 +168,17 @@ echo "root:password" | chpasswd
 # start apache2, but can be disabled by an environment variable
 if [ x$NOAPACHE == x"" ]; then
 	echo ServerName `hostname` >> /etc/apache2/apache2.conf
-	service apache2 start
+	service apache2 start > /dev/null
 fi
 
 # set up metasploit's known_hosts
 if [ `hostname` == "metasploit" ] ; then
 	touch ~/.ssh/known_hosts
 	for host in "${HOSTS[@]}"; do
-		ssh-keyscan -p 22 -t rsa $host >> ~/.ssh/known_hosts
+		ssh-keyscan -p 22 -t rsa $host >> ~/.ssh/known_hosts >& /dev/null
 	done
 	for i in `seq 1 $OUTERS`; do
-		ssh-keyscan -p 22 -t rsa outer$i >> ~/.ssh/known_hosts
+		ssh-keyscan -p 22 -t rsa outer$i >> ~/.ssh/known_hosts >& /dev/null
 	done
 fi
 
