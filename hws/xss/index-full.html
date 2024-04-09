@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Cross-Site Scripting (XSS) Attack</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../../markdown.css" />
+  <script>
+  function openTab(evt, tabName) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+
+  function insertCopyLink(text) {
+    document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
+  }
+  </script>
+</head>
+<body>
+<h1 id="cross-site-scripting-xss-attack">Cross-Site Scripting (XSS) Attack</h1>
+<p><a href="../index.html">Go up to the NWS HW page</a> (<a href="../index.md">md</a>)</p>
+<h3 id="overview">Overview</h3>
+<p>In this assignment you will perform a series of cross-site scripting (XSS) attacks. The assignment is to complete all six levels at <a href="https://xss-game.appspot.com/">https://xss-game.appspot.com/</a>. You may use the hints that are provided on that site, but you may not look up answers elsewhere.</p>
+<p>You will need to be familiar with the <a href="../../slides/websecurity.html#/xss">XSS</a> set of slides.</p>
+<p>When working through the XSS attacks, you will need to read through the Javascript code to understand how it works; from there, you can design your XSS attack. You will need to save your attacks as strings in the edited version of the <a href="xss.py.html">xss.py</a> (<a href="xss.py">src</a>) that you will submit. Feel free to change the string delimiter between single quotes and double quotes, so as to work with your code. If one of the characters in your string is the same as the delimiter, then you will need to escape it.</p>
+<h3 id="changelog">Changelog</h3>
+<p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. So far there aren’t any significant changes to report.</p>
+<h3 id="submission">Submission</h3>
+<p>You will be submitting and edited version of <a href="xss.py.html">xss.py</a> (<a href="xss.py">src</a>).</p>
+</body>
+</html>

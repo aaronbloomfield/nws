@@ -14,6 +14,8 @@ These are larger programming homeworks.
 - HW P2: [Ping Commands](pingcmd/index.html) ([md](pingcmd/index.md))
 - HW P3: [Wireshark](wireshark/index.html) ([md](wireshark/index.md))
 - HW P4: [TCP Reconstruction](tcprecon/index.html) ([md](tcprecon/index.md))
+- HW P5: [DNS Spoofing](dnsspoof/index.html) ([md](dnsspoof/index.md))
+- HW P6: [Cross-Site Scripting](xss/index.html) ([md](xss/index.md))
 
 ### Smaller homeworks
 
