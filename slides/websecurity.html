@@ -51,7 +51,7 @@
 <section data-markdown><textarea data-template>
 # Contents
 &nbsp;  
-[Basics](#/basics)  
+[Introduction](#/intro)  
 [Cross site scripting (XSS)](#/xss)  
 </textarea></section>
   
@@ -59,8 +59,8 @@
 
 <section>
 
-<section data-markdown id="basics" class="center"><textarea data-template>
-# Basics
+<section data-markdown id="intro" class="center"><textarea data-template>
+# Introduction
 </textarea></section>
     
 <section data-markdown data-separator="^\n\n\n"><textarea data-template>
@@ -261,11 +261,56 @@ function loadDoc() {
   xhttp.send();
 }
 ```
+- Note the *callback function*
 
 
 
-## End of prepared slides
-- but the next column is ready
+## Ajax
+- All Ajax is based on one function:
+  - `XMLHttpRequest()`
+  - It allows for dynamic loading of content
+- Now being replaced by the Fetch API
+  - More powerful; a successor to Ajax
+
+
+
+## Ajax and Browser policies
+- Same Origin Policy
+  - If server (domain) A served the web page, and the Ajax request comes from server (domain) B, the callback function will not receive the data
+- Cross-origin resource sharing (CORS)
+  - A web page can choose to allow opt to allow a different domain to access its data
+  - In the HTTP header:
+```
+Access-Content-Allow-Origin: https://www.example.com
+```
+- These can be attacked via DNS rebinding attacks
+
+
+
+<!-- .slide: class="right-float-img-800 no-border" -->
+## Websocket
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Power_socket.jpg/575px-Power_socket.jpg)](https://commons.wikimedia.org/wiki/File:Power_socket.jpg)
+- HTTP is half-duplex
+  - The client requests, the server responds
+  - Ajax does the same, just in the background
+- Websocket allows a full-duplex connection
+  - You can 'subscribe' to a data stream
+    - This data will come through even if you are making other requests
+- Websocket is not bound by the same origin policy
+
+
+
+<!-- .slide: class="right-float-img-500" -->
+## Case study: [Cable Haunt](https://en.wikipedia.org/wiki/Cable_Haunt) (2020)
+![](https://cablehaunt.com/assets/img/cable_haunt_gradient.png)
+- Two vulnerabilities used together to attack cable modems
+- [CVE-2019-19495](https://www.cve.org/CVERecord?id=CVE-2019-19495): Websocket was used to allow access to a spectrum analyzer API
+  - But not bound by CORS
+  - So a malicious site could inject data via DNS rebinding
+- [CVE-2019-19494](https://www.cve.org/CVERecord?id=CVE-2019-19494): buffer overflow in the cable modems
+  - Can be used to gain a root shell on the cable modem
+- 200 million vulnerable modems in Europe alone
+- More information: [cablehaunt.com](https://cablehaunt.com/)
 </textarea></section>
 
 </section>
