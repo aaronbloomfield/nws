@@ -8,18 +8,10 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
+    ul.task-list{list-style: none;}
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel='stylesheet' href='../../markdown.css'></link>
@@ -49,6 +41,7 @@
     document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
   }
   </script>
+  
 </head>
 <body>
 <h1 id='cross-site-scripting-xss-attack'>Cross-Site Scripting (XSS) Attack</h1>
@@ -61,9 +54,14 @@
 <p>In this assignment you will perform a series of cross-site scripting (XSS) attacks. The assignment is to complete all six levels at <a href='https://xss-game.appspot.com/'>https://xss-game.appspot.com/</a>. You may use the hints that are provided on that site, but you may not look up answers elsewhere.</p>
 <p>You will need to be familiar with the <a href='../../slides/websecurity.html#/xss'>XSS</a> set of slides.</p>
 <p>When working through the XSS attacks, you will need to read through the Javascript code to understand how it works; from there, you can design your XSS attack. You will need to save your attacks as strings in the edited version of the <a href='xss.py.html'>xss.py</a> (<a href='xss.py'>src</a>) that you will submit. Feel free to change the string delimiter between single quotes and double quotes, so as to work with your code. If one of the characters in your string is the same as the delimiter, then you will need to escape it.</p>
+<p>For level 6, you have to include another Javascript file. The file you can use is <a href='level6.js.html'>level6.js</a> (<a href='level6.js'>src</a>). The URL of this file is posted on the Canvas landing page. It has exactly one line:</p>
+<pre><code>alert("If you see this, you have successfully completed level 6");</code></pre>
 <p><strong>NOTE:</strong> The XSS web page apparently does not work correctly in Chrome, so please use a different browser.</p>
 </div><div id='tchangelog' class='tabcontent'><h3 id='changelog'>Changelog</h3>
-<p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. So far there aren’t any significant changes to report.</p>
+<p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. </p>
+<ul>
+<li>Wed, Apr 10: Clarified the hosted JS file for level 6.</li>
+</ul>
 </div><div id='tsubmission' class='tabcontent'><h3 id='submission'>Submission</h3>
 <p>You will be submitting and edited version of <a href='xss.py.html'>xss.py</a> (<a href='xss.py'>src</a>).</p>
 </div><script>document.getElementById('defaultOpen').click();</script></body>

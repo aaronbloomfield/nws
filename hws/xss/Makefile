@@ -1,7 +1,7 @@
 doc:
 	touch index.md
 	cd ../..; make -s
-	source-highlight -d *.py
+	source-highlight -d *.py *.js
 	../maketabs.py
 
 zip:
