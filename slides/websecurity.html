@@ -628,7 +628,7 @@ We can stack one iframe on top of another:
 
 
 ## HTML in an iframe
-- If we want to put the following in an iframe:
+- If we want to put the following in an iframe
 ```html
 <iframe><html><body><p>hello world</p></body></html></iframe>
 ```
@@ -667,7 +667,7 @@ data:text/html;charset=utf-8,%3chtml%3e%3cbody%3e%3cp%3ehello world%3c/p%3e%3c/b
 </form>
 ```
 - Result:
-<form action='//www.cs.virginia.edu/~asb2t/target.php?get_param=foo' method='POST'>
+<form action='//www.cs.virginia.edu/~asb2t/target.php?get_param=foo' method='POST' style="background-color:dimgrey;width:200px;border-radius:10px">&nbsp;&nbsp;&nbsp;&nbsp;
   <input type='hidden' id='post_param' name='postparam' value='bar'>
   <input type='submit' value='click me! click me!'>
 </form>
@@ -754,12 +754,97 @@ data:text/html;charset=utf-8,%3chtml%3e%3cbody%3e%3cp%3ehello world%3c/p%3e%3c/b
 
 
 
-## www.virginia.edu in an iframe:
+## www.virginia.edu in an iframe
 
 <iframe src="https://www.virginia.edu" style="width:100%; height:300px; max-height:unset; max-width:unset;"></iframe>
 
 - Why didn't it work?
   - See the error in the developer console (Shift-Ctrl-C or Shift-Command-C)
+
+
+
+<!-- .slide: class="right-float-img-600 no-border small-pre" -->
+## Defense 1: sameorigin
+
+![](images/websecurity/error-sameorigin.webp)
+- Two options
+  - The difference is whether *that site* can iframe itself
+- Now obsoleted by the `frame-ancestors` directive
+```
+X-Frame-Options: DENY
+X-Frame-Options: SAMEORIGIN
+```
+```
+Content-Security-Policy: frame-ancestors <source>;
+Content-Security-Policy: frame-ancestors <space separated list of sources>;
+```
+
+
+
+## Defense 2: CSRF
+- Cross-Site Request Forgery (CSRF) defenses
+  - Only prevents form posting, not GET links
+- Idea is to have a *token*
+  - A random or hashed value that the web page can check on the next page load / form posting
+- With TLS enabled, this token value in the form is encrypted, even if it is in the URL
+
+
+
+<!-- .slide: class="small-pre" -->
+## CSRF vulnerable example
+- An example GET link: https://example.com/post.php?title=abcd&content=Lorem.ipsum
+- An example POST submission form:
+```html
+ <form action="https://example.com/post.php" method="post">
+  <input type="hidden" name="title" value="abcd">
+  <input type="hidden" name="content" 
+         value="Lorem.ipsum">
+  <input type="submit" value="Submit">
+</form> 
+```
+- This allows a posting *across* sites
+- This form will only show a submit button, which can be disguised via CSS to look like *anything*
+
+
+
+## HTML form with a CSRF token
+
+With an included CSRF token:
+```html
+<form action="/form.php">
+  First name: <input type="text" name="firstname">
+  Last name: <input type="text" name="lastname"><br>
+  <input type="hidden" name="csrf_token" 
+         value="5AEF1xArSLLcoQQJrNkuaRs9tsSb8C8aFm">
+  <input type="submit" value="Submit">
+</form> 
+```
+- The result looks the same to the user:
+
+<form action="/form.php" style="background-color:dimgray;border-radius:10px">
+  First name: <input type="text" name="firstname"> 
+  Last name: <input type="text" name="lastname"><br>
+  <input type="hidden" name="csrf_token" 
+         value="5AEF1xArSLLcoQQJrNkuaRs9tsSb8C8aFm">
+  <input type="submit" value="Submit">
+</form> 
+
+- Get version:
+  - [https://example.com/form.php?firstname=Jane&lastname=Doe&csrf_token=...](https://example.com/form.php?firstname=Jane&lastname=Doe&csrf_token=...)
+
+
+
+## CSRF Requirements
+- The server needs to keep track of *which* token it sent and to *who*
+  - The *who* is likely an (authenticated) user at a given IP address
+- Token management
+  - Random values can be stored in a server-side database
+  - Or maybe based on cookie (which may be tied to an IP address)
+  - Or maybe hashed from known values (IP, userid, etc.)
+- That is included in the form, and linked to the user
+- Modern web frameworks do this for you
+  - The `csrf_token` from the previous slide was based on what Django provides
+
 </textarea></section>
 </section>
 
