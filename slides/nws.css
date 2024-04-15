@@ -209,6 +209,12 @@ p.blankline { height:1em; }
   border-radius:0;
 }
 
+.right-code-40 pre code {
+    float:right;
+    width:40%;
+    margin-left:40px !important;
+}
+
 .right-float-img-200 img {
     float:right;
     max-width:200px;

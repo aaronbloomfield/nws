@@ -18,6 +18,9 @@ The slides used in this course are adapted from the slides for the textbook, [In
 - [Encryption](encryption.html#/)
 - [Domain Name System](dns.html#/)
 - [Attack Examples](attacks.html#/)
+- [Border Gateway Protocol](bgp.html#/)
+- [Social Engineering](social-eng.html#/)
+- [Web Security](websecurity.html#/)
 
 <!--
 - [Network Security Basics](https://www.handsonsecurity.net/files/slides/N01_Network_Basics.pptx)

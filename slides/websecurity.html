@@ -54,6 +54,7 @@
 [Introduction](#/intro)  
 [Cross site scripting (XSS)](#/xss)  
 [Clickjacking](#/clickjacking)  
+[Fuzzing](#/fuzzing)  
 </textarea></section>
   
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -306,8 +307,8 @@ Access-Content-Allow-Origin: https://www.example.com
 ![](https://cablehaunt.com/assets/img/cable_haunt_gradient.png)
 - Two vulnerabilities used together to attack cable modems
 - [CVE-2019-19495](https://www.cve.org/CVERecord?id=CVE-2019-19495): Websocket was used to allow access to a spectrum analyzer API
-  - But not bound by CORS
-  - So a malicious site could inject data via DNS rebinding
+  - But not bound by SOP
+  - A malicious site could inject data via DNS rebinding
 - [CVE-2019-19494](https://www.cve.org/CVERecord?id=CVE-2019-19494): buffer overflow in the cable modems
   - Can be used to gain a root shell on the cable modem
 - 200 million vulnerable modems in Europe alone
@@ -557,7 +558,7 @@ Output: Hello Aaron! Your account balance is 1000000
   - Etc.
 - On the next slide:
 ```html
-<iframe id="A" style="width:100%;height:600px" 
+<iframe id="A" style="width:100%;height:400px" 
         src="//www.xkcd.com"></iframe>
 ```
 
@@ -570,7 +571,7 @@ Output: Hello Aaron! Your account balance is 1000000
 
 - Code:
 ```html
-<iframe id="A" style="width:100%;height:300px" 
+<iframe id="A" style="width:100%;height:400px" 
         src="//www.xkcd.com"></iframe>
 ```
 
@@ -844,8 +845,138 @@ With an included CSRF token:
 - That is included in the form, and linked to the user
 - Modern web frameworks do this for you
   - The `csrf_token` from the previous slide was based on what Django provides
-
 </textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <section>
+      
+    <section data-markdown class="center" id="fuzzing"><textarea data-template>
+# Fuzzing
+    </textarea></section>
+
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## Fuzzing
+> automated software testing technique that involves providing invalid, unexpected, or random data as inputs to a computer program <br> \- Wikipedia
+
+
+
+## Fuzzing uses
+- For the attacker
+  - Try different inputs to see which ones trigger a vulnerability
+    - Often a buffer overflow, but can be a crash, unexpected results, etc.
+- For the defender
+  - To test your product (browser, server, protocol, program, etc.)
+
+
+
+## Web fuzzing
+- Given a list of commonly found URL endings
+- Check a given website for each of them
+- Word lists: see the [SecLists github repo](https://github.com/danielmiessler/SecLists/), specifically the [Fuzzing/ sub-directory](https://github.com/danielmiessler/SecLists/tree/master/Fuzzing)
+  - Also see [common.txt](https://aaronbloomfield.github.io/ics/hws/fuzzing/common.txt)
+- Examples: [ffuf](https://github.com/ffuf/ffuf) and [wfuzz](https://wfuzz.readthedocs.io/en/latest/)
+
+
+
+## Web fuzzing purpose
+- See what files are available
+  - And what can be further studied
+- Find security holes
+  - .ssh/id_rsa, for example
+- Expose bugs
+- Browser testing
+  - MS Edge had 670 machine-years of fuzzing performed on it
+  - Totaling 400 billion DOM manipulations and 1 billion HTML files [source](https://en.wikipedia.org/wiki/Fuzzing#Browser_security)
+
+
+
+<!-- .slide: class="right-float-img-1000 no-border" -->
+## American Fuzzy Lop
+[![](https://upload.wikimedia.org/wikipedia/commons/a/a4/Conejillo_de_indias.jpg)](https://commons.wikimedia.org/wiki/File:Conejillo_de_indias.jpg)
+- A path generating algorithm
+- Given some sample inputs...
+  - It will try mutating the values
+  - Keeping track of which ones make progress
+- It runs until the user presses Ctrl-C
+
+
+
+## Python AFL Usage
+- Install AFL via `git clone https://github.com/google/AFL`
+- `pip3 install python-afl`
+```python
+import sys, afl, os
+
+def testFunctionThatCouldCrash(x,y):
+    # define function here that could crash
+    pass
+
+afl.init()
+# read in x,y from input
+testFunction(a,b,c)
+os._exit(0)
+
+```
+
+
+
+<!-- .slide: class="no-border" -->
+## AFL Screenshot
+![](images/websecurity/afl-screenshot.webp)
+
+
+
+
+<!-- .slide: class="right-code-40" -->
+## Symbolic Execution
+```
+int f() {
+  ...
+  y = read();
+  z = y * 2;
+  if (z == 12) {
+    fail();
+  } else {
+    printf("OK");
+  }
+}
+```
+- A form of static program execution
+- Given the above code...
+  - `y` (and thus `z`) can have any value
+  - Thus, it will examine each block of the if-then in turn
+- Via this branching, it will try to examine *all* paths through the program
+- Good for *some* types of analysis
+- There is also *dynamic* symbolic execution
+
+
+
+<!-- .slide: class="right-float-img-600 no-border" -->
+## Binary program fuzzing
+[![](https://angr.io/img/angry_face.png)](https://angr.io/)
+- [Angr](https://angr.io/) is a binary fuzzing program
+- Functionalities:
+  - Symbolic execution
+  - Static and dynamic analysis
+  - Decompilation (but likely not as good as [Ghidra](https://ghidra-sre.org/) from the NSA)
+- A great way to test for buffer overflow vulnerabilities
+- Can also be run from Python
+
+
+
+<!-- .slide: class="right-float-img-600 no-border" -->
+## Network protocol fuzzing
+[![](https://www.kali.org/tools/spike/images/spike-logo.svg)](https://www.kali.org/tools/spike/)
+- Consider [Spike](https://www.kali.org/tools/spike/), installed on Kali Linux
+- Given a protocol description script
+  - Describing how the data in the protocol is laid out
+- It will send lots of somewhat random packets to test for vulnerabilities, such as buffer overflows
+</textarea></section>
+
 </section>
 
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->

