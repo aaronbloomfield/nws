@@ -107,7 +107,14 @@ other <font color="#990000">=</font> <font color="#990000">{</font>
 <i><font color="#9A1900"># need to be changed to True (instead of False).</font></i>
 sanity_checks <font color="#990000">=</font> <font color="#990000">{</font>
 
-	<i><font color="#9A1900"># None!</font></i>
+	<i><font color="#9A1900"># Do all of your Snort rules print out the "CS4760" string?  This is</font></i>
+	<i><font color="#9A1900"># required so that the auto-grader can grade your assignment, so if you</font></i>
+	<i><font color="#9A1900"># do not print it out, you won't get credit for that rule.</font></i>
+	<font color="#FF0000">'snort_rules_print_CS4760'</font><font color="#990000">:</font> False<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># When you print out "CS4760" in your rules, is the 'CS' part upper-case,</font></i>
+	<i><font color="#9A1900"># and is there no space between the CS and the 4760?</font></i>
+	<font color="#FF0000">'snort_rules_print_CS4760_correctly'</font><font color="#990000">:</font> False<font color="#990000">,</font>
 
 <font color="#990000">}</font>
 

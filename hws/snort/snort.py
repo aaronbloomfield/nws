@@ -96,7 +96,14 @@ other = {
 # need to be changed to True (instead of False).
 sanity_checks = {
 
-	# None!
+	# Do all of your Snort rules print out the "CS4760" string?  This is
+	# required so that the auto-grader can grade your assignment, so if you
+	# do not print it out, you won't get credit for that rule.
+	'snort_rules_print_CS4760': False,
+
+	# When you print out "CS4760" in your rules, is the 'CS' part upper-case,
+	# and is there no space between the CS and the 4760?
+	'snort_rules_print_CS4760_correctly': False,
 
 }
 
