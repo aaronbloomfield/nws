@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="GNU source-highlight 3.1.9
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite">
+<title>snort.py</title>
+</head>
+<body bgcolor="white">
+<pre><tt><i><font color="#9A1900"># Submission information for the Snort HW</font></i>
+<i><font color="#9A1900"># https://aaronbloomfield.github.io/nws/hws/snort/</font></i>
+
+<i><font color="#9A1900"># The filename of this file must be 'snort.py', else the submission verification</font></i>
+<i><font color="#9A1900"># routines will not work properly.</font></i>
+
+<i><font color="#9A1900"># You are welcome to have additional variables or fields in this file; you</font></i>
+<i><font color="#9A1900"># just can't remove variables or fields.</font></i>
+
+
+<i><font color="#9A1900"># Who are you?  Name and UVA userid.  The name can be in any human-readable</font></i>
+<i><font color="#9A1900"># format.</font></i>
+userid <font color="#990000">=</font> <font color="#FF0000">"mst3k"</font>
+name <font color="#990000">=</font> <font color="#FF0000">"Jane Doe"</font>
+
+
+<i><font color="#9A1900"># This dictionary contains various information that will vary depending on the</font></i>
+<i><font color="#9A1900"># assignment.</font></i>
+other <font color="#990000">=</font> <font color="#990000">{</font>
+	
+	<i><font color="#9A1900"># Pcap analysis: for the *first* pcap file</font></i>
+	<i><font color="#9A1900"># (snort-uva-attack-1.pcap), describe what you found.  The questions to</font></i>
+	<i><font color="#9A1900"># answer are in the homework in the "Pcap Analysis" section.  This should</font></i>
+	<i><font color="#9A1900"># be prose (a normal paragraph).  It is limited to 250 characters, so</font></i>
+	<i><font color="#9A1900"># please keep it brief!</font></i>
+	<font color="#FF0000">'snort-uva-attack-1.pcap_description'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Pcap analysis: for the *second* pcap file</font></i>
+	<i><font color="#9A1900"># (snort-uva-attack-2.pcap), describe what you found.  The questions to</font></i>
+	<i><font color="#9A1900"># answer are in the homework in the "Pcap Analysis" section.  This should</font></i>
+	<i><font color="#9A1900"># be prose (a normal paragraph).  It is limited to 250 characters, so</font></i>
+	<i><font color="#9A1900"># please keep it brief!</font></i>
+	<font color="#FF0000">'snort-uva-attack-2.pcap_description'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900">#------------------------------------------------------------</font></i>
+
+	<i><font color="#9A1900"># Snort rule creation: pick one of the "suspicious" types of network</font></i>
+	<i><font color="#9A1900"># transmission in the `run_malware` program on the *inner* container.  It</font></i>
+	<i><font color="#9A1900"># doesn't matter which one you pick for this first one, although the</font></i>
+	<i><font color="#9A1900"># first description must match the first rule, of course.  You will do</font></i>
+	<i><font color="#9A1900"># the same for the second and third types of "suspicious" types of</font></i>
+	<i><font color="#9A1900"># network transmissions.</font></i>
+
+	<i><font color="#9A1900"># Describe what the *first* "suspicious" network transmission is.  This</font></i>
+	<i><font color="#9A1900"># is limted to 50 characters.</font></i>
+	<font color="#FF0000">'run_malware-analysis-1-description'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Enter the Snort rule that will detect the *first* "suspicious" network</font></i>
+	<i><font color="#9A1900"># transmission.  This should only be the Snort rule, not any English</font></i>
+	<i><font color="#9A1900"># description, as we are going to put it into a Snort rules file to test</font></i>
+	<i><font color="#9A1900"># it.</font></i>
+	<font color="#FF0000">'run_malware-analysis-1-rule'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Describe what the *second* "suspicious" network transmission is.  This</font></i>
+	<i><font color="#9A1900"># is limted to 50 characters.</font></i>
+	<font color="#FF0000">'run_malware-analysis-2-description'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Enter the Snort rule that will detect the *second* "suspicious" network</font></i>
+	<i><font color="#9A1900"># transmission.  This should only be the Snort rule, not any English</font></i>
+	<i><font color="#9A1900"># description, as we are going to put it into a Snort rules file to test</font></i>
+	<i><font color="#9A1900"># it.</font></i>
+	<font color="#FF0000">'run_malware-analysis-2-rule'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Describe what the *third* "suspicious" network transmission is.  This</font></i>
+	<i><font color="#9A1900"># is limted to 50 characters.</font></i>
+	<font color="#FF0000">'run_malware-analysis-3-description'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Enter the Snort rule that will detect the *third* "suspicious" network</font></i>
+	<i><font color="#9A1900"># transmission.  This should only be the Snort rule, not any English</font></i>
+	<i><font color="#9A1900"># description, as we are going to put it into a Snort rules file to test</font></i>
+	<i><font color="#9A1900"># it.</font></i>
+	<font color="#FF0000">'run_malware-analysis-3-rule'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900">#------------------------------------------------------------</font></i>
+
+	<i><font color="#9A1900"># How frustrating was this assignment?  This is an integer on a 1-5 scale,</font></i>
+	<i><font color="#9A1900"># where 1 is not frustrating at all, 2 is a little bit frustrating, 3 is</font></i>
+	<i><font color="#9A1900"># somewhat frustrating, 4 is rather frustrating, and 5 is very</font></i>
+	<i><font color="#9A1900"># frustrating.  A typical, well designed, CS elective homework would</font></i>
+	<i><font color="#9A1900"># probably be around a 1 or 2.</font></i>
+	<font color="#FF0000">'frustration_level'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># How hard did you find this assignment?  This is an integer on a 1-5</font></i>
+	<i><font color="#9A1900"># scale, where 1 is very easy, 2 is somewhat easy, 3 is neutral</font></i>
+	<i><font color="#9A1900"># (neither easy or hard), 4 is somewhat hard, 5 is very hard.  A tyipcal,</font></i>
+	<i><font color="#9A1900"># well designed, CS elective homework would be a 3.</font></i>
+	<font color="#FF0000">'difficulty'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+<font color="#990000">}</font>
+
+
+<i><font color="#9A1900"># These are various sanity checks, and are meant to help you ensure that you</font></i>
+<i><font color="#9A1900"># submitted everything that you are supposed to submit.  Other than</font></i>
+<i><font color="#9A1900"># submitting the necessary files to Gradescope (which checks for those</font></i>
+<i><font color="#9A1900"># files), all other submission requirements are listed herein.  These values </font></i>
+<i><font color="#9A1900"># need to be changed to True (instead of False).</font></i>
+sanity_checks <font color="#990000">=</font> <font color="#990000">{</font>
+
+	<i><font color="#9A1900"># None!</font></i>
+
+<font color="#990000">}</font>
+
+
+<i><font color="#9A1900"># While some of these are optional, you still have to replace those optional</font></i>
+<i><font color="#9A1900"># ones with the empty string (instead of None).</font></i>
+comments <font color="#990000">=</font> <font color="#990000">{</font>
+
+	<i><font color="#9A1900"># How long did this assignment take, in hours?  Please format as an</font></i>
+	<i><font color="#9A1900"># integer or float.</font></i>
+	<font color="#FF0000">'time_taken'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Any suggestions for how to improve this assignment?  This part is</font></i>
+	<i><font color="#9A1900"># completely optional.  If none, then you can have the value here be the</font></i>
+	<i><font color="#9A1900"># empty string (but not None).</font></i>
+	<font color="#FF0000">'suggestions'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+
+	<i><font color="#9A1900"># Any other comments or feedback?  This part is completely optional. If</font></i>
+	<i><font color="#9A1900"># none, then you can have the value here be the empty string (but not</font></i>
+	<i><font color="#9A1900"># None).</font></i>
+	<font color="#FF0000">'comments'</font><font color="#990000">:</font> None<font color="#990000">,</font>
+<font color="#990000">}</font>
+</tt></pre>
+</body>
+</html>
