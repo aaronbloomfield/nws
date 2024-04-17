@@ -703,7 +703,7 @@ user:$y$j9T$wmEh7N6.PIYqdbr52Fqpj1$owbqqdSR3KqbONd59bnwWni/yvl3Yw4ahqFTiiwfQxC:1
   - How the original Silk Road was supposedly attacked
 - Fuzz for password files on the server
 - SQL injection attack
-- Bypass password (SSH MITM, remote shell, etc.)
+- Bypass password entirely (SSH MITM, remote shell, etc.)
 
 
 
@@ -816,7 +816,8 @@ user:$y$j9T$wmEh7N6.PIYqdbr52Fqpj1$owbqqdSR3KqbONd59bnwWni/yvl3Yw4ahqFTiiwfQxC:1
 ```
 - Take the second field, and split on the dollar sign
   - `y` the algorithm used (y is [yescrypt](https://www.openwall.com/yescrypt/))
-  - `j9T$wmEh7N6.PIYqdbr52Fqpj1` is the salt (aka nonce)
+  - `j9T` is a parameter to the yescrypt algorithm
+  - `wmEh7N6.PIYqdbr52Fqpj1` is the salt (aka nonce)
   - `owbqqdSR3KqbONd59bnwWni/yvl3Yw4ahqFTiiwfQxC` is the encoded (encrypted and/or hashed) password
 
 

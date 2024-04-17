@@ -121,6 +121,9 @@
 
 ## Sensitivity and specificity
 - Sensitivity: the probability of a positive prediction when it is actually positive
+
+<div style="font-size:0.9em">
+
 $$
 sensitivity = \frac{{\textrm{\#\_}}true{\textrm{\_}}positives}
 {{\textrm{\#_}}true{\textrm{\_}}positives + {\textrm{\#\_}}false{\textrm{\_}}negatives }
@@ -134,12 +137,17 @@ $$
 $$
 = \textrm{probability of correctly identifying a malicious item}
 $$
+
+</div>
+
 - Recall a false negative is a malicious item we did not identify
 
 
 
 ## Sensitivity and specificity
 - Specificity: the probability of a negative prediction when it is actually negative
+
+<div style="font-size:0.9em">
 
 $$
 sensitivity = \frac{{\textrm{\#\_}}true{\textrm{\_}}negatives}
@@ -154,6 +162,9 @@ $$
 $$
 = \textrm{probability of not identifying a malicious item}
 $$
+
+</div>
+
 - Recall a false positive is thinking a valid item is malicious when it is not
 
 
@@ -185,11 +196,11 @@ $$
 <!-- .slide: class="small-pre wide-pre" -->
 ## Anatomy of a Snort rule
 ```
-<action> <proto> <src_ip> <src_port> <dir> <dest_ip> <dest_port> <rule_opts>
+<action> <prot> <src_ip> <src_port> <dir> <dest_ip> <dest_port> <rule_opts>
 ```
 
 - `<action>`: what Snort should do if this rule matches; also `dynamic`, `pass`, `log`, and `activate`.
-- `<proto>`: protocol; one of `tcp`, `udp`, `icmp`, or `ip`
+- `<prot>`: protocol; one of `tcp`, `udp`, `icmp`, or `ip`
 - `<src_ip>`: the source IP; can also be `any`
 - `<src_port>`: the source port; can also be `any`
 - `<dir>`: what direction the packet is moving; options are `->` (source to destination) and `<>` (bi-directional)
@@ -225,16 +236,22 @@ alert tcp any any -> any 80 (msg: "Possible HTTP GET request"; content: "GET"; h
 ```
 - This will detect a HTTP connection to a specific domain (example.com)
 ```
-alert tcp any any -> any any (msg:"Suspicious User-Agent detected"; flow:to_server,established; 
-           content:"User-Agent|3a| "; nocase; content:"curl|2f|"; nocase; sid:1000002; rev:1;)
+alert tcp any any -> any any (msg:"Suspicious User-Agent detected"; 
+           flow:to_server,established; content:"User-Agent|3a| "; nocase; 
+           content:"curl|2f|"; nocase; sid:1000002; rev:1;)
 ```
 - This will detect a HTTP GET from curl, often used to launch attacks
 ```
-alert tcp anyany -> anyany (msg: "Possible SQL Injection attempt"; flow:to_server,established; 
-                  content: "POST"; nocase; content:"/login.php"; nocase; content: "username="; 
-                  nocase; content: "password="; nocase; content:"'"; sid:1000003; rev:1;)
+alert tcp any any -> any any (msg: "Possible SQL Injection attempt"; 
+                  flow:to_server,established; content: "POST"; nocase; content:"/login.php"; 
+                  nocase; content: "username="; nocase; content: "password="; nocase; 
+                  content:"'"; sid:1000003; rev:1;)
 ```
 - This will detect an attempted SQL injection attack against a known vulnerable login.php page
+
+
+
+## End of prepared slides
 </textarea></section>
 
 </section>
