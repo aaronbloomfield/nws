@@ -701,7 +701,17 @@ user:$y$j9T$wmEh7N6.PIYqdbr52Fqpj1$owbqqdSR3KqbONd59bnwWni/yvl3Yw4ahqFTiiwfQxC:1
 ```
 - Script that "leaks" information
   - How the original Silk Road was supposedly attacked
+- Fuzz for password files on the server
 - SQL injection attack
+- Bypass password (SSH MITM, remote shell, etc.)
+
+
+
+<h2 class="r-fit-text">Even Better Password "Cracking"</h2>
+<img src="https://imgs.xkcd.com/comics/how_hacking_works.png" title="If only somebody had warned them that the world would roll them like this." alt="How Hacking Works" srcset="https://imgs.xkcd.com/comics/how_hacking_works_2x.png 2x" style="image-orientation:none" class='stretch'>
+<p class='center'><a href='http://xkcd.com/2176/'>xkcd # 2176</a></p>
+
+- Obtain the passwords, either plaintext or encrypted/hashed, from a dark web source
 
 
 
@@ -753,9 +763,15 @@ select * from course where
 - The DB will perform two database operations (a select then a delete), and then see a comment at the end of the statement
   - The DB function the script calls might return a value or it might not
 - At this point, we have deleted everything from the table
+    </textarea></section>
 
+<section>
+<h2 class="r-fit-text"><a href="https://xkcd.com/327/">xkcd # 327</a> on SQL injection attacks</h2>
+<p style="text-align:center">Exploits of a Mom</p>
+<img title="Her daughter is named &quot;Help I&#39;m trapped in a driver&#39;s license factory&quot;." alt="Exploits of a Mom" src="http://imgs.xkcd.com/comics/exploits_of_a_mom.png" class="stretch">
+</section>
 
-
+    <section data-markdown data-separator="^\n\n\n"><textarea data-template>
 ## SQL injection attack exploit
 - This is not stealthy - the DB probably won't work right if everything has been deleted
 - Another option is to enter your own credentials or data
@@ -775,16 +791,42 @@ select * from course where
 - Passwords were not salted, and no password restrictions were imposed
 
 
-    </textarea></section>
 
-<section>
-<h2 class="r-fit-text"><a href="https://xkcd.com/327/">xkcd # 327</a> on SQL injection attacks</h2>
-<p style="text-align:center">Exploits of a Mom</p>
-<img title="Her daughter is named &quot;Help I&#39;m trapped in a driver&#39;s license factory&quot;." alt="Exploits of a Mom" src="http://imgs.xkcd.com/comics/exploits_of_a_mom.png" class="stretch">
-</section>
+## Better SQL Injections
+- SQLMap at [sqlmap.org](https://sqlmap.org/)
+- It does it all for you
+  - Just specify a few parameters, and away it goes
 
-    <section data-markdown data-separator="^\n$"><textarea data-template>
-## ...
+
+
+
+## Password cracking with a salt
+- High budget: have a multi-processor system that will compute all hashes of all passwords with a salt
+  - The 3-letter agencies have this budget
+- Low budget:
+  - Figure out the salt (next slide), and use brute force tools to determine the password
+
+
+
+## Determine the salt
+- Some systems (Django) use the "security_key" (or similar) as the salt
+- In /etc/shadow on UNIX systems:
+```
+user:$y$j9T$wmEh7N6.PIYqdbr52Fqpj1$owbqqdSR3KqbONd59bnwWni/yvl3Yw4ahqFTiiwfQxC:19828:0:99999:7:::
+```
+- Take the second field, and split on the dollar sign
+  - `y` the algorithm used (y is [yescrypt](https://www.openwall.com/yescrypt/))
+  - `j9T$wmEh7N6.PIYqdbr52Fqpj1` is the salt (aka nonce)
+  - `owbqqdSR3KqbONd59bnwWni/yvl3Yw4ahqFTiiwfQxC` is the encoded (encrypted and/or hashed) password
+
+
+
+## Step 2: Crack the password
+- Popular tools:
+  - [Jack the Ripper](https://www.openwall.com/john/)
+  - [Hashcat](https://hashcat.net/hashcat/)
+  - [Hydra](https://www.kali.org/tools/hydra/)
+- The 3-letter agencies will have resources to do this much faster than regular individuals
 </textarea></section>
 
 </section>

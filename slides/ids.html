@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Network Security slide set</title>
+    <meta name="description" content="A set of slides for a course on Introduction to Cybersecurity">
+    <meta name="author" content="Aaron Bloomfield">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="../slides/nws.css">
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="../slides/reveal.js/plugin/highlight/zenburn.css">
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? '../slides/reveal.js/css/print/pdf.scss' : '../slides/reveal.js/css/print/paper.scss';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+    <!--[if lt IE 9]>
+	<script src="../slides/reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+  </head>
+
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+<section data-markdown id="cover"><script type="text/template">
+# CS 4760
+&nbsp;  
+### Network Security
+
+<p class='titlep'>&nbsp;</p>
+<div class="titlesmall"><p>
+<a href="http://www.cs.virginia.edu/~asb">Aaron Bloomfield</a> (aaron@virginia.edu)<br>
+<a href="http://github.com/aaronbloomfield/nws">@github</a> | <a href="index.html">&uarr;</a> | <a href="?print-pdf"><img class="print" width="20" src="../slides/images/print-icon.webp" style="top:0px;vertical-align:middle"></a>
+</p></div>
+<p class='titlep'>&nbsp;</p>
+
+## Intrusion Detection Systems
+</script></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section data-markdown><textarea data-template>
+# Contents
+&nbsp;  
+[Intrusion Detection Systems](#/ids)  
+</textarea></section>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="ids" class="center"><textarea data-template>
+# Intrusion Detection Systems
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## IDS & IPS
+- IDS = Intrusion Detection System
+- IPS = Intrusion Prevention System
+  - In order to prevent the intrusion, we have to be able to detect it first
+  - An IPS is just an IDS with a mechanism to respond
+- Differences:
+  - A firewall blocks connections based on static rules
+  - An IDS tries to identify "bad" connections, but does not act on that (other than logging)
+  - An IPS stops a connection that has already started and that an IDS has identified
+
+
+
+## IDS Types
+- The what-it-does category
+- HIDS: Host-based intrusion detection system
+  - Monitors a single host
+  - Possibly the network communication
+  - Definitely the OS
+    - Checking for malware, viruses, memory abnormalities, modified system files, etc.
+- NIDS: network intrusion detection systems
+  - Typically monitors an entire network (or a router connection, etc.)
+    - But can be used on the NIC of a single host
+  - What this party is all about!
+
+
+
+## IDS Types
+- The how-it-works category
+- Signature-based detection
+  - Recognizes based on patterns
+- Anomaly-based detection
+  - Recognizes based on differences from what "good" traffic is
+  - Has some form of AI or machine learning
+- Reputation-based detection
+  - Determines threat level based on reputation scores
+
+
+
+<!-- .slide: class="right-float-img-800" -->
+## False Positives & Negatives
+![](images/ids/positive-negative.svg)
+- The goal is to detect all true negatives and true positives
+  - And minimize the false negatives and false positives
+- False negative: a real threat that is not identified
+  - Allows malicious actions on the network
+- False positive: an alert (etc.) is triggered for non-malicious network communication
+  - Wastes time for the analysis
+
+
+
+<!-- .slide: class="no-border" -->
+## False Positives & Negatives
+[![](images/ids/false-positive-false-negative.webp)](https://economics.stackexchange.com/questions/27677/type-i-error-type-ii-error-pregnancy-test-analogy-is-it-legit)
+
+
+
+## Sensitivity and specificity
+- Sensitivity: the probability of a positive prediction when it is actually positive
+$$
+sensitivity = \frac{{\textrm{\#\_}}true{\textrm{\_}}positives}
+{{\textrm{\#_}}true{\textrm{\_}}positives + {\textrm{\#\_}}false{\textrm{\_}}negatives }
+$$
+
+$$
+= \frac{{\textrm{\#\_}}true{\textrm{\_}}positives}
+{total{\textrm{\_\#_}}malware{\textrm{\_}}instances}
+$$
+
+$$
+= \textrm{probability of correctly identifying a malicious item}
+$$
+- Recall a false negative is a malicious item we did not identify
+
+
+
+## Sensitivity and specificity
+- Specificity: the probability of a negative prediction when it is actually negative
+
+$$
+sensitivity = \frac{{\textrm{\#\_}}true{\textrm{\_}}negatives}
+{{\textrm{\#_}}true{\textrm{\_}}negatives + {\textrm{\#\_}}false{\textrm{\_}}positives }
+$$
+
+$$
+= \frac{{\textrm{\#\_}}true{\textrm{\_}}negatives}
+{total{\textrm{\_\#_}}non{\textrm{\_}}malicious{\textrm{\_}}instances}
+$$
+
+$$
+= \textrm{probability of not identifying a malicious item}
+$$
+- Recall a false positive is thinking a valid item is malicious when it is not
+
+
+
+## Sensitivity and specificity
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/HighSensitivity_LowSpecificity_1401x1050.png/1024px-HighSensitivity_LowSpecificity_1401x1050.png" style="float:left;width:400px">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/LowSensitivity_HighSpecificity_1400x1050.png/1024px-LowSensitivity_HighSpecificity_1400x1050.png" style="float:right;width:400px">
+
+- Sensitivity:&nbsp;correctly&nbsp;identifying&nbsp;malicious items
+  - False negative: a malicious item we did not identify
+- Specificity: not identifying a malicious item
+  - False positive: thinking a valid item is malicious when it is not
+- There is usually a trade-off between the two
+
+
+
+
+<!-- .slide: class="right-float-img-600" -->
+## Snort
+[![](https://www.snort.org/assets/Snort_fulllogo.png)](https://snort.org)
+- An open source signature-based IDS
+  - And IPS, and sniffer, and packet logger
+- Has a "community" rule set (free) and a "upgraded" rule set (for a fee)
+- Considered one of the "greatest [pieces of] open source software of all time" ([source](https://en.wikipedia.org/wiki/Snort_(software)))
+
+
+
+<!-- .slide: class="small-pre wide-pre" -->
+## Anatomy of a Snort rule
+```
+<action> <proto> <src_ip> <src_port> <dir> <dest_ip> <dest_port> <rule_opts>
+```
+
+- `<action>`: what Snort should do if this rule matches; also `dynamic`, `pass`, `log`, and `activate`.
+- `<proto>`: protocol; one of `tcp`, `udp`, `icmp`, or `ip`
+- `<src_ip>`: the source IP; can also be `any`
+- `<src_port>`: the source port; can also be `any`
+- `<dir>`: what direction the packet is moving; options are `->` (source to destination) and `<>` (bi-directional)
+- `<dest_ip>`: the destination IP; can also be `any`
+- `<dest_port>`: the destination port; can also be `any`
+- `<rule_opts>`: how to identify the item, and other actions Snort should perform
+
+
+
+<!-- .slide: class="smaller-pre wide-pre" -->
+## Simple Snort rule examples
+```
+alert icmp any any -> any any (msg:"ICMP connection attempt"; sid:1000010; rev:1;)
+```
+- Detect any ICMP (such as ping) connection
+```
+alert tcp 192.168.x.x any -> $HOME_NET 21 (msg:"FTP connection attempt"; sid:1000002; rev:1;)
+```
+- Detect any FTP connection attempt to the "home" network from any 192.168.0.0/16 private network
+```
+alert tcp $HOME_NET 21 -> any any (msg:"FTP failed login"; 
+        content:"Login or password incorrect"; sid:1000003; rev:1;)
+```
+- Detect any failed FTP login originating from the "home" network
+
+
+
+<!-- .slide: class="smaller-pre wide-pre" -->
+## Complex Snort rule examples
+```
+alert tcp any any -> any 80 (msg: "Possible HTTP GET request"; content: "GET"; http_method; 
+                             content: "example.com"; http_host; sid:1000001; rev:1;)
+```
+- This will detect a HTTP connection to a specific domain (example.com)
+```
+alert tcp any any -> any any (msg:"Suspicious User-Agent detected"; flow:to_server,established; 
+           content:"User-Agent|3a| "; nocase; content:"curl|2f|"; nocase; sid:1000002; rev:1;)
+```
+- This will detect a HTTP GET from curl, often used to launch attacks
+```
+alert tcp anyany -> anyany (msg: "Possible SQL Injection attempt"; flow:to_server,established; 
+                  content: "POST"; nocase; content:"/login.php"; nocase; content: "username="; 
+                  nocase; content: "password="; nocase; content:"'"; sid:1000003; rev:1;)
+```
+- This will detect an attempted SQL injection attack against a known vulnerable login.php page
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="topic2" class="center"><textarea data-template>
+# Topic 2
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## ...
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="topic3" class="center"><textarea data-template>
+# Topic 3
+</textarea></section>
+    
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## ...
+</textarea></section>
+
+</section>
+	
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	
+</div>
+</div>
+<script src="../slides/reveal.js/dist/reveal.js"></script>
+<script src="../slides/reveal.js/plugin/zoom/zoom.js"></script>
+<script src="../slides/reveal.js/plugin/notes/notes.js"></script>
+<script src="../slides/reveal.js/plugin/search/search.js"></script>
+<script src="../slides/reveal.js/plugin/markdown/markdown.js"></script>
+<script src="../slides/reveal.js/plugin/highlight/highlight.js"></script>
+<script src="../slides/reveal.js/plugin/math/math.js"></script>
+<script src="settings.js"></script>
+</body>
+</html>
