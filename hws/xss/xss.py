@@ -81,7 +81,7 @@ sanity_checks = {
 	# If any of the characters in any of your answers are special characters
 	# (back-slashes, string delimiters, etc.), did you properly escape them
 	# by putting a backslash in front of those characters?
-	'properly_escaped_string_contents': True,
+	'properly_escaped_string_contents': False,
 
 }
 
