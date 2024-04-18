@@ -16,28 +16,6 @@ Note: this assignment is for Snort 2.9.15.1, which is the version installed via 
 
 If you are looking for the Snort documentation, make sure to use the 2.9 documentation, which can be found online in [HTML](https://www.snort.org/documents/snort-users-manual-2-9-16-html) and [PDF](https://www.snort.org/documents/snort-users-manual-2-9-16).
 
-### To Delete
-
-
-- give an intro to snort
-	- tell how to quit (Ctrl-Z, not Ctrl-C)
-- have them turn on snort, as shown at https://www.rapid7.com/blog/post/2017/01/11/how-to-install-snort-nids-on-ubuntu-linux/ in the "Testing Snort" section (but don't add the rules yet)
-	- command on gateway: `snort -A console -q -c /etc/snort/snort.conf -i eth0`
-- have them run nmap, and see the results
-- add rules on that page
-	- run nmap and see the results
-	- add run_malware and see the results (perhaps add more or less rules)
-- labtainer part 4.3: write a bad rule
-- write more rules, getting more complicated each time
-	- ...
-	- ...
-- have them write rules to detect what is going on in run_malware
-- have them read pcaps
-	- the ones from jason
-	- malware ones online from [here](https://wiki.wireshark.org/SampleCaptures#Other_Sources_of_Capture_Files) or [here](https://www.netresec.com/?page=pcapfiles)
-	- one they made
-- have them write a rule for something, and submit it
-
 
 ### Changelog
 
@@ -48,7 +26,7 @@ Any changes to this page will be put here for easy reference.  Typo fixes and mi
 
 <img src="../../docker/network_compact_for_dns.svg" style="float:right;width:60%">
 
-Recall our network setup, which is shown to the right.  We will always run Snort on *gateway*, listening to eth0 (the green link).  All of our communications with the Internet will come from *inner*, and as it is routed through *gateway*, we will see the results in Snort.
+Recall our network setup, which is shown to the right.  In this assignment, we will always run Snort on *gateway*, listening to eth0 (the green link).  All of our communications with the Internet will come from *inner*, and as it is routed through *gateway*, we will see the results in Snort.
 
 #### Running Snort
 
@@ -72,7 +50,7 @@ Currently Snort will only display output if there is something suspicious.  To s
 
 ```
 ping -c 1 firewall
-ftp firewall # and then logout
+ftp firewall # and then exit the ftp terminal
 telnet firewall
 ```
 
@@ -194,11 +172,32 @@ wget https://wiki.wireshark.org/uploads/__moin_import__/attachments/SampleCaptur
 wget https://wiki.wireshark.org/uploads/__moin_import__/attachments/SampleCaptures/dns-remoteshell.pcap
 ```
 
-We are going to use the same Snort command as before, but instead of specifying an interface (`-i eth0`), we are going to specify a pcap file (`-r slammer.pcap`).  Thus, the command for slammer.pcap would be:
+We are going to use the same Snort command as before, but instead of specifying an interface (`-i eth0`), we are going to specify a pcap file (`-r filename.pcap`).  
+
+#### Slammer Worm
+
+The [SQL Slammer Worm](https://en.wikipedia.org/wiki/SQL_Slammer) was from 2003, and exploited a buffer overflow in Microsoft's SQL Server, which it used to propogate to other machines.
+
+The command to analyze slammer.pcap with Snort is:
 
 ```
 snort -A console -q -c /etc/snort/snort.conf  -k none -r slammer.pcap
 ```
+
+The results you should have obtained are:
+
+```
+10/10-18:02:49.239104  [**] [1:2003:8] MS-SQL Worm propagation attempt [**] [Classification: Misc Attack] [Priority: 2] {UDP} 213.76.212.22:20199 -> 65.165.167.86:1434
+10/10-18:02:49.239104  [**] [1:2004:7] MS-SQL Worm propagation attempt OUTBOUND [**] [Classification: Misc Attack] [Priority: 2] {UDP} 213.76.212.22:20199 -> 65.165.167.86:1434
+10/10-18:02:49.239104  [**] [1:2050:8] MS-SQL version overflow attempt [**] [Classification: Misc activity] [Priority: 3] {UDP} 213.76.212.22:20199 -> 65.165.167.86:1434
+```
+
+#### DNS Remote Shell
+
+You should do the analysis on the dns-remoteshell.pcap on your own.
+
+In the [Ping Shell Commands assignment](../pingcmd/index.html) ([md](../pingcmd/index.md)), you sent shell commands, and their responses, through ICMP (ping) packets.  A similar concept can happen with DNS packets.  This particular pcap is showing a past example of obtaining a remote shell via a DNS packet.
+
 
 #### Analysis with Snort
 

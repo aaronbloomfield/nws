@@ -8,10 +8,18 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel='stylesheet' href='../../markdown.css'></link>
@@ -41,13 +49,11 @@
     document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
   }
   </script>
-  
 </head>
 <body>
 <h1 id='snort-assignment'>Snort Assignment</h1>
 <p><a href='../index.html'>Go up to the NWS HW page</a> (<a href='../index.md'>md</a>). | <a href='index-full.html'>view one-page version</a></p><div class='tab'>
 <button class='tablinks' onclick="openTab(event,'toverview')" id='defaultOpen'>Overview</button>
-<button class='tablinks' onclick="openTab(event,'tto-delete')">To Delete</button>
 <button class='tablinks' onclick="openTab(event,'tchangelog')">Changelog</button>
 <button class='tablinks' onclick="openTab(event,'tintroduction')">Introduction</button>
 <button class='tablinks' onclick="openTab(event,'tsnort-rules')">Snort Rules</button>
@@ -61,42 +67,11 @@
 <p>You will be submitting an edited version of <a href='snort.py.html'>snort.py</a> (<a href='snort.py'>src</a>).</p>
 <p>Note: this assignment is for Snort 2.9.15.1, which is the version installed via <code>apt</code> on Ubuntu 22.04. While Snort 3.x is out, it is not as easily installed, and thus we will not be looking at Snort 3. Some of the tutorial aspects in this assignment were taken from the <a href='https://www.rapid7.com/blog/post/2017/01/11/how-to-install-snort-nids-on-ubuntu-linux/'>Rapid7: How to Install Snort NIDS on Ubuntu Linux</a> webpage.</p>
 <p>If you are looking for the Snort documentation, make sure to use the 2.9 documentation, which can be found online in <a href='https://www.snort.org/documents/snort-users-manual-2-9-16-html'>HTML</a> and <a href='https://www.snort.org/documents/snort-users-manual-2-9-16'>PDF</a>.</p>
-</div><div id='tto-delete' class='tabcontent'><h3 id='to-delete'>To Delete</h3>
-<ul>
-<li>give an intro to snort
-<ul>
-<li>tell how to quit (Ctrl-Z, not Ctrl-C)</li>
-</ul></li>
-<li>have them turn on snort, as shown at https://www.rapid7.com/blog/post/2017/01/11/how-to-install-snort-nids-on-ubuntu-linux/ in the “Testing Snort” section (but don’t add the rules yet)
-<ul>
-<li>command on gateway: <code>snort -A console -q -c /etc/snort/snort.conf -i eth0</code></li>
-</ul></li>
-<li>have them run nmap, and see the results</li>
-<li>add rules on that page
-<ul>
-<li>run nmap and see the results</li>
-<li>add run_malware and see the results (perhaps add more or less rules)</li>
-</ul></li>
-<li>labtainer part 4.3: write a bad rule</li>
-<li>write more rules, getting more complicated each time
-<ul>
-<li>…</li>
-<li>…</li>
-</ul></li>
-<li>have them write rules to detect what is going on in run_malware</li>
-<li>have them read pcaps
-<ul>
-<li>the ones from jason</li>
-<li>malware ones online from <a href='https://wiki.wireshark.org/SampleCaptures#Other_Sources_of_Capture_Files'>here</a> or <a href='https://www.netresec.com/?page=pcapfiles'>here</a></li>
-<li>one they made</li>
-</ul></li>
-<li>have them write a rule for something, and submit it</li>
-</ul>
 </div><div id='tchangelog' class='tabcontent'><h3 id='changelog'>Changelog</h3>
 <p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. So far there aren’t any significant changes to report.</p>
 </div><div id='tintroduction' class='tabcontent'><h3 id='introduction'>Introduction</h3>
 <p><img src='../../docker/network_compact_for_dns.svg' style='float:right;width:60%'></p>
-<p>Recall our network setup, which is shown to the right. We will always run Snort on <em>gateway</em>, listening to eth0 (the green link). All of our communications with the Internet will come from <em>inner</em>, and as it is routed through <em>gateway</em>, we will see the results in Snort.</p>
+<p>Recall our network setup, which is shown to the right. In this assignment, we will always run Snort on <em>gateway</em>, listening to eth0 (the green link). All of our communications with the Internet will come from <em>inner</em>, and as it is routed through <em>gateway</em>, we will see the results in Snort.</p>
 <h4 id='running-snort'>Running Snort</h4>
 <p>On <em>gateway</em>, run snort via the following command:</p>
 <pre><code>snort -A console -q -c /etc/snort/snort.conf  -k none -i eth0</code></pre>
@@ -111,7 +86,7 @@
 </ul>
 <p>Currently Snort will only display output if there is something suspicious. To show this, enter each of these commands from <em>inner</em> (some will not work; that’s intentional):</p>
 <pre><code>ping -c 1 firewall
-ftp firewall # and then logout
+ftp firewall # and then exit the ftp terminal
 telnet firewall</code></pre>
 <p>On <em>gateway</em>, you should have seen no output.</p>
 <h4 id='using-snort'>Using Snort</h4>
@@ -179,8 +154,18 @@ telnet firewall</code></pre>
 <p>To test this, we are going to analyze two pcaps of malware from <a href='https://wiki.wireshark.org/SampleCaptures#Other_Sources_of_Capture_Files'>wireshark.org</a>: the Slammer worm (<a href='https://wiki.wireshark.org/uploads/__moin_import__/attachments/SampleCaptures/slammer.pcap'>slammer.pcap</a>) and a DNS remote shell (<a href='https://wiki.wireshark.org/uploads/__moin_import__/attachments/SampleCaptures/dns-remoteshell.pcap'>dns-remoteshell.pcap</a>). To download them onto your Docker container, run:</p>
 <pre><code>wget https://wiki.wireshark.org/uploads/__moin_import__/attachments/SampleCaptures/slammer.pcap
 wget https://wiki.wireshark.org/uploads/__moin_import__/attachments/SampleCaptures/dns-remoteshell.pcap</code></pre>
-<p>We are going to use the same Snort command as before, but instead of specifying an interface (<code>-i eth0</code>), we are going to specify a pcap file (<code>-r slammer.pcap</code>). Thus, the command for slammer.pcap would be:</p>
+<p>We are going to use the same Snort command as before, but instead of specifying an interface (<code>-i eth0</code>), we are going to specify a pcap file (<code>-r filename.pcap</code>).</p>
+<h4 id='slammer-worm'>Slammer Worm</h4>
+<p>The <a href='https://en.wikipedia.org/wiki/SQL_Slammer'>SQL Slammer Worm</a> was from 2003, and exploited a buffer overflow in Microsoft’s SQL Server, which it used to propogate to other machines.</p>
+<p>The command to analyze slammer.pcap with Snort is:</p>
 <pre><code>snort -A console -q -c /etc/snort/snort.conf  -k none -r slammer.pcap</code></pre>
+<p>The results you should have obtained are:</p>
+<pre><code>10/10-18:02:49.239104  [**] [1:2003:8] MS-SQL Worm propagation attempt [**] [Classification: Misc Attack] [Priority: 2] {UDP} 213.76.212.22:20199 -&gt; 65.165.167.86:1434
+10/10-18:02:49.239104  [**] [1:2004:7] MS-SQL Worm propagation attempt OUTBOUND [**] [Classification: Misc Attack] [Priority: 2] {UDP} 213.76.212.22:20199 -&gt; 65.165.167.86:1434
+10/10-18:02:49.239104  [**] [1:2050:8] MS-SQL version overflow attempt [**] [Classification: Misc activity] [Priority: 3] {UDP} 213.76.212.22:20199 -&gt; 65.165.167.86:1434</code></pre>
+<h4 id='dns-remote-shell'>DNS Remote Shell</h4>
+<p>You should do the analysis on the dns-remoteshell.pcap on your own.</p>
+<p>In the <a href='../pingcmd/index.html'>Ping Shell Commands assignment</a> (<a href='../pingcmd/index.md'>md</a>), you sent shell commands, and their responses, through ICMP (ping) packets. A similar concept can happen with DNS packets. This particular pcap is showing a past example of obtaining a remote shell via a DNS packet.</p>
 <h4 id='analysis-with-snort'>Analysis with Snort</h4>
 <p>In Canvas Files are two pcaps, named <code>snort-uva-attack-1.pcap</code> and <code>snort-uva-attack-2.pcap</code>. Both of these were actual malware attacks against UVA. Using Snort and Wireshark, you need to analyze these two pcaps. You will probably want to use Snort to figure out some basic information, and then investigate further using Wireshark.</p>
 <p>The questions you should answer are:</p>
