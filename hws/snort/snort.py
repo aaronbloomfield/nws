@@ -61,16 +61,6 @@ other = {
 	# it.
 	'run_malware-analysis-2-rule': None,
 
-	# Describe what the *third* "suspicious" network transmission is.  This
-	# is limted to 50 characters.
-	'run_malware-analysis-3-description': None,
-
-	# Enter the Snort rule that will detect the *third* "suspicious" network
-	# transmission.  This should only be the Snort rule, not any English
-	# description, as we are going to put it into a Snort rules file to test
-	# it.
-	'run_malware-analysis-3-rule': None,
-
 	#------------------------------------------------------------
 
 	# How frustrating was this assignment?  This is an integer on a 1-5 scale,
