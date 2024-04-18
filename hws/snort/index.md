@@ -213,15 +213,17 @@ The answer to this is to be in prose (a normal paragraph), and is limited to 250
 
 ### Writing Rules
 
-The `run_malware` program has five different "things" it will transmit over the network.  Four are various types of suspicious "attacks" (they aren't really attacks, but look like they could be).  The ICMP exfiltration was already caught by the default Snort rules, which you saw above, so there are three more.  There is also a red herring network transmission (something that is not an attack, but meant to distract you from the actual attacks).  
+This part is on hold -- please wait until it is changed before you start it.
 
-Using Wireshark, you should figure out what the other three attacks are, and write a Snort rule that will catch each one of them.  You can search the web for example Snort rules to help you as you develop these rules.  But, obviously, you have to write the rules yourself (no copying from friends, no generative AI).  You do not need to write a rule for the red herring.
+~~The `run_malware` program has five different "things" it will transmit over the network.  Four are various types of suspicious "attacks" (they aren't really attacks, but look like they could be).  The ICMP exfiltration was already caught by the default Snort rules, which you saw above, so there are three more.  There is also a red herring network transmission (something that is not an attack, but meant to distract you from the actual attacks).~~
 
-For each of the three other types of attacks, you will have to enter a brief description of the attack, as well as the full Snort rule, into the appropriate fields of [snort.py](snort.py.html) ([src](snort.py)).  It does not matter the order that you enter the rules, although the description must obviously match the Snort rule.
+~~Using Wireshark, you should figure out what the other three attacks are, and write a Snort rule that will catch each one of them.  You can search the web for example Snort rules to help you as you develop these rules.  But, obviously, you have to write the rules yourself (no copying from friends, no generative AI).  You do not need to write a rule for the red herring.~~
 
-***NOTE:*** Your rule HAS to print out "CS4760" in the message, as that is what the auto-grader will look for.  For example, "web attack in CS4760".  Note the case and lack of space!
+~~For each of the three other types of attacks, you will have to enter a brief description of the attack, as well as the full Snort rule, into the appropriate fields of [snort.py](snort.py.html) ([src](snort.py)).  It does not matter the order that you enter the rules, although the description must obviously match the Snort rule.~~
 
-We are going to test your rules by checking if they output a message (containing the required string) when tested on a pcap containing that attack.  We are looking for a rule that finds just that attack -- if there is an alert for *all* packets, or for packets that are not the attack, then you will receive zero credit.  Specifically, given the five different types of "suspicious" network traffic, your rule should print out the required string ("CS4760") for exactly one of them.  We are also going to test each one on legitimate traffic of the same type, and that should not cause an alert.
+~~***NOTE:*** Your rule HAS to print out "CS4760" in the message, as that is what the auto-grader will look for.  For example, "web attack in CS4760".  Note the case and lack of space!~~
+
+~~We are going to test your rules by checking if they output a message (containing the required string) when tested on a pcap containing that attack.  We are looking for a rule that finds just that attack -- if there is an alert for *all* packets, or for packets that are not the attack, then you will receive zero credit.  Specifically, given the five different types of "suspicious" network traffic, your rule should print out the required string ("CS4760") for exactly one of them.  We are also going to test each one on legitimate traffic of the same type, and that should not cause an alert.~~
 
 ### Submission
 
