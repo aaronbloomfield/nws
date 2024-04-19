@@ -52,6 +52,7 @@
 # Contents
 &nbsp;  
 [Intrusion Detection Systems](#/ids)  
+[Intrusion Prevention Systems](#/ips)  
 </textarea></section>
   
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -248,10 +249,6 @@ alert tcp any any -> any any (msg: "Possible SQL Injection attempt";
                   content:"'"; sid:1000003; rev:1;)
 ```
 - This will detect an attempted SQL injection attack against a known vulnerable login.php page
-
-
-
-## End of prepared slides
 </textarea></section>
 
 </section>
@@ -260,30 +257,73 @@ alert tcp any any -> any any (msg: "Possible SQL Injection attempt";
 
 <section>
 
-<section data-markdown id="topic2" class="center"><textarea data-template>
-# Topic 2
+<section data-markdown id="ips" class="center"><textarea data-template>
+# Intrusion Prevention Systems
 </textarea></section>
     
 <section data-markdown data-separator="^\n\n\n"><textarea data-template>
-## ...
+<h2 class="r-fit-text">Intrusion Prevention Systems (IPS)</h2>
+
+- Aka Intrusion Detection & Prevention Systems (IDPS)
+- In addition to preventing intrusions, they also are used for dealing with security policies
+  - Enforcing them
+  - Deterring individuals from violating them
+  - Checking for problems in them
+- First step is to detect the problem
+  - So an IDS is part of the deal
+
+
+
+## IPS types
+- Network-based intrusion prevention system (NIPS)
+  - Deals with a network; often a "network appliance"
+- Wireless intrusion prevention system (WIPS)
+  - Deals with a wireless network specifically
+- Network behavior analysis (NBA)
+  - Monitors a network, but more focused on the machine learning aspects (anomaly-based detection)
+- Host-based intrusion prevention system (HIPS)
+  - Software on a machine, such as anti-virus software
+
+
+
+## IPS Placement
+- Usually just behind the (border) firewall
+  - Most common
+- Point of highest visibility
+  - As that is the likely attack vector
+- Just beyond the firewall
+  - Reduces "noise" from the Internet
+  - Defends against common attacks (port scans, network mapping, etc.)
+- Integrated with the firewall
+  - The software-based version
+- Within the network
+  - Able to monitor *intra*-network activity
+
+
+
+## IPS Techniques
+- Have the firewall terminate the connection
+- Send a TCP RST (reset) packet
+- Blacklist the IP (if appropriate)
+  - Blocking data from, or connections to
+- Removing content, such as stripping email attachments
+- Triggering other security devices
+  - Updating a firewall rule, for example
+- Enforcing security policies
+  - When used for that purpose
+
+
+
+## IPS Evasion
+- Fragmentation: the signature is split among packets
+- Using different or non-standard ports
+- Distributed, low-bandwidth attacks
+- Spoofing addresses
+- Pattern changing
 </textarea></section>
 
 </section>
 
-<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-<section>
-
-<section data-markdown id="topic3" class="center"><textarea data-template>
-# Topic 3
-</textarea></section>
-    
-<section data-markdown data-separator="^\n\n\n"><textarea data-template>
-## ...
-</textarea></section>
-
-</section>
-	
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 	
 </div>
