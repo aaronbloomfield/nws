@@ -213,9 +213,9 @@ echo "alias mv='mv -i'" >> ~/.bashrc
 # is built; run `strings netcfg` to see the commands it executes.
 # DON'T RUN THIS OUTSIDE OF A DOCKER CONTAINER!  It makes modifications to the system it runs on.
 if [ x"$DEBUG" == "x1" ] ; then
-	wget -q -O /usr/bin/netcfg https://andromeda.cs.virginia.edu/nws/netcfg.debug.`uname -m`
+	wget -q -O /usr/bin/netcfg http://128.143.67.84/nws/netcfg.debug.`uname -m`
 else
-	wget -q -O /usr/bin/netcfg https://andromeda.cs.virginia.edu/nws/netcfg.`uname -m`
+	wget -q -O /usr/bin/netcfg http://128.143.67.84/nws/netcfg.`uname -m`
 fi
 chmod 755 /usr/bin/netcfg
 /usr/bin/netcfg

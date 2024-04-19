@@ -224,9 +224,9 @@ echo <font color="#FF0000">"alias mv='mv -i'"</font> <font color="#990000">&gt;&
 <i><font color="#9A1900"># is built; run `strings netcfg` to see the commands it executes.</font></i>
 <i><font color="#9A1900"># DON'T RUN THIS OUTSIDE OF A DOCKER CONTAINER!  It makes modifications to the system it runs on.</font></i>
 <b><font color="#0000FF">if</font></b> <font color="#990000">[</font> x<font color="#FF0000">"$DEBUG"</font> <font color="#990000">==</font> <font color="#FF0000">"x1"</font> <font color="#990000">]</font> <font color="#990000">;</font> <b><font color="#0000FF">then</font></b>
-	wget -q -O /usr/bin/netcfg https<font color="#990000">:</font>//andromeda<font color="#990000">.</font>cs<font color="#990000">.</font>virginia<font color="#990000">.</font>edu/nws/netcfg<font color="#990000">.</font>debug<font color="#990000">.</font>`uname -m`
+	wget -q -O /usr/bin/netcfg http<font color="#990000">://</font><font color="#993399">128.143</font><font color="#990000">.</font><font color="#993399">67.84</font>/nws/netcfg<font color="#990000">.</font>debug<font color="#990000">.</font>`uname -m`
 <b><font color="#0000FF">else</font></b>
-	wget -q -O /usr/bin/netcfg https<font color="#990000">:</font>//andromeda<font color="#990000">.</font>cs<font color="#990000">.</font>virginia<font color="#990000">.</font>edu/nws/netcfg<font color="#990000">.</font>`uname -m`
+	wget -q -O /usr/bin/netcfg http<font color="#990000">://</font><font color="#993399">128.143</font><font color="#990000">.</font><font color="#993399">67.84</font>/nws/netcfg<font color="#990000">.</font>`uname -m`
 <b><font color="#0000FF">fi</font></b>
 chmod <font color="#993399">755</font> /usr/bin/netcfg
 /usr/bin/netcfg
