@@ -130,7 +130,7 @@ Recall that before, when we run a number of non-suspicious commands (FTP, ping, 
 ```
 alert tcp any any -> $HOME_NET 21 (msg:"FTP connection attempt"; sid:1000001; rev:1;) 
 alert icmp any any -> $HOME_NET any (msg:"ICMP connection attempt"; sid:1000002; rev:1;) 
-alert tcp any any -> $HOME_NET 80 (msg:"TELNET connection attempt"; sid:1000003; rev:1;)
+alert tcp any any -> $HOME_NET 23 (msg:"TELNET connection attempt"; sid:1000003; rev:1;)
 ```
 
 To check your rules, run `snort -T -i eth0 -c /etc/snort/snort.conf`.  There will be a lot of output, but the last two lines should look like the following:

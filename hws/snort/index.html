@@ -136,7 +136,7 @@ telnet firewall</code></pre>
 <p>Recall that before, when we run a number of non-suspicious commands (FTP, ping, and telnet), Snort did not report anything to the console. We are going to change that by entering the following rules into that file:</p>
 <pre><code>alert tcp any any -&gt; $HOME_NET 21 (msg:"FTP connection attempt"; sid:1000001; rev:1;) 
 alert icmp any any -&gt; $HOME_NET any (msg:"ICMP connection attempt"; sid:1000002; rev:1;) 
-alert tcp any any -&gt; $HOME_NET 80 (msg:"TELNET connection attempt"; sid:1000003; rev:1;)</code></pre>
+alert tcp any any -&gt; $HOME_NET 23 (msg:"TELNET connection attempt"; sid:1000003; rev:1;)</code></pre>
 <p>To check your rules, run <code>snort -T -i eth0 -c /etc/snort/snort.conf</code>. There will be a lot of output, but the last two lines should look like the following:</p>
 <pre><code>Snort successfully validated the configuration!
 Snort exiting</code></pre>
