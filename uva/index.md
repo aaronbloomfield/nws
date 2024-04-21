@@ -77,7 +77,7 @@ The smaller ("S") homeworks are usually due Friday, unless otherwise noted.  The
 | 11 | Mar 25 | M,W,F | (Protocol) | TBD | Du, chapter 12 (BGP): sections 12.1-12.7, but not 12.4 | [DNS](../slides/dns.html#/), [Attacks](../slides/attacks.html#/) | Mon: dns to 5.11; Wed: finished dns, attacks to 4.1; Fri: attacks to 5.1 |
 | 12 | Apr 1 | M,W,F | (TCP shell) | TBD | watch [Last Week Tonight with John Oliver: Data Brokers](https://www.youtube.com/watch?v=wqn3gR1WTcA) from Apr 11, 2022; 25 minutes | [Attacks](../slides/attacks.html#/), [BGP](../slides/bgp.html#/) | Mon: finished attacks, bgp to 3.5; Wed: finished bgp; Fri: social engineering to 4.11  |
 | 13 | Apr 8 | M,W,F | (Network monitoring) | TBD |  | Network attacks | Mon: finished social engineering; Wed: web security to 3.10 and also xss; Fri: websecurity to 5.11 |
-| 14 | Apr 15 | M,W,F | BGP | TBD | TBD | Heartbleed | Mon: finished websecurity, attacks to 6.3; Wed: finished attacks, IDS to 3.11 |
+| 14 | Apr 15 | M,W,F | BGP | TBD | TBD | Heartbleed | Mon: finished websecurity, attacks to 6.3; Wed: finished attacks, IDS to 3.11; Fri: finished IDS, malware to 3.13 |
 | 15 | Apr 22 | M,W,F | DNS | TBD | TBD | Trojans, rootkits, ransomware; Scanning & fuzzing; Social Engineering |  |
 | 16 | Apr 29 | M | SSH MITM | (none) | (none) | Conclusion |  |
 
