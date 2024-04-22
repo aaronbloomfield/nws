@@ -8,18 +8,10 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
+    ul.task-list{list-style: none;}
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="../../markdown.css" />
@@ -49,6 +41,9 @@
     document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
   }
   </script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body>
 <h1 id="snort-assignment">Snort Assignment</h1>
@@ -166,7 +161,7 @@ wget https://wiki.wireshark.org/uploads/__moin_import__/attachments/SampleCaptur
 <p>The questions you should answer are:</p>
 <ol type="1">
 <li>What was the attack that is in the pcap? If the attack has an actual name (and CVE number), then use that. Otherwise, a description of how the attack worked is sufficient.</li>
-<li>What was the result of the attack? Specifically, was it successful? If so, what were the results of the attack? If not, what would have been the result of the attack had it been successful?</li>
+<li>What was the result of the attack, if known? Specifically, was it successful? If so, what were the results of the attack? If not, what would have been the result of the attack had it been successful? If it’s not possible to determine if it was successful or not, state that.</li>
 </ol>
 <p>The answer to this is to be in prose (a normal paragraph), and is limited to 250 characters. The answer will go in the appropriate field of <a href="snort.py.html">snort.py</a> (<a href="snort.py">src</a>). Note that if you cut-and-paste it from another editor, it may paste in smart quotes, which will cause the Gradescope submission checker to report an error (that it’s a utf-8 file, not an ascii file).</p>
 <h3 id="writing-rules">Writing Rules</h3>

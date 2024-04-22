@@ -208,7 +208,7 @@ In Canvas Files are two pcaps, named `snort-uva-attack-1.pcap` and `snort-uva-at
 The questions you should answer are: 
 
 1. What was the attack that is in the pcap?  If the attack has an actual name (and CVE number), then use that.  Otherwise, a description of how the attack worked is sufficient.
-2. What was the result of the attack?  Specifically, was it successful?  If so, what were the results of the attack?  If not, what would have been the result of the attack had it been successful?
+2. What was the result of the attack, if known?  Specifically, was it successful?  If so, what were the results of the attack?  If not, what would have been the result of the attack had it been successful?  If it's not possible to determine if it was successful or not, state that.
 
 The answer to this is to be in prose (a normal paragraph), and is limited to 250 characters.  The answer will go in the appropriate field of [snort.py](snort.py.html) ([src](snort.py)).  Note that if you cut-and-paste it from another editor, it may paste in smart quotes, which will cause the Gradescope submission checker to report an error (that it's a utf-8 file, not an ascii file).
 
