@@ -16,6 +16,7 @@ These are larger programming homeworks.
 - HW P4: [TCP Reconstruction](tcprecon/index.html) ([md](tcprecon/index.md))
 - HW P5: [DNS Spoofing](dnsspoof/index.html) ([md](dnsspoof/index.md))
 - HW P6: [Cross-Site Scripting](xss/index.html) ([md](xss/index.md))
+- HW P7: [Capture the flag](ctf/index.html) ([md](ctf/index.md))
 
 ### Smaller homeworks
 
