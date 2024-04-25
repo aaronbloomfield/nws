@@ -21,7 +21,6 @@ You will be submitting an edited version of [ctf.py](ctf.py.html) ([src](ctf.py)
 There are a few additions that will happen to this homework over the next few days
 
 - There may be a few more fields added to ctf.py](ctf.py.html) ([src](ctf.py)).  These would be descriptive type fields ("how did you like the assignment?")
-- A mechanism for getting hints, if you get stuck, is going to be made available in a few days
 
 #### Background
 
@@ -31,3 +30,5 @@ An evil hacker has penetrated our systems.  We don't know much about what happen
 #### Changelog
 
 Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  So far there aren't any significant changes to report.
+
+- Thu, Apr 25: a hints page is available; see the links on the CTF home page (the link to the CTF home page is in Canvas' landing page)
