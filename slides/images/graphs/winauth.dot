@@ -1,0 +1,110 @@
+digraph winauth {
+
+    subgraph user_line  {
+        node [fontname="Helvetica",shape=point,style=rounded,width=0.01];
+        rank=TB;
+        utitle [shape=plaintext,label=< User >]
+        user [shape=none,image="./female-user-icon.svg",fill=white,label="",fixedsize=true,width=1,height=1];
+        utitle -> user [style=invis];
+        user -> u1 [arrowhead=none];
+        u1 -> u2 [arrowhead=none];
+        u2 -> u3 [arrowhead=none];
+        u3 -> u4 [arrowhead=none];
+        u4 -> u5 [arrowhead=none];
+        u5 -> u6 [arrowhead=none];
+        u6 -> u7 [arrowhead=none];
+        u7 -> u8 [arrowhead=none];
+        u8 -> u9 [arrowhead=none];
+    }
+    subgraph desktop_line {
+        node [fontname="Helvetica",shape=point,style=rounded,width=0.01];
+        rank=TB;
+        dtitle [shape=plaintext,label=< Desktop >]
+        desktop [shape=none,image="./terminal.svg",fill=white,label=""];
+        dtitle -> desktop [style=invis];
+        desktop -> d1 [arrowhead=none];
+        d1 -> d2 [arrowhead=none];
+        d2 -> d3 [arrowhead=none];
+        d3 -> d4 [arrowhead=none];
+        d4 -> d5 [arrowhead=none];
+        d5 -> d6 [arrowhead=none];
+        d6 -> d7 [arrowhead=none];
+        d7 -> d8 [arrowhead=none];
+        d8 -> d9 [arrowhead=none];
+    }
+
+    subgraph server_line {
+        node [fontname="Helvetica",shape=point,style=rounded,width=0.01];
+        rank=TB;
+        stitle [shape=plaintext,label=< Server >]
+        server [shape=none,label="",image="./server.svg",fill=white];
+        stitle -> server [style=invis];
+        server -> s1 [arrowhead=none];
+        s1 -> s2 [arrowhead=none];
+        s2 -> s3 [arrowhead=none];
+        s3 -> s4 [arrowhead=none];
+        s4 -> s5 [arrowhead=none];
+        s5 -> s6 [arrowhead=none];
+        s6 -> s7 [arrowhead=none];
+        s7 -> s8 [arrowhead=none];
+        s8 -> s9 [arrowhead=none];
+    }
+
+
+    subgraph controller_line {
+        node [fontname="Helvetica",shape=point,style=rounded,width=0.01];
+        rank=TB;
+        ctitle [shape=plaintext,label=< Domain<br/>controller >]
+        controller [shape=none,label="",image="./server.svg",fill=white];
+        ctitle -> controller [style=invis];
+        controller -> c1 [arrowhead=none];
+        c1 -> c2 [arrowhead=none];
+        c2 -> c3 [arrowhead=none];
+        c3 -> c4 [arrowhead=none];
+        c4 -> c5 [arrowhead=none];
+        c5 -> c6 [arrowhead=none];
+        c6 -> c7 [arrowhead=none];
+        c7 -> c8 [arrowhead=none];
+        c8 -> c9 [arrowhead=none];
+    }
+
+
+    graph [fontname="Helvetica"];
+    node [fontname="Helvetica"];
+    edge [fontname="Helvetica",minlen=4];
+
+    { rank=same
+      u1 -> d1 [label=< username and<br/>password >];
+    }
+    { rank=same
+      d2 -> s2 [label="username"];
+    }
+    { rank=same
+      d3 -> s3 [label="nonce",arrowhead=none,arrowtail=normal,dir=both];
+    }
+    { rank=same
+      d4 -> s4 [label=< nonce encrypted<br/>w/password hash >];
+    }
+    { rank=same
+      s5 -> c5 [label=< username, nonce,<br/>encrypted nonce >];
+    }
+    { rank=same
+      s6 -> c6 [label="authenticated",arrowhead=none,arrowtail=normal,dir=both];
+    }
+    { rank=same
+      d7 -> s7 [label="authenticated",arrowhead=none,arrowtail=normal,dir=both];
+    }
+    { rank=same
+      u8 -> d8 [label="authenticated",arrowhead=none,arrowtail=normal,dir=both];
+    }
+
+}
+
+
+
+
+
+
+
+
+

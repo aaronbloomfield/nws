@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Network Security slide set</title>
+    <meta name="description" content="A set of slides for a course on Introduction to Cybersecurity">
+    <meta name="author" content="Aaron Bloomfield">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="../slides/reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="../slides/nws.css">
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="../slides/reveal.js/plugin/highlight/zenburn.css">
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? '../slides/reveal.js/css/print/pdf.scss' : '../slides/reveal.js/css/print/paper.scss';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+    <!--[if lt IE 9]>
+  <script src="../slides/reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+  </head>
+
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+<section data-markdown id="cover"><textarea>
+# CS 4760
+&nbsp;  
+### Network Security
+
+<p class='titlep'>&nbsp;</p>
+<div class="titlesmall"><p>
+<a href="http://www.cs.virginia.edu/~asb">Aaron Bloomfield</a> (aaron@virginia.edu)<br>
+<a href="http://github.com/aaronbloomfield/nws">@github</a> | <a href="index.html">&uarr;</a> | <a href="?print-pdf"><img class="print" width="20" src="../slides/images/print-icon.webp" style="top:0px;vertical-align:middle"></a>
+</p></div>
+<p class='titlep'>&nbsp;</p>
+
+## Course Conclusion
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<section data-markdown><textarea>
+# Contents
+&nbsp;  
+[Miscellaneous Topics](#/misc)  
+[Course Reflection](#/reflection)  
+	</textarea></section>
+
+<!-- ============================================================ -->
+  
+  <section>
+
+    <section id="misc" data-markdown class="center"><textarea>
+# Miscellaneous Topics
+    </textarea></section>
+
+    <section data-markdown data-separator="^\n\n\n"><textarea>
+## Set UID bit
+- One can have a program run as the owner, rather than the user running it
+- Done via the Set UID bit
+  - `chmod 4755 <file>`
+- If that file is *root*, then it's a potential security hole
+  - Many UNIX systems prevent changing of the executable in memory that has this bit set
+
+
+
+## Privilege Escalation
+- Obtaining "more" privileges than the user already has
+  - Perhaps super-user, etc.
+- Done via some type of security flaw
+  - Bad passwords, buffer overflow, other vulnerability, etc.
+- Types:
+  - Vertical: become a more "powerful" user
+  - Horizontal: gain privileges of another user of the same "level"
+
+
+
+## Windows Authentication
+
+<img src="images/graphs/winauth.dot.webp" class="stretch">
+
+
+
+## Pass the Hash
+- If one can gain access to a Windows system
+  - And if they can gain a password hash
+    - Perhaps by viewing it on the network
+- They can move throughout the network, using the hash as the authentication mechanism
+- They don't need to know the password!
+- Attack targets:
+  - Attacking services: DNS, LDAP, etc.
+  - Exfiltrating data 
+
+
+
+## Kerberos
+- Handles both authentication and authorization
+- Normal authentication method:
+  - User enters password, which is hashed
+  - Hashed password is sent over the network
+  - It's compared to what's in the DB to check if it matches
+- Kerberos hashes the password, but:
+  - Doesn't send it over the network
+  - Uses it as the encryption & decryption key
+
+
+
+[![](https://upload.wikimedia.org/wikipedia/commons/6/68/Kerberos_protocol.svg)](https://commons.wikimedia.org/wiki/File:Kerberos_protocol.svg)
+
+
+
+## Kerberos Usage
+- Default on Windows when both client & server are part of the same domain
+  - The same *trusted* domain
+- Runs on UNIX, Linux, and Mac OS also
+- If either is not, or if the domain is not trusted, then it defaults to sending a password hash
+- Problem: a single trusted server is needed
+  - And that server is the target of many attacks
+
+
+
+## Password cracking
+- Using GPUs: an nVidia 4090 (about $2k)
+  - 8 character password: 6.5 hours
+- This can be sped up if you assume "standard" password formation rules
+- The next slide has a table of password cracking times
+  - But I think it's off by one row
+
+
+
+<!-- .slide: class="no-border" -->
+## Password cracking time
+[![](https://images.tech.co/wp-content/uploads/2023/05/19091649/Hive-passwords.jpg)](https://tech.co/password-managers/how-long-hacker-crack-password)
+
+
+
+<h2 class='xkcd'>Password Strength</h2>
+<img src="https://imgs.xkcd.com/comics/password_strength.png" title="To anyone who understands information theory and security and is in an infuriating argument with someone who does not (possibly involving mixed case), I sincerely apologize." alt="Password Strength" srcset="https://imgs.xkcd.com/comics/password_strength_2x.png 2x" style="image-orientation:none" class='stretch'>
+<p class='center'><a href='http://xkcd.com/936/'>xkcd # 936</a></p>
+</textarea></section>
+
+  </section>
+
+<!-- ============================================================ -->
+  
+  <section>
+
+    <section id="reflection" data-markdown class="center"><textarea>
+# Course Reflection
+    </textarea></section>
+
+    <section data-markdown data-separator="^\n\n\n"><textarea>
+## Course Goals
+- Understand network models, both OSI and TCP/IP
+- Understand how to analyze network traffic and how to scan for malware therein 
+- Understand the details of common network attacks, as well as their defenses (ARP, DOSes, etc.)
+- Understand the common network services that help to secure a network (DNSSEC, VPNs, PGP, firewalls, etc.)
+- Understand the role and use of cryptography in network security (AES, RSA, DHE, TLS, etc.)
+- Be able to secure a network from outside attacks
+
+
+
+<h2>HW comments</h2>
+<table class="transparent">
+<tr><td style="width:45%">
+<p>&quot;Small&quot; homeworks</p>
+<ul>
+<li>HW S1: Google survey (link on Canvas landing page)</li>
+<li>HW S2: Docker setup</li>
+<li>HW S3: Linux tutorial</li>
+<li>HW S4: Network commands tutorial</li>
+<li>HW S5: Metasploitable2 Exploration</li>
+<li>HW S6: Web of Trust</li>
+<li>HW S7: Snort</li>
+</ul>
+</td><td style="width:10%"></td><td class="top" style="width:45%">
+<p>Programming homeworks</p>
+<ul>
+<li>HW P1: ARP Spoofing and Detection</li>
+<li>HW P2: Ping Commands</li>
+<li>HW P3: Wireshark</li>
+<li>HW P4: TCP Reconstruction</li>
+<li>HW P5: DNS Spoofing</li>
+<li>HW P6: Cross-Site Scripting</li>
+<li>HW P7: Capture the flag</li>
+</ul>
+</td></tr></table>
+  </section>
+
+
+
+## Topics we didn't cover
+- We pretty much covered everything I intended us to cover
+
+
+
+## What didn't work well
+- A few of the homeworks were a bit rough
+  - ARP, in particular
+- Docker suddenly stopping working half-way through the semester
+- Delays getting out the homeworks
+- My slowness in regrading
+- Support request response slowness
+
+
+
+## What did work well
+- The lecture topics; all the intended material was covered
+- The homeworks, for the most part
+- The combination of smaller and larger homeworks
+- The Docker containers (when they worked right)
+
+
+
+## Did I push too hard?
+- I feel that the frustration was more caused by other issues than the raw work load:
+  - Problems debugging Solidity
+  - Remix acting up
+- Factoring that out, was it too hard?
+
+
+
+## Changes for next time
+- I don't have to create everything from scratch!
+- A few more homeworks
+  - I still want to do a DNS homework
+- Docker configuration updates
+- More CTFs, perhaps
+
+
+
+## Let me know your comments!
+- Please send us your feedback!
+  - Either by e-mail or anonymously or on the course surveys
+- Please fill out the course surveys!
+
+
+
+<h2>Have a great break!</h2>
+<img class="stretch" src="http://www.adamfishercox.com/calvinandhobbes/pageimages/laststrip.png" alt="calvin and hobbes" style="width:100%;background-color:white">
+</textarea></section>
+
+  </section>
+
+<!-- ============================================================ -->
+	
+      </div>
+
+    </div>
+
+    <script src='../slides/reveal.js/dist/reveal.js'></script><script src='../slides/reveal.js/plugin/zoom/zoom.js'></script><script src='../slides/reveal.js/plugin/notes/notes.js'></script><script src='../slides/reveal.js/plugin/search/search.js'></script><script src='../slides/reveal.js/plugin/markdown/markdown.js'></script><script src='../slides/reveal.js/plugin/highlight/highlight.js'></script><script src='../slides/reveal.js/plugin/math/math.js'></script>
+    <script src="../slides/settings.js"></script>
+
+    <script>
+      var vals = new Array();
+      
+      // often changed variables
+      vals['btc_price'] = 65000;
+
+      // rarely changed variables
+      vals['btc_reward_btc'] = 6.25;
+
+      // computations; not changed
+      vals['btc_reward_usd'] = vals['btc_price'] * vals['btc_reward_btc'];
+
+      Reveal.addEventListener( 'update', function() { myupdate(); } );
+
+      function myupdate() {
+	  for (var k in vals) {
+	      if ( document.getElementById(k) ) {
+		  document.getElementById(k).innerHTML = vals[k].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	      }
+	  }
+      }
+      
+    </script>
+
+
+    
+  </body>
+</html>

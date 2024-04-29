@@ -28,6 +28,13 @@ tls:
 	@for x in `ls tls*.svg | sed s/.svg//g`; do cwebp -quiet -lossless -o $$x.webp $$x.png; done
 	@/bin/rm -f *.sedbak
 
+winauth:
+	@dot -Tsvg -O winauth.dot
+	@$(SEDI) s_href=\"./_href=\"`pwd`/_g winauth*.svg
+	@for x in `ls winauth*.svg | sed s/.svg//g`; do convert $$x.svg $$x.png; done
+	@for x in `ls winauth*.svg | sed s/.svg//g`; do cwebp -quiet -lossless -o $$x.webp $$x.png; done
+	@/bin/rm -f *.sedbak
+
 proxy:
 	dot -Tsvg -O proxy.dot
 	/bin/mv -f proxy.dot.svg proxy.svg
