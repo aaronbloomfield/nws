@@ -79,6 +79,6 @@ The smaller ("S") homeworks are usually due Friday, unless otherwise noted.  The
 | 13 | Apr 8 | M,W,F | (Network monitoring) | TBD |  | Network attacks | Mon: finished social engineering; Wed: web security to 3.10 and also xss; Fri: websecurity to 5.11 |
 | 14 | Apr 15 | M,W,F | BGP | TBD | TBD | Heartbleed | Mon: finished websecurity, attacks to 6.3; Wed: finished attacks, IDS to 3.11; Fri: finished IDS, malware to 3.13 |
 | 15 | Apr 22 | M,W,F | DNS | TBD | TBD | Trojans, rootkits, ransomware; Scanning & fuzzing; Social Engineering | Mon: malware to 6.3; Wed: malware to 7.7; Fri: malware to 9.8 |
-| 16 | Apr 29 | M | SSH MITM | (none) | (none) | Conclusion |  |
+| 16 | Apr 29 | M | SSH MITM | (none) | (none) | Conclusion | Mon: finished malware, finished conclusion |
 
 [1]: https://canvas.its.virginia.edu/courses/92875
