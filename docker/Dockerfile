@@ -19,11 +19,12 @@ RUN apt install -y -q \
 		x11-apps openssh-server g++ gdb less emacs emacs-nox nano vim netdiscover \
 		dsniff git lynx apache2 libapache2-mod-php software-properties-common \
 		netcat ncat apt-transport-https libpci-dev python3-pip arp-scan lsof \
-		libssl-dev snort tor kmod astyle source-highlight zip unzip sharutils \
+		libssl-dev snort tor kmod astyle source-highlight zip unzip sharutils sudo \
 		telnet ftp bind9-utils bind9-host bind9-dnsutils whois tcpdump fcrackzip \
-		sudo
+		tshark libpcap0.8-dev libboost-all-dev conntrack konwert tofrodos arping bind9 bind9utils wamerican tcpreplay
 
-RUN curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > /tmp/msfinstall && \
+RUN systemctl disable named && \
+	curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > /tmp/msfinstall && \
 	chmod 755 /tmp/msfinstall && \
 	/tmp/msfinstall && \
 	apt clean -y && \
@@ -40,7 +41,7 @@ RUN curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/conf
 	apt update -y && \
 	apt install -y -q -q firefox-esr && \
 	echo "alias firefox=firefox-esr" >> ~root/.bashrc && \
-	pip install --pre scapy[basic] && \
+	pip install --pre scapy[basic] requests rsa ecdsa && \
 	mkdir -p /mnt && \
 	git clone https://gitlab.com/exploit-database/exploitdb /usr/local/exploitdb && \
 	ln -s /usr/local/exploitdb/searchsploit /usr/local/bin/searchsploit && \
@@ -87,7 +88,7 @@ CMD '/nws-exec.sh'
 # astyle source-highlight: for making program code look pretty
 # zip unzip sharutils: for archive files
 # telnet ftp: basic network utilities
-# bind9-utils bind9-host bind9-dnsutils: DNS utilities
+# bind9 bind9utils bind9-utils bind9-host bind9-dnsutils: DNS & utilities
 # whois: whois directory service
 # tcpdump: tcpdump
 # fcrackzip: to crack passwords

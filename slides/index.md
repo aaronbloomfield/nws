@@ -12,7 +12,7 @@ The slides used in this course are adapted from the slides for the textbook, [In
 - [Physical Layer and Attacks](physical-layer.html#/)
 - [Data Link Layer and Attacks](link-layer.html#/)
 - [Network Layer and Attacks](network-layer.html#/)
-- [Packet sniffing and spoofing](packets.html#/)]
+- [Packet sniffing and spoofing](packets.html#/)
 - [Transport layer](transport-layer.html#/)
 - [Firewalls](firewalls.html#/)
 - [Encryption](encryption.html#/)
