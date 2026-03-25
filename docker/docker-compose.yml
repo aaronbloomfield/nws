@@ -21,26 +21,6 @@ services:
     hostname: inner
     cap_add:
       - NET_ADMIN
-  other:
-    image: nws
-    privileged: true
-    build:
-      context: .
-      dockerfile: Dockerfile
-    environment:
-      - MODE=sleep
-      - NETWORK=other
-      - DISPLAY=:0
-    volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix
-      - DIRECTORY:/mnt:ro
-    networks:
-      othernet:
-        ipv4_address: 192.168.150.2
-    container_name: nws-other
-    hostname: other
-    cap_add:
-      - NET_ADMIN
   metasploit:
     image: metasploit2
     privileged: true
@@ -79,8 +59,6 @@ services:
         ipv4_address: 192.168.100.2
       innernet:
         ipv4_address: 192.168.200.1
-      othernet:
-        ipv4_address: 192.168.150.1
     container_name: nws-gateway
     hostname: gateway
     cap_add:
@@ -98,8 +76,6 @@ services:
     networks:
       outernet:
         ipv4_address: 192.168.100.101
-      othernet:
-        ipv4_address: 192.168.150.3
     container_name: nws-outer1
     hostname: outer1
     cap_add:
@@ -134,6 +110,8 @@ services:
     networks:
       outernet:
         ipv4_address: 192.168.100.103
+      innernet:
+        ipv4_address: 192.168.200.4
     container_name: nws-outer3
     hostname: outer3
     cap_add:
@@ -174,12 +152,5 @@ networks:
       config:
         - subnet: 192.168.100.0/24
           gateway: 192.168.100.254
-  othernet:
-    driver: macvlan
-    ipam:
-      driver: default
-      config:
-        - subnet: 192.168.150.0/24
-          gateway: 192.168.150.254
   internet:
     driver: bridge

@@ -18,7 +18,7 @@ NWS: Docker Reference
 | `docker rm <cid>` | Remove the (stopped) container |
 | `docker rmi <id>` | Remove a docker image |
 | `docker system prune` | Remove all killed containers and outdated images |
-| `docker exec -it <cid> /bin/bash` | Start a bash shell in container `<cid>` |
+| `docker exec -it <cid> bash` | Start a bash shell in container `<cid>` |
 | `docker login` | Login to a another docker server, if needed |
 | `docker login server:5000` | Login to a another docker server, if needed |
 | `docker cp <filename> <cid>:/path/to/<filename>` | Copy file into running container |
@@ -79,7 +79,7 @@ Note: this has only been tested on an ARM Mac (M1/M2), and not on an Intel x64 M
 		- Start up socat: `socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\"`
 		- Start up the docker containers: `docker compose up`
 		- Start up xquartz: `open -a Xquartz`
-	- Connect to a docker container: `docker exec -it nws-outer1 /bin/bash`
+	- Connect to a docker container: `docker exec -it nws-outer1 bash`
 	- Check the DISPLAY variable: `echo $DISPLAY`
 		- It should be `<IP>:0`; if not, set it: `export DISPLAY=111.222.333.444:0`; change as necessary, and be sure to put the `:0` at the end
 	- Run a GUI command: `xeyes`

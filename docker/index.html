@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
@@ -107,7 +107,7 @@
 <td>Remove all killed containers and outdated images</td>
 </tr>
 <tr class="even">
-<td><code>docker exec -it &lt;cid&gt; /bin/bash</code></td>
+<td><code>docker exec -it &lt;cid&gt; bash</code></td>
 <td>Start a bash shell in container <code>&lt;cid&gt;</code></td>
 </tr>
 <tr class="odd">
@@ -197,7 +197,7 @@
 <li>Start up the docker containers: <code>docker compose up</code></li>
 <li>Start up xquartz: <code>open -a Xquartz</code></li>
 </ul></li>
-<li>Connect to a docker container: <code>docker exec -it nws-outer1 /bin/bash</code></li>
+<li>Connect to a docker container: <code>docker exec -it nws-outer1 bash</code></li>
 <li>Check the DISPLAY variable: <code>echo $DISPLAY</code>
 <ul>
 <li>It should be <code>&lt;IP&gt;:0</code>; if not, set it: <code>export DISPLAY=111.222.333.444:0</code>; change as necessary, and be sure to put the <code>:0</code> at the end</li>

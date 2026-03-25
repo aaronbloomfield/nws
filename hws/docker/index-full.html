@@ -216,10 +216,10 @@ $</code></pre>
 <p>If you experimented with these commands, you should re-launch the containers: <code>docker compose down</code> followed by <code>docker compose up</code>.</p>
 <h4 id="docker-exec">docker exec</h4>
 <p>This is what this party is all about! We can manipulate the images, but we haven’t actually used them yet.</p>
-<p>When the containers are running, you can connect to a container via <code>docker exec -it &lt;cid&gt; /bin/bash</code>. This is running a command (here <code>/bin/bash</code>, the shell) on a given image (which is <code>&lt;cid&gt;</code>). The image name is either the left-most value (the hash) or right-most value (the container name) column of <code>docker ps -a</code>. The <code>-it</code> command allows this docker exec command to be both interactive (<code>i</code>) and output to the terminal (<code>t</code>). You can attach to a container in as many shell windows as you would like – there will be times we will have half a dozen shells connected to the same container.</p>
-<p>The hostnames are shown above in the diagram. When connecting to an image, the images all have “nws-” prefixed. Thus, to connect to outer1, you would use the image name <code>nws-outer1</code> as such: <code>docker exec -it nws-outer1 /bin/bash</code>.</p>
+<p>When the containers are running, you can connect to a container via <code>docker exec -it &lt;cid&gt; bash</code>. This is running a command (here <code>bash</code>, the shell) on a given image (which is <code>&lt;cid&gt;</code>). The image name is either the left-most value (the hash) or right-most value (the container name) column of <code>docker ps -a</code>. The <code>-it</code> command allows this docker exec command to be both interactive (<code>i</code>) and output to the terminal (<code>t</code>). You can attach to a container in as many shell windows as you would like – there will be times we will have half a dozen shells connected to the same container.</p>
+<p>The hostnames are shown above in the diagram. When connecting to an image, the images all have “nws-” prefixed. Thus, to connect to outer1, you would use the image name <code>nws-outer1</code> as such: <code>docker exec -it nws-outer1 bash</code>.</p>
 <p>Here is an example usage:</p>
-<pre><code>$ docker exec -it nws-outer1 /bin/bash
+<pre><code>$ docker exec -it nws-outer1 bash
 root@outer1:/# hostname
 outer1
 root@outer1:/# hostname -I
@@ -313,7 +313,7 @@ $</code></pre>
 <p>The metasploit container has this vulnerability.</p>
 <p>To exploit it:</p>
 <ul>
-<li>Connect to any container; we’ll use outer1 in this example: <code>docker exec -it nws-outer1 /bin/bash</code>. You should connect twice, in 2 different windows.</li>
+<li>Connect to any container; we’ll use outer1 in this example: <code>docker exec -it nws-outer1 bash</code>. You should connect twice, in 2 different windows.</li>
 <li>Ensure that port 6200 on the metasploit container is closed by running <code>nmap -p 6200 metasploit</code>. We’ll see nmap in more detail later, but it should say “closed” in the output of nmap next to the port 6200 entry.</li>
 <li>Exploit the vulnerability: try to connect to that machine via <code>ftp metasploit</code>. Enter any username, but have the username end with <code>:)</code>; enter any password.
 <ul>

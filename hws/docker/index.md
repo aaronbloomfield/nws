@@ -239,14 +239,14 @@ If you experimented with these commands, you should re-launch the containers: `d
 
 This is what this party is all about!  We can manipulate the images, but we haven't actually used them yet.
 
-When the containers are running, you can connect to a container via `docker exec -it <cid> /bin/bash`.  This is running a command (here `/bin/bash`, the shell) on a given image (which is `<cid>`).  The image name is either the left-most value (the hash) or right-most value (the container name) column of `docker ps -a`.  The `-it` command allows this docker exec command to be both interactive (`i`) and output to the terminal (`t`).  You can attach to a container in as many shell windows as you would like -- there will be times we will have half a dozen shells connected to the same container.
+When the containers are running, you can connect to a container via `docker exec -it <cid> bash`.  This is running a command (here `bash`, the shell) on a given image (which is `<cid>`).  The image name is either the left-most value (the hash) or right-most value (the container name) column of `docker ps -a`.  The `-it` command allows this docker exec command to be both interactive (`i`) and output to the terminal (`t`).  You can attach to a container in as many shell windows as you would like -- there will be times we will have half a dozen shells connected to the same container.
 
-The hostnames are shown above in the diagram.  When connecting to an image, the images all have "nws-" prefixed.  Thus, to connect to outer1, you would use the image name `nws-outer1` as such: `docker exec -it nws-outer1 /bin/bash`.
+The hostnames are shown above in the diagram.  When connecting to an image, the images all have "nws-" prefixed.  Thus, to connect to outer1, you would use the image name `nws-outer1` as such: `docker exec -it nws-outer1 bash`.
 
 Here is an example usage:
 
 ```
-$ docker exec -it nws-outer1 /bin/bash
+$ docker exec -it nws-outer1 bash
 root@outer1:/# hostname
 outer1
 root@outer1:/# hostname -I
@@ -346,7 +346,7 @@ The metasploit container has this vulnerability.
 
 To exploit it:
 
-- Connect to any container; we'll use outer1 in this example: `docker exec -it nws-outer1 /bin/bash`.  You should connect twice, in 2 different windows.
+- Connect to any container; we'll use outer1 in this example: `docker exec -it nws-outer1 bash`.  You should connect twice, in 2 different windows.
 - Ensure that port 6200 on the metasploit container is closed by running `nmap -p 6200 metasploit`.  We'll see nmap in more detail later, but it should say "closed" in the output of nmap next to the port 6200 entry.
 - Exploit the vulnerability: try to connect to that machine via `ftp metasploit`.  Enter any username, but have the username end with `:)`; enter any password.
 	- After you enter the password, it will appear to hang for around a minute -- you can go to the next step as soon as you enter the password; you don't have to wait.

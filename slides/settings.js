@@ -153,7 +153,7 @@ Reveal.initialize({
     },
     
     dependencies: [
-	// Cross-browser shim that fully implements classList - https://github.com/eligrey/classList.js/
+	// Cross-browser shim that fully implements classList - https://github.com/eligray/classList.js/
 	{ src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
 
 	// Interpret Markdown in <section> elements

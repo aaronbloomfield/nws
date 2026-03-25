@@ -36,7 +36,7 @@ To connect to a different host, you can use the `ssh` command.  Note that to con
 The containers are set up so that you can easily ssh between the containers by just entering `ssh <hostname>`:
 
 ```
-$ docker exec -it nws-outer1 /bin/bash
+$ docker exec -it nws-outer1 bash
 root@outer1:/# ssh inner
 ...
 root@inner:~# hostname

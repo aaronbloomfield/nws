@@ -1,20 +1,28 @@
 <!DOCTYPE html>
-<html xmlns='http://www.w3.org/1999/xhtml' lang='' xml:lang=''>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-  <meta charset='utf-8'></meta>
-  <meta name='generator' content='pandoc'></meta>
-  <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=yes'></meta>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>Wireshark</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
-  <link rel='stylesheet' href='../../markdown.css'></link>
+  <link rel="stylesheet" href="../../markdown.css" />
   <script>
   function openTab(evt, tabName) {
     // Declare all variables
@@ -41,28 +49,19 @@
     document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
   }
   </script>
-  
 </head>
 <body>
-<h1 id='wireshark'>Wireshark</h1>
-<p><a href='../index.html'>Go up to the NWS HW page</a> (<a href='../index.md'>md</a>) | <a href='index-full.html'>view one-page version</a></p><div class='tab'>
-<button class='tablinks' onclick="openTab(event,'toverview')" id='defaultOpen'>Overview</button>
-<button class='tablinks' onclick="openTab(event,'tchangelog')">Changelog</button>
-<button class='tablinks' onclick="openTab(event,'tbasic-analysis')">Basic Analysis</button>
-<button class='tablinks' onclick="openTab(event,'tadvanced-analysis')">Advanced Analysis</button>
-<button class='tablinks' onclick="openTab(event,'tlive-capture')">Live Capture</button>
-<button class='tablinks' onclick="openTab(event,'tsaving-pcaps')">Saving Pcaps</button>
-<button class='tablinks' onclick="openTab(event,'tsubmission')">Submission</button>
-</div>
-<div id='toverview' class='tabcontent'><h3 id='overview'>Overview</h3>
+<h1 id="wireshark">Wireshark</h1>
+<p><a href="../index.html">Go up to the NWS HW page</a> (<a href="../index.md">md</a>)</p>
+<h3 id="overview">Overview</h3>
 <p>We have seen multiple ways to capture network packets: we can: listen in on the wired network connection, observe the WiFi traffic, execute an in-the-middle attack using a USB Pineapple, ARP spoof, send router redirects, or just run a Scapy Python program. Now that we can observe packets, we are going to start capturing them and analyzing them.</p>
 <p>In this assignment you will be analyzing network traffic through Wireshark. You will analyze saved pcap files, save your own pcap files, and analyze live network traffic. Wireshark is installed on the Docker images.</p>
-<p>You will be submitting an edited version of <a href='wireshark.py.html'>wireshark.py</a> (<a href='wireshark.py'>src</a>).</p>
-</div><div id='tchangelog' class='tabcontent'><h3 id='changelog'>Changelog</h3>
+<p>You will be submitting an edited version of <a href="wireshark.py.html">wireshark.py</a> (<a href="wireshark.py">src</a>).</p>
+<h3 id="changelog">Changelog</h3>
 <p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. So far there aren’t any significant changes to report.</p>
-</div><div id='tbasic-analysis' class='tabcontent'><h3 id='basic-analysis'>Basic Analysis</h3>
+<h3 id="basic-analysis">Basic Analysis</h3>
 <p>Most network analysis comes from saved pcap files. A program, such as tcpdump, will save the file, and then it is analyzed later. In this section, we will walk you through how to analyze a saved pcap file.</p>
-<p>Your answers to the questions posed below will go in the <a href='wireshark.py.html'>wireshark.py</a> (<a href='wireshark.py'>src</a>) file.</p>
+<p>Your answers to the questions posed below will go in the <a href="wireshark.py.html">wireshark.py</a> (<a href="wireshark.py">src</a>) file.</p>
 <p>First you have to download your pcap file to analyze. You must use your own! The URL to download it is on the Canvas landing page.</p>
 <p>After completing this <em>entire</em> assignment, you would be expected to be able to find this type of information in a pcap file without the walk-through that is below.</p>
 <p>To start this analysis, we are going to analyze a few separate network connections in the pcap file. This file has 492 packets.</p>
@@ -95,7 +94,7 @@
 <li>Question 10: what is the background color (not the font color) of packets that are a bad TCP packet?</li>
 </ul></li>
 </ul>
-</div><div id='tadvanced-analysis' class='tabcontent'><h3 id='advanced-analysis'>Advanced Analysis</h3>
+<h3 id="advanced-analysis">Advanced Analysis</h3>
 <p>Having just seen the basics of pcap analysis, we are going to look at a more advanced analysis of a pcap file. You are <em>not</em> expected to be able to do this analysis after completing this assignment (although if you can, great!). But you are expected to understand each step, even if you would not have come up with the various steps yourself.</p>
 <p>Due to it’s size, the pcap file for this part is in Canvas Files, and is called <code>wireshark_hw.pcap</code>.</p>
 <p>Each step indicates how many packets are displayed by the current filters – you should ensure that is the case when you enter the filters yourself.</p>
@@ -108,14 +107,14 @@
 <ul>
 <li>The first packet displayed (# 2,131) is a request for the ‘/’ URL. Nothing interesting there.</li>
 <li>The second packet displayed (# 2,132) is the response to the packet just mentioned in the previous bullet point. You can see the HTML response in the middle pane. It’s raw HTML, which is not so easy to read – we’ll show how to extract these files in a bit.</li>
-<li>The third packet displayed (# 2,133) starts showing something possibly relevant – the user-agent field is where the web browser identifies itself when making the request. But here it says “Nmap Scripting Engine”. We used nmap scripts in the <a href='../netcmds/index.html'>Network Commands</a> (<a href='../netcmds/index.md'>md</a>) assignment. So somebody is doing a scan of this web server.</li>
+<li>The third packet displayed (# 2,133) starts showing something possibly relevant – the user-agent field is where the web browser identifies itself when making the request. But here it says “Nmap Scripting Engine”. We used nmap scripts in the <a href="../netcmds/index.html">Network Commands</a> (<a href="../netcmds/index.md">md</a>) assignment. So somebody is doing a scan of this web server.</li>
 </ul></li>
-<li>We can skim through the HTTP requests and responses, but we’ll save you the trouble and skip down to packet # 2,769. If you look at the user-agent there, it says <a href='https://sourceforge.net/projects/dirbuster/'>DirBuster</a>. DirBuster is a fuzzing tool – it tries a huge number of parts after the URL to see if anything “interesting” exists on the server. This is what is causing the 404 (not found) error messages – DirBuster is trying those URLs, and most don’t exist.</li>
-<li>To help narrow the display, we want to restrict the packets even more; we want to see the webserver responses. Rather than add to the filter, we are going to right click on the webserver address (172.16.40.2) in the <em>source</em> column, then click “Apply as Filter”, then “…and Selected”. This adds <code>&& (ip.src == 172.16.40.2)</code> to the filter for us; our full filter is <code>(!tls and !icmp and http) && (ip.src == 1172.16.40.2)</code>. Note that you can use <code>and</code> or <code>&&</code> interchangeably.</li>
-<li>Let’s remove the 404 responses, since DirBuster did not find anything useful there. We’ll add <code>and not http.response.code == 404</code> to our filter. Our full filter is: <code>(!tls and frame.number &gt;= 492 and !icmp and http) && (ip.src == 172.16.40.2) and not http.response.code == 404</code>, showing 115 packets. This is a number that is much easier to look through.</li>
-<li>We will avoid you having to scan through the packets, and point you to packet # 6,790. THis is a HTTP code of 301 (moved permanently). That HTTP response code is a redirect, and typically what a login page does – it redirects you to on a successful login. The URL is http://172.16.40.2/openemr/. <a href='https://www.open-emr.org'>OpenEMR</a> is a medical records system.</li>
-<li>Let’s see if there was a login attempt to the OpenEMR system. You can use the filter <code>http and frame contains "openemr" and http.request.method=="POST"</code>; this displays 13 packets. We are removing some of the filter parts – if it’s HTTP, then it’s not ICMP, for example. Looking at the first frame (7,392), it says, in the middle pane, “HTML Form URL Encoded” – meaning it was a form submission. Opening that drop-down, we see that the login attempt was admin/admin. In the “Hypertext Transfer Protocol” drop-down, toward the bottom is “Response in frame: 7885”. Double click on this, and view the HTML results. Not much happens, since that frame is not part of the current filter. So we remove the filter, and then double click on it, and packet 7,885 should appear. At the very bottom of the middle pane (in the “Hypertext… drop down”), we see “w.top.location.href = ‘/openemr/interface/login_screen.php?error=1&site=’;”, indicating an unsuccessful login.</li>
-<li>Put our last filter back in (<code>http and frame contains "openemr" and http.request.method=="POST"</code>), and take a look at the second packet (# 11,156). This was a login with admin/openemr. Looking at the response packet (# 11,165) – removing the filter first – we see that they were redirected to “http://172.16.40.2/openemr/interface/main/main_screen.php?auth=login&site=default”. A successful login!</li>
+<li>We can skim through the HTTP requests and responses, but we’ll save you the trouble and skip down to packet # 2,769. If you look at the user-agent there, it says <a href="https://sourceforge.net/projects/dirbuster/">DirBuster</a>. DirBuster is a fuzzing tool – it tries a huge number of parts after the URL to see if anything “interesting” exists on the server. This is what is causing the 404 (not found) error messages – DirBuster is trying those URLs, and most don’t exist.</li>
+<li>To help narrow the display, we want to restrict the packets even more; we want to see the webserver responses. Rather than add to the filter, we are going to right click on the webserver address (172.16.40.2) in the <em>source</em> column, then click “Apply as Filter”, then “…and Selected”. This adds <code>&amp;&amp; (ip.src == 172.16.40.2)</code> to the filter for us; our full filter is <code>(!tls and !icmp and http) &amp;&amp; (ip.src == 1172.16.40.2)</code>. Note that you can use <code>and</code> or <code>&amp;&amp;</code> interchangeably.</li>
+<li>Let’s remove the 404 responses, since DirBuster did not find anything useful there. We’ll add <code>and not http.response.code == 404</code> to our filter. Our full filter is: <code>(!tls and frame.number &gt;= 492 and !icmp and http) &amp;&amp; (ip.src == 172.16.40.2) and not http.response.code == 404</code>, showing 115 packets. This is a number that is much easier to look through.</li>
+<li>We will avoid you having to scan through the packets, and point you to packet # 6,790. THis is a HTTP code of 301 (moved permanently). That HTTP response code is a redirect, and typically what a login page does – it redirects you to on a successful login. The URL is http://172.16.40.2/openemr/. <a href="https://www.open-emr.org">OpenEMR</a> is a medical records system.</li>
+<li>Let’s see if there was a login attempt to the OpenEMR system. You can use the filter <code>http and frame contains "openemr" and http.request.method=="POST"</code>; this displays 13 packets. We are removing some of the filter parts – if it’s HTTP, then it’s not ICMP, for example. Looking at the first frame (7,392), it says, in the middle pane, “HTML Form URL Encoded” – meaning it was a form submission. Opening that drop-down, we see that the login attempt was admin/admin. In the “Hypertext Transfer Protocol” drop-down, toward the bottom is “Response in frame: 7885”. Double click on this, and view the HTML results. Not much happens, since that frame is not part of the current filter. So we remove the filter, and then double click on it, and packet 7,885 should appear. At the very bottom of the middle pane (in the “Hypertext… drop down”), we see “w.top.location.href = ‘/openemr/interface/login_screen.php?error=1&amp;site=’;”, indicating an unsuccessful login.</li>
+<li>Put our last filter back in (<code>http and frame contains "openemr" and http.request.method=="POST"</code>), and take a look at the second packet (# 11,156). This was a login with admin/openemr. Looking at the response packet (# 11,165) – removing the filter first – we see that they were redirected to “http://172.16.40.2/openemr/interface/main/main_screen.php?auth=login&amp;site=default”. A successful login!</li>
 <li>We want to look at what the server (172.16.40.2) responded with after this point (packet # 11,156), and we are really only interested in the HTTP packets. So we use the filter <code>ip.src==172.16.40.2 and frame.number&gt;11647 and http</code>; this shows 23 packets. Although more TCP packets were needed to finish sending the large files – which we’ve filtered out – Wireshark will reassemble them for us.</li>
 <li>Looking at the packets, the last one (# 11,906) looks interesting – it’s an application/pdf MIME type. Select File -&gt; Export Objects -&gt; HTTP. This means via the HTTP protocol, not necessarily an HTML page. Select the packet we are interested in (# 11,906), and click Save (not Save All, which will save many files). Enter any filename with a PDF extension, since we know it’s an application/pdf MIME type. Some private information is in that file!</li>
 </ul>
@@ -126,22 +125,21 @@
 <li>Question 13: What is the patient’s social security number?</li>
 </ul>
 <p>Again, you are not expected to be able to do this part on your own – that requires a lot of experience analyzing network packets. You are expected to understand how each step works, though.</p>
-</div><div id='tlive-capture' class='tabcontent'><h3 id='live-capture'>Live Capture</h3>
+<h3 id="live-capture">Live Capture</h3>
 <p>Uh-oh, it looks like there is some malware on the <em>inner</em> container. We don’t know much about it, so you have to figure out what is up and let us know. This file seems to send network traffic, but not much else. It’s been quarantined, and the executable is <code>/usr/bin/run_malware</code>, so you can just run it via <code>run_malware</code>; it is not running by default. You can type “quit” at any time to cause it to exit. If that file is not there, try restarting your Docker containers (<code>docker compose down</code> followed by <code>docker compose up -d</code>).</p>
 <p>Note: this is not <em>real</em> malware, and it doesn’t actually do anything malicious. It does send some network data, of course – otherwise there would be no point to this part of the assignment. While you are welcome to try to use other tools to figure out what is going on, the executable has been deigned so that any other tools will not be all that useful. This part of the assignment was explicitly designed to only need Wireshark.</p>
 <p>There are at least four different “things” going on in this program. However, you do not need to find all of them for full credit!</p>
-<p>You will put your findings in <a href='wireshark.py.html'>wireshark.py</a> (<a href='wireshark.py'>src</a>).</p>
+<p>You will put your findings in <a href="wireshark.py.html">wireshark.py</a> (<a href="wireshark.py">src</a>).</p>
 <p>Wireshark warning: when capturing live network traffic, the network packets are saved to memory. You can restart the capture via the toolbar icon (the green shark fin) – this removes from memory all the captured packets so far. If you leave it running for too long while capturing network packets, it may fill up your computer’s memory, causing slowdown or halting the system. The <code>run_malware</code> program creates around 1 Mb of data every 10 minutes, so it is not likely to be a problem, unless you leave it running overnight or for a very long time. But be aware that if you are on a busy network, it will fill up fast.</p>
-<h4 id='important-mac-host-note'>Important Mac host note</h4>
+<h4 id="important-mac-host-note">Important Mac host note</h4>
 <p>Mac users <strong><em>MUST</em></strong> run Wireshark on <em>gateway</em>, <strong><em>NOT</em></strong> on <em>inner</em>. The way that Mac hosts run GUIs is to send the display information over the Docker network. If you run Wireshark on <em>inner</em>, you will see all of your display traffic in addition to the traffic that you are trying to analyze – and there is <em>much</em> more display traffic. If you run Wireshark on <em>gateway</em>, then the display traffic goes directly to <em>firewall</em> (via <em>outernet</em>), and you can monitor <em>gateway’s</em> interface to <em>inner</em> (eth0), which will have all the <code>run_malware</code> traffic from <em>inner</em>, but none of the display traffic.</p>
-</div><div id='tsaving-pcaps' class='tabcontent'><h3 id='saving-pcaps'>Saving pcaps</h3>
-<p><a href='wireshark-dialog.webp'><img src='wireshark-dialog.webp' style='width:600px;float:right;padding-left:20px'></a></p>
-<p>The last part of this assignment is to make your own .pcap file. You can do this through Wireshark. The intent is to save enough packets from one of the “malicious” things that the <code>run_malware</code> executable does. You will indicate which one in the <a href='wireshark.py.html'>wireshark.py</a> (<a href='wireshark.py'>src</a>) file.</p>
+<h3 id="saving-pcaps">Saving pcaps</h3>
+<p><a href='wireshark-dialog.webp'><img src='wireshark-dialog.webp' style="width:600px;float:right;padding-left:20px"></a></p>
+<p>The last part of this assignment is to make your own .pcap file. You can do this through Wireshark. The intent is to save enough packets from one of the “malicious” things that the <code>run_malware</code> executable does. You will indicate which one in the <a href="wireshark.py.html">wireshark.py</a> (<a href="wireshark.py">src</a>) file.</p>
 <p>You will need to edit your pcap to only have the necessary packets. The intent is not to just save a lot of network data and submit that. There is a maximum file size allowed for this submission! To edit your pcap file, load it into Wireshark (if not already loaded). You can highlight the relevant packets, and select File -&gt; Export Selected Packets. In the dialog box that appears, you have to toggle some of the settings at the bottom – in particular, you will want to change the packet range from “all packets” to “selected packets only”. Also, be sure to save it as a .pcap file type, not a .pcapng (which is what Wireshark defaults to). You can see these selections in the dialog box image to the right.</p>
 <p>The capture should be saved to <code>capture.pcap</code>.</p>
 <p><br clear='all'></p>
-</div><div id='tsubmission' class='tabcontent'><h3 id='submission'>Submission</h3>
-<p>You will be submitting an edited version of <a href='wireshark.py.html'>wireshark.py</a> (<a href='wireshark.py'>src</a>) as well as your <code>capture.pcap</code> file.</p>
-</div><script>document.getElementById('defaultOpen').click();</script></body>
+<h3 id="submission">Submission</h3>
+<p>You will be submitting an edited version of <a href="wireshark.py.html">wireshark.py</a> (<a href="wireshark.py">src</a>) as well as your <code>capture.pcap</code> file.</p>
+</body>
 </html>
-
