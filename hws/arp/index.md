@@ -291,7 +291,7 @@ To test the new mapping detection, run it on one of the containers.  Clear out t
 
 #### Notes and Hints
 
-- Note that the network interface is differnet on the different containers.  Because *outer1* is on two networks, the outernet network (192.168.100.1/24) is `eth1`.  As *outer2* is only on one network, the outernet network (192.168.100.1/24) is `eth0`.
+- Note that the network interface is different on the different containers.  Because *outer1* is on two networks, the outernet network (192.168.100.1/24) is `eth1`.  As *outer2* is only on one network, the outernet network (192.168.100.1/24) is `eth0`.
 - To clear the entire ARP cache from a container, you have to run `arp -a`, followed by a number of `arp -d` calls.  Here is a single command that will clear it out for you, and then display the (empty) ARP cache: `arp -a | sed s/\(//g | sed s/\)//g | awk '{print "arp -d "$2}' | bash;arp -a`
 
 #### Example output

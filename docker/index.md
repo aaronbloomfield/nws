@@ -66,7 +66,7 @@ Note: this has only been tested on an ARM Mac (M1/M2), and not on an Intel x64 M
 	- When connected in the docker container via `docker exec`, run `echo $DISPLAY`, and then `export DISPLAY=1.2.3.4:0` where 1.2.3.4 is the IP of your machine (on your LAN), then try running the GUI program again.  This will set the DISPLAY variable for that one container -- if it's different (meaning what you got from the `echo` command versus what you set with the `export` command), you should change it throughout docker-compose.yml, and then restart all the containers (`docker compose down` followed by `docker compose up`).
 - Setup configuration: these are steps that you may have missed in the setup
 	- Did you log out and then log in after installing xquartz?
-	- Does the Mac firewall allow socat (or socat1) to receive incoming network connections?  This is configured in System Settings -> Network -> Firewall -> Options.  You should see 'socat' (or, more likely, 'socat1') with a green 'allow incomming connections' next to it.
+	- Does the Mac firewall allow socat (or socat1) to receive incoming network connections?  This is configured in System Settings -> Network -> Firewall -> Options.  You should see 'socat' (or, more likely, 'socat1') with a green 'allow incoming connections' next to it.
 	- Did you do this step: the first time xquartz launches, go do XQuartz -> Settings -> Security, and make sure "Allow connections from network clients" is checked 
 - None of the above works!
 	- If you can run the `socat` command, but `open -a Xquartz` does NOT open up a window, you will need to do a full reset and restart (but not a reinstall) of the three commands used:

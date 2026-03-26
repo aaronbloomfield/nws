@@ -514,7 +514,7 @@ Output: Hello Aaron! Your account balance is 1000000
 ```html
 <!DOCTYPE html>
 <html><head>
-  <title>Target desitnation page</title>
+  <title>Target destination page</title>
 </head>
 <body>
   <h2>Target destination page</h2>
@@ -793,11 +793,11 @@ Content-Security-Policy: frame-ancestors <space separated list of sources>;
 
 <!-- .slide: class="small-pre" -->
 ## CSRF vulnerable example
-- An example GET link: https://example.com/post.php?title=abcd&content=Lorem.ipsum
+- An example GET link: https://example.com/post.php?title=MyTitle&content=Lorem.ipsum
 - An example POST submission form:
 ```html
  <form action="https://example.com/post.php" method="post">
-  <input type="hidden" name="title" value="abcd">
+  <input type="hidden" name="title" value="MyTitle">
   <input type="hidden" name="content" 
          value="Lorem.ipsum">
   <input type="submit" value="Submit">
