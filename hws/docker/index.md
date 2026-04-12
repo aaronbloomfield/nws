@@ -173,7 +173,7 @@ There are four commands you need to enter, in succession, to build the course im
 	- Windows host users: make the initial 'd' of 'dockerfile.metasploit' be lower-case
 - `docker build -t nws .`: this builds the course image for the not-intentionally vulnerable images
 
-One those completed, and assuming they completed successfully, you should run `docker images` again, and you will see something simnilar to the following:
+One those completed, and assuming they completed successfully, you should run `docker images` again, and you will see something similar to the following:
 
 ```
 $ docker images

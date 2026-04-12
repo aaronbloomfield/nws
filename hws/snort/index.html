@@ -6,7 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>Snort Assignment</title>
   <style>
-    code{white-space: pre-wrap;}
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
@@ -51,6 +53,7 @@
   </script>
 </head>
 <body>
+<main>
 <h1 id="snort-assignment">Snort Assignment</h1>
 <p><a href="../index.html">Go up to the NWS HW page</a> (<a href="../index.md">md</a>).</p>
 <h3 id="overview">Overview</h3>
@@ -151,7 +154,7 @@ telnet firewall</code></pre>
 wget https://wiki.wireshark.org/uploads/__moin_import__/attachments/SampleCaptures/dns-remoteshell.pcap</code></pre>
 <p>We are going to use the same Snort command as before, but instead of specifying an interface (<code>-i eth0</code>), we are going to specify a pcap file (<code>-r filename.pcap</code>).</p>
 <h4 id="slammer-worm">Slammer Worm</h4>
-<p>The <a href="https://en.wikipedia.org/wiki/SQL_Slammer">SQL Slammer Worm</a> was from 2003, and exploited a buffer overflow in Microsoft’s SQL Server, which it used to propogate to other machines.</p>
+<p>The <a href="https://en.wikipedia.org/wiki/SQL_Slammer">SQL Slammer Worm</a> was from 2003, and exploited a buffer overflow in Microsoft’s SQL Server, which it used to propagate to other machines.</p>
 <p>The command to analyze slammer.pcap with Snort is:</p>
 <pre><code>snort -A console -q -c /etc/snort/snort.conf  -k none -r slammer.pcap</code></pre>
 <p>The results you should have obtained are:</p>
@@ -177,5 +180,6 @@ wget https://wiki.wireshark.org/uploads/__moin_import__/attachments/SampleCaptur
 <p>We are going to test your rules by checking if they output a message (containing the required string) when tested on a pcap containing that attack. We are looking for a rule that finds just that attack – if there is an alert for <em>all</em> packets, or for packets that are not the attack, then you will receive zero credit. Specifically, given the five different types of “suspicious” network traffic, your rule should print out the required string (“CS4760”) for exactly one of them. We are also going to test each one on legitimate traffic of the same type, and that should not cause an alert.</p>
 <h3 id="submission">Submission</h3>
 <p>You will be submitting an edited version of <a href="snort.py.html">snort.py</a> (<a href="snort.py">src</a>).</p>
+</main>
 </body>
 </html>

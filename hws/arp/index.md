@@ -118,7 +118,7 @@ If you run `wget` on *outer2* with an `https://` command, notice that an `https:
 
 #### MITM ARP spoofer
 
-Next we are going to execute the MITM (in-the-middle) attack via an ARP spoof; this is [as shown in the slides as well](../../slides/link-layer.html#/mitmarp).  We are going to ARP spoof *metsploit* via *outer1*.
+Next we are going to execute the MITM (in-the-middle) attack via an ARP spoof; this is [as shown in the slides as well](../../slides/link-layer.html#/mitmarp).  We are going to ARP spoof *metasploit* via *outer1*.
 
 <img src='../../docker/network_compact_for_arp_normal_metasploit.svg' style="width:400px">
 <br clear='all'>
@@ -354,7 +354,7 @@ Not yet complete!
 We are going to test a few different cases:
 
 - Note: we are *not* going test for the "new mapping" output for either `arp -a` nor reading in arp-settings.txt, as that output is not required (but it's fine if you do output that)
-- Test: that it successfully shows a conflict if an entry in arp-settings.txt conflits with `arp -a`; this was the second example, above
+- Test: that it successfully shows a conflict if an entry in arp-settings.txt conflicts with `arp -a`; this was the second example, above
   - We are just going to look for the "ARP attack" line in your output and the correct IPs and MACs
 - Test: that it updates the cache (via the "new mapping" message) when a new ARP packet (that does *not* cause a conflict) arrives
 - Test: that it monitors the network, and prints an error message when an ARP spoof packet comes in

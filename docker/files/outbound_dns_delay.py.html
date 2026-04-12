@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html lang='en'>
+<head><meta name='description' content='This page contains the source code for the docker/files/outbound_dns_delay.py file'>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="GNU source-highlight 3.1.9
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite">
+<title>Source code for docker/files/outbound_dns_delay.py (via source-highlight)</title>
+</head>
+<body bgcolor="white">
+<main><h1>Source code for docker/files/outbound_dns_delay.py (via source-highlight)</h1><pre><tt><i><font color="#9A1900">#!/usr/bin/python3</font></i>
+
+<b><font color="#000080">from</font></b> scapy<font color="#990000">.</font>all <b><font color="#000080">import</font></b> <font color="#990000">*</font>
+<b><font color="#000080">import</font></b> time<font color="#990000">,</font> threading
+
+<i><font color="#9A1900">"""</font></i>
+<i><font color="#9A1900">This program will monitor all connections across *firewall*(192.168.100.1) for</font></i>
+<i><font color="#9A1900">DNS queries and responses.  All queries are delayed (outbound) by the amount</font></i>
+<i><font color="#9A1900">in `delay_sec`.  All responses are forwarded to gateway, but the iptables</font></i>
+<i><font color="#9A1900">command, below, only intercepts those packets.  This does not affect the DNS</font></i>
+<i><font color="#9A1900">server on outer3.</font></i>
+
+<i><font color="#9A1900">The following iptables command must be run to drop the outbound packets:</font></i>
+
+<i><font color="#9A1900">iptables -I FORWARD 1 -p udp -s 192.168.100.2 --dport 53 -j DROP</font></i>
+<i><font color="#9A1900">"""</font></i>
+
+delay_sec <font color="#990000">=</font> <font color="#993399">0.5</font>
+verbose <font color="#990000">=</font> False
+
+portmap <font color="#990000">=</font> <font color="#990000">{}</font>
+
+eth0_ip <font color="#990000">=</font> <b><font color="#000000">get_if_addr</font></b><font color="#990000">(</font><font color="#DF0000">'eth0'</font><font color="#990000">)</font>
+eth1_ip <font color="#990000">=</font> <b><font color="#000000">get_if_addr</font></b><font color="#990000">(</font><font color="#DF0000">'eth1'</font><font color="#990000">)</font>
+
+<b><font color="#0000FF">def</font></b> <b><font color="#000000">send_dns_reply_to_gateway</font></b><font color="#990000">(</font>packet<font color="#990000">):</font>
+	pkt <font color="#990000">=</font> packet<font color="#990000">[</font>IP<font color="#990000">]</font>
+	<i><font color="#9A1900">#print(portmap)</font></i>
+	dport <font color="#990000">=</font> portmap<font color="#990000">[</font>pkt<font color="#990000">[</font>DNS<font color="#990000">].</font>id<font color="#990000">]</font>
+	<b><font color="#0000FF">del</font></b> portmap<font color="#990000">[</font>pkt<font color="#990000">[</font>DNS<font color="#990000">].</font>id<font color="#990000">]</font>
+	<b><font color="#0000FF">if</font></b> verbose<font color="#990000">:</font>
+		<b><font color="#0000FF">print</font></b><font color="#990000">(</font><font color="#DF0000">"inbound received:"</font><font color="#990000">,</font>pkt<font color="#990000">.</font><b><font color="#000000">summary</font></b><font color="#990000">(),</font><font color="#DF0000">"from"</font><font color="#990000">,</font>pkt<font color="#990000">[</font>IP<font color="#990000">].</font>src<font color="#990000">,</font><font color="#DF0000">"-&gt;"</font><font color="#990000">,</font>pkt<font color="#990000">[</font>IP<font color="#990000">].</font>dst<font color="#990000">,</font><font color="#DF0000">"s/dport"</font><font color="#990000">,</font>pkt<font color="#990000">[</font>UDP<font color="#990000">].</font>sport<font color="#990000">,</font>pkt<font color="#990000">[</font>UDP<font color="#990000">].</font>dport<font color="#990000">,</font><font color="#DF0000">"id/sport"</font><font color="#990000">,</font>pkt<font color="#990000">[</font>DNS<font color="#990000">].</font>id<font color="#990000">,</font>dport<font color="#990000">)</font>
+	newpkt <font color="#990000">=</font> <b><font color="#000000">IP</font></b><font color="#990000">(</font>dst<font color="#990000">=</font><font color="#DF0000">"192.168.100.2"</font><font color="#990000">,</font>src<font color="#990000">=</font><font color="#DF0000">"8.8.8.8"</font><font color="#990000">)</font> <font color="#990000">/</font> <b><font color="#000000">UDP</font></b><font color="#990000">(</font>sport<font color="#990000">=</font><font color="#993399">53</font><font color="#990000">,</font>dport<font color="#990000">=</font>dport<font color="#990000">)</font> <font color="#990000">/</font> pkt<font color="#990000">[</font>DNS<font color="#990000">]</font>
+	<b><font color="#0000FF">if</font></b> verbose<font color="#990000">:</font>
+		<b><font color="#0000FF">print</font></b><font color="#990000">(</font><font color="#DF0000">"inbound forward:"</font><font color="#990000">,</font>newpkt<font color="#990000">.</font><b><font color="#000000">summary</font></b><font color="#990000">(),</font><font color="#DF0000">"from"</font><font color="#990000">,</font>newpkt<font color="#990000">[</font>IP<font color="#990000">].</font>src<font color="#990000">,</font><font color="#DF0000">"-&gt;"</font><font color="#990000">,</font>newpkt<font color="#990000">[</font>IP<font color="#990000">].</font>dst<font color="#990000">,</font><font color="#DF0000">"dport"</font><font color="#990000">,</font>newpkt<font color="#990000">[</font>UDP<font color="#990000">].</font>dport<font color="#990000">)</font>
+	<b><font color="#000000">send</font></b><font color="#990000">(</font>newpkt<font color="#990000">,</font>iface<font color="#990000">=</font><font color="#DF0000">'eth1'</font><font color="#990000">,</font>verbose<font color="#990000">=</font><font color="#993399">0</font><font color="#990000">)</font>
+	<i><font color="#9A1900">#exit()</font></i>
+
+<b><font color="#0000FF">def</font></b> <b><font color="#000000">delay_outbound_dns</font></b><font color="#990000">(</font>packet<font color="#990000">):</font>
+	time<font color="#990000">.</font><b><font color="#000000">sleep</font></b><font color="#990000">(</font>delay_sec<font color="#990000">)</font>
+	pkt <font color="#990000">=</font> packet<font color="#990000">[</font>IP<font color="#990000">]</font>
+	<b><font color="#0000FF">if</font></b> verbose<font color="#990000">:</font>
+		<b><font color="#0000FF">print</font></b><font color="#990000">()</font>
+		<b><font color="#0000FF">print</font></b><font color="#990000">(</font><font color="#DF0000">"outbound received:"</font><font color="#990000">,</font>pkt<font color="#990000">.</font><b><font color="#000000">summary</font></b><font color="#990000">(),</font><font color="#DF0000">"from"</font><font color="#990000">,</font>pkt<font color="#990000">[</font>IP<font color="#990000">].</font>src<font color="#990000">,</font><font color="#DF0000">"-&gt;"</font><font color="#990000">,</font>pkt<font color="#990000">[</font>IP<font color="#990000">].</font>dst<font color="#990000">,</font><font color="#DF0000">"id/sport:"</font><font color="#990000">,</font>pkt<font color="#990000">[</font>DNS<font color="#990000">].</font>id<font color="#990000">,</font>pkt<font color="#990000">[</font>UDP<font color="#990000">].</font>sport<font color="#990000">)</font>
+	portmap<font color="#990000">[</font>pkt<font color="#990000">[</font>DNS<font color="#990000">].</font>id<font color="#990000">]</font> <font color="#990000">=</font> pkt<font color="#990000">[</font>UDP<font color="#990000">].</font>sport
+	<b><font color="#0000FF">del</font></b> pkt<font color="#990000">[</font>IP<font color="#990000">].</font>chksum
+	Qdsec    <font color="#990000">=</font> <b><font color="#000000">DNSQR</font></b><font color="#990000">(</font>qname<font color="#990000">=</font><font color="#DF0000">'www.virginia.edu'</font><font color="#990000">)</font> 
+	DNSpkt   <font color="#990000">=</font> <b><font color="#000000">DNS</font></b><font color="#990000">(</font>id<font color="#990000">=</font><font color="#993399">100</font><font color="#990000">,</font> qr<font color="#990000">=</font><font color="#993399">0</font><font color="#990000">,</font> qdcount<font color="#990000">=</font><font color="#993399">1</font><font color="#990000">,</font> qd<font color="#990000">=</font>Qdsec<font color="#990000">)</font>
+	newpkt <font color="#990000">=</font> <b><font color="#000000">IP</font></b><font color="#990000">(</font>dst<font color="#990000">=</font><font color="#DF0000">"8.8.8.8"</font><font color="#990000">)</font> <font color="#990000">/</font> <b><font color="#000000">UDP</font></b><font color="#990000">(</font>dport<font color="#990000">=</font><font color="#993399">53</font><font color="#990000">)</font> <font color="#990000">/</font> pkt<font color="#990000">[</font>DNS<font color="#990000">]</font>
+	<i><font color="#9A1900">#newpkt[DNS].id = 1234</font></i>
+	<b><font color="#0000FF">if</font></b> verbose<font color="#990000">:</font>
+		<b><font color="#0000FF">print</font></b><font color="#990000">(</font><font color="#DF0000">"outbound sent:"</font><font color="#990000">,</font>newpkt<font color="#990000">.</font><b><font color="#000000">summary</font></b><font color="#990000">(),</font><font color="#DF0000">"from"</font><font color="#990000">,</font>newpkt<font color="#990000">[</font>IP<font color="#990000">].</font>src<font color="#990000">,</font><font color="#DF0000">"-&gt;"</font><font color="#990000">,</font>newpkt<font color="#990000">[</font>IP<font color="#990000">].</font>dst<font color="#990000">)</font>
+	<i><font color="#9A1900">#ls(newpkt)</font></i>
+	reply <font color="#990000">=</font> <b><font color="#000000">sr1</font></b><font color="#990000">(</font>newpkt<font color="#990000">,</font>iface<font color="#990000">=</font><font color="#DF0000">'eth0'</font><font color="#990000">,</font>verbose<font color="#990000">=</font><font color="#993399">0</font><font color="#990000">)</font>
+	<b><font color="#0000FF">if</font></b> verbose<font color="#990000">:</font>
+		<b><font color="#0000FF">print</font></b><font color="#990000">(</font><font color="#DF0000">"outbound reply:"</font><font color="#990000">,</font>reply<font color="#990000">.</font><b><font color="#000000">summary</font></b><font color="#990000">(),</font><font color="#DF0000">"from"</font><font color="#990000">,</font>reply<font color="#990000">[</font>IP<font color="#990000">].</font>src<font color="#990000">,</font><font color="#DF0000">"-&gt;"</font><font color="#990000">,</font>reply<font color="#990000">[</font>IP<font color="#990000">].</font>dst<font color="#990000">)</font>
+	<i><font color="#9A1900">#exit()</font></i>
+
+<b><font color="#0000FF">def</font></b> <b><font color="#000000">run_send_dns_reply_to_gateway</font></b><font color="#990000">():</font>
+	<b><font color="#0000FF">if</font></b> verbose<font color="#990000">:</font>
+		<b><font color="#0000FF">print</font></b><font color="#990000">(</font><font color="#DF0000">"sniffing inbound"</font><font color="#990000">)</font>
+	<b><font color="#000000">sniff</font></b><font color="#990000">(</font>iface<font color="#990000">=</font><font color="#DF0000">'eth0'</font><font color="#990000">,</font>filter<font color="#990000">=</font><font color="#DF0000">"udp and dst port 53 and ip dst host "</font> <font color="#990000">+</font> eth0_ip<font color="#990000">,</font> prn<font color="#990000">=</font>send_dns_reply_to_gateway<font color="#990000">)</font>
+
+<b><font color="#0000FF">def</font></b> <b><font color="#000000">run_delay_outbound_dns</font></b><font color="#990000">():</font>
+	<b><font color="#0000FF">if</font></b> verbose<font color="#990000">:</font>
+		<b><font color="#0000FF">print</font></b><font color="#990000">(</font><font color="#DF0000">"sniffing outbound"</font><font color="#990000">)</font>
+	<b><font color="#000000">sniff</font></b><font color="#990000">(</font>iface<font color="#990000">=</font><font color="#DF0000">'eth1'</font><font color="#990000">,</font>filter<font color="#990000">=</font><font color="#DF0000">"udp and dst port 53 and ip src net 192.168.0.0/16"</font><font color="#990000">,</font> prn<font color="#990000">=</font>delay_outbound_dns<font color="#990000">)</font>
+
+threading<font color="#990000">.</font><b><font color="#000000">Thread</font></b><font color="#990000">(</font>target<font color="#990000">=</font>run_send_dns_reply_to_gateway<font color="#990000">,</font> args<font color="#990000">=(),</font> daemon<font color="#990000">=</font>True<font color="#990000">).</font><b><font color="#000000">start</font></b><font color="#990000">()</font>
+<b><font color="#000000">run_delay_outbound_dns</font></b><font color="#990000">()</font>
+</tt></pre></main>
+</body>
+</html>

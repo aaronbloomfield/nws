@@ -178,7 +178,7 @@ We are going to use the same Snort command as before, but instead of specifying 
 
 #### Slammer Worm
 
-The [SQL Slammer Worm](https://en.wikipedia.org/wiki/SQL_Slammer) was from 2003, and exploited a buffer overflow in Microsoft's SQL Server, which it used to propogate to other machines.
+The [SQL Slammer Worm](https://en.wikipedia.org/wiki/SQL_Slammer) was from 2003, and exploited a buffer overflow in Microsoft's SQL Server, which it used to propagate to other machines.
 
 The command to analyze slammer.pcap with Snort is:
 

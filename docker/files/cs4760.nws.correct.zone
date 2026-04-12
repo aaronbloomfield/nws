@@ -1,0 +1,15 @@
+; BIND zonefile for cs4760.nws: correct one for gateway
+
+$TTL    7200
+cs4760.nws.             IN      SOA     192.168.100.2. nobody.nowhere.com. (
+                                        2024032601      ; Serial
+                                        7200            ; Refresh
+                                        3600            ; Retry
+                                        604800          ; Expire
+                                        7200)           ; NegativeCacheTTL
+
+                        IN      NS      192.168.100.2.
+
+cs4760.nws.             IN      A       192.168.100.102
+www                     IN      CNAME   cs4760.nws.
+mail                    IN      A       192.168.100.102

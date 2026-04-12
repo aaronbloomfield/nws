@@ -1,17 +1,27 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>Docker Setup</title>
   <style>
-    code{white-space: pre-wrap;}
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="../../markdown.css" />
@@ -41,11 +51,9 @@
     document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
   }
   </script>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
 </head>
 <body>
+<main>
 <h1 id="docker-setup">Docker Setup</h1>
 <p><a href="../index.html">Go up to the NWS HW page</a> (<a href="../index.md">md</a>)</p>
 <h3 id="overview">Overview</h3>
@@ -168,7 +176,7 @@ $</code></pre>
 </ul></li>
 <li><code>docker build -t nws .</code>: this builds the course image for the not-intentionally vulnerable images</li>
 </ul>
-<p>One those completed, and assuming they completed successfully, you should run <code>docker images</code> again, and you will see something simnilar to the following:</p>
+<p>One those completed, and assuming they completed successfully, you should run <code>docker images</code> again, and you will see something similar to the following:</p>
 <pre><code>$ docker images
 REPOSITORY                  TAG                 IMAGE ID       CREATED        SIZE
 metasploit2                 latest              930661a2090e   4 seconds ago   1.62GB
@@ -334,5 +342,6 @@ $</code></pre>
 <p>You will be submitting an edited version of the <a href="docker.py.html">docker.py</a> (<a href="docker.py">src</a>) file. The comments therein explain what values you should fill in. We are interested in honest answers, not <a href="https://www.merriam-webster.com/dictionary/sycophantic">sycophantic</a> answers. The assignment is auto-graded, so you will get full credit as long as you fill in the values in that file correctly.</p>
 <p>That file is the only file you should submit to Gradescope.</p>
 <p>As mentioned above, if you get stuck, or are unable to proceed past a certain point, don’t panic. Try to get help from the course staff. You can also ask fellow students for this assignment. If it still does not work, still submit that file, and indicate (in the comments field therein) where you got stuck. As long as you make a sincere effort to complete this assignment, you will still get full credit.</p>
+</main>
 </body>
 </html>

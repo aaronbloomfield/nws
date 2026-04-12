@@ -6,7 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>NWS: Docker Reference</title>
   <style>
-    code{white-space: pre-wrap;}
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
@@ -51,78 +53,79 @@
   </script>
 </head>
 <body>
+<main>
 <h1 id="nws-docker-reference">NWS: Docker Reference</h1>
 <p><a href="../readme.html">Go up to the main NWS readme</a> (<a href="../readme.md">md</a>)</p>
 <h2 id="basic-docker-commands">Basic docker commands</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Command</th>
 <th>description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>docker compose up</code></td>
 <td>Run the containers</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>docker compose up -d</code></td>
 <td>Run the containers in the background</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>docker compose down</code></td>
 <td>Stop the containers</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>docker pull &lt;image&gt;</code></td>
 <td>Download or update the specified image</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>docker images</code></td>
 <td>See information on the docker images on your host</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>docker ps -a</code></td>
 <td>See what containers are running</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>docker network ls</code></td>
 <td>See the networks configured</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>docker kill &lt;cid&gt;</code></td>
 <td>Kill (stop) a container</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>docker rm &lt;cid&gt;</code></td>
 <td>Remove the (stopped) container</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>docker rmi &lt;id&gt;</code></td>
 <td>Remove a docker image</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>docker system prune</code></td>
 <td>Remove all killed containers and outdated images</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>docker exec -it &lt;cid&gt; bash</code></td>
 <td>Start a bash shell in container <code>&lt;cid&gt;</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>docker login</code></td>
 <td>Login to a another docker server, if needed</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>docker login server:5000</code></td>
 <td>Login to a another docker server, if needed</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>docker cp &lt;filename&gt; &lt;cid&gt;:/path/to/&lt;filename&gt;</code></td>
 <td>Copy file into running container</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>docker cp &lt;cid&gt;:/path/to/&lt;filename&gt; .</code></td>
 <td>Copy file from a running container into the current directory</td>
 </tr>
@@ -294,5 +297,6 @@
 <li>In WSL, you can remove the xhost permission (via <code>xhost -local:docker</code>), but it does not seem to be a security issue if you leave it as-is</li>
 <li>Exit WSL if desired</li>
 </ul>
+</main>
 </body>
 </html>

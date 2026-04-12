@@ -1,0 +1,17 @@
+; BIND zonefile for example.com
+
+$TTL    7200
+example.com.            IN      SOA     outer1. nobody.nowhere.com. (
+                                        2024031901      ; Serial
+                                        7200            ; Refresh
+                                        3600            ; Retry
+                                        604800          ; Expire
+                                        7200)           ; NegativeCacheTTL
+
+                        IN      NS      gateway.
+
+example.com.            IN      A       192.168.100.101
+www                     IN      CNAME   example.com.
+mail                    IN      A       192.168.100.101
+admin                   IN      A       192.168.100.101
+login                   IN      A       192.168.100.101

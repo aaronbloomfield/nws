@@ -1,0 +1,17 @@
+; BIND zonefile for cs4760.nws: malicious one for outer3
+
+$TTL    7200
+cs4760.nws.             IN      SOA     192.168.100.103. nobody.nowhere.com. (
+                                        2024032601      ; Serial
+                                        7200            ; Refresh
+                                        3600            ; Retry
+                                        604800          ; Expire
+                                        7200)           ; NegativeCacheTTL
+
+                        IN      NS      192.168.100.103.
+
+cs4760.nws.             IN      A       192.168.100.101
+www                     IN      CNAME   cs4760.nws.
+mail                    IN      A       192.168.100.101
+admin                   IN      A       192.168.100.101
+docs                    IN      A       192.168.100.101

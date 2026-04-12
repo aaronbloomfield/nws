@@ -6,7 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>ARP Spoofer and Detector</title>
   <style>
-    code{white-space: pre-wrap;}
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
@@ -51,6 +53,7 @@
   </script>
 </head>
 <body>
+<main>
 <h1 id="arp-spoofer-and-detector">ARP Spoofer and Detector</h1>
 <p><a href="../index.html">Go up to the NWS HW page</a> (<a href="../index.md">md</a>)</p>
 <h3 id="overview">Overview</h3>
@@ -129,7 +132,7 @@ root@outer1:/# </code></pre>
 <p>At this point, you should see the URL chosen (<code>http://google.com</code>) output by the <code>urlsnarf</code> program. There is an noticeable delay by <code>urlsnarf</code>, so it may take a while (10 seconds or so) for the URL to display.</p>
 <p>If you run <code>wget</code> on <em>outer2</em> with an <code>https://</code> command, notice that an <code>https://</code> address will <em>not</em> appear in the <code>urlsnarf</code> output – the packet is encrypted with AES, so <code>urlsnarf</code> cannot see that it’s a URL request therein.</p>
 <h4 id="mitm-arp-spoofer">MITM ARP spoofer</h4>
-<p>Next we are going to execute the MITM (in-the-middle) attack via an ARP spoof; this is <a href="../../slides/link-layer.html#/mitmarp">as shown in the slides as well</a>. We are going to ARP spoof <em>metsploit</em> via <em>outer1</em>.</p>
+<p>Next we are going to execute the MITM (in-the-middle) attack via an ARP spoof; this is <a href="../../slides/link-layer.html#/mitmarp">as shown in the slides as well</a>. We are going to ARP spoof <em>metasploit</em> via <em>outer1</em>.</p>
 <p><img src='../../docker/network_compact_for_arp_normal_metasploit.svg' style="width:400px"> <br clear='all'></p>
 <ul>
 <li>First, turn off IP forwarding: <code>echo 0 &gt; /proc/sys/net/ipv4/ip_forward</code></li>
@@ -291,7 +294,7 @@ root@outer1:/mnt# </code></pre>
 <p>We are going to test a few different cases:</p>
 <ul>
 <li>Note: we are <em>not</em> going test for the “new mapping” output for either <code>arp -a</code> nor reading in arp-settings.txt, as that output is not required (but it’s fine if you do output that)</li>
-<li>Test: that it successfully shows a conflict if an entry in arp-settings.txt conflits with <code>arp -a</code>; this was the second example, above
+<li>Test: that it successfully shows a conflict if an entry in arp-settings.txt conflicts with <code>arp -a</code>; this was the second example, above
 <ul>
 <li>We are just going to look for the “ARP attack” line in your output and the correct IPs and MACs</li>
 </ul></li>
@@ -300,5 +303,6 @@ root@outer1:/mnt# </code></pre>
 </ul>
 <h3 id="submission">Submission</h3>
 <p>You will be submitting your <code>arpDetector.py</code> file, as well as <a href="arp.py.html">arp.py</a> (<a href="arp.py">src</a>). That arp.py file describes, in the comments, what needs to be filled in.</p>
+</main>
 </body>
 </html>
