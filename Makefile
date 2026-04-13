@@ -17,5 +17,5 @@ touchall:
 	@echo wrote $@
 
 all-source-highlight:
-	custom-source-highlight.sh */*.py */*/*.py
+	custom-source-highlight.sh */*.py */*/*.py hws/*/*.js */*/*.c docker/*.sh
 	/bin/rm -f hws/maketabs.py.html

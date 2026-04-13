@@ -12,7 +12,7 @@ I realize that nobody reads these through.  So the TL;DR version:
 - Course staff: [Aaron Bloomfield](https://www.cs.virginia.edu/~asb) (aaron at virginia dot edu) and a group of amazing teaching assistants.
 - Lecture: M/W/F 10:00-10:50 in Olsson 018
 - This Canvas workspace this course uses is [here](https://canvas.its.virginia.edu/courses/72253)
-- We have a required textbook: [Internet Security: A Hands-on Approach](https://www.amazon.com/dp/1733003967) by [Wenliang Du](https://web.ecs.syr.edu/~wedu/)
+- We have a required textbook: [Internet Security: A Hands-on Approach](https://www.amazon.com/dp/1733003967) by [Wenliang Du](https://seedsecuritylabs.org/wenliangdu/)
 - One midterm, on ..., during lecture; one final, on Thursday, May 9 from 9 am to noon
 	- Due to the very late final date, there may be an alternative mechanism for the final exam grade
 - Grades are 45% homeworks, 20% midterm, 25% final exam, and 10% participation (quizzes & attendance)
