@@ -3,7 +3,7 @@ Web of Trust
 
 [Go up to the NWS HW page](../index.html) ([md](../index.md))
 
-### Overview
+## Overview
 
 How do you know who to trust? How do you know they are who they say they are? Your goal in this project is to learn about public key cryptography, gpg, verifying identities, and the web of trust. You will need to:
 
@@ -25,14 +25,14 @@ This assignment has *two* due dates:
 **Acknowledgements:** This assignment was based, with permission, on [this one](https://people.csc.ncsu.edu/whenck/csc474/f23/ex/wot.html) by [William Enck](https://www.csc.ncsu.edu/people/whenck), who derived his (with permission) from an assignment created by [Adam Doupé](https://adamdoupe.com).
 
 
-### Changelog
+## Changelog
 
 Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  <!-- So far there aren't any significant changes to report. -->
 
 - Sun, Feb 25: Updated weboftrust.py](weboftrust.py.html) ([src](weboftrust.py)), specifically the fields in the `other` and `sanity_check` dictionaries.  If you downloaded the previous version, then: change the number 30 in the `sanity_checks` dictionary to 15 (4 occurrences), and add the 2nd to last field in the new version in the `other` dictionary.
 
 
-### Part 1: Generate a GPG Key
+## Part 1: Generate a GPG Key
 
 You will need to install [GPG](https://gnupg.org), the Gnu Privacy Guard -- this is an RSA client for encrypting emails.  Installation packages can be found toward the bottom of [this page](https://gnupg.org/download/index.html); there are GUI versions for the major operating systems.  If GPG is already installed with your email client, that's fine -- you don't need to install it again.  It is also installed on the course Docker image, but you may not want to use the command-line version.
 
@@ -51,14 +51,14 @@ There are many guides for creating a GPG keypair, including information in the `
 **Important note for existing GPG users:** If your existing key is with your formal UVA email address (mst3k@virginia.edu), then you should **NOT** use that one, and creating a second key with the same exact email address causes problems.  You should add `+nws` to the end of your userid as such: `mst3k+nws@virginia.edu`.  Note that you can, in general, add anything after your username and a `+`; we are just going to use `+nws` for this assignment.
 
 
-#### -- DO NOT LOSE YOUR KEYPAIR --
+### -- DO NOT LOSE YOUR KEYPAIR --
 
 I cannot stress this enough, due to the nature of the assignment, we **cannot** and **will not** sign multiple keys for you. This may result in you getting **a zero** on the assignment. [Backup your keypair](https://www.phildev.net/pgp/gpg_moving_keys.html). Because the keypair is being used for only this assignment, it is not as critical to keep it safe as if it were your normal RSA key -- thus, you can just email the keys (both public and private) to yourself.  If you lose the key once you've uploaded it to the server, then you will not be able to finish the assignment. Every UVA student has storage in Box, and you can use that as well -- or any other mechanism to backup your keypair (including your secret key). Once your key is generated, backup your public and private key. Seriously, you've been warned.
 
-#### -- DO NOT LOSE YOUR KEYPAIR --
+### -- DO NOT LOSE YOUR KEYPAIR --
 
 
-### Part 2: Upload Your Public Key
+## Part 2: Upload Your Public Key
 
 Save your public key as a file called `mst3k.gpg`, where `mst3k` is your userid, and then upload your public key to GradeScope to the assignment "Web of Trust Upload". The server will then check to see if your public key is valid, and only if it is, the server will sign your public key with the [course's keypair](nws-key.pub), which has a fingerprint of `FDA0 7EF5 8A87 1F57 9D6D  56DA 23AD 0D8A 73E5 7217`. You should download this key, verify the fingerprint, and import it into your GPG keyring.
 
@@ -69,7 +69,7 @@ As this is signing your key, you may only upload your key **ONCE**.  The system 
 This part, along with the next part, are due by the earlier due date.
 
 
-### Part 3: Send an Email
+## Part 3: Send an Email
 
 You need to send an RSA encrypted email to the course email address, which is listed on the Canvas landing page.  In it, you should request your secret code.  Include some witty or interesting quote.  Both the request and the quote should be encrypted via GPG and the [course's keypair](nws-key.pub).
 
@@ -82,7 +82,7 @@ You will receive a response back with a code specific to your userid; this code 
 This part (just the sending of the email), and the previous part (uploading your key), are due by the earlier due date.
 
 
-### Part 4: Get Your Key Signed
+## Part 4: Get Your Key Signed
 
 Here's where the fun starts. You need to get your key signed by at least 15 of your fellow students' public keys. The signatures must be from a **valid** key in this class: How will you know?
 
@@ -96,7 +96,7 @@ There are lots of resources on the Internet that describe signing public keys. H
 That being said, the GUIs for GPG are pretty easy to use, and you probably can figure out how to sign a key by tinkering around.
 
 
-### Part 5: Sign Other Keys
+## Part 5: Sign Other Keys
 
 Using what you learned from the above, you must sign at least 15 of your fellow students' public keys. You are encourage to sign more, but only public keys valid for this class count: *How will you know?*
 
@@ -105,7 +105,7 @@ A big part of this assignment is figuring out how to determine if the key you ar
 **Note:** We will only count signatures from your **valid key** on other students' valid keys. That is, signing other students' valid keys with your adversarial key will not count towards your required number if signatures. Similarly, signing someone else's adversarial key with your valid key will not count toward your required number of signatures.
 
 
-### Grading
+## Grading
 
 **Note:** The goal of this assignment is to (1) have you send and receive a PGP encrypted email, and (2) get a feel for how hard it is to know who and what to trust.  The goal is not to have you feel annoyed or angry at your fellow students if you end up being fooled.  So the deductions for that are going to be quite small.  I want people to come away from this assignment having learned something, uncomfortable though it may be to learn how hard it is to know who to trust.  Having you come away bitter and angry at myself, this assignment, or your fellow students does not help achieve that goal.  So don't stress to much about the point deductions.
 
@@ -127,15 +127,15 @@ Note that signing one of your keys (either one) with your other key will not aff
 
 The exact amount of points will be determined at the end, once we see the results.  This is for both the deductions and the extra credit bonus.
 
-### Submission
+## Submission
 
 There are TWO submissions for this assignment, with different due dates; the second one is due a week after the first one.
 
-#### First submission
+### First submission
 
 The first is to the "Web of Trust Upload" assignment in Gradescope, which is where you upload your key created in part 1, and this submission is described in part 2.  The file should be named `mst3k.pub`, where `mst3k` is your UVA userid.  You also have to send the GPG encrypted email to the course email address.
 
-#### Second submission
+### Second submission
 
 The second is to the "Web of Trust Submission" assignment in Gradescope, where you are submitting your public key (with the 15 signatures), which you will need to export into a `mst3k.pub` file.
 

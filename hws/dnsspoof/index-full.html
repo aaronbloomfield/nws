@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
@@ -34,7 +34,7 @@
     }
     @media print {
     pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
     }
     pre.numberSource code
       { counter-reset: source-line 0; }
@@ -115,12 +115,13 @@
   </script>
 </head>
 <body>
+<main>
 <h1 id="dns-spoofing">DNS Spoofing</h1>
 <p><a href="../index.html">Go up to the NWS HW page</a> (<a href="../index.md">md</a>)</p>
-<h3 id="overview">Overview</h3>
+<h2 id="overview">Overview</h2>
 <p>In this assignment you will be writing a number of DNS spoofs using Scapy. You will need to be familiar with the <a href="../../slides/dns.html#/attacks">DNS section of the slides</a>. Your code will be based on the examples in the <a href="https://www.amazon.com/dp/1733003967">text book</a> starting at Listing 10.3 on pages 240-241. If your text book is “unavailable”, you can see that code online <a href="https://github.com/kevin-w-du/BookCode/blob/master/DNS/">here</a> as well as the <a href="../../slides/dns.html#/attacks">DNS section of the slides</a>.</p>
 <p>You will be submitting three source code files as well as an edited version of <a href="dnsspoof.py.html">dnsspoof.py</a> (<a href="dnsspoof.py">src</a>).</p>
-<h3 id="changelog">Changelog</h3>
+<h2 id="changelog">Changelog</h2>
 <p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. <!-- So far there aren't any significant changes to report. --></p>
 <ul>
 <li>Mon, 4/1: Clarifications:
@@ -130,13 +131,13 @@
 </ul></li>
 <li>Fri, 3/29: Added the Troubleshooting tab</li>
 </ul>
-<h3 id="troubleshooting">Troubleshooting</h3>
+<h2 id="troubleshooting">Troubleshooting</h2>
 <p>There are two main areas where people are having issues.</p>
-<h4 id="wsl-users">WSL Users</h4>
+<h3 id="wsl-users">WSL Users</h3>
 <p>If your host operating system is Windows, and you are running Docker through WSL, the <code>tc</code> command, described below, does not work. There is another command for you to use, also described below.</p>
-<h4 id="network-access">Network access</h4>
+<h3 id="network-access">Network access</h3>
 <p>The Docker containers pull a configuration program from the Internet when they start up – you can see this toward the end of the <code>nws-exec.sh</code> script that is used to initialize the Docker containers. If your host is not connected to the Internet, or there is a connection blip when the containers are starting, this configuration file will not download properly. This is uncommon, but we’ve seen it a few times. Restart your containers, once connected to the Internet, to fix this.</p>
-<h4 id="docker-network-issues">Docker network issues</h4>
+<h3 id="docker-network-issues">Docker network issues</h3>
 <p>Docker does not always bring up the networks correctly. This seems like an intermittent problem, and it is unclear why it has started happening lately when we have not changed our configuration since the start of the semester.. The best solution we have found is to restart the containers; run <code>docker system prune -f</code> before you bring them up again.</p>
 <p>There are a number of signs that the networks have not been brought up correctly (other than your program not working, but ideally you will determine the network issues before you get to that point).</p>
 <p>If you bring up the Docker containers with <code>docker compose up</code> (or <code>docker-compose up</code>) – specifically without the <code>-d</code> parameter – you will see status output. Seeing any of the following messages, in the <code>docker compose up</code> output, indicates that the networks were not brought up correctly</p>
@@ -153,9 +154,9 @@
 <li>Ensure that <em>gateway</em> has all three NICs (eth0, eth1, and eth2) via running <code>ifconfig</code> (note you’ll also see <code>lo</code> as NIC as well in that list)</li>
 </ul>
 <p>Lastly, we’ve found that occasionally the DNS would randomly decide to stop working. Restarting the Docker containers fixed this issue.</p>
-<h3 id="docker-setup">Docker setup</h3>
+<h2 id="docker-setup">Docker setup</h2>
 <p>This assignment is intended to be run in the course Docker setup.</p>
-<h4 id="container-roles">Container roles</h4>
+<h3 id="container-roles">Container roles</h3>
 <p>Many of the Docker containers have been assigned roles for this assignment:</p>
 <ul>
 <li><em>gateway</em> is the DNS server that all the containers use. If it does not know the answer, it will query 8.8.8.8 (Google’s DNS server). It is not a malicious nameserver. It will resolve cs4760.nws and mail.cs4760.nws to outer2, and sketchyurl.nws to outer1.</li>
@@ -165,7 +166,7 @@
 <li><em>firewall</em> does not host any servers, but it is where the network slow-down command (see below) must be run from.</li>
 <li><em>inner</em> is where all the DNS queries must originate from.</li>
 </ul>
-<h4 id="configuration">Configuration</h4>
+<h3 id="configuration">Configuration</h3>
 <p>The docker containers are configured up for this lab. Note that you will have to restart the containers if you have not done so since the assignment was released, as the containers get their updated configuration when they start.</p>
 <p>The <em>gateway</em> container is configured as a DNS server. The server is named bind (or bind9, as it’s the 9th version of bind) of the popular <a href="https://en.wikipedia.org/wiki/BIND">BIND</a> DNS server. However, the <em>process</em> that runs on the computer is called <code>named</code> (name daemon).</p>
 <p>We have set up a new top-level domain for this assignment, called .nws. This TLD was chosen because it’s the acronym for this class, and because as it does not exist on the Internet, there will never be any conflict with a real TLD or domain. It’s not really a TLD – there are no TLD nameservers handling this – but our DNS server will resolve a few URLs that end in .nws to the IP addresses that we specify.</p>
@@ -194,7 +195,7 @@ cs4760.nws.             IN      A       192.168.100.102
 www                     IN      CNAME   cs4760.nws.
 mail                    IN      A       192.168.100.102</code></pre>
 <p>This gives the IP for cs4760.nws on the second to last line. The IP address at the top (192.168.100.2) is the address of the nameserver. The cache time (TTL or time-to-live) is 7200, also at the top. Lastly, www.cs4760.nws will resolve to the same IP address as cs4760.nws, as indicated on the last line.</p>
-<h4 id="using-the-dns">Using the DNS</h4>
+<h3 id="using-the-dns">Using the DNS</h3>
 <p>As the <em>gateway</em> container is running the DNS server, all the other containers use that as the DNS server:</p>
 <pre><code>root@outer1:~# cat /etc/resolv.conf 
 nameserver 192.168.100.2
@@ -215,7 +216,7 @@ PORT   STATE SERVICE
 
 Nmap done: 1 IP address (1 host up) scanned in 0.08 seconds
 root@firewall:~# </code></pre>
-<h4 id="dns-resolution">DNS resolution</h4>
+<h3 id="dns-resolution">DNS resolution</h3>
 <p>We can verify that cs4760.nws resolves to outer2:</p>
 <pre><code>root@gateway:~# nslookup cs4760.nws
 Server:     127.0.0.1
@@ -235,7 +236,7 @@ PING cs4760.nws (192.168.100.102) 56(84) bytes of data.
 1 packets transmitted, 1 received, 0% packet loss, time 0ms
 rtt min/avg/max/mdev = 0.086/0.086/0.086/0.000 ms
 root@gateway:~# </code></pre>
-<h4 id="apache2-web-server">Apache2 web server</h4>
+<h3 id="apache2-web-server">Apache2 web server</h3>
 <p>Both of those containers (<em>outer1</em> and <em>outer2</em>) have the Apache web server configured to respond to the appropriate domain, and it responds differently if you try to access http://outer2 versus http://cs4760.nws. You can view this if you load up Firefox (you’ll have to have the GUI enabled), or via the <code>lynx</code> command-line tool:</p>
 <pre><code>root@gateway:~# lynx --dump --nolist http://outer2
    Ubuntu Logo
@@ -251,15 +252,15 @@ root@gateway:~# lynx --dump --nolist http://cs4760.nws
 root@gateway:~# </code></pre>
 <p>Note that the output for the first command was much longer, but was truncated from what is shown above.</p>
 <p>The <em>outer1</em> container responds to a few different domains web page requests; we’ll use that in the DNS spoofing section, below.</p>
-<h3 id="local-dns-spoof">Local DNS Spoof</h3>
+<h2 id="local-dns-spoof">Local DNS Spoof</h2>
 <p>This part will be submitted as <code>dns_spoof_host.py</code>.</p>
-<h4 id="overview-1">Overview</h4>
+<h3 id="overview-1">Overview</h3>
 <p>We are going to create our first DNS spoof. Consider our Docker network setup:</p>
 <p><img src='../../docker/network_compact_for_dns.svg' style="width:800px"></p>
 <p>If <em>inner</em> makes a DNS request, it will go over the innernet network to <em>gateway</em>. We are going to sniff this packet, and give a spoofed response with the incorrect IP address. Our DNS spoof program will run on <em>gateway</em>, and the request will come from <em>inner</em>. We will spoof the domain example.com, and redirect it to <em>outer1</em>.</p>
 <p>This section is a local attack – the spoofing program has to either be on the user’s machine (here, <em>inner</em>) or the machine running the DNS server (here, <em>gateway</em>). We choose to run it on <em>gateway</em>. This is listening to <em>gateway</em>’s eth0 interface, which is colored green in the image above.</p>
 <p>Our DNS spoof will look for any request for the IP address of example.com, and return the IP address of <em>outer1</em> (192.168.100.101).</p>
-<h4 id="source-code">Source Code</h4>
+<h3 id="source-code">Source Code</h3>
 <p>We’ll start with the following source code; this is contained in <a href="dns_spoof_template.py.html">dns_spoof_template.py</a> (<a href="dns_spoof_template.py">src</a>). The code is the following:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scapy.<span class="bu">all</span> <span class="im">import</span> <span class="op">*</span></span>
@@ -280,7 +281,7 @@ root@gateway:~# </code></pre>
 <span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>myFilter <span class="op">=</span> <span class="st">&quot;...&quot;</span> <span class="co"># Set the filter</span></span>
 <span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>pkt<span class="op">=</span>sniff(iface<span class="op">=</span><span class="st">&#39;eth0&#39;</span>, <span class="bu">filter</span><span class="op">=</span>myFilter, prn<span class="op">=</span>spoof_dns)</span></code></pre></div>
 <p>The above code is based on what is in the textbook as well as the slides, but some modifications have been made for this assignment. For now, be sure to keep the interface above (<code>eth0</code>) the same! You will have to fill in all the ellipsis (<code>...</code>) parts. If a line is not needed for a given part of this homework, you can of course comment it out.</p>
-<h4 id="scapy">Scapy</h4>
+<h3 id="scapy">Scapy</h3>
 <p>If you just try to guess the parameters without understanding them, or try to cut-and-paste from the textbook or the slides, you are just going to run into a lot of frustration. You will need to understand the parameters passed into the <code>DNSRR()</code> function call.</p>
 <p>When using Scapy, we can call the <code>ls()</code> function to list the various parameters available for both a DNS packet (<code>DNS()</code>) and a DNS record (<code>DNSRR()</code>):</p>
 <pre><code>$ python3
@@ -347,7 +348,7 @@ rdata      : MultipleTypeField (IPField, IP6Field, DNSStrField, DNSTextField, St
 <p>One first has to create the various DNS record parts of the DNS response. These parts are created via the <code>DNSRR()</code> function call. All <code>DNSRR()</code> calls will include the <code>rrname</code>, <code>type</code>, <code>rdata</code>, and <code>ttl</code> parameters.</p>
 <p>Once the records are created, one must create the DNS packet that contains these records, via the <code>DNS()</code> function call. Required parameters to <code>DNS()</code> include <code>id</code>, <code>aa</code>, <code>rd</code>, <code>qr</code>, and <code>qd</code>. In addition, at least one section (Answer, Authority) must be included, and possibly the Additional section. For each section, you have to specify the number of records being included (<code>ancount</code>, <code>nscount</code>, or <code>arcount</code>, respectively) and those records (<code>an</code>, <code>an</code>, or <code>ar</code>, respectively). Recall that you compose multiple records of the same type via the <code>/</code> operator, as shown above.</p>
 <p><em>Important:</em> If you change the number of records (answer, authority, or additional), you also have to change the respective count variables.</p>
-<h4 id="testing">Testing</h4>
+<h3 id="testing">Testing</h3>
 <p>If you want to view DNS packets, you can run <code>tcpdump -i eth0 -n "src port 53 or dst port 53"</code>. Be sure to set the interface to the correct one for whatever host you are running this on.</p>
 <p>As the intent is to cause a DNS lookup for example.com to resolve to outer1’s address (192.168.100.101), we want to use <code>nslookup</code> (or similar) to test this.</p>
 <p>Your DNS spoofing programs – both for this part and all future parts – will run on <em>gateway</em>. This part is spoofing the IP address of example.com by listening on the eth0 interface, which is colored green in the image.</p>
@@ -379,7 +380,7 @@ root@inner:~# </code></pre>
 <pre><code>;; communications error to 192.168.200.1#53: timed out
 ** server can&#39;t find example.com: SERVFAIL</code></pre>
 <p>As long as you get the <code>Address: 192.168.100.101</code> line, you don’t have to worry about those error lines (it has to do with how we are causing the network delay on some of the platforms).</p>
-<h4 id="the-spoof-doesnt-work">The spoof doesn’t work</h4>
+<h3 id="the-spoof-doesnt-work">The spoof doesn’t work</h3>
 <p>There are two reasons for this – the first is that you may not be sending the correct packet. You can see the DNS traffic (requests and such) via the <code>tcpdump</code> command. But note that the spoof packet you send will NOT appear via <code>tcpdump</code> – you will have to print it out in your program (via <code>ls(pkt)</code>).</p>
 <p>The other problem is that the actual DNS response comes back very fast – faster than Scapy can send a spoof. In order to solve this, we are going to do is slow down the speed which <em>firewall</em> sends out the request to the upstream DNS server (recall that all connections from <em>gateway</em> go through <em>firewall</em>). Actually, we are going to slow down <em>all</em> Internet bound traffic leaving from <em>firewall</em>. This part only has to be run once.</p>
 <p>To fix this, we will enable a delay on <em>firewall</em>. If your host operating system is either Mac OS X or Linux, you should run on <em>firewall</em>:</p>
@@ -392,7 +393,7 @@ root@inner:~# </code></pre>
 <pre><code>root@gateway:~# tc qdisc show dev eth0
 qdisc netem 8005: root refcnt 13 limit 1000 delay 500ms
 root@gateway:~# </code></pre>
-<h4 id="but-it-only-works-the-first-time">But it only works the first time</h4>
+<h3 id="but-it-only-works-the-first-time">But it only works the first time</h3>
 <p>You may find that your spoof only works for the first query after you run <code>dns_spoof.py</code>:</p>
 <pre><code>root@inner:~# nslookup example.com
 Server:     192.168.200.1
@@ -416,7 +417,7 @@ Address: 2606:2800:220:1:248:1893:25c8:1946
 root@inner:~# </code></pre>
 <p>This has to do with caching issues that are beyond our ability to control. Although we are able to tell <em>inner</em> that it’s a different IP address, the real reply comes in (usually) a bit later to the <em>gateway</em> DNS server, so the gateway DNS server now has the real cached value. For the second request, when the next request for resolving example.com is sent to the <em>gateway</em> DNS server, since it’s in cache, the response is faster than Scapy can send the spoof. If we were to have implemented this in C, we could have beat the DNS response.</p>
 <p>To solve this, we will flush the DNS cache on <em>gateway</em>. This will force the next DNS request for example.com to be sent out to the Internet, rather than the answer being in cache. And that request will be slowed down by the <code>tc</code> command run on <em>firewall</em>, above. Note that you will have to do this flush command <em>each time</em> you are going to re-run your test. The command to do that is <code>rndc flush</code>.</p>
-<h4 id="web-server-output">Web server output</h4>
+<h3 id="web-server-output">Web server output</h3>
 <p>If you are <em>not</em> running the spoof program, you can see the web page output from the real example.com:</p>
 <pre><code>root@inner:/# lynx --dump --nolist http://example.com
 Example Domain
@@ -437,7 +438,7 @@ root@inner:/# </code></pre>
 root@inner:~# </code></pre>
 <p>On <em>gateway</em>, you will get output such as the following (your DNS ID will be different, and you may get multiple lines like that):</p>
 <pre><code> 192.168.200.3 --&gt; 192.168.200.1: 65517</code></pre>
-<h4 id="grading">Grading</h4>
+<h3 id="grading">Grading</h3>
 <p>One test we will run is the following; note that we will run other tests as well. All tests are on the course Docker setup. They should be run in the order listed.</p>
 <ul>
 <li>On <em>firewall</em>:
@@ -470,19 +471,19 @@ Address: 192.168.100.101
 
 root@inner:/# </code></pre>
 <p>If we run <code>rndc dumpdb -cache</code> on <em>gateway</em>, then view the cache file output (<code>/var/cache/bind/named_dump.db</code>), we would expect to see the actual IP address of example.com (93.184.216.34), not the spoofed address (192.168.100.101).</p>
-<h4 id="implications">Implications</h4>
+<h3 id="implications">Implications</h3>
 <p>Notice how easy it was for anybody on that machine to spoof a DNS query. One needs root access to the machine (Scapy can’t send the packets otherwise), but this was a short Python program to accomplish this.</p>
 <p>However, notice that if you stop the dns_spoof.py program, and then do <code>nslookup example.com</code> on <em>outer1</em>, it will return to the correct IP address. Partly this is because the Docker containers do not seem to cache any DNS entries themselves, and always query the nameserver. Outside Docker, we still would have lots of situations where the DNS nameserver queries are repeated often.</p>
-<h3 id="dns-cache-poisoning">DNS Cache Poisoning</h3>
+<h2 id="dns-cache-poisoning">DNS Cache Poisoning</h2>
 <p>This part will be submitted as <code>dns_poison.py</code>. It likely is just a minor change from the previous program.</p>
-<h4 id="overview-2">Overview</h4>
+<h3 id="overview-2">Overview</h3>
 <p>The previous attack only changed a single DNS reply, and that reply was only sent to the local user’s machine. The DNS server running on <em>gateway</em> got an actual correct response and cached it, but the spoofed response was sent to <em>outer1</em> before the DNS server on <em>gateway</em> could send the correct response.</p>
 <p>A better way to create an incorrect DNS entry is to have the response that the DNS server receives be the spoofed response. The DNS server will cache this incorrect value, and then feed it to any host (here, <em>inner</em>) for any future request. This is called <em>DNS Cache Poisoning</em>.</p>
 <p>Consider our Docker network setup:</p>
 <p><img src='../../docker/network_compact_for_dns.svg' style="width:800px"></p>
 <p>Previously our spoof on <em>gateway</em> listed to eth0, which is the green link in the image above. We are now going to listen to eth2, which is the blue link in the image above.</p>
 <p>You are going to copy your program from the previous section (<code>dns_spoof.py</code>) to <code>dns_poison.py</code>, and modify that program to perform DNS cache poisoning. The only change is to change the interface. Previously we spoofed a packet on eth0, which is how <em>gateway</em> communicates with <em>inner</em>. Now we are going to spoof a packet on <em>eth2</em>, as that is how a DNS response from the Internet comes back to the DNS server on <em>gateway</em>.</p>
-<h4 id="dns-cache">DNS Cache</h4>
+<h3 id="dns-cache">DNS Cache</h3>
 <p>To get this program working, we are going to have to flush the DNS cache on <em>gateway</em> between each test run. To do so, we enter: <code>rndc flush</code>.</p>
 <p>To view the cache, we enter <code>rndc dumpdb -cache</code>. This stores the DNS cache in the file <code>/var/cache/bind/named_dump.db</code>. If you run both of those commands (flush then dumpdb), then view the <code>/var/cache/bind/named_dump.db</code> file, you will see there is not much there. Most of the lines start with a semi-colon (<code>;</code>), which is a comment line. There are three (or so) files that list the date. And that’s it.</p>
 <p>Be sure your DNS spoof program is <em>not</em> running. Run <code>nslookup example.com</code>, then save the cache (<code>rndc dumpdb -cache</code>) and view the file (<code>/var/cache/bind/named_dump.db</code>). Now there is a lot there – you’ll see sections for the IP addresses of the root nameservers (<code>a.root-servers.net</code>, etc.), for the .com TLD nameservers (<code>a.gtld-servers.net</code>, etc.), and so on. If you search for “example.com” (if you are viewing it via <code>more /var/cache/bind/named_dump.db</code>, press the forward slash key (<code>/</code>) to start a search, then type “example.com”, then hit Enter), you will see this section:</p>
@@ -501,19 +502,19 @@ example.com.      172714   NS a.iana-servers.net.
          259114   A  192.168.100.101
 root@gateway:/#</code></pre>
 <p>Now the incorrect IP address is in the DNS cache of <em>gateway</em>. To show this, stop your dns_poison.py program, and run <code>nslookup example.com</code> from <em>gateway</em>, and you should get the IP address for <em>outer1</em> (192.168.100.101).</p>
-<h4 id="hints">Hints</h4>
+<h3 id="hints">Hints</h3>
 <p>Recall that if you want to view DNS packets, you can run <code>tcpdump -i eth0 -n "dst port 53"</code> on <em>gateway</em>.</p>
 <p>The first DNS query has a lot of work to do – it has to get the root name servers, the TLD nameservers, etc. This will cause there to be multiple DNS queries sent, and if you are running <code>tcpdump</code>, you will see a <em>lot</em> of output. We found it was easier, after flushing the cache, to run <code>nslookup</code> on some other .com domain – this will load the root nameservers and the TLD nameservers. Then run <code>nslookup example.com</code> to see how well everything is working.</p>
 <p>If it is not in effect, you may have to enact the delay on <em>firewall</em>’s Internet connection via: <code>tc qdisc add dev eth0 root netem delay 500ms</code>.</p>
-<h4 id="grading-1">Grading</h4>
+<h3 id="grading-1">Grading</h3>
 <p>The grading procedure will be just like the previous section. We would expect the following differences:</p>
 <ul>
 <li>When viewing the cache on <em>gateway</em>, the incorrect IP address is entered (in the previous section it was the correct IP)</li>
 <li>If the <code>dns_poison.py</code> program is terminated, <code>nslookup example.com</code> from <em>inner</em> should still get the incorrect IP address.</li>
 </ul>
-<h3 id="spoofing-ns-records">Spoofing NS records</h3>
+<h2 id="spoofing-ns-records">Spoofing NS records</h2>
 <p>This part will be submitted as <code>dns_poison_ns.py</code>.</p>
-<h4 id="overview-3">Overview</h4>
+<h3 id="overview-3">Overview</h3>
 <p>So far we have spoofed a single domain – example.com. It is often the case that, once a person visits a website, they often go to a subdomain – mail.example.com, docs.example.com, api.example.com, and so on (none of those sub-domains actually exist). Having to spoof each of those is a chore, but it turns out there is another way to do it.</p>
 <p>When the DNS record was returned in the previous example, it included the answer for the query (example.com). We can also include an <em>authority</em> section, which is the nameserver to be used for any sub-domain. If we can return the IP address of a malicious nameserver, then we can continue to provide incorrect IPs for any successive sub-domain DNS query.</p>
 <p>Without any spoof programs running, we can view the actual mail.example.com website:</p>
@@ -523,7 +524,7 @@ root@gateway:/#</code></pre>
    Coming soon.
 root@inner:/# </code></pre>
 <p>Our attack is going to cause the above command (<code>lynx --dump --nolist mail.example.com</code>) to view a malicious website.</p>
-<h4 id="malicious-nameserver">Malicious nameserver</h4>
+<h3 id="malicious-nameserver">Malicious nameserver</h3>
 <p>It turns out that there is also a DNS server running on <em>outer3</em>. This is a “malicious” DNS server, and will resolve mail.example.com to <em>outer1</em>:</p>
 <pre><code>root@gateway:/# dig @outer3 mail.example.com
 
@@ -559,7 +560,7 @@ root@gateway:/# </code></pre>
    Imagine a fake webmail interface here...
 root@inner:/# </code></pre>
 <p>The above is the goal of this part. The web server on <em>outer1</em> is all configured; we just have to manage the spoofed DNS mapping.</p>
-<h4 id="authority-section">Authority section</h4>
+<h3 id="authority-section">Authority section</h3>
 <p>As before, the DNS request will be for example.com. In the response, in addition to providing the spoofed IP address (192.168.100.101), we will also declare a nameserver for all example.com sub-domains. That nameserver, which we will call <code>ns.example.com</code> will have the same IP address as <em>outer3</em> (i.e., 192.168.100.103).</p>
 <p>The attack will work as follows:</p>
 <ul>
@@ -574,9 +575,9 @@ root@inner:/# </code></pre>
 <li>We query for mail.example.com, and that returns the IP address for <em>outer1</em> (192.168.100.101)</li>
 </ul>
 <p>For details how to create the Authority and Additional section, see the lecture slides or the textbook.</p>
-<h3 id="command-summary">Command Summary</h3>
+<h2 id="command-summary">Command Summary</h2>
 <p>This is a list of the various commands provided throughout this assignment, all collected here for easy reference.</p>
-<h4 id="dns-resolution-1">DNS Resolution</h4>
+<h3 id="dns-resolution-1">DNS Resolution</h3>
 <ul>
 <li><p>To see a quick DNS resolution of a host:</p>
 <pre><code>nslookup example.com</code></pre></li>
@@ -585,7 +586,7 @@ root@inner:/# </code></pre>
 <li><p>To see detailed information for how a specific nameserver, such as <em>outer3</em>, resolves a domain:</p>
 <pre><code>dig @outer3 mail.example.com</code></pre></li>
 </ul>
-<h4 id="internet-connection-slowing">Internet connection slowing</h4>
+<h3 id="internet-connection-slowing">Internet connection slowing</h3>
 <ul>
 <li><p>To slow down the Internet connection on <em>firewall</em>:</p>
 <pre><code>tc qdisc add dev eth0 root netem delay 500ms</code></pre>
@@ -598,7 +599,7 @@ root@inner:/# </code></pre>
 <li><p>To check the slowdown in effect on <em>firewall</em> (this only has to be done once, unless you restart the containers):</p>
 <pre><code>tc qdisc show dev eth0</code></pre></li>
 </ul>
-<h4 id="dns-cache-management-on-gateway">DNS cache management on <em>gateway</em></h4>
+<h3 id="dns-cache-management-on-gateway">DNS cache management on <em>gateway</em></h3>
 <ul>
 <li><p>To flush the DNS cache:</p>
 <pre><code>rndc flush</code></pre></li>
@@ -609,7 +610,7 @@ cat /var/cache/bind/named_dump.db</code></pre></li>
 <pre><code>rndc dumpdb -cache
 grep -A 5 ^example.com /var/cache/bind/named_dump.db</code></pre></li>
 </ul>
-<h4 id="viewing-websites-or-network-packets">Viewing websites or network packets</h4>
+<h3 id="viewing-websites-or-network-packets">Viewing websites or network packets</h3>
 <ul>
 <li><p>To get a text-based version of a website, used for testing DNS resolution, you can use:</p>
 <pre><code>lynx --dump --nolist http://outer2
@@ -617,7 +618,8 @@ lynx --dump --nolist http://example.com</code></pre></li>
 <li><p>A <code>tcpdump</code> command to show all the DNS packets on <code>eth0</code>:</p>
 <pre><code>tcpdump -i eth0 -n &quot;udp and (src port 53 or dst port 53)&quot; &amp;</code></pre></li>
 </ul>
-<h3 id="submission">Submission</h3>
+<h2 id="submission">Submission</h2>
 <p>You will be submitting your source code code file (<code>dns_spoof_host.py</code>, <code>dns_poison.py</code>, and <code>dns_poison_ns.py</code>), as well as an edited version of <a href="dnsspoof.py.html">dnsspoof.py</a> (<a href="dnsspoof.py">src</a>). Note that Gradescope cannot fully test this code upon submission.</p>
+</main>
 </body>
 </html>

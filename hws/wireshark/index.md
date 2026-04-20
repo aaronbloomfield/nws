@@ -3,7 +3,7 @@ Wireshark
 
 [Go up to the NWS HW page](../index.html) ([md](../index.md))
 
-### Overview
+## Overview
 
 We have seen multiple ways to capture network packets: we can: listen in on the wired network connection, observe the WiFi traffic, execute an in-the-middle attack using a USB Pineapple, ARP spoof, send router redirects, or just run a Scapy Python program.  Now that we can observe packets, we are going to start capturing them and analyzing them.
 
@@ -12,12 +12,12 @@ In this assignment you will be analyzing network traffic through Wireshark.  You
 You will be submitting an edited version of [wireshark.py](wireshark.py.html) ([src](wireshark.py)).
 
 
-### Changelog
+## Changelog
 
 Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  So far there aren't any significant changes to report.
 
 
-### Basic Analysis
+## Basic Analysis
 
 Most network analysis comes from saved pcap files.  A program, such as tcpdump, will save the file, and then it is analyzed later.  In this section, we will walk you through how to analyze a saved pcap file.
 
@@ -47,7 +47,7 @@ To start this analysis, we are going to analyze a few separate network connectio
 - Lastly, notice that the packets have a coloring scheme.  You can see that scheme via View -> Coloring Rules.  You don't have to have these all memorized, just know that the different colors indicate some of the properties of the packets.
 	- Question 10: what is the background color (not the font color) of packets that are a bad TCP packet?
 
-### Advanced Analysis
+## Advanced Analysis
 
 Having just seen the basics of pcap analysis, we are going to look at a more advanced analysis of a pcap file.  You are *not* expected to be able to do this analysis after completing this assignment (although if you can, great!).  But you are expected to understand each step, even if you would not have come up with the various steps yourself.
 
@@ -83,7 +83,7 @@ Again, you are not expected to be able to do this part on your own -- that requi
 
 
 
-### Live Capture
+## Live Capture
 
 Uh-oh, it looks like there is some malware on the *inner* container.  We don't know much about it, so you have to figure out what is up and let us know.  This file seems to send network traffic, but not much else.  It's been quarantined, and the executable is `/usr/bin/run_malware`, so you can just run it via `run_malware`; it is not running by default.  You can type "quit" at any time to cause it to exit.  If that file is not there, try restarting your Docker containers (`docker compose down` followed by `docker compose up -d`).
 
@@ -95,12 +95,12 @@ You will put your findings in [wireshark.py](wireshark.py.html) ([src](wireshark
 
 Wireshark warning: when capturing live network traffic, the network packets are saved to memory.   You can restart the capture via the toolbar icon (the green shark fin) -- this removes from memory all the captured packets so far.  If you leave it running for too long while capturing network packets, it may fill up your computer's memory, causing slowdown or halting the system.  The `run_malware` program creates around 1 Mb of data every 10 minutes, so it is not likely to be a problem, unless you leave it running overnight or for a very long time.  But be aware that if you are on a busy network, it will fill up fast.
 
-#### Important Mac host note
+### Important Mac host note
 
 Mac users ***MUST*** run Wireshark on *gateway*, ***NOT*** on *inner*.  The way that Mac hosts run GUIs is to send the display information over the Docker network.  If you run Wireshark on *inner*, you will see all of your display traffic in addition to the traffic that you are trying to analyze -- and there is *much* more display traffic.  If you run Wireshark on *gateway*, then the display traffic goes directly to *firewall* (via *outernet*), and you can monitor *gateway's* interface to *inner* (eth0), which will have all the `run_malware` traffic from *inner*, but none of the display traffic.
 
 
-### Saving pcaps
+## Saving pcaps
 
 <a href='wireshark-dialog.webp'><img src='wireshark-dialog.webp' style="width:600px;float:right;padding-left:20px"></a>
 
@@ -112,7 +112,7 @@ The capture should be saved to `capture.pcap`.
 
 <br clear='all'>
 
-### Submission
+## Submission
 
 You will be submitting an edited version of [wireshark.py](wireshark.py.html) ([src](wireshark.py)) as well as your `capture.pcap` file.
 

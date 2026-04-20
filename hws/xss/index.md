@@ -3,7 +3,7 @@ Cross-Site Scripting (XSS) Attack
 
 [Go up to the NWS HW page](../index.html) ([md](../index.md))
 
-### Overview
+## Overview
 
 In this assignment you will perform a series of cross-site scripting (XSS) attacks.  The assignment is to complete all six levels at [https://xss-game.appspot.com/](https://xss-game.appspot.com/).  You may use the hints that are provided on that site, but you may not look up answers elsewhere.
 
@@ -19,7 +19,7 @@ alert("If you see this, you have successfully completed level 6");
 
 **NOTE:** The XSS web page apparently does not work correctly in Chrome, so please use a different browser.
 
-### Changelog
+## Changelog
 
 Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  <!-- So far there aren't any significant changes to report. -->
 
@@ -27,7 +27,7 @@ Any changes to this page will be put here for easy reference.  Typo fixes and mi
 
 
 
-### Submission
+## Submission
 
 You will be submitting and edited version of [xss.py](xss.py.html) ([src](xss.py)).
 

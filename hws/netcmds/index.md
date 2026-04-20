@@ -3,7 +3,7 @@ Network Command Introduction
 
 [Go up to the NWS HW page](../index.html) ([md](../index.md))
 
-### Overview
+## Overview
 
 This assignment is a tutorial about various network commands on a Linux system.  It is different than the [Linux tutorial](../linux/index.html) ([md](../linux/index.md)) assignment -- that assignment went over the basics of how to use Linux, whereas this tutorial goes over how to use commands that are specific to interacting with the network.  This assignment does not go over Docker commands, which are instead presented in the [Docker configuration assignment](../docker/index.html) ([md](../docker/index.md)).
 
@@ -21,15 +21,15 @@ For all the commands below, there is a manual page.  Normally, you could run `ma
 
 All of these commands are available for all operating systems.  However, many may not be installed on your host system.  They are all installed on the course Docker setup.
 
-### Changelog
+## Changelog
 
 Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  So far there aren't any significant changes to report.
 
-### ssh and telnet
+## ssh and telnet
 
 ssh, for Secure Shell, is a way to connect to another host.  telnet is the same idea as ssh, but does not use encryption of any sort.  ssh uses TLS encryption for the entire session.
 
-#### Basic ssh
+### Basic ssh
 
 To connect to a different host, you can use the `ssh` command.  Note that to connect to a container for the first time, we use `docker exec`.  But once within the containers, we can use `ssh` to connect to the other containers.
 
@@ -55,7 +55,7 @@ $
 
 A lot more output was displayed in the actual run, but that was removed in what was shown above, and replaced with `...`.
 
-#### Connecting to `metasploit`
+### Connecting to `metasploit`
 
 If you connect to the `metasploit` container, you will notice that it asks for a password:
 
@@ -75,12 +75,12 @@ The password is just `password`.  This will log you in as `root`; you can also l
 The containers *other* than metasploit are configured to not require public key authentication (see [here](https://dev.to/gvelrajan/how-to-configure-and-setup-ssh-certificates-for-ssh-authentication-b52) if you want to set this up on your own machine).  But the metasploit container is such an old version of ssh that it cannot deal with the more recent types of public keys that the ssh currently uses.
 
 
-#### More typical ssh usage
+### More typical ssh usage
 
 Normally, you would have to enter the username and the full hostname as well, such as `ssh mst3k@portal.cs.virginia.edu`.  On the course docker configuration, all the hostnames are already defined (see them via `more /etc/hosts`).  If you do not specify a username, it assumes the same username that you are using.  When you connect via `docker exec`, you are the `root` user, so it assumes you want to connect to those hosts as the `root` user as well.
 
 
-#### ssh'ing *into* the containers
+### ssh'ing *into* the containers
 
 In addition to connecting to a container via `docker exec`, we can also ssh *into* the containers.  If you run `docker ps -a`, you will see this (among other running containers):
 
@@ -130,11 +130,11 @@ We are going to go over ssh man-in-the-middle attacks later in the semester.  Fo
 
 In actual usage, meaning when not trying to connect to your Docker container but to an actual network host, you should take that type of warning ***VERY*** seriously.
 
-#### `telnet`
+### `telnet`
 
 Telnet works in a similar fashion, but does not use encryption.  You should NEVER use this in practice; we will only use it in the context of some exploits.  The format is `telnet <host> [<port>]`, where the `<port>` is optional.
 
-### nmap
+## nmap
 
 `nmap`, which stands for "network mapper", is a program to see what ports are open on a given machine.  In it's basic usage, it will scan the commonly used ports:
 
@@ -348,7 +348,7 @@ root@outer1:/#
 Many of these services are intentionally vulnerable, and we will be exploiting them throughout the semester.
 
 
-### whois
+## whois
 
 `whois` will look up information on a domain.  This information will tell you who owns it, who is the technical contact (meaning who to contact if there is a technical issue), etc.  Using the `-H` option will remove the legal disclaimers.  This can tell you who owns a domain, but often times domain owners hide their identity by listing the domain name registrar (who you buy domain names from) in the registrant fields.
 
@@ -397,7 +397,7 @@ Domain expires:             31-Jul-2025
 $
 ```
 
-### ping
+## ping
 
 `ping` will check if a node is up and responding:
 
@@ -434,11 +434,11 @@ However, `nmap -Pn` will show that `portal.cs.virginia.edu` is up and has a few 
 Lastly, note that `ping` will perform a quick DNS lookup to convert a hostname into an IP address.
 
 
-### nslookup and dig
+## nslookup and dig
 
 Both `nslookup` ("name service lookup") and `dig` ("domain information groper") perform a DNS lookup -- returning, say, an IP address (or multiple IP addresses) for a given hostname.  The difference between them is that `dig` uses the resolver libraries in the operating system, whereas `nslookup` has it's own internal resolvers.  In general, their results should be the same.
 
-#### `nslookup`
+### `nslookup`
 
 `nslookup` will look up an IP address and convert it to an hostname.  For example:
 
@@ -483,7 +483,7 @@ $ nslookup 1.2.3.4
 $
 ```
 
-#### `dig`
+### `dig`
 
 The `dig` command performs a slightly different type of DNS lookup:
 
@@ -517,7 +517,7 @@ $
 
 You will note that this command provides much of the same information as `nslookup` did, specifically the four load-balanced IP addresses.
 
-### traceroute
+## traceroute
 
 When a packet travels over the network from a source to a destination, it is routed through a number of nodes.  Each of these 'hops' is a separate step in the path.  `traceroute` will show that path.  For example, the following will trace the route to Google's web server from `portal`.
 
@@ -550,13 +550,13 @@ $
 The `* * *` entries means that `traceroute` was unable to determine the IP address or hostname of that node, presumably because that node does not respond to the identification requests.
 
 
-### netcat
+## netcat
 
 `nc`, also known as `netcat` (both are the same command), is a all-purpose command to send and receive TCP and UDP packets.  You saw this command in the [Docker configuration assignment](../docker/index.html) ([md](../docker/index.md)) -- it was used to connect to the open port 6200 in the vsFTPd exploit.  Note that the `ncat` command is similar in concept to `nc`, but a different implementation -- we'll only be going over `nc`/`netcat` here.
 
 Netcat is a Swiss army knife of network utilities.  It can do most things that the previous commands can do.  However, the previous commands have some options that netcat doesn't have, and are often much easier to use.
 
-#### Connect to a web server
+### Connect to a web server
 
 Using netcat we can connect to a web server:
 
@@ -624,7 +624,7 @@ root@outer1:/#
 
 Now we are getting better results.  However, this is not the easiest way to get a web page, and we can see here how a application specific to the protocol (a web browser) is going to be much easier to use than netcat.
 
-#### Scanning ports
+### Scanning ports
 
 We can use netcat to scan ports:
 
@@ -646,7 +646,7 @@ root@outer1:/#
 
 There were a lot of "Connection refused" lines, but those were omitted from the output above via the `grep` pipe.
 
-#### Client-server
+### Client-server
 
 We can have netcat listen on a port via the `-l` option.  To show this working, below is a communication between `outer1` and `outer2`; the spacing was included to show the timing.
 
@@ -677,14 +677,14 @@ root@outer2:/#
 </code></pre></td></tr></table>
 
 
-#### More on netcat
+### More on netcat
 
 There are many other things that netcat can do, and we will see some throughout the semester.  You can see a fuller tutorial on netcat [here](https://nooblinux.com/how-to-use-netcat/), if you want to go into more detail.
 
 
-### curl and wget
+## curl and wget
 
-#### `curl`
+### `curl`
 
 `curl` is a command-line utility for transferring data via a URI, such as an http:// address.  It is useful in scripts and programs, as we avoid having to load up a browser each time.
 
@@ -714,12 +714,12 @@ In a real script, you would NEVER want to include the password, but it's not rea
 
 There are many other things that `curl` can do; [here](https://linuxize.com/post/curl-command-examples/) is a list of example usages if you are interested in learning more (not required for this assignment).
 
-#### `wget`
+### `wget`
 
 `wget` is similar to `curl` in that it will download a file.  Whereas `curl` can do a whole bunch of protocols, `wget` is only for http:// and https:// (and a few other related protocols).  `wget` has some more options, such as mirroring a website, changing URLs, etc.  For our usages in this course, it will operate just like `curl`, but is better for web pages.
 
 
-### Other commands
+## Other commands
 
 There are a number of other network commands that were not gone over in this assignment, but will be gone over in future assignments.
 
@@ -728,7 +728,7 @@ There are a number of other network commands that were not gone over in this ass
 - `host` and `rndc` will be gone over in the DNS assignment
 
 
-### Submission
+## Submission
 
 You will be submitting an edited version of the [netcmds.py](netcmds.py.html) ([src](netcmds.py)) file.  The comments therein explain what values you should fill in.  We are interested in honest answers, not [sycophantic](https://www.merriam-webster.com/dictionary/sycophantic) answers.  The assignment is auto-graded, so you will get full credit as long as you fill in the values in that file correctly.
 

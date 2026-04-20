@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
@@ -8,10 +8,18 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="../../markdown.css" />
@@ -41,20 +49,18 @@
     document.write("<span class=\"copylink copy_img\" onclick=\"navigator.clipboard.writeText('" + text.replace(/\"/g,"\\'") + "')\"></span>");
   }
   </script>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
 </head>
 <body>
+<main>
 <h1 id="wireshark">Wireshark</h1>
 <p><a href="../index.html">Go up to the NWS HW page</a> (<a href="../index.md">md</a>)</p>
-<h3 id="overview">Overview</h3>
+<h2 id="overview">Overview</h2>
 <p>We have seen multiple ways to capture network packets: we can: listen in on the wired network connection, observe the WiFi traffic, execute an in-the-middle attack using a USB Pineapple, ARP spoof, send router redirects, or just run a Scapy Python program. Now that we can observe packets, we are going to start capturing them and analyzing them.</p>
 <p>In this assignment you will be analyzing network traffic through Wireshark. You will analyze saved pcap files, save your own pcap files, and analyze live network traffic. Wireshark is installed on the Docker images.</p>
 <p>You will be submitting an edited version of <a href="wireshark.py.html">wireshark.py</a> (<a href="wireshark.py">src</a>).</p>
-<h3 id="changelog">Changelog</h3>
+<h2 id="changelog">Changelog</h2>
 <p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. So far there aren’t any significant changes to report.</p>
-<h3 id="basic-analysis">Basic Analysis</h3>
+<h2 id="basic-analysis">Basic Analysis</h2>
 <p>Most network analysis comes from saved pcap files. A program, such as tcpdump, will save the file, and then it is analyzed later. In this section, we will walk you through how to analyze a saved pcap file.</p>
 <p>Your answers to the questions posed below will go in the <a href="wireshark.py.html">wireshark.py</a> (<a href="wireshark.py">src</a>) file.</p>
 <p>First you have to download your pcap file to analyze. You must use your own! The URL to download it is on the Canvas landing page.</p>
@@ -89,7 +95,7 @@
 <li>Question 10: what is the background color (not the font color) of packets that are a bad TCP packet?</li>
 </ul></li>
 </ul>
-<h3 id="advanced-analysis">Advanced Analysis</h3>
+<h2 id="advanced-analysis">Advanced Analysis</h2>
 <p>Having just seen the basics of pcap analysis, we are going to look at a more advanced analysis of a pcap file. You are <em>not</em> expected to be able to do this analysis after completing this assignment (although if you can, great!). But you are expected to understand each step, even if you would not have come up with the various steps yourself.</p>
 <p>Due to it’s size, the pcap file for this part is in Canvas Files, and is called <code>wireshark_hw.pcap</code>.</p>
 <p>Each step indicates how many packets are displayed by the current filters – you should ensure that is the case when you enter the filters yourself.</p>
@@ -120,21 +126,22 @@
 <li>Question 13: What is the patient’s social security number?</li>
 </ul>
 <p>Again, you are not expected to be able to do this part on your own – that requires a lot of experience analyzing network packets. You are expected to understand how each step works, though.</p>
-<h3 id="live-capture">Live Capture</h3>
+<h2 id="live-capture">Live Capture</h2>
 <p>Uh-oh, it looks like there is some malware on the <em>inner</em> container. We don’t know much about it, so you have to figure out what is up and let us know. This file seems to send network traffic, but not much else. It’s been quarantined, and the executable is <code>/usr/bin/run_malware</code>, so you can just run it via <code>run_malware</code>; it is not running by default. You can type “quit” at any time to cause it to exit. If that file is not there, try restarting your Docker containers (<code>docker compose down</code> followed by <code>docker compose up -d</code>).</p>
 <p>Note: this is not <em>real</em> malware, and it doesn’t actually do anything malicious. It does send some network data, of course – otherwise there would be no point to this part of the assignment. While you are welcome to try to use other tools to figure out what is going on, the executable has been deigned so that any other tools will not be all that useful. This part of the assignment was explicitly designed to only need Wireshark.</p>
 <p>There are at least four different “things” going on in this program. However, you do not need to find all of them for full credit!</p>
 <p>You will put your findings in <a href="wireshark.py.html">wireshark.py</a> (<a href="wireshark.py">src</a>).</p>
 <p>Wireshark warning: when capturing live network traffic, the network packets are saved to memory. You can restart the capture via the toolbar icon (the green shark fin) – this removes from memory all the captured packets so far. If you leave it running for too long while capturing network packets, it may fill up your computer’s memory, causing slowdown or halting the system. The <code>run_malware</code> program creates around 1 Mb of data every 10 minutes, so it is not likely to be a problem, unless you leave it running overnight or for a very long time. But be aware that if you are on a busy network, it will fill up fast.</p>
-<h4 id="important-mac-host-note">Important Mac host note</h4>
+<h3 id="important-mac-host-note">Important Mac host note</h3>
 <p>Mac users <strong><em>MUST</em></strong> run Wireshark on <em>gateway</em>, <strong><em>NOT</em></strong> on <em>inner</em>. The way that Mac hosts run GUIs is to send the display information over the Docker network. If you run Wireshark on <em>inner</em>, you will see all of your display traffic in addition to the traffic that you are trying to analyze – and there is <em>much</em> more display traffic. If you run Wireshark on <em>gateway</em>, then the display traffic goes directly to <em>firewall</em> (via <em>outernet</em>), and you can monitor <em>gateway’s</em> interface to <em>inner</em> (eth0), which will have all the <code>run_malware</code> traffic from <em>inner</em>, but none of the display traffic.</p>
-<h3 id="saving-pcaps">Saving pcaps</h3>
+<h2 id="saving-pcaps">Saving pcaps</h2>
 <p><a href='wireshark-dialog.webp'><img src='wireshark-dialog.webp' style="width:600px;float:right;padding-left:20px"></a></p>
 <p>The last part of this assignment is to make your own .pcap file. You can do this through Wireshark. The intent is to save enough packets from one of the “malicious” things that the <code>run_malware</code> executable does. You will indicate which one in the <a href="wireshark.py.html">wireshark.py</a> (<a href="wireshark.py">src</a>) file.</p>
 <p>You will need to edit your pcap to only have the necessary packets. The intent is not to just save a lot of network data and submit that. There is a maximum file size allowed for this submission! To edit your pcap file, load it into Wireshark (if not already loaded). You can highlight the relevant packets, and select File -&gt; Export Selected Packets. In the dialog box that appears, you have to toggle some of the settings at the bottom – in particular, you will want to change the packet range from “all packets” to “selected packets only”. Also, be sure to save it as a .pcap file type, not a .pcapng (which is what Wireshark defaults to). You can see these selections in the dialog box image to the right.</p>
 <p>The capture should be saved to <code>capture.pcap</code>.</p>
 <p><br clear='all'></p>
-<h3 id="submission">Submission</h3>
+<h2 id="submission">Submission</h2>
 <p>You will be submitting an edited version of <a href="wireshark.py.html">wireshark.py</a> (<a href="wireshark.py">src</a>) as well as your <code>capture.pcap</code> file.</p>
+</main>
 </body>
 </html>

@@ -3,7 +3,7 @@ Capture the Flag
 
 [Go up to the NWS HW page](../index.html) ([md](../index.md))
 
-### Overview
+## Overview
 
 In this assignment you will try out some of the skills you have learned this semester through a capture-the-flag (CTF) style assignment.
 
@@ -16,18 +16,18 @@ Flags are all 8 digit hexadecimal values; the case does not matter.  Whenever yo
 
 You will be submitting an edited version of [ctf.py](ctf.py.html) ([src](ctf.py)).
 
-#### Expected changes
+### Expected changes
 
 There are a few additions that will happen to this homework over the next few days
 
 - There may be a few more fields added to ctf.py](ctf.py.html) ([src](ctf.py)).  These would be descriptive type fields ("how did you like the assignment?")
 
-#### Background
+### Background
 
 An evil hacker has penetrated our systems.  We don't know much about what happened, but we did manage to get a .pcap file from a telnet session he used.  We know he read some messages in that telnet session, and from the information he gained from those, he went to work attacking our systems.  He bounced around to a number of websites, and did some other strange stuff on our network.  It's your task to track his progress down.
 
 
-#### Changelog
+### Changelog
 
 Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  So far there aren't any significant changes to report.
 

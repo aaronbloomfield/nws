@@ -3,7 +3,7 @@ ARP Spoofer and Detector
 
 [Go up to the NWS HW page](../index.html) ([md](../index.md))
 
-### Overview
+## Overview
 
 In this assignment you will experiment with [ARP spoofing](https://en.wikipedia.org/wiki/ARP_spoofing).  You will use the built-in `arpspoof` command, both to intercept traffic and to perform an in-the-middle attack.  You will also write your own ARP spoofing detector.
 
@@ -16,7 +16,7 @@ You will need to be familiar with the [ARP](../../slides/link-layer.html#/arpdes
 You will be submitting one code file as well as [arp.py](arp.py.html) ([src](arp.py)).
 
 
-### Changelog
+## Changelog
 
 Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  <!-- So far there aren't any significant changes to report. -->
 
@@ -25,11 +25,11 @@ Any changes to this page will be put here for easy reference.  Typo fixes and mi
 - Sun, Feb 4: Clarified about using the same IP address twice in `outputARPConflict()` when the other IP is now known.
 - Mon, Feb 5: Updated the example outputs
 
-### Built-in Commands
+## Built-in Commands
 
 There are a few commands installed that we are going to use.
 
-#### `arp`
+### `arp`
 
 `arp` will allow us to see and manipulate the contents of the ARP cache.  Running `arp -a` will display the cache:
 
@@ -47,7 +47,7 @@ If you just connected to that container, there may be nothing in the ARP cache. 
 
 You can clear entries in the cache via `-d`: `arp -d <ipaddr>`.  If you are running this on your own machine, you will have to put `sudo` before it to run it as the super-user.  The entries have to be deleted one at a time.
 
-#### `netdiscover` and `arp-scan`
+### `netdiscover` and `arp-scan`
 
 `netdiscover` will query all the hosts on the sub-net, and display their MAC addresses and IP addresses.  However, it does *not* populate the ARP cache.  And then it will send out ARP requests to all the hosts on all other sub-nets -- this can take quite some time.  We can limit that to a given sub-net via the `-r` argument: `-r 192.168.100.0/24`.
 
@@ -87,11 +87,11 @@ root@outer1:/#
 Both of these commands may have to be run with `sudo` if you are not running it in the Docker container.
 
 
-### ARP Spoofing
+## ARP Spoofing
 
 We are going to execute two different ARP spoofing attacks.  Before each of them, you may want to clear the ARP cache via `arp -d`, as explained above.
 
-#### Basic ARP spoofing attack
+### Basic ARP spoofing attack
 
 The first task is to experiment with the `arpspoof` command that is already installed on the Docker images.  This part will go through the same steps that were [gone over in the lecture slides](../../slides/link-layer.html#/arpexample), which are repeated here.
 
@@ -116,7 +116,7 @@ At this point, you should see the URL chosen (`http://google.com`) output by the
 If you run `wget` on *outer2* with an `https://` command, notice that an `https://` address will *not* appear in the `urlsnarf` output -- the packet is encrypted with AES, so `urlsnarf` cannot see that it's a URL request therein.
 
 
-#### MITM ARP spoofer
+### MITM ARP spoofer
 
 Next we are going to execute the MITM (in-the-middle) attack via an ARP spoof; this is [as shown in the slides as well](../../slides/link-layer.html#/mitmarp).  We are going to ARP spoof *metasploit* via *outer1*.
 
@@ -134,7 +134,7 @@ Next we are going to execute the MITM (in-the-middle) attack via an ARP spoof; t
 - From *firewall*, telnet into *metasploit* (`telnet metasploit`, username *and* password is `msfadmin`).
 - Type `echo foo` into the terminal.  The response will be `bar`.
 
-### Packet interception
+## Packet interception
 
 We are going to use the [scapy](https://scapy.net) Python library to intercept all packets.  For this part, we are not modifying the packets.  We saw something similar in the [arp_mitm.py](../../slides/code/arp_mitm.py.html) ([src](../../slides/code/arp_mitm.py)) from above:
 
@@ -157,11 +157,11 @@ Notes:
 - Note that the interface used (here, `eth1`) has to be a command-line parameter in the code you write below.
 
 
-### Spoof Detector
+## Spoof Detector
 
 Having experimented with ARP spoofing, we are going to write an ARP spoofing detector.  Testing for this is described below.  The result of this part should be in a file called `arpDetector.py`.
 
-#### Overview
+### Overview
 
 Your program should do the following:
 
@@ -172,12 +172,12 @@ Your program should do the following:
 5. Keep running indefinitely; we'll use Ctrl-C to terminate the program.
 
 
-#### Step 1: read interface from command line
+### Step 1: read interface from command line
 
 This is critical!  Whatever the interface is where you are testing it -- likely `en0`, `eth0`, or `eth1` -- that is NOT going to be the interface when we test it.  You are welcome to have a default if no parameter is specified.  But the first command line parameter is the interface to pass to the `iface` parameter of `sniff()`.
 
 
-#### Step 2: read from system
+### Step 2: read from system
 
 You have to read in the current ARP mappings, of IP <-> MAC, that the computer has in cache (not via `arp-scan` or similar, as that is not the ARP cache).  If you run `arp -a`, you will get something similar to the following:
 
@@ -196,7 +196,7 @@ You can run this via the `subprocess` module to capture the input.  Or you can r
 This step should produce no output on a successful run.  If the program runs into an error, then you can print out whatever output you want.
 
 
-#### Step 3: read from file
+### Step 3: read from file
 
 Next we need to read in a file that contains mappings.  This file may not exist, or it may be empty.  Here is a sample file, which is the typical set of MAC addresses for the outer network of the docker setup.
 
@@ -223,7 +223,7 @@ In particular, the mappings in this file may overwrite the mappings from the pre
 If one of the mappings in the `arp-settings.txt` file is different than what you obtained from `arp -a`, then you should output the appropriate message (the "spoofing detector" one, described below), and overwrite the value in the map with what was in the `arp-settings.txt` file.  Otherwise, if there are no conflicts, there should be no output from this step.  If the program runs into an error, then you can print out whatever output you want.  The file not being present, or the file being empty, is not an error, and should not produce any output.
 
 
-#### Step 4: monitor the network
+### Step 4: monitor the network
 
 In this step, you will listen to the network for ARP messages -- use the `scapy` library, as [discussed in lecture](../../slides/link-layer.html#/) (specifically [here](../../slides/link-layer.html#/7/4)) for this.
 
@@ -254,7 +254,7 @@ def outputARPConflict(mac,old_ip,new_ip):
 
 A situation can occur when you do not know the other IP address.  For example, if a given IP and MAC has an existing mapping, but then an ARP packet arrives mapping that same IP to a different MAC.  In this case, just use the same IP address for both `old_ip` and `new_ip`.
 
-#### Step 5: keep running
+### Step 5: keep running
 
 Your program should keep running until Ctrl-C is pressed, which will terminate the program -- you don't have to put in any code to terminate on a Ctrl-C.
 
@@ -283,18 +283,18 @@ $ sudo kill -SIGINT 62439
 This is how we will be doing it in the automated testing.  Replace the process number with the one specific to your process.  Note that you don't have to include any code to handle Ctrl-C.
 
 
-### Testing and Hints
+## Testing and Hints
 
 To test this, first find the IP -> MAC addresses on the Docker network.  We used the outernet network (*outer1*, *outer2*, etc.), as that had more machines to manipulate the ARP cache with.  You can view the ARP cache via `arp -a`, or from step 1 above.  You can find the mappings by running `sudo arp-scan -l`.  This program is already installed on the docker images; you can install it under Linux via `sudo apt install arp-scan`, and on a Mac via `brew install arp-scan`.
 
 To test the new mapping detection, run it on one of the containers.  Clear out the ARP cache via `arp -d`.  In another terminal and in the same container, ping a few other nodes from that container.  Each time, your program should print out that it found a new mapping.  Check that those IP -> MAC mappings are in the ARP cache via `arp -a`.  Then, in a *different* container, run an ARP spoof via `arpspoof`.  Your program should print out that it detected a possible ARP spoof.
 
-#### Notes and Hints
+### Notes and Hints
 
 - Note that the network interface is different on the different containers.  Because *outer1* is on two networks, the outernet network (192.168.100.1/24) is `eth1`.  As *outer2* is only on one network, the outernet network (192.168.100.1/24) is `eth0`.
 - To clear the entire ARP cache from a container, you have to run `arp -a`, followed by a number of `arp -d` calls.  Here is a single command that will clear it out for you, and then display the (empty) ARP cache: `arp -a | sed s/\(//g | sed s/\)//g | awk '{print "arp -d "$2}' | bash;arp -a`
 
-#### Example output
+### Example output
 
 
 ```
@@ -347,7 +347,7 @@ Your code may pick up on a slightly different issue: after reading the first lin
 ***NOTE:*** These are not *extensive* tests, and we will be providing more comprehensive tests when we test your program.  These two tests are mean to get you started with testing your program.
 
 
-#### Testing for grading
+### Testing for grading
 
 Not yet complete!
 
@@ -361,7 +361,7 @@ We are going to test a few different cases:
 
 
 
-### Submission
+## Submission
 
 You will be submitting your `arpDetector.py` file, as well as [arp.py](arp.py.html) ([src](arp.py)).  That arp.py file describes, in the comments, what needs to be filled in.
 

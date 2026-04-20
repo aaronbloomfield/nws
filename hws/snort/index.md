@@ -4,7 +4,7 @@ Snort Assignment
 [Go up to the NWS HW page](../index.html) ([md](../index.md)).
 
 
-### Overview
+## Overview
 
 In this assignment you will be investigating [Snort](https://www.snort.org/), which is a tool to help monitor networks.  For an introduction to Snort, read the [very short Wikipedia article on Snort](https://en.wikipedia.org/wiki/Snort_(software)).
 
@@ -17,20 +17,20 @@ Note: this assignment is for Snort 2.9.15.1, which is the version installed via 
 If you are looking for the Snort documentation, make sure to use the 2.9 documentation, which can be found online in [HTML](https://www.snort.org/documents/snort-users-manual-2-9-16-html) and [PDF](https://www.snort.org/documents/snort-users-manual-2-9-16).
 
 
-### Changelog
+## Changelog
 
 Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  <!-- So far there aren't any significant changes to report. -->
 
 - Thu, Apr 18: you only have to write Snort rules for two of the "attacks" in the writing rules part
 
 
-### Introduction
+## Introduction
 
 <img src="../../docker/network_compact_for_dns.svg" style="float:right;width:60%">
 
 Recall our network setup, which is shown to the right.  In this assignment, we will always run Snort on *gateway*, listening to eth0 (the green link).  All of our communications with the Internet will come from *inner*, and as it is routed through *gateway*, we will see the results in Snort.
 
-#### Running Snort
+### Running Snort
 
 On *gateway*, run snort via the following command:
 
@@ -58,7 +58,7 @@ telnet firewall
 
 On *gateway*, you should have seen no output.
 
-#### Using Snort
+### Using Snort
 
 Let's see what Snort can output.  From *inner*, enter `nmap firewall`.  This is caught by a rule, and there should be output on *gateway*:
 
@@ -77,12 +77,12 @@ Try running the `run_malware` program that you used in the [Wireshark assignment
 
 Recall that you should type "quit" to exit the `run_malware` program.
 
-### Snort rules
+## Snort rules
 
 If Snort is still running from the previous section, you should stop it (hit Ctrl-Z, then enter `kill -9 %1`).
 
 
-#### Snort Rule Configuration
+### Snort Rule Configuration
 
 Snort has a series of rules that it uses to analyze network traffic.  The set of rules we are using is the "community" set, which means it is free.  There are also various sets of rules that one has to pay for; we won't look into those in this assignment.
 
@@ -100,7 +100,7 @@ We are going to look at `local.rules` -- this file is for rules specific to that
 ```
 
 
-#### Snort Rule Format
+### Snort Rule Format
 
 The general format for a Snort rule is:
 
@@ -123,7 +123,7 @@ The components in more detail:
 	- `rev`: the revision of the rule, as one often has to update the rules.  This needs to be used with the `sid` option.
 
 
-#### Writing Snort Rules
+### Writing Snort Rules
 
 Recall that before, when we run a number of non-suspicious commands (FTP, ping, and telnet), Snort did not report anything to the console.  We are going to change that by entering the following rules into that file:
 
@@ -161,9 +161,9 @@ You should now see this output on *gateway*:
 
 Note that we see the ICMP packet twice, as the first is the ping, and the second is the ping response.  Unlike the other two rules, any ICMP packet -- in either direction -- qualifies for that rule, so both are printed.
 
-### Pcap Analysis
+## Pcap Analysis
 
-#### How to analyze pcap files
+### How to analyze pcap files
 
 You can also run Snort on a saved pcap file using the `-r` option.
 
@@ -176,7 +176,7 @@ wget https://wiki.wireshark.org/uploads/__moin_import__/attachments/SampleCaptur
 
 We are going to use the same Snort command as before, but instead of specifying an interface (`-i eth0`), we are going to specify a pcap file (`-r filename.pcap`).  
 
-#### Slammer Worm
+### Slammer Worm
 
 The [SQL Slammer Worm](https://en.wikipedia.org/wiki/SQL_Slammer) was from 2003, and exploited a buffer overflow in Microsoft's SQL Server, which it used to propagate to other machines.
 
@@ -194,14 +194,14 @@ The results you should have obtained are:
 10/10-18:02:49.239104  [**] [1:2050:8] MS-SQL version overflow attempt [**] [Classification: Misc activity] [Priority: 3] {UDP} 213.76.212.22:20199 -> 65.165.167.86:1434
 ```
 
-#### DNS Remote Shell
+### DNS Remote Shell
 
 You should do the analysis on the dns-remoteshell.pcap on your own.
 
 In the [Ping Shell Commands assignment](../pingcmd/index.html) ([md](../pingcmd/index.md)), you sent shell commands, and their responses, through ICMP (ping) packets.  A similar concept can happen with DNS packets.  This particular pcap is showing a past example of obtaining a remote shell via a DNS packet.
 
 
-#### Analysis with Snort
+### Analysis with Snort
 
 In Canvas Files are two pcaps, named `snort-uva-attack-1.pcap` and `snort-uva-attack-2.pcap`.  Both of these were actual malware attacks against UVA.  Using Snort and Wireshark, you need to analyze these two pcaps.  You will probably want to use Snort to figure out some basic information, and then investigate further using Wireshark.
 
@@ -213,7 +213,7 @@ The questions you should answer are:
 The answer to this is to be in prose (a normal paragraph), and is limited to 250 characters.  The answer will go in the appropriate field of [snort.py](snort.py.html) ([src](snort.py)).  Note that if you cut-and-paste it from another editor, it may paste in smart quotes, which will cause the Gradescope submission checker to report an error (that it's a utf-8 file, not an ascii file).
 
 
-### Writing Rules
+## Writing Rules
 
 The `run_malware` program has five different "things" it will transmit over the network.  Four are various types of suspicious "attacks" (they aren't really attacks, but look like they could be).  The ICMP exfiltration was already caught by the default Snort rules, which you saw above, so there are three more.  There is also a red herring network transmission (something that is not an attack, but meant to distract you from the actual attacks).  
 
@@ -225,6 +225,6 @@ For each of the three other types of attacks, you will have to enter a brief des
 
 We are going to test your rules by checking if they output a message (containing the required string) when tested on a pcap containing that attack.  We are looking for a rule that finds just that attack -- if there is an alert for *all* packets, or for packets that are not the attack, then you will receive zero credit.  Specifically, given the five different types of "suspicious" network traffic, your rule should print out the required string ("CS4760") for exactly one of them.  We are also going to test each one on legitimate traffic of the same type, and that should not cause an alert.
 
-### Submission
+## Submission
 
 You will be submitting an edited version of [snort.py](snort.py.html) ([src](snort.py)).

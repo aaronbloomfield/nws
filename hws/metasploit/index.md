@@ -3,23 +3,23 @@ Metasploitable2 Exploration
 
 [Go up to the NWS HW page](../index.html) ([md](../index.md))
 
-### Overview
+## Overview
 
 In this assignment you will explore the metasploit Docker container.  This container, based on the [Metasploitable 2 setup](https://docs.rapid7.com/metasploit/metasploitable-2/), and the [tleemcjr/metasploitable2 Docker image](https://hub.docker.com/layers/tleemcjr/metasploitable2/latest/images/sha256-e559450b37dccc1909eafa2df5b20bb052e1bd801246f4539a3ef183d5f7288a), is an intentionally vulnerable container where one can practice exploits.  We will be working through a few of the [intentional exploits](https://docs.rapid7.com/metasploit/metasploitable-2-exploitability-guide/) in the image.
 
 You will be submitting a [metasploit.py](metasploit.py.html) ([src](metasploit.py)) Python file.
 
 
-### Changelog
+## Changelog
 
 Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  <!-- So far there aren't any significant changes to report. -->
 
 - Wed, Feb 14: There was an errant character on line 66 of metasploit.py](metasploit.py.html) ([src](metasploit.py)); that character has to be removed for the metasploit.py file to parse correctly when submitted to Gradescope.
 
 
-### Investigation
+## Investigation
 
-#### `nmap`
+### `nmap`
 
 First we want to see what service are available on that container.  From *outer1*, run `nmap`.  We saw `nmap` in the [Network commands introduction](../netcmds/index.html) ([md](../netcmds/index.md) homework.  We will use the `-sV` parameter, as that will attempt to identify which service, including version, is running on each port.  This will take some time -- perhaps 3-5 minutes.  Note that it takes the metasploit container a bit of time (up to 30 seconds on a slow computer) to load all the services when the container first starts up.
 
@@ -60,7 +60,7 @@ Thu Jan 25 08:18:09 EST 2024
 root@outer1:/# 
 ```
 
-#### `searchsploit`
+### `searchsploit`
 
 Installed on the Docker images is a database of known vulnerabilities and their exploits.  `searchsploit` will search that database for the string passed in as a command line parameter.  For example, we will investigate the [vsFTPd 2.3.4 vulnerability](https://www.cve.org/CVERecord?id=CVE-2011-2523) that you examined in the [Docker setup homework](../docker/index.html) ([md](../docker/index.md)).  This is the one where, if you end your username with `:)`, it will open up a shell on port 6200 that you can access (with full root permissions) via `nc metasploit 6200`.
 
@@ -90,7 +90,7 @@ root@outer1:/#
 
 We can see that vulnerability toward the bottom of that list -- the ones with the 2.3.4 in the version column.
 
-### `msfconsole`
+## `msfconsole`
 
 The Metasploit Framework console is a means to test out already written exploits.  It has a huge database of exploits -- many tens of thousands.  Each of these can be used on any host, whether it is on the metasploit container or on the real Internet.
 
@@ -218,7 +218,7 @@ We exited the exploited shell with `exit`.  When back on the msfconsole prompt, 
 Although we won't do this, this process is one way that attackers perform exploits against targets on the Internet.
 
 
-### UnrealIRCD Exploit
+## UnrealIRCD Exploit
 
 If you look back at the `nmap -sV` output from above, you will see this line:
 
@@ -308,7 +308,7 @@ FUkOSc1MRDhkbUwW
 At this point, we can type in any command (`whoami`, `pwd`, `ls`, etc.), and it will run that on *metasploit*.
 
 
-### One more
+## One more
 
 The final part of this assignment is for you to pick an exploit.  Pick a service or port on *metasploit* that you want to attack.  You can't pick the two services that we used as examples here (vsFTPd or UnrealIRCd).  Scan the *metasploit* container with the nmap command shown above.  Given the version of the service, as well as the other information that `nmap` provides, look up the exploit via `searchsploit`.  Then you can execute it in `msfconsole`.  The intent of this part is for you to use the exploit in `msfconsole`, not to write one of your own.  Your exploit does not have to be a shell, just something that makes use of a vulnerability in the *metasploit* container.  Note that `msfconsole` has many (thousands?) of exploits, but not all work on *metasploit*.  You need to check the versions, described above, to see which ones work.
 
@@ -336,7 +336,7 @@ In this example, as we used the (#1), the script name is `exploit/unix/ftp/vsftp
 You will provide information about which one you selected in the [metasploit.py](metasploit.py.html) ([src](metasploit.py)) Python file.
 
 
-### Explore
+## Explore
 
 You are welcome to explore any and all exploits with `msfconsole`, but it is not required for this assignment.  Just be sure to only use them on the *metasploit* container!  Note that there are three versions of the Metasploitable framework -- [1](https://www.metasploit.com), [2](https://docs.rapid7.com/metasploit/metasploitable-2/), and [3](https://github.com/rapid7/metasploitable3).  We are using version 2 of the framework, as that one was available as an already configured Docker container.  
 
@@ -345,7 +345,7 @@ You can find a how-to guide to using version 2 [here](https://www.exploit-db.com
 
 
 
-### Submission
+## Submission
 
 You will be submitting and edited version of [metasploit.py](metasploit.py.html) ([src](metasploit.py)).
 

@@ -6,9 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>Snort Assignment</title>
   <style>
-    /* Default styles provided by pandoc.
-    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-    */
+    code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
@@ -56,21 +54,21 @@
 <main>
 <h1 id="snort-assignment">Snort Assignment</h1>
 <p><a href="../index.html">Go up to the NWS HW page</a> (<a href="../index.md">md</a>).</p>
-<h3 id="overview">Overview</h3>
+<h2 id="overview">Overview</h2>
 <p>In this assignment you will be investigating <a href="https://www.snort.org/">Snort</a>, which is a tool to help monitor networks. For an introduction to Snort, read the <a href="https://en.wikipedia.org/wiki/Snort_(software)">very short Wikipedia article on Snort</a>.</p>
 <p>Snort is already installed on the docker containers. We will be running Snort on <em>gateway</em>, and our network connections will be running from <em>inner</em>.</p>
 <p>You will be submitting an edited version of <a href="snort.py.html">snort.py</a> (<a href="snort.py">src</a>).</p>
 <p>Note: this assignment is for Snort 2.9.15.1, which is the version installed via <code>apt</code> on Ubuntu 22.04. While Snort 3.x is out, it is not as easily installed, and thus we will not be looking at Snort 3. Some of the tutorial aspects in this assignment were taken from the <a href="https://www.rapid7.com/blog/post/2017/01/11/how-to-install-snort-nids-on-ubuntu-linux/">Rapid7: How to Install Snort NIDS on Ubuntu Linux</a> webpage.</p>
 <p>If you are looking for the Snort documentation, make sure to use the 2.9 documentation, which can be found online in <a href="https://www.snort.org/documents/snort-users-manual-2-9-16-html">HTML</a> and <a href="https://www.snort.org/documents/snort-users-manual-2-9-16">PDF</a>.</p>
-<h3 id="changelog">Changelog</h3>
+<h2 id="changelog">Changelog</h2>
 <p>Any changes to this page will be put here for easy reference. Typo fixes and minor clarifications are not listed here. <!-- So far there aren't any significant changes to report. --></p>
 <ul>
 <li>Thu, Apr 18: you only have to write Snort rules for two of the “attacks” in the writing rules part</li>
 </ul>
-<h3 id="introduction">Introduction</h3>
+<h2 id="introduction">Introduction</h2>
 <p><img src="../../docker/network_compact_for_dns.svg" style="float:right;width:60%"></p>
 <p>Recall our network setup, which is shown to the right. In this assignment, we will always run Snort on <em>gateway</em>, listening to eth0 (the green link). All of our communications with the Internet will come from <em>inner</em>, and as it is routed through <em>gateway</em>, we will see the results in Snort.</p>
-<h4 id="running-snort">Running Snort</h4>
+<h3 id="running-snort">Running Snort</h3>
 <p>On <em>gateway</em>, run snort via the following command:</p>
 <pre><code>snort -A console -q -c /etc/snort/snort.conf  -k none -i eth0</code></pre>
 <p>It will appear to hang – it’s waiting for suspicious network packets to display. If you want to exit Snort, Ctrl-C may not work; if not, hit Ctrl-Z, an then kill the process (<code>kill -9 %1</code>).</p>
@@ -87,7 +85,7 @@
 ftp firewall # and then exit the ftp terminal
 telnet firewall</code></pre>
 <p>On <em>gateway</em>, you should have seen no output.</p>
-<h4 id="using-snort">Using Snort</h4>
+<h3 id="using-snort">Using Snort</h3>
 <p>Let’s see what Snort can output. From <em>inner</em>, enter <code>nmap firewall</code>. This is caught by a rule, and there should be output on <em>gateway</em>:</p>
 <pre><code>04/16-12:09:26.272257  [**] [1:469:3] ICMP PING NMAP [**] [Classification: Attempted Information Leak] [Priority: 2] {ICMP} 192.168.200.3 -&gt; 192.168.100.1
 04/16-12:09:26.298485  [**] [1:1421:11] SNMP AgentX/tcp request [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 192.168.200.3:56665 -&gt; 192.168.100.1:705
@@ -96,9 +94,9 @@ telnet firewall</code></pre>
 <pre><code>04/16-12:11:13.817900  [**] [1:499:4] ICMP Large ICMP Packet [**] [Classification: Potentially Bad Traffic] [Priority: 2] {ICMP} 192.168.200.3 -&gt; 192.168.100.1
 04/16-12:11:13.818019  [**] [1:499:4] ICMP Large ICMP Packet [**] [Classification: Potentially Bad Traffic] [Priority: 2] {ICMP} 192.168.100.1 -&gt; 192.168.200.3</code></pre>
 <p>Recall that you should type “quit” to exit the <code>run_malware</code> program.</p>
-<h3 id="snort-rules">Snort rules</h3>
+<h2 id="snort-rules">Snort rules</h2>
 <p>If Snort is still running from the previous section, you should stop it (hit Ctrl-Z, then enter <code>kill -9 %1</code>).</p>
-<h4 id="snort-rule-configuration">Snort Rule Configuration</h4>
+<h3 id="snort-rule-configuration">Snort Rule Configuration</h3>
 <p>Snort has a series of rules that it uses to analyze network traffic. The set of rules we are using is the “community” set, which means it is free. There are also various sets of rules that one has to pay for; we won’t look into those in this assignment.</p>
 <p>The configuration file that contains the rules is in <code>/etc/snort/snort.conf</code>. We told Snort to use that file when we launched Snort, above. That file is long and complicated, and not something we need to look at – but you should know it exists. Among other things, it tells Snort that the rule sets are in <code>/etc/snort/rules/</code>. If you look in that directory, you will see a number of files, all containing many Snort rules.</p>
 <p>We are going to look at <code>local.rules</code> – this file is for rules specific to that machine or network, as opposed to rules that everybody will want to use. Currently the file looks like this:</p>
@@ -108,7 +106,7 @@ telnet firewall</code></pre>
 # ----------------
 # This file intentionally does not come with signatures.  Put your local
 # additions here.</code></pre>
-<h4 id="snort-rule-format">Snort Rule Format</h4>
+<h3 id="snort-rule-format">Snort Rule Format</h3>
 <p>The general format for a Snort rule is:</p>
 <pre><code>&lt;action&gt; &lt;proto&gt; &lt;src_addr&gt; &lt;src_port&gt; &lt;dir&gt; &lt;dest_addr&gt; &lt;dest_port&gt; &lt;rule_options&gt;</code></pre>
 <p>The components in more detail:</p>
@@ -127,7 +125,7 @@ telnet firewall</code></pre>
 <li><code>rev</code>: the revision of the rule, as one often has to update the rules. This needs to be used with the <code>sid</code> option.</li>
 </ul></li>
 </ul>
-<h4 id="writing-snort-rules">Writing Snort Rules</h4>
+<h3 id="writing-snort-rules">Writing Snort Rules</h3>
 <p>Recall that before, when we run a number of non-suspicious commands (FTP, ping, and telnet), Snort did not report anything to the console. We are going to change that by entering the following rules into that file:</p>
 <pre><code>alert tcp any any -&gt; $HOME_NET 21 (msg:&quot;FTP connection attempt&quot;; sid:1000001; rev:1;) 
 alert icmp any any -&gt; $HOME_NET any (msg:&quot;ICMP connection attempt&quot;; sid:1000002; rev:1;) 
@@ -146,14 +144,14 @@ telnet firewall</code></pre>
 04/16-13:11:24.588946  [**] [1:1000001:1] FTP connection attempt [**] [Priority: 0] {TCP} 192.168.200.3:33632 -&gt; 192.168.100.1:21
 04/16-13:11:27.179403  [**] [1:1000003:1] TELNET connection attempt [**] [Priority: 0] {TCP} 192.168.200.3:39582 -&gt; 192.168.100.1:23</code></pre>
 <p>Note that we see the ICMP packet twice, as the first is the ping, and the second is the ping response. Unlike the other two rules, any ICMP packet – in either direction – qualifies for that rule, so both are printed.</p>
-<h3 id="pcap-analysis">Pcap Analysis</h3>
-<h4 id="how-to-analyze-pcap-files">How to analyze pcap files</h4>
+<h2 id="pcap-analysis">Pcap Analysis</h2>
+<h3 id="how-to-analyze-pcap-files">How to analyze pcap files</h3>
 <p>You can also run Snort on a saved pcap file using the <code>-r</code> option.</p>
 <p>To test this, we are going to analyze two pcaps of malware from <a href="https://wiki.wireshark.org/SampleCaptures#Other_Sources_of_Capture_Files">wireshark.org</a>: the Slammer worm (<a href="https://wiki.wireshark.org/uploads/__moin_import__/attachments/SampleCaptures/slammer.pcap">slammer.pcap</a>) and a DNS remote shell (<a href="https://wiki.wireshark.org/uploads/__moin_import__/attachments/SampleCaptures/dns-remoteshell.pcap">dns-remoteshell.pcap</a>). To download them onto your Docker container, run:</p>
 <pre><code>wget https://wiki.wireshark.org/uploads/__moin_import__/attachments/SampleCaptures/slammer.pcap
 wget https://wiki.wireshark.org/uploads/__moin_import__/attachments/SampleCaptures/dns-remoteshell.pcap</code></pre>
 <p>We are going to use the same Snort command as before, but instead of specifying an interface (<code>-i eth0</code>), we are going to specify a pcap file (<code>-r filename.pcap</code>).</p>
-<h4 id="slammer-worm">Slammer Worm</h4>
+<h3 id="slammer-worm">Slammer Worm</h3>
 <p>The <a href="https://en.wikipedia.org/wiki/SQL_Slammer">SQL Slammer Worm</a> was from 2003, and exploited a buffer overflow in Microsoft’s SQL Server, which it used to propagate to other machines.</p>
 <p>The command to analyze slammer.pcap with Snort is:</p>
 <pre><code>snort -A console -q -c /etc/snort/snort.conf  -k none -r slammer.pcap</code></pre>
@@ -161,10 +159,10 @@ wget https://wiki.wireshark.org/uploads/__moin_import__/attachments/SampleCaptur
 <pre><code>10/10-18:02:49.239104  [**] [1:2003:8] MS-SQL Worm propagation attempt [**] [Classification: Misc Attack] [Priority: 2] {UDP} 213.76.212.22:20199 -&gt; 65.165.167.86:1434
 10/10-18:02:49.239104  [**] [1:2004:7] MS-SQL Worm propagation attempt OUTBOUND [**] [Classification: Misc Attack] [Priority: 2] {UDP} 213.76.212.22:20199 -&gt; 65.165.167.86:1434
 10/10-18:02:49.239104  [**] [1:2050:8] MS-SQL version overflow attempt [**] [Classification: Misc activity] [Priority: 3] {UDP} 213.76.212.22:20199 -&gt; 65.165.167.86:1434</code></pre>
-<h4 id="dns-remote-shell">DNS Remote Shell</h4>
+<h3 id="dns-remote-shell">DNS Remote Shell</h3>
 <p>You should do the analysis on the dns-remoteshell.pcap on your own.</p>
 <p>In the <a href="../pingcmd/index.html">Ping Shell Commands assignment</a> (<a href="../pingcmd/index.md">md</a>), you sent shell commands, and their responses, through ICMP (ping) packets. A similar concept can happen with DNS packets. This particular pcap is showing a past example of obtaining a remote shell via a DNS packet.</p>
-<h4 id="analysis-with-snort">Analysis with Snort</h4>
+<h3 id="analysis-with-snort">Analysis with Snort</h3>
 <p>In Canvas Files are two pcaps, named <code>snort-uva-attack-1.pcap</code> and <code>snort-uva-attack-2.pcap</code>. Both of these were actual malware attacks against UVA. Using Snort and Wireshark, you need to analyze these two pcaps. You will probably want to use Snort to figure out some basic information, and then investigate further using Wireshark.</p>
 <p>The questions you should answer are:</p>
 <ol type="1">
@@ -172,13 +170,13 @@ wget https://wiki.wireshark.org/uploads/__moin_import__/attachments/SampleCaptur
 <li>What was the result of the attack, if known? Specifically, was it successful? If so, what were the results of the attack? If not, what would have been the result of the attack had it been successful? If it’s not possible to determine if it was successful or not, state that.</li>
 </ol>
 <p>The answer to this is to be in prose (a normal paragraph), and is limited to 250 characters. The answer will go in the appropriate field of <a href="snort.py.html">snort.py</a> (<a href="snort.py">src</a>). Note that if you cut-and-paste it from another editor, it may paste in smart quotes, which will cause the Gradescope submission checker to report an error (that it’s a utf-8 file, not an ascii file).</p>
-<h3 id="writing-rules">Writing Rules</h3>
+<h2 id="writing-rules">Writing Rules</h2>
 <p>The <code>run_malware</code> program has five different “things” it will transmit over the network. Four are various types of suspicious “attacks” (they aren’t really attacks, but look like they could be). The ICMP exfiltration was already caught by the default Snort rules, which you saw above, so there are three more. There is also a red herring network transmission (something that is not an attack, but meant to distract you from the actual attacks).</p>
 <p>Using Wireshark, you should figure out what the other three attacks are, and write a Snort rule that will catch it for <em>TWO</em> of the attacks. You can search the web for example Snort rules to help you as you develop these rules. But, obviously, you have to write the rules yourself (no copying from friends, no generative AI). You do not need to write a rule for the red herring.</p>
 <p>For each of the three other types of attacks, you will have to enter a brief description of the attack, as well as the full Snort rule, into the appropriate fields of <a href="snort.py.html">snort.py</a> (<a href="snort.py">src</a>). It does not matter the order that you enter the rules, although the description must obviously match the Snort rule.</p>
 <p><strong><em>NOTE:</em></strong> Your rule HAS to print out “CS4760” in the message, as that is what the auto-grader will look for. For example, “web attack in CS4760”. Note the case and lack of space!</p>
 <p>We are going to test your rules by checking if they output a message (containing the required string) when tested on a pcap containing that attack. We are looking for a rule that finds just that attack – if there is an alert for <em>all</em> packets, or for packets that are not the attack, then you will receive zero credit. Specifically, given the five different types of “suspicious” network traffic, your rule should print out the required string (“CS4760”) for exactly one of them. We are also going to test each one on legitimate traffic of the same type, and that should not cause an alert.</p>
-<h3 id="submission">Submission</h3>
+<h2 id="submission">Submission</h2>
 <p>You will be submitting an edited version of <a href="snort.py.html">snort.py</a> (<a href="snort.py">src</a>).</p>
 </main>
 </body>

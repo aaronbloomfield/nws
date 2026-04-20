@@ -3,7 +3,7 @@ TCP file re-assembly
 
 [Go up to the NWS HW page](../index.html) ([md](../index.md))
 
-### Overview
+## Overview
 
 In this assignment you will be reconstructing files transferred in TCP streams.  Any http:// connection will request a number of files -- .html files, images, scripts, and CSS style sheets, to name a few.  Given a stream of network data, you will reconstruct the images and save them as files.
 
@@ -12,18 +12,18 @@ We will be using Python, and Scapy, for this.  As Python (and Scapy) are rather 
 You will be submitting your source code in `tcp_reconstruction.py`, as well as an edited version of [tcprecon.py](tcprecon.py.html) ([src](tcprecon.py)).
 
 
-### Changelog
+## Changelog
 
 Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  <!-- So far there aren't any significant changes to report. -->
 
 - Mon, 3/18: Clarified that the size of index.html in one of the test files can vary by 10 bytes in either direction
 
 
-### Introduction
+## Introduction
 
 You will only be analyzing HTTP streams.  Thus, if packet is not to or from port 80 (http's port), then the packet can be ignored.
 
-#### Scapy and pcap files
+### Scapy and pcap files
 
 Scapy has an interface to manage pcap files:
 
@@ -36,7 +36,7 @@ for pkt in pcap:
 
 Each `pkt` in the `for` loop is a regular Scapy packet (TCP in IP in Ether).  Although the `pcap` variable looks like a list, and can be indexed like a list, it's a slightly different type (`scapy.plist.PacketList`), and cannot perform some list modification operations.  You can create a list out of it (`pcapl = list(pcap)`) if you want to perform those operations.
 
-#### HTTP via TCP streams
+### HTTP via TCP streams
 
 The way an HTTP request works is such:
 
@@ -124,7 +124,7 @@ The response is shown below in `hexdump -C` format.  You can see the start of th
 000001d0  28 41 30 47 18 47 31 ce  a8 a0 62 0e a3 a3 0e 86  |(A0G.G1...b.....|
 ```
 
-### Response Codes
+## Response Codes
 
 Every HTTP request has a *response code* in the reply.  You can see a [list of all the http response codes](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes).
 
@@ -146,7 +146,7 @@ Server: Apache/2.4.6 (CentOS)
 The "200" in the first line is the response code.  Note that the HTTP version can vary, but will always be a number (possibly an integer).  A space separates the `HTTP/<ver>` and the response code.
 
 
-### Your Task
+## Your Task
 
 Your task is to write a program called `tcp_reconstruction.py`.  Given a pcap file as a command-line parameter, it will read through the file and save any files transferred via the HTTP protocol.  Some requirements:
 
@@ -177,7 +177,7 @@ You may make a number of assumptions about the data for this assignment:
 	- While this is not a reasonable assumption in practice (that the packets are in order), it makes our assignment much easier to implement while still teaching the same concepts
 - You may assume that none of the IP packet headers have options -- in other words, all IP packet headers are exactly 20 bytes; this is not something you can assume for the TCP headers, though
 
-#### Scapy and TCP payloads
+### Scapy and TCP payloads
 
 It is surprisingly annoying in Scapy to determine if a TCP packet has a payload, as if it does not, trying to access `packet[TCP].load` will thrown an exception.  The following function may make this easier:
 
@@ -190,12 +190,12 @@ def pkt_has_tcp_load(pkt):
 		return False
 ```
 
-#### Live Traffic
+### Live Traffic
 
 This assignment is dealing with pcap files.  To have your program process live TCP data, you would have Scapy call your function via the `sniff()` functionality, as shown [here](slides/packets.html#/2/8).  This is not required for this assignment, though -- we are only using pcap files.
 
 
-### Output
+## Output
 
 For each file written to the output/ directory, you should print one line:
 
@@ -220,7 +220,7 @@ $
 If there were more files in the pcap file than that one, each file would print out a separate line of output.
 
 
-### Testing
+## Testing
 
 There are two (at least) pcap files provided for testing.  Due to their size, they are in Canvas' files, and not in the repo.
 
@@ -257,7 +257,7 @@ Wrote uva-large-newbox.svg of length 7304
 Wrote yfo7rax.css of length 9373
 ```
 
-### Submission
+## Submission
 
 You will be submitting your source code in `tcp_reconstruction.py`, as well as an edited version of [tcprecon.py](tcprecon.py.html) ([src](tcprecon.py)).
 

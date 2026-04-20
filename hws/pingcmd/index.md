@@ -3,21 +3,21 @@ Ping Shell Commands
 
 [Go up to the NWS HW page](../index.html) ([md](../index.md))
 
-### Overview
+## Overview
 
 In this assignment you will write a simple remote shell using ICMP.  This assignment will use the Scapy Python package.  The client will send messages as the payload (content) in an ICMP ping message.  The server will execute the commands, and return the output to the client.
 
 You will be submitting your source code in `ping_shell.py` as well as an edited version of [pingcmd.py](pingcmd.py.html) ([src](pingcmd.py])).
 
 
-### Changelog
+## Changelog
 
 Any changes to this page will be put here for easy reference.  Typo fixes and minor clarifications are not listed here.  So far there aren't any significant changes to report.
 
 
-### Remote Shell
+## Remote Shell
 
-#### The Task
+### The Task
 
 You are going to write a Python program that handles both the client side and the server side of this remote shell.  On the client side, if the user enters any input, it is sent as the payload of an ICMP packet to the server, which executes the command, and then sends the output back to the client, which will display that output.
 
@@ -51,9 +51,9 @@ You don't need to send the replies to the ping!  Let the operating system do tha
 
 Your server should only capture standard output.  You do not need to worry about capturing standard error.  Nor do you have to worry about commands that might crash -- you can assume the commands will work properly.  Lastly, none of the commands will have output that exceeds the size that can fit into an ICMP packet.
 
-### Sample output
+## Sample output
 
-#### Required output
+### Required output
 
 The only required output is the result of executing the commands on the server; this output is displayed on the client.  The server does not output anything.  In the examples below you will also see the input typed to execute the commands as well.
 
@@ -61,7 +61,7 @@ You are welcome to put an extra blank line (or two or three) between the output 
 
 The first execution run below has debugging output to show the packet flow.  The second execution run has that output removed.  Your program should not have any extra debugging output!
 
-#### Execution run 1
+### Execution run 1
 
 The first execution run has a lot of debugging information to help one trace how it works.  That debugging output always has the string "debug:" in it, includes time with milliseconds, and prints out a packet summary via `pkt.summary()`.
 
@@ -98,7 +98,7 @@ root@outer1:/mnt#
 
 The server quit when it received "quit" from the client.
 
-#### Execution run 2
+### Execution run 2
 
 This is similar to the previous command, but all the debugging output is removed.
 
@@ -126,7 +126,7 @@ root@outer1:/mnt#
 Note that the server does not need to output anything.  Again, the server quit when it received "quit" from the client.
 
 
-### Hints and Notes
+## Hints and Notes
 
 There are Scapy commands to do a lot of the conversions that are needed.  For example, `get_if_addr(iface)` will get the IP address for that interface.  If you run the client on *outer2*, where `iface` is `eth0`, this will get 192.168.100.102.
 
@@ -140,7 +140,7 @@ The easiest way to get the output of a shell command run from Python is the `sub
 
 You do not need to worry about shell commands that may hang or cause errors.  Nor do you have to worry about output that exceeds a packet length.
 
-#### Links
+### Links
 
 We have seen a number of code examples that can be referenced for this assignment:
 
@@ -151,7 +151,7 @@ We have seen a number of code examples that can be referenced for this assignmen
 - Sockets (not needed for this assignment, but included for completeness) are shown [here](../../slides/packets.html#/2/5)
 - There is an ever-growing list of simple tasks (usually one liners) contained in the [scapy_howto.py](../../docs/scapy_howto.py.html) ([src](../../docs/scapy_howto.py)) file.
 
-### Submission
+## Submission
 
 You will be submitting your source code in `ping_shell.py` as well as an edited version of [pingcmd.py](pingcmd.py.html) ([src](pingcmd.py])).
 
