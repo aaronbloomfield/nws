@@ -14,9 +14,9 @@ http://www.gnu.org/software/src-highlite">
 <b><font color="#000080">#include</font></b> <font color="#DF0000">&lt;unistd.h&gt;</font>
 
 <font color="#008A00">int</font> <b><font color="#000000">main</font></b><font color="#990000">()</font> <font color="#DF0000">{</font>
-  <font color="#008A00">char</font> <font color="#990000">*</font>output <font color="#990000">=</font> <font color="#DF0000">"hello world</font><font color="#CC33CC">\n</font><font color="#DF0000">"</font><font color="#990000">;</font>
+  <font color="#008A00">char</font> <font color="#990000">*</font>output <font color="#990000">=</font> <font color="#DF0000">"hello world</font><font color="#C431C4">\n</font><font color="#DF0000">"</font><font color="#990000">;</font>
   <font color="#008A00">int</font> fd <font color="#990000">=</font> <b><font color="#000000">open</font></b><font color="#990000">(</font><font color="#DF0000">"fd.out"</font><font color="#990000">,</font>O_CREAT<font color="#990000">|</font>O_WRONLY<font color="#990000">|</font>O_TRUNC<font color="#990000">);</font>
-  <b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#DF0000">"file descriptor: %d</font><font color="#CC33CC">\n</font><font color="#DF0000">"</font><font color="#990000">,</font>fd<font color="#990000">);</font>
+  <b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#DF0000">"file descriptor: %d</font><font color="#C431C4">\n</font><font color="#DF0000">"</font><font color="#990000">,</font>fd<font color="#990000">);</font>
   <b><font color="#000000">write</font></b><font color="#990000">(</font>fd<font color="#990000">,</font> output<font color="#990000">,</font> <font color="#993399">12</font><font color="#990000">);</font>
   <b><font color="#000000">close</font></b><font color="#990000">(</font>fd<font color="#990000">);</font>
   <b><font color="#000000">sleep</font></b><font color="#990000">(</font><font color="#993399">20</font><font color="#990000">);</font>

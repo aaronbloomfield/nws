@@ -80,7 +80,7 @@ PjfppQtvKp3ox<font color="#990000">+</font>GHNhNIG<font color="#990000">+</font>
 toJOSu1N31SNro0FT78S/TDuXjDRE6lXOq4VoV1TpptN<font color="#990000">+</font>wk8o5ZfJER76oFRa7<font color="#990000">/+</font>SnJ7B40rfv4w
 <font color="#990000">+</font>vDhw4cPHz58<font color="#990000">+</font>PDhw4cPHz58<font color="#990000">+</font>B/jD7zB31YAKAAA
 EOF
-	echo <font color="#008A00">$keys</font> <font color="#990000">|</font> tr <font color="#DF0000">" "</font> <font color="#DF0000">"</font><font color="#CC33CC">\n</font><font color="#DF0000">"</font> <font color="#990000">&gt;</font> keys<font color="#990000">.</font>tgz<font color="#990000">.</font>b64
+	echo <font color="#008A00">$keys</font> <font color="#990000">|</font> tr <font color="#DF0000">" "</font> <font color="#DF0000">"</font><font color="#C431C4">\n</font><font color="#DF0000">"</font> <font color="#990000">&gt;</font> keys<font color="#990000">.</font>tgz<font color="#990000">.</font>b64
 	base64 -d keys<font color="#990000">.</font>tgz<font color="#990000">.</font>b64 <font color="#990000">&gt;</font> keys<font color="#990000">.</font>tgz
 	tar xfz keys<font color="#990000">.</font>tgz
 	ls <font color="#990000">*</font>_key <font color="#990000">|</font> awk <font color="#DF0000">'{print "ssh-keygen -y -f "$1" &gt; "$1".pub"}'</font> <font color="#990000">|</font> bash
@@ -164,7 +164,7 @@ echo <font color="#DF0000">"# metasploit and the gateway have a different IPs ba
 <i><font color="#9A1900"># firewall: set up the gateway bridge to the internet</font></i>
 <b><font color="#0000FF">if</font></b> <font color="#990000">[</font> `hostname` <font color="#990000">==</font> <font color="#DF0000">"firewall"</font> <font color="#990000">];</font> <b><font color="#0000FF">then</font></b>
 	route del default <i><font color="#9A1900"># deleting the one added for the entire outer network, above</font></i>
-	route <font color="#990000">|</font> grep <font color="#993399">255.255</font> <font color="#990000">|</font> grep -v <font color="#993399">192.168</font><font color="#990000">.</font><font color="#993399">100.0</font> <font color="#990000">|</font> sed s<font color="#990000">/</font><font color="#DF0000">"</font><font color="#CC33CC">\.</font><font color="#DF0000">"</font><font color="#990000">/</font><font color="#DF0000">" "</font>/g <font color="#990000">|</font> awk <font color="#DF0000">'{print "route add default gw " $1"."$2"."$3".1"}'</font> <font color="#990000">|</font> bash
+	route <font color="#990000">|</font> grep <font color="#993399">255.255</font> <font color="#990000">|</font> grep -v <font color="#993399">192.168</font><font color="#990000">.</font><font color="#993399">100.0</font> <font color="#990000">|</font> sed s<font color="#990000">/</font><font color="#DF0000">"</font><font color="#C431C4">\.</font><font color="#DF0000">"</font><font color="#990000">/</font><font color="#DF0000">" "</font>/g <font color="#990000">|</font> awk <font color="#DF0000">'{print "route add default gw " $1"."$2"."$3".1"}'</font> <font color="#990000">|</font> bash
 	<i><font color="#9A1900"># adapted from https://unix.stackexchange.com/questions/222054/how-can-i-use-linux-as-a-gateway</font></i>
 	<font color="#008A00">OUTBOUND</font><font color="#990000">=</font>eth0
 	<font color="#008A00">LOCALLAN</font><font color="#990000">=</font>eth1

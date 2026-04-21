@@ -1,7 +1,7 @@
 .SUFFIXES: .md .html
 SED=sed -i
 ifeq ($(shell uname),Darwin)
-	SED=sed -i .sedbak
+	SED=sed -i .todel
 endif
 
 markdown:
@@ -14,6 +14,10 @@ touchall:
 .md.html:
 	pathprefix=`echo $< | tr -d -c '/' | sed -r 's/\//..\//g'` && \
 		pandoc --template `git rev-parse --show-toplevel`/pandoc-template.html --standalone --metadata lang="en" -V "pagetitle:$$(head -1 $<)" -H tabs.js -f markdown -c $$pathprefix"markdown.css" --columns=9999 -t html5 -o $@ $<
+	@$(SED) s/60a0b0/3f7583/g $@
+	@/bin/rm -f *.todel
+	@$(SED) s/bb6688/ac4d73/g $@
+	@/bin/rm -f *.todel
 	@echo wrote $@
 
 all-source-highlight:
