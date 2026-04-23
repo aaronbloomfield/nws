@@ -97,8 +97,8 @@ The first task is to experiment with the `arpspoof` command that is already inst
 
 We will be using the [course Docker setup](../../docker/network.svg), and will be changing first image (normal operation) to the second image (spoofed operation).
 
-<img src='../../docker/network_compact_for_arp_normal_outer2.svg' style="width:400px">
-<img src='../../docker/network_compact_for_arp_spoofed_outer2.svg' style="width:400px">
+<img src='../../docker/network_compact_for_arp_normal_outer2.svg' style="width:400px" alt='a firewall node connects to two other nodes, outer1 and outer2, with the connection to outer2 highlighted'>
+<img src='../../docker/network_compact_for_arp_spoofed_outer2.svg' style="width:400px" alt='a firewall node conencts to outer1 through a spoofed connection, and outer1 connects to outer2 through a spoofed connection'>
 <br clear='all'>
 
 Load up 5 tabs:
@@ -120,7 +120,7 @@ If you run `wget` on *outer2* with an `https://` command, notice that an `https:
 
 Next we are going to execute the MITM (in-the-middle) attack via an ARP spoof; this is [as shown in the slides as well](../../slides/link-layer.html#/mitmarp).  We are going to ARP spoof *metasploit* via *outer1*.
 
-<img src='../../docker/network_compact_for_arp_normal_metasploit.svg' style="width:400px">
+<img src='../../docker/network_compact_for_arp_normal_metasploit.svg' style="width:400px" alt='a firewall node conencts to outer1 through a spoofed connection, and outer1 connects to outer2 through a spoofed connection; a regular connection between firewall and outer2 also exists'>
 <br clear='all'>
 
 - First, turn off IP forwarding: `echo 0 > /proc/sys/net/ipv4/ip_forward`

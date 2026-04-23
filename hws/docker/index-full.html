@@ -6,7 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>Docker Setup</title>
   <style>
-    code{white-space: pre-wrap;}
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
@@ -189,7 +191,7 @@ $</code></pre>
 <p>You will be using docker extensively throughout the semester, so you should experiment with these commands. There really isn’t much you can break – if you kill a few containers, just restart the setup via <code>docker compose down</code> followed by <code>docker compose up</code>.</p>
 <h3 id="launch-the-containers">Launch the containers</h3>
 <p>At this point, you have built the images, but nothing is running. To run the images, you should enter: <code>docker compose up</code>. This will launch the course setup in a series of 8 docker containers. The setup looks like the following; this looks complicated now, but it will all become clear in time. You can click on the image below for a larger version.</p>
-<p><a href="../../docker/network.svg"><img src="../../docker/network.svg" style="width:50%" /></a></p>
+<p><a href="../../docker/network.svg"><img src="../../docker/network.svg" style="width:50%" alt="Docker network setup: a firewall outer node connects via the &#39;outernet&#39; network to five other nodes (outer1, outer2, outer3, gateway, and metasploit), and the last three connect via the &#39;innernet&#39; network to the &#39;inner&#39; node." /></a></p>
 <p>Each square box represents a container. The bold name is the hostname for that container, and the IP values are fixed for each node on each network. The wide ovals are the three networks that are configured. All the nodes route their Internet traffic through the <em>firewall</em> node. The <em>inner</em> and <em>other</em> nodes route through <em>gateway</em> as well. There are two paths from <em>other</em> to the Internet – the correct route is through <em>gateway</em>, but one of our assignments will hijack that route and send it through <em>outer1</em>, which is why <em>outer1</em> is also connected to the <em>othernet</em> network. Lastly, the <em>metasploit</em> container is the intentionally vulnerable container that we will practice exploits on.</p>
 <h3 id="docker-commands-creation-and-running">Docker commands: creation and running</h3>
 <p>We have already seen a few commands to create the containers and start them running:</p>

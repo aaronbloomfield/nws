@@ -6,7 +6,9 @@
   <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=yes'></meta>
   <title>ARP Spoofer and Detector</title>
   <style>
-    code{white-space: pre-wrap;}
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
@@ -121,7 +123,7 @@ root@outer1:/# </code></pre>
 <h3 id='basic-arp-spoofing-attack'>Basic ARP spoofing attack</h3>
 <p>The first task is to experiment with the <code>arpspoof</code> command that is already installed on the Docker images. This part will go through the same steps that were <a href='../../slides/link-layer.html#/arpexample'>gone over in the lecture slides</a>, which are repeated here.</p>
 <p>We will be using the <a href='../../docker/network.svg'>course Docker setup</a>, and will be changing first image (normal operation) to the second image (spoofed operation).</p>
-<p><img src='../../docker/network_compact_for_arp_normal_outer2.svg' style='width:400px'> <img src='../../docker/network_compact_for_arp_spoofed_outer2.svg' style='width:400px'> <br clear='all'></p>
+<p><img src='../../docker/network_compact_for_arp_normal_outer2.svg' style='width:400px' alt='a firewall node connects to two other nodes, outer1 and outer2, with the connection to outer2 highlighted'> <img src='../../docker/network_compact_for_arp_spoofed_outer2.svg' style='width:400px' alt='a firewall node conencts to outer1 through a spoofed connection, and outer1 connects to outer2 through a spoofed connection'> <br clear='all'></p>
 <p>Load up 5 tabs:</p>
 <ul>
 <li>Tab 1: run the docker setup: <code>docker compose up</code></li>
@@ -140,7 +142,7 @@ root@outer1:/# </code></pre>
 <p>If you run <code>wget</code> on <em>outer2</em> with an <code>https://</code> command, notice that an <code>https://</code> address will <em>not</em> appear in the <code>urlsnarf</code> output – the packet is encrypted with AES, so <code>urlsnarf</code> cannot see that it’s a URL request therein.</p>
 <h3 id='mitm-arp-spoofer'>MITM ARP spoofer</h3>
 <p>Next we are going to execute the MITM (in-the-middle) attack via an ARP spoof; this is <a href='../../slides/link-layer.html#/mitmarp'>as shown in the slides as well</a>. We are going to ARP spoof <em>metasploit</em> via <em>outer1</em>.</p>
-<p><img src='../../docker/network_compact_for_arp_normal_metasploit.svg' style='width:400px'> <br clear='all'></p>
+<p><img src='../../docker/network_compact_for_arp_normal_metasploit.svg' style='width:400px' alt='a firewall node conencts to outer1 through a spoofed connection, and outer1 connects to outer2 through a spoofed connection; a regular connection between firewall and outer2 also exists'> <br clear='all'></p>
 <ul>
 <li>First, turn off IP forwarding: <code>echo 0 &gt; /proc/sys/net/ipv4/ip_forward</code></li>
 <li>Clear out the ARP cache, via <code>arp -d</code>, as explained above</li>

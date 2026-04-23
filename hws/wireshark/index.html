@@ -6,7 +6,9 @@
   <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=yes'></meta>
   <title>Wireshark</title>
   <style>
-    code{white-space: pre-wrap;}
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
@@ -143,7 +145,7 @@
 <h3 id='important-mac-host-note'>Important Mac host note</h3>
 <p>Mac users <strong><em>MUST</em></strong> run Wireshark on <em>gateway</em>, <strong><em>NOT</em></strong> on <em>inner</em>. The way that Mac hosts run GUIs is to send the display information over the Docker network. If you run Wireshark on <em>inner</em>, you will see all of your display traffic in addition to the traffic that you are trying to analyze – and there is <em>much</em> more display traffic. If you run Wireshark on <em>gateway</em>, then the display traffic goes directly to <em>firewall</em> (via <em>outernet</em>), and you can monitor <em>gateway’s</em> interface to <em>inner</em> (eth0), which will have all the <code>run_malware</code> traffic from <em>inner</em>, but none of the display traffic.</p>
 </div><div id='tsaving-pcaps' class='tabcontent'><h2 id='saving-pcaps'>Saving pcaps</h2>
-<p><a href='wireshark-dialog.webp'><img src='wireshark-dialog.webp' style='width:600px;float:right;padding-left:20px'></a></p>
+<p><a href='wireshark-dialog.webp'><img src='wireshark-dialog.webp' style='width:600px;float:right;padding-left:20px' alt='an image of the wireshark application showing the dialog to save a pcap'></a></p>
 <p>The last part of this assignment is to make your own .pcap file. You can do this through Wireshark. The intent is to save enough packets from one of the “malicious” things that the <code>run_malware</code> executable does. You will indicate which one in the <a href='wireshark.py.html'>wireshark.py</a> (<a href='wireshark.py'>src</a>) file.</p>
 <p>You will need to edit your pcap to only have the necessary packets. The intent is not to just save a lot of network data and submit that. There is a maximum file size allowed for this submission! To edit your pcap file, load it into Wireshark (if not already loaded). You can highlight the relevant packets, and select File -&gt; Export Selected Packets. In the dialog box that appears, you have to toggle some of the settings at the bottom – in particular, you will want to change the packet range from “all packets” to “selected packets only”. Also, be sure to save it as a .pcap file type, not a .pcapng (which is what Wireshark defaults to). You can see these selections in the dialog box image to the right.</p>
 <p>The capture should be saved to <code>capture.pcap</code>.</p>

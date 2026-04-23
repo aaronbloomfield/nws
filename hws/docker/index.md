@@ -199,7 +199,7 @@ You will be using docker extensively throughout the semester, so you should expe
 
 At this point, you have built the images, but nothing is running.  To run the images, you should enter: `docker compose up`.  This will launch the course setup in a series of 8 docker containers.  The setup looks like the following; this looks complicated now, but it will all become clear in time.  You can click on the image below for a larger version.
 
-[![](../../docker/network.svg){style="width:50%"}](../../docker/network.svg)
+[![](../../docker/network.svg){style="width:50%" alt="Docker network setup: a firewall outer node connects via the 'outernet' network to five other nodes (outer1, outer2, outer3, gateway, and metasploit), and the last three connect via the 'innernet' network to the 'inner' node."}](../../docker/network.svg)
 
 Each square box represents a container.  The bold name is the hostname for that container, and the IP values are fixed for each node on each network.  The wide ovals are the three networks that are configured.  All the nodes route their Internet traffic through the *firewall* node.  The *inner* and *other* nodes route through *gateway* as well.  There are two paths from *other* to the Internet -- the correct route is through *gateway*, but one of our assignments will hijack that route and send it through *outer1*, which is why *outer1* is also connected to the *othernet* network.  Lastly, the *metasploit* container is the intentionally vulnerable container that we will practice exploits on.
 

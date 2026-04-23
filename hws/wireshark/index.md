@@ -102,7 +102,7 @@ Mac users ***MUST*** run Wireshark on *gateway*, ***NOT*** on *inner*.  The way 
 
 ## Saving pcaps
 
-<a href='wireshark-dialog.webp'><img src='wireshark-dialog.webp' style="width:600px;float:right;padding-left:20px"></a>
+<a href='wireshark-dialog.webp'><img src='wireshark-dialog.webp' style="width:600px;float:right;padding-left:20px" alt='an image of the wireshark application showing the dialog to save a pcap'></a>
 
 The last part of this assignment is to make your own .pcap file.  You can do this through Wireshark.  The intent is to save enough packets from one of the "malicious" things that the `run_malware` executable does.  You will indicate which one in the [wireshark.py](wireshark.py.html) ([src](wireshark.py)) file.
 
