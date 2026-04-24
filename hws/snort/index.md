@@ -26,7 +26,7 @@ Any changes to this page will be put here for easy reference.  Typo fixes and mi
 
 ## Introduction
 
-<img src="../../docker/network_compact_for_dns.svg" style="float:right;width:60%">
+<img src="../../docker/network_compact_for_dns.svg" style="float:right;width:60%" alt="Image of the docker network for use in this homework">
 
 Recall our network setup, which is shown to the right.  In this assignment, we will always run Snort on *gateway*, listening to eth0 (the green link).  All of our communications with the Internet will come from *inner*, and as it is routed through *gateway*, we will see the results in Snort.
 

@@ -208,7 +208,7 @@ This part will be submitted as `dns_spoof_host.py`.
 
 We are going to create our first DNS spoof.  Consider our Docker network setup:
 
-<img src='../../docker/network_compact_for_dns.svg' style="width:800px">
+<img src='../../docker/network_compact_for_dns.svg' style="width:800px" alt="Image of the docker network for use in this homework">
 
 If *inner* makes a DNS request, it will go over the innernet network to *gateway*.  We are going to sniff this packet, and give a spoofed response with the incorrect IP address.  Our DNS spoof program will run on *gateway*, and the request will come from *inner*.  We will spoof the domain example.com, and redirect it to *outer1*.
 
@@ -517,7 +517,7 @@ A better way to create an incorrect DNS entry is to have the response that the D
 
 Consider our Docker network setup:
 
-<img src='../../docker/network_compact_for_dns.svg' style="width:800px">
+<img src='../../docker/network_compact_for_dns.svg' style="width:800px" alt="Image of the docker network for use in this homework">
 
 Previously our spoof on *gateway* listed to eth0, which is the green link in the image above.  We are now going to listen to eth2, which is the blue link in the image above.
 

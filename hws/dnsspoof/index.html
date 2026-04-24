@@ -6,7 +6,9 @@
   <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=yes'></meta>
   <title>DNS Spoofing</title>
   <style>
-    code{white-space: pre-wrap;}
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
@@ -22,8 +24,9 @@
     }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
     /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -266,7 +269,7 @@ root@gateway:~# </code></pre>
 <p>This part will be submitted as <code>dns_spoof_host.py</code>.</p>
 <h3 id='overview-1'>Overview</h3>
 <p>We are going to create our first DNS spoof. Consider our Docker network setup:</p>
-<p><img src='../../docker/network_compact_for_dns.svg' style='width:800px'></p>
+<p><img src='../../docker/network_compact_for_dns.svg' style='width:800px' alt='Image of the docker network for use in this homework'></p>
 <p>If <em>inner</em> makes a DNS request, it will go over the innernet network to <em>gateway</em>. We are going to sniff this packet, and give a spoofed response with the incorrect IP address. Our DNS spoof program will run on <em>gateway</em>, and the request will come from <em>inner</em>. We will spoof the domain example.com, and redirect it to <em>outer1</em>.</p>
 <p>This section is a local attack – the spoofing program has to either be on the user’s machine (here, <em>inner</em>) or the machine running the DNS server (here, <em>gateway</em>). We choose to run it on <em>gateway</em>. This is listening to <em>gateway</em>’s eth0 interface, which is colored green in the image above.</p>
 <p>Our DNS spoof will look for any request for the IP address of example.com, and return the IP address of <em>outer1</em> (192.168.100.101).</p>
@@ -490,7 +493,7 @@ root@inner:/# </code></pre>
 <p>The previous attack only changed a single DNS reply, and that reply was only sent to the local user’s machine. The DNS server running on <em>gateway</em> got an actual correct response and cached it, but the spoofed response was sent to <em>outer1</em> before the DNS server on <em>gateway</em> could send the correct response.</p>
 <p>A better way to create an incorrect DNS entry is to have the response that the DNS server receives be the spoofed response. The DNS server will cache this incorrect value, and then feed it to any host (here, <em>inner</em>) for any future request. This is called <em>DNS Cache Poisoning</em>.</p>
 <p>Consider our Docker network setup:</p>
-<p><img src='../../docker/network_compact_for_dns.svg' style='width:800px'></p>
+<p><img src='../../docker/network_compact_for_dns.svg' style='width:800px' alt='Image of the docker network for use in this homework'></p>
 <p>Previously our spoof on <em>gateway</em> listed to eth0, which is the green link in the image above. We are now going to listen to eth2, which is the blue link in the image above.</p>
 <p>You are going to copy your program from the previous section (<code>dns_spoof.py</code>) to <code>dns_poison.py</code>, and modify that program to perform DNS cache poisoning. The only change is to change the interface. Previously we spoofed a packet on eth0, which is how <em>gateway</em> communicates with <em>inner</em>. Now we are going to spoof a packet on <em>eth2</em>, as that is how a DNS response from the Internet comes back to the DNS server on <em>gateway</em>.</p>
 <h3 id='dns-cache'>DNS Cache</h3>

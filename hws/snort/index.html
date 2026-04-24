@@ -6,7 +6,9 @@
   <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=yes'></meta>
   <title>Snort Assignment</title>
   <style>
-    code{white-space: pre-wrap;}
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
@@ -74,7 +76,7 @@
 <li>Thu, Apr 18: you only have to write Snort rules for two of the “attacks” in the writing rules part</li>
 </ul>
 </div><div id='tintroduction' class='tabcontent'><h2 id='introduction'>Introduction</h2>
-<p><img src='../../docker/network_compact_for_dns.svg' style='float:right;width:60%'></p>
+<p><img src='../../docker/network_compact_for_dns.svg' style='float:right;width:60%' alt='Image of the docker network for use in this homework'></p>
 <p>Recall our network setup, which is shown to the right. In this assignment, we will always run Snort on <em>gateway</em>, listening to eth0 (the green link). All of our communications with the Internet will come from <em>inner</em>, and as it is routed through <em>gateway</em>, we will see the results in Snort.</p>
 <h3 id='running-snort'>Running Snort</h3>
 <p>On <em>gateway</em>, run snort via the following command:</p>
